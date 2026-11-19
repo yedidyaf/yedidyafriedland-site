@@ -1,0 +1,58 @@
+- id: py.strings.slicing.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    s = "python"
+    print(s[-3:])
+  options: ["hon", "pyt", "tho", "n"]
+  answer: 0
+  explanation: "אינדקס שלילי סופר מהסוף. `s[-3:]` מתחיל שלושה תווים מהסוף וממשיך עד סוף המחרוזת, ולכן מתקבל `hon`."
+  optionExplanations:
+    "1": "`pyt` הוא `s[:3]`, שלושת התווים הראשונים."
+    "2": "`tho` הוא `s[2:5]`."
+
+- id: py.strings.slicing.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    word = "abcdefg"
+    print(word[::2])
+  options: ["aceg", "bdf", "abcdefg", "gfedcba"]
+  answer: 0
+  explanation: "הקפיצה (step) היא 2, ולכן לוקחים כל תו שני החל מאינדקס 0: a, c, e, g."
+
+- id: py.strings.slicing.003
+  type: single
+  difficulty: 1
+  prompt: איזה ביטוי הופך את המחרוזת `text`?
+  options: ["`text[::-1]`", "`text[-1:]`", "`text.reverse()`", "`text[::1]`"]
+  answer: 0
+  explanation: "קפיצה של 1- עוברת על המחרוזת מהסוף להתחלה. למחרוזות אין מתודה `reverse`, ו-`text[-1:]` מחזיר רק את התו האחרון."
+  optionExplanations:
+    "2": "`reverse` קיימת לרשימות בלבד, ולכן נקבל `AttributeError`."
+
+- id: py.strings.slicing.004
+  type: truefalse
+  difficulty: 2
+  prompt: "חיתוך מחרוזת עם אינדקס שגדול מאורכה, למשל `\"abc\"[1:100]`, זורק `IndexError`."
+  answer: false
+  explanation: "חיתוך לא זורק שגיאה בחריגה מהגבולות. הוא פשוט עוצר בסוף המחרוזת, ולכן מתקבל `\"bc\"`. רק גישה לאינדקס בודד, כמו `\"abc\"[100]`, זורקת `IndexError`."
+
+- id: py.strings.slicing.005
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להחזיר את שלושת התווים האחרונים של מחרוזת. באיזו שורה הבאג?
+  code: |
+    def last_three(s):
+        if len(s) < 3:
+            return s
+        return s[-3:-1]
+  answer: 4
+  explanation: "הגבול העליון בחיתוך לא נכלל. `s[-3:-1]` מחזיר רק שני תווים. צריך `s[-3:]`."
+  fixed: |
+    def last_three(s):
+        if len(s) < 3:
+            return s
+        return s[-3:]

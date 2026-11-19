@@ -1,0 +1,51 @@
+- id: py.oop.composition.001
+  type: hierarchy
+  difficulty: 2
+  prompt: לכל זוג מחלקות, בחרו את סוג היחס הנכון ביניהן.
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "Car ו-Engine"
+      answer: has-a
+      why: לרכב יש מנוע. מנוע הוא לא סוג של רכב.
+    - label: "Dog ו-Animal"
+      answer: is-a
+      why: כלב הוא סוג של חיה.
+    - label: "Library ו-Book"
+      answer: has-a
+      why: ספרייה מכילה ספרים.
+    - label: "SavingsAccount ו-BankAccount"
+      answer: is-a
+      why: חשבון חיסכון הוא סוג של חשבון בנק.
+  explanation: "המבחן הפשוט: אם אפשר לומר «X הוא סוג של Y», זו ירושה (is-a). אם אפשר לומר «ל-X יש Y», זו הרכבה (has-a). בספק, העדיפו הרכבה."
+
+- id: py.oop.composition.002
+  type: hierarchy
+  difficulty: 3
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה?"
+  code: |
+    class Shape: ...
+    class Polygon(Shape): ...
+    class Circle(Shape): ...
+    class Square(Polygon): ...
+    class Canvas:
+        def __init__(self):
+            self.shapes: list[Shape] = []
+  targets:
+    - id: Shape
+    - id: Polygon
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: Polygon
+      answer: Shape
+    - label: Circle
+      answer: Shape
+    - label: Square
+      answer: Polygon
+    - label: Canvas
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: Canvas מכילה רשימת צורות (has-a), אבל לא יורשת מאף אחת מהן.
+  explanation: "Square יורשת מ-Polygon, שיורשת מ-Shape. Canvas לא יורשת מצורה, אלא מחזיקה צורות. זו הרכבה."

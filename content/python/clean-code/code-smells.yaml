@@ -1,0 +1,40 @@
+- id: py.clean-code.code-smells.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def price_with_tax(price):
+        return price * 1.17
+  options:
+    - "מספר קסם - Magic Number"
+    - "מתודה ארוכה - Long Method"
+    - "קינון עמוק - Deep Nesting"
+    - "מחלקת אל - God Class"
+  answer: 0
+  explanation: "המספר `1.17` מופיע בלי שם. עדיף קבוע עם שם, למשל `VAT_RATE = 0.17`, כדי שיהיה ברור מה הוא ושיהיה קל לשנות אותו במקום אחד."
+
+- id: py.clean-code.code-smells.002
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      def is_adult(age):
+          return age >= 18
+    - |
+      def is_adult(age):
+          if age >= 18:
+              return True
+          else:
+              return False
+    - |
+      def is_adult(age):
+          result = False
+          if age >= 18:
+              result = True
+          return result
+  answer: 0
+  explanation: "הביטוי `age >= 18` כבר מחזיר ערך בוליאני. אין צורך ב-if שמחזיר True או False."
+  optionExplanations:
+    "1": "if שמחזיר True ו-False הוא שכפול של התנאי עצמו."
+    "2": "משתנה עזר ו-if מוסיפים שלוש שורות בלי להוסיף מידע."

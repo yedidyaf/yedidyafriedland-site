@@ -1,0 +1,43 @@
+- id: cs.oop.polymorphism.001
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Animal a = new Dog();
+    a.Speak();
+
+    class Animal
+    {
+        public virtual void Speak() => Console.WriteLine("...");
+    }
+
+    class Dog : Animal
+    {
+        public override void Speak() => Console.WriteLine("Woof");
+    }
+  options: ["Woof", "...", "שגיאת קומפילציה", "לא יודפס כלום"]
+  answer: 0
+  explanation: "`Speak` מוגדרת `virtual` ונדרסת עם `override`. בזמן ריצה האובייקט הוא `Dog`, ולכן נקראת הגרסה של `Dog`, גם כשההפניה היא מטיפוס `Animal`."
+
+- id: cs.oop.polymorphism.002
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Animal a = new Cat();
+    a.Speak();
+
+    class Animal
+    {
+        public void Speak() => Console.WriteLine("Animal");
+    }
+
+    class Cat : Animal
+    {
+        public new void Speak() => Console.WriteLine("Meow");
+    }
+  options: ["Animal", "Meow", "שגיאת קומפילציה", "AnimalMeow"]
+  answer: 0
+  explanation: "עם `new` המתודה ב-`Cat` מסתירה את המתודה של הבסיס, אבל לא דורסת אותה. ההחלטה נעשית לפי טיפוס ההפניה (`Animal`), ולכן מודפס `Animal`."
+  optionExplanations:
+    "1": "`Meow` היה מודפס רק עם `virtual` ו-`override`, או אם ההפניה הייתה מטיפוס `Cat`."

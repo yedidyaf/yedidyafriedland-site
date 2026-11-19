@@ -1,0 +1,31 @@
+- id: py.software-design.architecture-assembly.001
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה בקובץ שאליו היא שייכת.
+  requirement: "מערכת השאלת ספרים לספרייה: חבר ספרייה שואל ספר לפי ISBN, המערכת בודקת שהספר זמין, שומרת את ההשאלה במסד הנתונים ומציגה אישור למשתמש."
+  targets:
+    - id: models.py
+      desc: מחלקות הנתונים
+    - id: repository.py
+      desc: גישה למסד הנתונים
+    - id: service.py
+      desc: לוגיקה עסקית
+    - id: cli.py
+      desc: ממשק משתמש בשורת הפקודה
+  items:
+    - label: "class Book: def __init__(self, isbn: str, title: str, available: bool)"
+      answer: models.py
+      why: מחלקת נתונים בלי לוגיקה ובלי גישה למסד, ולכן היא בשכבת המודלים.
+    - label: "def find_book(isbn: str) -> Book | None"
+      answer: repository.py
+      why: שליפה ממסד הנתונים שייכת לשכבת הגישה לנתונים.
+    - label: "def save_loan(loan: Loan) -> None"
+      answer: repository.py
+      why: שמירה במסד היא אחריות ה-Repository.
+    - label: "def borrow_book(member_id: int, isbn: str) -> Loan"
+      answer: service.py
+      why: בדיקת זמינות ויצירת השאלה הן הכלל העסקי. השירות משתמש ב-Repository ולא ניגש למסד ישירות.
+    - label: "def print_confirmation(loan: Loan) -> None"
+      answer: cli.py
+      why: הצגה למשתמש שייכת לשכבת הממשק בלבד.
+  explanation: "כל שכבה אחראית על דבר אחד: מודלים מחזיקים נתונים, Repository מדבר עם המסד, Service מחליט לפי הכללים העסקיים, ו-CLI מדבר עם המשתמש. התלות זורמת בכיוון אחד: CLI ← Service ← Repository ← Models."
