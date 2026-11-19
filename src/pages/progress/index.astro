@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProgressApp from '../../components/ProgressApp';
+import { getContent } from '../../lib/content';
+const langs = getContent().map((l) => l.id);
+---
+<Base title="ההתקדמות שלי - My Progress" description="ההתקדמות שלכם לפי נושא, המוכנות למבחן והיסטוריית המבחנים. נשמר רק בדפדפן שלכם." noindex>
+  <div class="container">
+    <h1 style="margin-top:24px">ההתקדמות שלי - My Progress</h1>
+    <ProgressApp client:only="preact" langs={langs} />
+  </div>
+</Base>

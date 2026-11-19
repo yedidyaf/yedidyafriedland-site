@@ -12,7 +12,7 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  integrations: [preact(), sitemap({ filter: (page) => !page.includes('/exam/') && !page.includes('/data/') })],
+  integrations: [preact(), sitemap({ filter: (page) => !['/exam/', '/data/', '/progress/', '/settings/'].some((p) => page.includes(p)) })],
   build: { format: 'directory' },
   vite: { build: { chunkSizeWarningLimit: 800 } },
 });

@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getContent } from '../../lib/content';
+import { href } from '../../lib/url';
+import { bilingual } from '../../lib/text';
+
+export function getStaticPaths() {
+  return getContent().map((l) => ({ params: { lang: l.id } }));
+}
+const lang = getContent().find((l) => l.id === Astro.params.lang)!;
+const title = `מבחנים ב${lang.title_he} - ${lang.title_en} Tests`;
+const qCount = lang.chapters.reduce((n, c) => n + c.topics.reduce((m, t) => m + t.questions.length, 0), 0);
+const sim = lang.simulation;
+const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/${c.id}/${t.id}`));
+---
+<Base title={title} description={`${lang.description_he} ${qCount} שאלות ב-${lang.chapters.length} פרקים.`}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="פירורי לחם"><a href={href('/')}>בית</a> / <span>{lang.title_he}</span></nav>
+    <h1>{bilingual(lang.title_he, lang.title_en)}</h1>
+    <p class="lead muted">{lang.description_he}</p>
+
+    <div id="resume" class="notice" hidden></div>
+
+    <div class="grid cols-3" style="margin:20px 0">
+      <div class="card stat">
+        <span class="l">מוכנות למבחן</span>
+        <span class="v" id="readiness">0%</span>
+        <div class="progressbar"><div id="readiness-bar" style="width:0%"></div></div>
+        <span class="l small" style="margin-top:6px">ממוצע השליטה בפרקים, לפי משקל כל פרק במבחן.</span>
+      </div>
+      <div class="card stack">
+        <h2 style="margin:0">מבחן סימולציה</h2>
+        <p class="muted" style="margin:0">{sim.questions} שאלות מכל הפרקים, {sim.minutes} דקות, ציון עובר {sim.passScore}. ההסברים מופיעים בסוף.</p>
+        <a class="btn" href={href(`/exam/?lang=${lang.id}&mode=simulation`)}>להתחיל סימולציה</a>
+      </div>
+      <div class="card stack">
+        <h2 style="margin:0">תרגול חופשי</h2>
+        <p class="muted" style="margin:0">בחרו פרקים, מספר שאלות ומתי לראות הסברים. או תרגלו רק את השאלות שטעיתם בהן.</p>
+        <div class="row-actions">
+          <a class="btn secondary" href={href(`/${lang.id}/new/`)}>לבנות מבחן</a>
+          <a class="btn ghost" href={href(`/exam/?lang=${lang.id}&mode=mistakes`)}>תרגול טעויות</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>הפרקים</h2>
+    <div class="grid cols-2">
+      {lang.chapters.map((c, i) => (
+        <section class="card chapter-card">
+          <h3><a href={href(`/${lang.id}/${c.id}/`)}>{i + 1}. {bilingual(c.title_he, c.title_en)}</a></h3>
+          <p class="muted small" style="margin:0">{c.description_he}</p>
+          <ul class="topic-list">
+            {c.topics.map((t) => (
+              <li>
+                <a href={href(`/${lang.id}/${c.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a>
+                <span class="badge none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+  <script type="application/json" id="lang-data" set:html={JSON.stringify({ id: lang.id, blueprint: sim.blueprint, chapters: lang.chapters.map((c) => ({ id: c.id, topics: c.topics.map((t) => ({ id: t.id })) })), topicKeys })} />
+</Base>
+<script>
+  import { load } from '../../lib/storage';
+  import { level, mastery, readiness, LEVEL_LABEL } from '../../lib/scoring';
+  import { href } from '../../lib/url';
+  const data = JSON.parse(document.getElementById('lang-data')!.textContent!);
+  const s = load();
+  document.querySelectorAll<HTMLElement>('[data-topic]').forEach((el) => {
+    const r = s.topics[el.dataset.topic!];
+    const lv = level(r);
+    const m = mastery(r ?? []);
+    el.className = `badge ${lv}`;
+    el.textContent = LEVEL_LABEL[lv] + (m !== null ? ` ${m}%` : '');
+  });
+  const rd = readiness(data.chapters, data.blueprint, s.topics, (c: string, t: string) => `${data.id}/${c}/${t}`);
+  document.getElementById('readiness')!.textContent = `${rd}%`;
+  (document.getElementById('readiness-bar') as HTMLElement).style.width = `${rd}%`;
+  const ex = s.activeExam;
+  if (ex && ex.lang === data.id) {
+    const box = document.getElementById('resume')!;
+    const a = document.createElement('a');
+    a.href = href('/exam/');
+    a.className = 'btn sm';
+    a.textContent = 'להמשיך';
+    box.textContent = `יש לכם מבחן פתוח: ${ex.title} (נענו ${Object.keys(ex.answers).length} מתוך ${ex.questionIds.length}). `;
+    box.append(a);
+    box.hidden = false;
+  }
+</script>

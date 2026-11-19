@@ -1,0 +1,73 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getContent } from '../../../lib/content';
+import { href } from '../../../lib/url';
+import { bilingual } from '../../../lib/text';
+
+export function getStaticPaths() {
+  return getContent().map((l) => ({ params: { lang: l.id } }));
+}
+const lang = getContent().find((l) => l.id === Astro.params.lang)!;
+---
+<Base title={`בניית מבחן ב${lang.title_he} - Custom Test`} description={`בנו מבחן תרגול מותאם ב${lang.title_he}: בחרו פרקים, מספר שאלות ומתי לראות הסברים.`}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="פירורי לחם"><a href={href('/')}>בית</a> / <a href={href(`/${lang.id}/`)}>{lang.title_he}</a> / <span>בניית מבחן</span></nav>
+    <h1>בניית מבחן - Custom Test</h1>
+    <form class="card" method="get" action={href('/exam/')} id="builder">
+      <input type="hidden" name="lang" value={lang.id} />
+      <input type="hidden" name="mode" value="mixed" />
+      <fieldset>
+        <legend>פרקים</legend>
+        <div class="row-actions small" style="margin-bottom:8px">
+          <button type="button" class="linkish" data-all="1">בחירת הכל</button>
+          <button type="button" class="linkish" data-all="0">ניקוי</button>
+        </div>
+        <div class="checks">
+          {lang.chapters.map((c) => (
+            <label><input type="checkbox" name="ch" value={c.id} checked /> {bilingual(c.title_he, c.title_en)}</label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>מספר שאלות</legend>
+        <div class="radios">
+          {[10, 20, 30, 40].map((n) => (
+            <label><input type="radio" name="count" value={n} checked={n === 20} /> {n}</label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>מתי לראות הסברים</legend>
+        <div class="radios">
+          <label><input type="radio" name="feedback" value="instant" checked /> אחרי כל שאלה (תרגול)</label>
+          <label><input type="radio" name="feedback" value="end" /> רק בסוף (מבחן)</label>
+        </div>
+      </fieldset>
+      <p class="notice err" id="none-msg" hidden>בחרו לפחות פרק אחד.</p>
+      <button class="btn lg" type="submit">להתחיל</button>
+    </form>
+    <p class="muted" style="margin-top:16px">
+      השאלות נבחרות כך שקודם מופיעות שאלות שעוד לא ראיתם, אחר כך שאלות שטעיתם בהן, ורק אז שאלות שכבר עניתם עליהן נכון.
+    </p>
+  </div>
+</Base>
+<script>
+  const form = document.getElementById('builder') as HTMLFormElement;
+  const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name=ch]')];
+  const pre = new URLSearchParams(location.search).getAll('ch');
+  if (pre.length) boxes.forEach((b) => (b.checked = pre.includes(b.value)));
+  form.querySelectorAll<HTMLButtonElement>('[data-all]').forEach((btn) =>
+    btn.addEventListener('click', () => boxes.forEach((b) => (b.checked = btn.dataset.all === '1'))),
+  );
+  form.addEventListener('submit', (e) => {
+    const chosen = boxes.filter((b) => b.checked);
+    const msg = document.getElementById('none-msg')!;
+    if (!chosen.length) {
+      e.preventDefault();
+      msg.hidden = false;
+      return;
+    }
+    // all chapters chosen = no filter, keeps the URL short
+    if (chosen.length === boxes.length) boxes.forEach((b) => (b.disabled = true));
+  });
+</script>

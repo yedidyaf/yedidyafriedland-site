@@ -1,0 +1,387 @@
+- id: py.software-design.dependency-injection.001
+  type: single
+  difficulty: 1
+  prompt: "מה הבעיה העיקרית ביצירת `EmailNotifier` בתוך הבנאי של `OrderService`?"
+  code: |
+    class OrderService:
+        def __init__(self):
+            self.notifier = EmailNotifier()
+
+        def place(self, order: Order) -> None:
+            ...
+            self.notifier.send(order.email, "Order received")
+  options:
+    - "אי אפשר להחליף את `EmailNotifier` במימוש אחר, למשל מזויף בבדיקה, בלי לשנות את `OrderService`"
+    - "בכל קריאה ל-`place` נוצר `EmailNotifier` חדש, וזה בזבוז"
+    - "האובייקט `EmailNotifier` נמחק מהזיכרון כשהבנאי מסתיים"
+    - "אסור ליצור אובייקטים בתוך `__init__` בפייתון"
+  answer: 0
+  explanation: "המחלקה בוחרת בעצמה את התלות שלה, ולכן היא צמודה (Tightly Coupled) למימוש אחד. כל בדיקה של `place` תשלח אימייל אמיתי. בהזרקת תלויות (Dependency Injection) השירות מקבל את ה-notifier כפרמטר: `def __init__(self, notifier: Notifier)`."
+  optionExplanations:
+    "1": "האובייקט נוצר פעם אחת בבנאי ונשמר ב-`self.notifier`, ולא בכל קריאה ל-`place`."
+    "2": "`self.notifier` מחזיק הפניה לאובייקט, ולכן הוא נשאר בחיים כל עוד השירות קיים."
+    "3": "מותר ליצור אובייקטים בבנאי. הבעיה היא עיצובית, לא תחבירית."
+
+- id: py.software-design.dependency-injection.002
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה של הבנאי נקייה יותר?
+  options:
+    - |
+      class InvoiceService:
+          def __init__(self, repo: InvoiceRepository, mailer: Mailer):
+              self.repo = repo
+              self.mailer = mailer
+    - |
+      class InvoiceService:
+          def __init__(self, deps: dict):
+              self.repo = deps["repo"]
+              self.mailer = deps["mailer"]
+  answer: 0
+  explanation: "תלויות מפורשות בחתימה מראות בדיוק מה המחלקה צריכה, עם טיפוסים. מי שיוצר את השירות, בקוד או בבדיקה, יודע מה להעביר, ועורך הקוד מתריע אם משהו חסר."
+  optionExplanations:
+    "1": "מילון של תלויות מסתיר את מה שהמחלקה צריכה. צריך לקרוא את הקוד הפנימי כדי לגלות את המפתחות, ומפתח חסר יתגלה רק בזמן ריצה כ-`KeyError`."
+
+- id: py.software-design.dependency-injection.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class FakeClock:
+        def __init__(self, hour):
+            self.hour = hour
+        def now_hour(self):
+            return self.hour
+
+    class Greeter:
+        def __init__(self, clock):
+            self.clock = clock
+        def greet(self):
+            return "Good morning" if self.clock.now_hour() < 12 else "Good evening"
+
+    print(Greeter(FakeClock(9)).greet())
+    print(Greeter(FakeClock(20)).greet())
+  options:
+    - "Good morning\nGood evening"
+    - "Good morning\nGood morning"
+    - "Good evening\nGood evening"
+    - "AttributeError"
+  answer: 0
+  explanation: "`Greeter` לא קורא לשעון של המחשב, אלא לשעון שהוזרק לו. לכן אפשר לבדוק גם בוקר וגם ערב בלי לחכות לשעה הנכונה: `FakeClock(9)` נותן בוקר ו-`FakeClock(20)` נותן ערב."
+  optionExplanations:
+    "1": "כל `Greeter` מקבל שעון משלו, והשני מחזיר 20."
+    "3": "ל-`FakeClock` יש `now_hour`, וזו המתודה היחידה ש-`Greeter` צריך. לא צריך לרשת משעון אמיתי."
+
+- id: py.software-design.dependency-injection.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class InMemoryRepo:
+        def __init__(self):
+            self.items = []
+        def __len__(self):
+            return len(self.items)
+        def add(self, x):
+            self.items.append(x)
+
+    class Service:
+        def __init__(self, repo=None):
+            self.repo = repo or InMemoryRepo()
+
+    fake = InMemoryRepo()
+    s = Service(fake)
+    s.repo.add("a")
+    print(len(fake), s.repo is fake)
+  options: ["0 False", "1 True", "1 False", "0 True"]
+  answer: 0
+  explanation: "ל-`InMemoryRepo` יש `__len__`, ולכן מאגר ריק נחשב falsy. הביטוי `repo or InMemoryRepo()` מתעלם מהמאגר שהוזרק ויוצר מאגר חדש, וה-`add` הולך אליו. ערך ברירת מחדל לתלות כותבים כך: `self.repo = repo if repo is not None else InMemoryRepo()`."
+  optionExplanations:
+    "1": "זה מה שהיה קורה עם `is not None`. `or` בודק ערך אמת, לא `None`."
+    "2": "אם `s.repo` הוא לא `fake`, ההוספה לא הגיעה ל-`fake`, ולכן `len(fake)` נשאר 0."
+    "3": "אם `s.repo` היה `fake`, ההוספה הייתה מגדילה אותו ל-1."
+
+- id: py.software-design.dependency-injection.005
+  type: bug
+  difficulty: 2
+  prompt: "הבדיקה מעבירה לשירות `FakeNotifier`, אבל בכל זאת נשלח אימייל אמיתי. באיזו שורה הבאג?"
+  code: |
+    class OrderService:
+        def __init__(self, repo, notifier):
+            self.repo = repo
+            self.notifier = notifier
+
+        def place(self, order):
+            self.repo.save(order)
+            EmailNotifier().send(order.customer, "Order received")
+  answer: 8
+  explanation: "השירות מקבל `notifier` בבנאי אבל לא משתמש בו, ויוצר `EmailNotifier` חדש במקום. ההזרקה קיימת רק על הנייר. צריך לקרוא ל-`self.notifier.send`."
+  fixed: |
+    class OrderService:
+        def __init__(self, repo, notifier):
+            self.repo = repo
+            self.notifier = notifier
+
+        def place(self, order):
+            self.repo.save(order)
+            self.notifier.send(order.customer, "Order received")
+
+- id: py.software-design.dependency-injection.006
+  type: single
+  difficulty: 2
+  prompt: באיזו צורת הזרקה התלות `writer` מגיעה למחלקה?
+  code: |
+    class ReportExporter:
+        def export(self, report: Report, writer: Writer) -> None:
+            for line in report.lines():
+                writer.write(line)
+  options:
+    - "הזרקה דרך פרמטר של מתודה - Method Injection"
+    - "הזרקה דרך הבנאי - Constructor Injection"
+    - "הזרקה דרך תכונה - Setter Injection"
+    - "אין כאן הזרקה, כי `writer` לא נשמר ב-`self`"
+  answer: 0
+  explanation: "התלות מועברת בכל קריאה ל-`export`, כפרמטר של המתודה. זה מתאים כשהתלות משתנה מקריאה לקריאה, למשל קובץ פעם ומסך פעם. כשהתלות קבועה לכל חיי האובייקט, מעבירים אותה בבנאי."
+  optionExplanations:
+    "1": "לבנאי אין כאן שום פרמטר."
+    "2": "אין כאן השמה של `writer` לתכונה של האובייקט."
+    "3": "הזרקה היא העברת התלות מבחוץ. לא חייבים לשמור אותה ב-`self`."
+
+- id: py.software-design.dependency-injection.007
+  type: single
+  difficulty: 2
+  prompt: "בבדיקה רוצים להעביר ל-`CheckoutService` מחלקה מזויפת `FakeGateway` במקום `StripeGateway`. מה `FakeGateway` חייבת לקיים?"
+  code: |
+    class CheckoutService:
+        def __init__(self, gateway):
+            self.gateway = gateway
+
+        def pay(self, amount: float) -> str:
+            return self.gateway.charge(amount)
+  options:
+    - "להכיל מתודה `charge` שמקבלת סכום ומחזירה מחרוזת, כמו ש-`CheckoutService` משתמש בה"
+    - "לרשת מ-`StripeGateway`"
+    - "להיות מוגדרת באותו קובץ של `CheckoutService`"
+    - "להיות יחידון (Singleton), כדי שכל הבדיקות ישתמשו באותו מופע"
+  answer: 0
+  explanation: "בפייתון מספיק שהאובייקט יתנהג כמו שהקוד מצפה, כלומר טיפוס ברווז (Duck Typing). השירות קורא רק ל-`charge`, ולכן כל אובייקט עם `charge` מתאים. כדי שהחוזה יהיה מפורש, אפשר להגדיר `Protocol` או `ABC` ששני המימושים מקיימים."
+  optionExplanations:
+    "1": "ירושה מ-`StripeGateway` הייתה מושכת לבדיקה את כל הקוד האמיתי, ולפעמים גם קריאות לרשת."
+    "2": "המיקום של המחלקה לא משנה. מעבירים אובייקט, לא שם של קובץ."
+    "3": "מופע משותף בין בדיקות גורם להן להשפיע זו על זו. כל בדיקה צריכה מופע חדש."
+
+- id: py.software-design.dependency-injection.008
+  type: truefalse
+  difficulty: 1
+  prompt: "הזרקת תלויות (Dependency Injection) בפייתון מחייבת שימוש בספרייה או במסגרת עבודה (Framework) ייעודית."
+  answer: false
+  explanation: "הזרקת תלויות היא פשוט העברת אובייקט כפרמטר, לבנאי או לפונקציה, במקום ליצור אותו בפנים. ספריות DI קיימות, אבל ברוב הפרויקטים מספיק ליצור את האובייקטים ב-`main.py` ולהעביר אותם."
+
+- id: py.software-design.dependency-injection.009
+  type: truefalse
+  difficulty: 2
+  prompt: "העברת פונקציה כפרמטר, למשל `def is_expired(token: Token, now: Callable[[], datetime]) -> bool`, היא גם צורה של הזרקת תלויות."
+  answer: true
+  explanation: "התלות כאן היא מקור הזמן. במקום לקרוא ל-`datetime.now()` בפנים, הפונקציה מקבלת אותו מבחוץ. בבדיקה מעבירים `lambda: datetime(2025, 1, 1)` ומקבלים תוצאה קבועה. בפייתון פונקציה היא אובייקט, ולכן אפשר להזריק אותה כמו כל תלות."
+
+- id: py.software-design.dependency-injection.010
+  type: hierarchy
+  difficulty: 2
+  prompt: לכל זוג מחלקות בקוד, בחרו את סוג היחס ביניהן.
+  code: |
+    from abc import ABC, abstractmethod
+
+    class SmsSender(ABC):
+        @abstractmethod
+        def send(self, phone: str, text: str) -> None: ...
+
+    class TwilioSender(SmsSender):
+        def send(self, phone: str, text: str) -> None: ...
+
+    class FakeSender(SmsSender):
+        def __init__(self):
+            self.sent: list[tuple[str, str]] = []
+
+        def send(self, phone: str, text: str) -> None:
+            self.sent.append((phone, text))
+
+    class AppointmentService:
+        def __init__(self, sender: SmsSender):
+            self.sender = sender
+
+        def cancel(self, appointment_id: int, calendar: Calendar) -> None: ...
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: uses
+      desc: "שימוש - Dependency: מתקבל רק כפרמטר של מתודה"
+  items:
+    - label: "FakeSender ו-SmsSender"
+      answer: is-a
+      why: "המימוש המזויף יורש מההפשטה, ולכן אפשר להעביר אותו בכל מקום שמצפה ל-`SmsSender`."
+    - label: "TwilioSender ו-SmsSender"
+      answer: is-a
+    - label: "AppointmentService ו-SmsSender"
+      answer: has-a
+      why: "השולח מוזרק בבנאי ונשמר ב-`self.sender` לכל חיי השירות."
+    - label: "AppointmentService ו-Calendar"
+      answer: uses
+      why: "היומן מגיע רק כפרמטר של `cancel` ולא נשמר באובייקט."
+  explanation: "תלות שמוזרקת בבנאי ונשמרת הופכת ליחס has-a. תלות שמגיעה רק לקריאה אחת היא יחס שימוש (uses). המימוש האמיתי והמזויף יורשים מאותה הפשטה, והשירות לא יודע איזה מהם קיבל."
+
+- id: py.software-design.dependency-injection.011
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת תזכורות התורים בקובץ המתאים, כולל קובץ הבדיקות.
+  requirement: "מרפאה שולחת אימייל תזכורת יום לפני כל תור. השירות מקבל את שולח האימיילים ואת מקור הזמן מבחוץ, כדי שהבדיקות ירוצו בלי לשלוח אימייל אמיתי ובלי תלות בתאריך של היום."
+  targets:
+    - id: email_notifier.py
+      desc: שליחת אימייל אמיתית דרך SMTP
+    - id: reminder_service.py
+      desc: הלוגיקה של התזכורות
+    - id: main.py
+      desc: יצירת המימושים האמיתיים וחיבורם
+    - id: test_reminder_service.py
+      desc: בדיקות pytest עם מימושים מזויפים
+  items:
+    - label: "class EmailNotifier: def __init__(self, smtp_host: str, port: int)"
+      answer: email_notifier.py
+      why: "המימוש האמיתי, היחיד שמכיר את SMTP."
+    - label: "class ReminderService: def __init__(self, notifier: Notifier, now: Callable[[], datetime])"
+      answer: reminder_service.py
+      why: "השירות מקבל את שתי התלויות שלו מבחוץ."
+    - label: "ReminderService.send_due_reminders(self, appointments: list[Appointment]) -> int"
+      answer: reminder_service.py
+      why: "הכלל של מי מקבל תזכורת היום."
+    - label: "def build_reminder_service() -> ReminderService"
+      answer: main.py
+      why: "כאן יוצרים `EmailNotifier` אמיתי ומעבירים את `datetime.now`."
+    - label: "class FakeNotifier: def send(self, to: str, text: str) -> None"
+      answer: test_reminder_service.py
+      why: "מימוש מזויף שרק רושם לרשימה את מה שנשלח. הוא קיים רק בשביל הבדיקות."
+    - label: "def test_reminder_sent_one_day_before() -> None"
+      answer: test_reminder_service.py
+      why: "בדיקה שמזריקה `FakeNotifier` ושעון קבוע."
+  explanation: "השירות לא יוצר אף תלות בעצמו. `main.py` מחבר את המימושים האמיתיים, והבדיקה מחברת מזויפים. זו בדיוק התועלת של הזרקת תלויות: אותו קוד רץ בייצור ובבדיקות, ורק ההרכבה שונה."
+
+- id: py.software-design.dependency-injection.012
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של שירות העלאת הקבצים בקובץ המתאים.
+  requirement: "שירות להעלאת קבצים: בפיתוח הקבצים נשמרים בתיקייה מקומית, ובייצור באחסון ענן S3. הבחירה ביניהם וגודל הקובץ המרבי נקבעים במשתני סביבה, ושירות ההעלאה לא יודע איזה אחסון קיבל."
+  targets:
+    - id: config.py
+      desc: קריאת ההגדרות ממשתני סביבה
+    - id: storage.py
+      desc: מימושי האחסון
+    - id: upload_service.py
+      desc: כללי ההעלאה
+    - id: app.py
+      desc: "שורש ההרכבה (Composition Root): בוחר מימושים ומחבר אותם"
+  items:
+    - label: "def load_settings() -> Settings"
+      answer: config.py
+      why: "רק כאן קוראים את `os.environ`."
+    - label: "class LocalStorage: def __init__(self, root: Path)"
+      answer: storage.py
+      why: "מימוש אחסון לפיתוח."
+    - label: "class S3Storage: def __init__(self, bucket: str, region: str)"
+      answer: storage.py
+      why: "מימוש אחסון לייצור."
+    - label: "class UploadService: def __init__(self, storage: Storage, max_mb: int)"
+      answer: upload_service.py
+      why: "השירות מקבל אחסון מופשט ומספר, ולא את כל ההגדרות."
+    - label: "UploadService.upload(self, name: str, data: bytes) -> str"
+      answer: upload_service.py
+      why: "בודקת את הגודל ושומרת דרך האחסון שהוזרק."
+    - label: "def create_upload_service(settings: Settings) -> UploadService"
+      answer: app.py
+      why: "המקום היחיד שמחליט לפי ההגדרות אם ליצור `LocalStorage` או `S3Storage`."
+  explanation: "ההחלטה איזה מימוש להשתמש בו נמצאת במקום אחד, שורש ההרכבה, ולא מפוזרת בשירותים. `UploadService` מקבל רק את מה שהוא צריך, `Storage` ו-`max_mb`, ולא את `Settings` כולו. כך קל לבדוק אותו עם כל אחסון ועם כל גבול."
+
+- id: py.software-design.dependency-injection.013
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת הציונים, שבה השירות תלוי רק בממשק של המאגר.
+  requirement: "מערכת מחשבת ממוצע לכל תלמיד ומוצאת את המצטיינים. בייצור הציונים נמצאים ב-SQLite, ובבדיקות ובהדגמות משתמשים במאגר בזיכרון. השירות לא מייבא אף מימוש."
+  targets:
+    - id: ports.py
+      desc: "הגדרות Protocol בלבד, בלי מימוש"
+    - id: sql_grade_repository.py
+      desc: מימוש מול SQLite
+    - id: in_memory_grade_repository.py
+      desc: מימוש בזיכרון, לבדיקות ולהדגמות
+    - id: grade_service.py
+      desc: חישובי הציונים
+  items:
+    - label: "class GradeRepository(Protocol): def grades_of(self, student_id: int) -> list[int]"
+      answer: ports.py
+      why: "החוזה שהשירות תלוי בו ושני המימושים מקיימים."
+    - label: "class SqlGradeRepository: def __init__(self, conn: sqlite3.Connection)"
+      answer: sql_grade_repository.py
+      why: "רק המימוש הזה מכיר את `sqlite3`."
+    - label: "class InMemoryGradeRepository: def __init__(self, data: dict[int, list[int]])"
+      answer: in_memory_grade_repository.py
+      why: "מימוש שמקבל מילון מוכן, וכך בדיקה בונה את הנתונים שלה בשורה אחת."
+    - label: "def average(repo: GradeRepository, student_id: int) -> float"
+      answer: grade_service.py
+      why: "לוגיקה שמקבלת את המאגר כפרמטר, לפי הטיפוס המופשט."
+    - label: "def honor_students(repo: GradeRepository, ids: list[int], min_avg: float) -> list[int]"
+      answer: grade_service.py
+      why: "עוד חישוב שתלוי רק בממשק."
+  explanation: "`Protocol` מגדיר חוזה מבני: כל מחלקה עם `grades_of` מתאימה, גם בלי לרשת. השירות מייבא רק את `ports.py`, ולכן הוא צמוד בצורה חלשה (Loose Coupling) למימושים. אפשר להוסיף מאגר שלישי בלי לגעת בו."
+
+- id: py.software-design.dependency-injection.014
+  type: single
+  difficulty: 1
+  prompt: "קשה לבדוק את הפונקציה, כי התוצאה תלויה ביום שבו מריצים את הבדיקה. מה השינוי הנכון?"
+  code: |
+    from datetime import date
+
+    def is_weekend() -> bool:
+        return date.today().weekday() >= 5
+  options:
+    - "לשנות את החתימה ל-`def is_weekend(today: date) -> bool` ולהשתמש ב-`today.weekday()`"
+    - "להריץ את הבדיקה רק בסופי שבוע"
+    - "לעטוף את הקריאה ל-`date.today()` ב-`try` ו-`except`"
+    - "להעביר את הפונקציה למחלקה כמתודה סטטית"
+  answer: 0
+  explanation: "התלות הנסתרת היא השעון של המחשב. כשהתאריך מוזרק כפרמטר, הבדיקה מעבירה `date(2025, 1, 4)`, שהוא שבת, ומקבלת תוצאה קבועה. הקוד האמיתי קורא `is_weekend(date.today())`."
+  optionExplanations:
+    "1": "בדיקה שעוברת רק בחלק מהימים היא בדיקה לא אמינה, ואת המקרה ההפוך היא לא תבדוק אף פעם."
+    "2": "`date.today()` לא נכשלת. הבעיה היא שהתוצאה משתנה, לא שיש חריגה."
+    "3": "מתודה סטטית עדיין קוראת לאותו `date.today()`."
+
+- id: py.software-design.dependency-injection.015
+  type: single
+  difficulty: 1
+  prompt: "בפרויקט יש `SqlOrderRepository`, `SmtpNotifier` ו-`OrderService`, שמקבל את שניהם בבנאי. איפה נכון ליצור את המימושים האמיתיים ולחבר ביניהם?"
+  options:
+    - "בנקודת הכניסה של התוכנית, למשל `main.py`"
+    - "בתוך הבנאי של `OrderService`"
+    - "כמשתנים גלובליים בראש `order_service.py`"
+    - "בתוך כל מתודה של `OrderService` שצריכה אותם"
+  answer: 0
+  explanation: "המקום שבו יוצרים את כל המימושים ומחברים אותם נקרא שורש ההרכבה (Composition Root), ובדרך כלל זו נקודת הכניסה. כך רק קובץ אחד יודע אילו מימושים בשימוש, וכל השאר מקבלים את התלויות מבחוץ."
+  optionExplanations:
+    "1": "אם השירות יוצר את התלויות בעצמו, זו כבר לא הזרקה, ואי אפשר להחליף אותן בבדיקות."
+    "2": "משתנים גלובליים בקובץ השירות קושרים אותו למימושים, והם נוצרים כבר ברגע הייבוא."
+    "3": "יצירה בכל מתודה קושרת את השירות למימושים, ובנוסף יוצרת חיבור חדש בכל קריאה."
+
+- id: py.software-design.dependency-injection.016
+  type: single
+  difficulty: 3
+  prompt: "איזו חתימה של הבנאי של `UserService` יוצרת את הצימוד החלש ביותר למאגר המשתמשים?"
+  options:
+    - "`def __init__(self, repo: UserRepository)`, כאשר `UserRepository` הוא `Protocol` עם המתודות שהשירות צריך"
+    - "`def __init__(self, repo: SqlUserRepository)`"
+    - "`def __init__(self)`, ובתוכו `self.repo = SqlUserRepository()`"
+    - "`def __init__(self, db_path: str)`, ובתוכו `self.repo = SqlUserRepository(db_path)`"
+  answer: 0
+  explanation: "השירות תלוי רק בחוזה, ולכן כל מימוש מתאים: SQL, זיכרון או מזויף. זו הזרקה יחד עם תלות בהפשטה, השילוב שנותן צימוד חלש (Loose Coupling)."
+  optionExplanations:
+    "1": "יש כאן הזרקה, אבל הטיפוס הוא מימוש מסוים. זה מצהיר שהשירות צריך דווקא SQL, וכלי בדיקת טיפוסים יתריע על מאגר בזיכרון."
+    "2": "השירות יוצר מימוש מסוים בעצמו. זה הצימוד החזק ביותר."
+    "3": "מזריקים רק את הנתיב, אבל השירות עדיין בוחר ויוצר את המימוש בעצמו."

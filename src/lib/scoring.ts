@@ -60,7 +60,7 @@ export function level(recent: number[] | undefined): Level {
 }
 
 export const LEVEL_LABEL: Record<Level, string> = {
-  none: 'לא התחלת',
+  none: 'לא התחלתם',
   started: 'אין מספיק נתונים',
   weak: 'חלש',
   progress: 'בדרך',

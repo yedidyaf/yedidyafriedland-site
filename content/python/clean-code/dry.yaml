@@ -1,0 +1,386 @@
+- id: py.clean-code.dry.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def register(email, password):
+        if "@" not in email or email.startswith("@"):
+            raise ValueError("invalid email")
+        save_user(email, password)
+
+
+    def change_email(user, email):
+        if "@" not in email or email.startswith("@"):
+            raise ValueError("invalid email")
+        user.email = email
+  options:
+    - "קוד מת - Dead Code"
+    - "שכפול קוד - Duplicated Code"
+    - "מתודה ארוכה - Long Method"
+    - "דגל בוליאני - Flag Argument"
+  answer: 1
+  explanation: "כלל האימות של מייל כתוב פעמיים. כשהכלל ישתנה, צריך לזכור לעדכן את שני המקומות, ומקום שנשכח הוא באג. חילוץ פונקציה (Extract Function) בשם `validate_email(email)` שומר את הכלל במקום אחד, ושתי הפונקציות קוראות לה."
+  optionExplanations:
+    "0": "כל השורות רצות ומשפיעות. אין כאן קוד שלא נגיע אליו."
+    "2": "כל פונקציה קצרה. הבעיה היא שהן חוזרות על אותו כלל."
+    "3": "אין פרמטר בוליאני שמחליף את ההתנהגות של פונקציה."
+
+- id: py.clean-code.dry.002
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה של הדפסת המכירות הרבעוניות נקייה יותר?
+  options:
+    - |
+      sales = [120, 80, 95, 140]
+      print(f"Q1: {sales[0]}")
+      print(f"Q2: {sales[1]}")
+      print(f"Q3: {sales[2]}")
+      print(f"Q4: {sales[3]}")
+    - |
+      sales = [120, 80, 95, 140]
+      for quarter, amount in enumerate(sales, start=1):
+          print(f"Q{quarter}: {amount}")
+  answer: 1
+  explanation: "ארבע שורות שנבדלות רק במספר הן שכפול שלולאה מבטלת. `enumerate` עם `start=1` נותן גם את מספר הרבעון וגם את הסכום, ושינוי בפורמט ההדפסה נעשה במקום אחד."
+  optionExplanations:
+    "0": "אותה שורה כתובה ארבע פעמים. שינוי בפורמט מחייב ארבעה תיקונים, וקל לטעות באחד האינדקסים."
+
+- id: py.clean-code.dry.003
+  type: single
+  difficulty: 1
+  prompt: מה הסכנה העיקרית בקוד משוכפל?
+  options:
+    - "התוכנית רצה לאט יותר"
+    - "כשהכלל משתנה, צריך לזכור לעדכן כל עותק, ועותק שנשכח יוצר באג"
+    - "פייתון מציג אזהרה כשאותו קוד מופיע פעמיים"
+    - "הקובץ גדל ולכן לוקח לו יותר זמן להיטען"
+  answer: 1
+  explanation: "הבעיה בשכפול היא תחזוקה: אותו ידע חי בכמה מקומות, ובמוקדם או במאוחר אחד העותקים מתעדכן והאחר לא. זה הרעיון של DRY (Don't Repeat Yourself): לכל ידע יש מקום אחד בקוד."
+  optionExplanations:
+    "0": "מהירות הריצה לא תלויה בכך שאותו קוד כתוב פעמיים."
+    "2": "פייתון לא בודק שכפול קוד ולא מתריע עליו."
+    "3": "ההבדל בזמן הטעינה זניח. הנזק האמיתי הוא בתחזוקה."
+
+- id: py.clean-code.dry.004
+  type: single
+  difficulty: 1
+  prompt: איזו פונקציה הכי מתאימה לחילוץ השכפול?
+  code: |
+    print("=" * 30)
+    print("Monthly Report")
+    print("=" * 30)
+    print_sales(sales)
+    print("=" * 30)
+    print("Summary")
+    print("=" * 30)
+    print_summary(sales)
+  options:
+    - "`print_line()` שמדפיסה רק את הקו"
+    - "`print_report_and_summary()` שמכילה את כל שמונה השורות כמו שהן"
+    - "`print_stuff(a, b, c)` שמקבלת שלוש מחרוזות להדפסה"
+    - "`print_title(title)` שמדפיסה קו, את הכותרת וקו נוסף"
+  answer: 3
+  explanation: "הדבר שחוזר על עצמו הוא תבנית שלמה: קו, כותרת, קו. `print_title(title)` לוכדת את כל התבנית, והחלק שמשתנה, הכותרת, הופך לפרמטר. כך הקוד נקרא `print_title(\"Summary\")`."
+  optionExplanations:
+    "0": "`print_line` מקצרת כל שורה, אבל התבנית של קו, כותרת וקו עדיין כתובה פעמיים."
+    "1": "העברת הקוד לפונקציה אחרת לא מבטלת את השכפול שבתוכו."
+    "2": "שם כללי ופרמטרים בלי משמעות לא מסבירים מה הפונקציה עושה."
+
+- id: py.clean-code.dry.005
+  type: truefalse
+  difficulty: 2
+  prompt: עקרון DRY פירושו שאסור שיופיעו בקוד שתי שורות זהות.
+  answer: false
+  explanation: "DRY עוסק בידע, לא בטקסט: כל כלל או החלטה צריכים להיות מוגדרים במקום אחד. שתי שורות זהות שמייצגות כללים שונים, למשל `return age >= 18` לגיל הצבעה ולגיל נהיגה, אינן שכפול של ידע, ואיחוד שלהן רק יקשור ביניהן."
+
+- id: py.clean-code.dry.006
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה של דוח הטמפרטורות נקייה יותר?
+  options:
+    - |
+      def to_fahrenheit(celsius):
+          return celsius * 9 / 5 + 32
+
+
+      def print_temperature_report(readings):
+          print(f"High: {to_fahrenheit(max(readings)):.1f}F")
+          print(f"Low: {to_fahrenheit(min(readings)):.1f}F")
+    - |
+      def print_temperature_report(readings):
+          high = max(readings)
+          low = min(readings)
+          print(f"High: {high * 9 / 5 + 32:.1f}F")
+          print(f"Low: {low * 9 / 5 + 32:.1f}F")
+  answer: 0
+  explanation: "נוסחת ההמרה היא ידע אחד, ולכן כדאי שתהיה כתובה פעם אחת. `to_fahrenheit` נותנת לה שם, מאפשרת לבדוק אותה לבד, ומונעת מצב שבו מתקנים טעות בנוסחה רק באחת השורות."
+  optionExplanations:
+    "1": "הנוסחה `* 9 / 5 + 32` כתובה פעמיים, בלי שם שמסביר שזו המרה לפרנהייט."
+
+- id: py.clean-code.dry.007
+  type: single
+  difficulty: 2
+  prompt: "מפתחים רבים פועלים לפי «כלל השלוש» (Rule of Three). מה הוא אומר?"
+  options:
+    - "לפונקציה לא יהיו יותר משלושה פרמטרים"
+    - "בפעם השלישית שאותו קוד מופיע, זה הזמן לחלץ אותו להפשטה משותפת"
+    - "כל פונקציה צריכה להיקרא לפחות שלוש פעמים, אחרת עדיף לכתוב את הקוד שלה ישירות"
+    - "אסור לקנן יותר משלוש רמות של תנאים"
+  answer: 1
+  explanation: "שכפול ראשון עוד לא מלמד הרבה: קשה לדעת מה באמת משותף. בפעם השלישית התבנית ברורה, ואפשר לבנות הפשטה (Abstraction) נכונה. הכלל מגן מפני הפשטה מוקדמת (Premature Abstraction), שלעיתים מזיקה יותר משכפול קטן."
+  optionExplanations:
+    "0": "מספר קטן של פרמטרים הוא עיקרון אחר, וכלל השלוש לא עוסק בו."
+    "2": "פונקציה שנקראת פעם אחת מוצדקת לגמרי אם היא נותנת שם לרעיון."
+    "3": "הגבלת קינון היא עיקרון אחר, שלא קשור לשכפול."
+
+- id: py.clean-code.dry.008
+  type: single
+  difficulty: 2
+  prompt: מה השיפור המתאים ביותר?
+  code: |
+    def is_valid_password(password):
+        return len(password) >= 8
+
+
+    def password_hint():
+        return "Password must be at least 8 characters"
+  options:
+    - "להגדיר קבוע `MIN_PASSWORD_LENGTH = 8` ולהשתמש בו בשתי הפונקציות, כך שהכלל מוגדר במקום אחד"
+    - "לאחד את שתי הפונקציות לפונקציה אחת שמחזירה גם ערך בוליאני וגם הודעה"
+    - "אין מה לשפר: אלה פונקציות שונות, ולכן אין כאן שכפול"
+    - "להוסיף מעל `password_hint` הערה: `# keep in sync with is_valid_password`"
+  answer: 0
+  explanation: "המספר 8 הוא אותו כלל עסקי שמופיע בשני מקומות. אם האורך המינימלי ישתנה ל-10 ויעדכנו רק את הבדיקה, ההודעה תשקר למשתמש. קבוע אחד, ו-f-string בהודעה, הופכים את הכלל למקור אמת יחיד (Single Source of Truth)."
+  optionExplanations:
+    "1": "פונקציה שמחזירה שני דברים שונים עושה שני דברים. הבעיה היא הכלל המשוכפל, לא מספר הפונקציות."
+    "2": "הקוד שונה, אבל הידע, האורך המינימלי, משוכפל. זה בדיוק מה ש-DRY מזהיר מפניו."
+    "3": "הערה מסתמכת על זיכרון של מפתח. קבוע משותף מבטיח את ההתאמה בלי לזכור."
+
+- id: py.clean-code.dry.009
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Rectangle:
+        def __init__(self, width, height):
+            self.width = width
+            self.height = height
+
+        def describe(self):
+            return f"{self.width}x{self.height}, area {self.width * self.height}"
+
+        def is_bigger_than(self, other):
+            return self.width * self.height > other.width * other.height
+  options:
+    - "קנאת תכונות - Feature Envy"
+    - "מחלקת אל - God Class"
+    - "שכפול קוד - Duplicated Code"
+    - "מתודה ארוכה - Long Method"
+  answer: 2
+  explanation: "החישוב של שטח, רוחב כפול גובה, כתוב שלוש פעמים. מתודה `area()` נותנת לו שם ומקום אחד, ואז `is_bigger_than` נקראת `self.area() > other.area()`."
+  optionExplanations:
+    "0": "`other` הוא מופע של אותה מחלקה, ולכן שימוש בנתונים שלו אינו קנאה במחלקה אחרת."
+    "1": "למחלקה יש אחריות אחת בלבד: ייצוג של מלבן."
+    "3": "כל מתודה היא שורה אחת."
+
+- id: py.clean-code.dry.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה מקבלת רשימה של נקודות `(x, y)` ואמורה להחזיר את גבולות המלבן החוסם: `min_x, min_y, max_x, max_y`. באיזו שורה הבאג?"
+  code: |
+    def bounding_box(points):
+        min_x = min(p[0] for p in points)
+        max_x = max(p[0] for p in points)
+        min_y = min(p[1] for p in points)
+        max_y = max(p[0] for p in points)
+        return min_x, min_y, max_x, max_y
+  answer: 5
+  explanation: "בשורה 5 נשאר `p[0]` מהשורה שהועתקה, וצריך `p[1]`. זה באג קלאסי של העתק־הדבק (Copy-Paste): שורות כמעט זהות מעייפות את העין, וההבדל היחיד בהן הוא בדיוק המקום שבו טועים. שמות ברורים, כמו `xs = [x for x, _ in points]`, מקטינים את הסיכון."
+  fixed: |
+    def bounding_box(points):
+        min_x = min(p[0] for p in points)
+        max_x = max(p[0] for p in points)
+        min_y = min(p[1] for p in points)
+        max_y = max(p[1] for p in points)
+        return min_x, min_y, max_x, max_y
+
+- id: py.clean-code.dry.011
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה של מחירון המשלוחים נקייה יותר?
+  options:
+    - |
+      def shipping_price(method):
+          if method == "standard":
+              return 20
+          elif method == "express":
+              return 45
+          elif method == "pickup":
+              return 0
+          return None
+    - |
+      SHIPPING_PRICES = {"standard": 20, "express": 45, "pickup": 0}
+
+
+      def shipping_price(method):
+          return SHIPPING_PRICES.get(method)
+  answer: 1
+  explanation: "שרשרת `if` שבה כל ענף הוא «אם השיטה היא X, החזר Y» היא שכפול של מבנה, והנתונים מוסתרים בתוך הלוגיקה. מילון מפריד נתונים מקוד: הוספת שיטת משלוח היא שורה בטבלה, ו-`get` מחזיר `None` לשיטה לא מוכרת, בדיוק כמו הגרסה הארוכה."
+  optionExplanations:
+    "0": "אותו דפוס `if`/`return` חוזר שלוש פעמים, וכל שיטה חדשה מוסיפה עוד שתי שורות של לוגיקה."
+
+- id: py.clean-code.dry.012
+  type: bug
+  difficulty: 2
+  prompt: "הלולאה הועתקה לפונקציה כדי שאפשר יהיה לחשב סכום של כל רשימה. הפונקציה אמורה להחזיר את סכום הרשימה שהיא מקבלת. באיזו שורה הבאג?"
+  code: |
+    cart = [5, 40]
+    wishlist = [120, 35]
+
+
+    def total(prices):
+        result = 0
+        for price in cart:
+            result += price
+        return result
+
+
+    print(total(cart))
+    print(total(wishlist))
+  answer: 7
+  explanation: "בשורה 7 הלולאה עדיין עוברת על `cart`, השם מהקוד המקורי, במקום על הפרמטר `prices`. לכן `total(wishlist)` מחזיר `45`. כשמחלצים פונקציה, צריך להחליף כל שימוש במשתנה חיצוני בפרמטר. פונקציה שתלויה רק בפרמטרים שלה גם קלה יותר לבדיקה."
+  fixed: |
+    cart = [5, 40]
+    wishlist = [120, 35]
+
+
+    def total(prices):
+        result = 0
+        for price in prices:
+            result += price
+        return result
+
+
+    print(total(cart))
+    print(total(wishlist))
+
+- id: py.clean-code.dry.013
+  type: single
+  difficulty: 3
+  prompt: "מפתח מציע להחליף את שתי הפונקציות בפונקציה אחת, `is_over_18(age)`, כי הקוד שלהן זהה. מה נכון?"
+  code: |
+    def can_vote(age):
+        return age >= 18
+
+
+    def can_drive(age):
+        return age >= 18
+  options:
+    - "חובה לאחד, כי DRY אוסר על שתי שורות זהות"
+    - "כדאי לאחד, כי פונקציה אחת רצה מהר יותר משתיים"
+    - "כדאי לאחד, ולהוסיף פרמטר `for_voting` שמבדיל בין המקרים כשיהיה צורך"
+    - "עדיף לא לאחד: אלה שני כללים שונים שבמקרה זהים היום. אם גיל הנהיגה ישתנה, האיחוד יכפה את השינוי גם על גיל ההצבעה"
+  answer: 3
+  explanation: "זהו שכפול מקרי (Accidental Duplication): הקוד זהה, אבל הידע שונה, וכל כלל ישתנה מסיבה אחרת. איחוד היה קושר שני כללים שאינם קשורים. השיפור הנכון הוא לתת שם לכל כלל בנפרד, למשל `VOTING_AGE` ו-`DRIVING_AGE`, גם אם שניהם שווים היום 18."
+  optionExplanations:
+    "0": "DRY עוסק בשכפול של ידע, לא של טקסט. כאן יש שני כללים נפרדים."
+    "1": "ההבדל בביצועים זניח, ואינו שיקול בהחלטה על מבנה הקוד."
+    "2": "דגל בוליאני שמחליף התנהגות הוא ריח קוד בפני עצמו, וזו הפשטה שגויה שתסתבך עם כל כלל חדש."
+
+- id: py.clean-code.dry.014
+  type: single
+  difficulty: 3
+  prompt: "הפונקציה נכתבה כדי «לא לשכפל קוד» בין ייצוא שורה ל-CSV לבין ייצוא שורה ל-HTML. מה הבעיה העיקרית?"
+  code: |
+    def format_row(row, for_csv, for_html, bold_first, sep):
+        if for_csv:
+            return sep.join(row)
+        if for_html:
+            cells = []
+            for i, cell in enumerate(row):
+                if bold_first and i == 0:
+                    cells.append(f"<td><b>{cell}</b></td>")
+                else:
+                    cells.append(f"<td>{cell}</td>")
+            return "<tr>" + "".join(cells) + "</tr>"
+  options:
+    - "הפונקציה צריכה לתמוך גם ב-JSON כדי שתהיה כללית באמת"
+    - "זו הפשטה שגויה: שני מקרים שכמעט אין ביניהם קוד משותף נדחסו לפונקציה אחת עם דגלים. עדיף `format_csv_row` ו-`format_html_row` נפרדות"
+    - "הבעיה היחידה היא השם `row`, שכללי מדי"
+    - "צריך לאחד את `for_csv` ו-`for_html` לפרמטר אחד בשם `mode`, וכך הבעיה נפתרת"
+  answer: 1
+  explanation: "לשני הענפים אין כמעט קוד משותף, ובכל זאת הם חולקים חתימה אחת: `sep` חסר משמעות ב-HTML, ו-`bold_first` חסר משמעות ב-CSV. זו הפשטה שגויה (Wrong Abstraction), והיא יקרה יותר משכפול: כל מקרה חדש מוסיף עוד דגל. שתי פונקציות פשוטות, כל אחת עם הפרמטרים שלה, ברורות יותר."
+  optionExplanations:
+    "0": "הוספת מקרה שלישי תוסיף עוד דגל ועוד ענף, ותחמיר את הבעיה."
+    "2": "`row` הוא שם סביר לשורה בטבלה. הבעיה היא במבנה של הפונקציה."
+    "3": "פרמטר `mode` מסתיר את אותה בעיה: עדיין שתי פונקציות שונות בגוף אחד, עם פרמטרים שרלוונטיים רק לחלק מהמצבים."
+
+- id: py.clean-code.dry.015
+  type: cleaner
+  difficulty: 3
+  prompt: שתי הגרסאות מאמתות שם משתמש וסיסמה. איזו נקייה יותר?
+  options:
+    - |
+      def validate(value, kind):
+          if kind == "username" and not value:
+              raise ValueError("username is required")
+          if kind == "password" and len(value) < 8:
+              raise ValueError("password is too short")
+
+
+      validate("dana", "username")
+      validate("secret123", "password")
+    - |
+      def validate_username(name):
+          if not name:
+              raise ValueError("username is required")
+
+
+      def validate_password(password):
+          if len(password) < 8:
+              raise ValueError("password is too short")
+
+
+      validate_username("dana")
+      validate_password("secret123")
+  answer: 1
+  explanation: "שתי פונקציות האימות דומות רק במבנה (`if` ואז `raise`), אבל הן מייצגות כללים שונים שישתנו מסיבות שונות. איחוד שלהן תחת הפרמטר `kind` לא חוסך ידע משוכפל, אלא יוצר פונקציה שכל קריאה אליה מפעילה רק חצי ממנה. שכפול קטן של מבנה עדיף על הפשטה מוקדמת (Premature Abstraction)."
+  optionExplanations:
+    "0": "הפרמטר `kind` הוא דגל במסווה. כל סוג חדש יוסיף ענף, וטעות כתיב כמו `\"pasword\"` תעבור בלי שום אימות."
+
+- id: py.clean-code.dry.016
+  type: bug
+  difficulty: 3
+  prompt: "החנות נותנת משלוח חינם מ-200 ש\"ח ומעלה, כולל 200. ההודעה ללקוח אמורה להתאים בדיוק לעלות המשלוח בפועל. באיזו שורה הבאג?"
+  code: |
+    FREE_SHIPPING_MIN = 200
+    SHIPPING_FEE = 25
+
+
+    def shipping_cost(total):
+        if total >= FREE_SHIPPING_MIN:
+            return 0
+        return SHIPPING_FEE
+
+
+    def shipping_message(total):
+        if total > FREE_SHIPPING_MIN:
+            return "Free shipping!"
+        return "Add more items for free shipping"
+  answer: 12
+  explanation: "בשורה 12 נכתב `>` במקום `>=`, ולכן לקוח שקנה ב-200 בדיוק משלם 0 אבל רואה שעליו להוסיף פריטים. הקבוע משותף, אבל הכלל עצמו, «מאיזה סכום המשלוח חינם», משוכפל בשתי פונקציות, ואחד העותקים סטה. התיקון הנקי באמת הוא שההודעה תשאל את מקור האמת: `if shipping_cost(total) == 0:`."
+  fixed: |
+    FREE_SHIPPING_MIN = 200
+    SHIPPING_FEE = 25
+
+
+    def shipping_cost(total):
+        if total >= FREE_SHIPPING_MIN:
+            return 0
+        return SHIPPING_FEE
+
+
+    def shipping_message(total):
+        if total >= FREE_SHIPPING_MIN:
+            return "Free shipping!"
+        return "Add more items for free shipping"

@@ -1,0 +1,273 @@
+- id: py.advanced.type-hints.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def double(x: int) -> int:
+        return x * 2
+
+    print(double("ab"))
+  options: ["abab", "TypeError", "None", "ab2"]
+  answer: 0
+  explanation: "רמזי טיפוס (Type Hints) הם תיעוד בלבד: פייתון לא בודקת אותם בזמן ריצה. הפונקציה מקבלת מחרוזת, ו-`\"ab\" * 2` הוא שכפול מחרוזת, ולכן מודפס `abab`. בודק טיפוסים סטטי כמו mypy היה מסמן את הקריאה כשגויה עוד לפני הריצה."
+  optionExplanations:
+    "1": "פייתון לא זורקת שגיאה בגלל רמז טיפוס. `TypeError` נזרקת רק אם הפעולה עצמה לא חוקית, ו-`\"ab\" * 2` חוקית."
+    "2": "הפונקציה מחזירה את `x * 2`, ולכן יש ערך החזרה."
+    "3": "כפל מחרוזת במספר שלם משכפל אותה. הוא לא מחבר את הספרה למחרוזת."
+
+- id: py.advanced.type-hints.002
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def greet(name: str, times: int = 1) -> str:
+        return name * times
+
+    print(greet.__annotations__)
+  options:
+    - "{'name': <class 'str'>, 'times': <class 'int'>, 'return': <class 'str'>}"
+    - "{'name': <class 'str'>, 'times': <class 'int'>}"
+    - "{'return': <class 'str'>, 'name': <class 'str'>, 'times': <class 'int'>}"
+    - "{'name': 'str', 'times': 'int', 'return': 'str'}"
+  answer: 0
+  explanation: "הדבר היחיד שפייתון עושה עם רמזי טיפוס בזמן ריצה הוא לשמור אותם במילון `__annotations__` של הפונקציה. הפרמטרים נשמרים לפי הסדר, והטיפוס המוחזר נשמר תחת המפתח `'return'`. הערכים הם אובייקטי הטיפוס עצמם, לא מחרוזות."
+  optionExplanations:
+    "1": "גם רמז ערך ההחזרה (`-> str`) נשמר, תחת המפתח `'return'`."
+    "2": "המילון שומר על סדר ההגדרה: קודם הפרמטרים, ורק בסוף `'return'`."
+    "3": "הערכים הם המחלקות עצמן (`<class 'str'>`), כי הרמזים מחושבים כביטויים רגילים."
+
+- id: py.advanced.type-hints.003
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    count: int
+    print("ok")
+    print(count)
+  options: ["ok\nNameError", "ok\n0", "ok\nNone", "NameError"]
+  answer: 0
+  explanation: "`count: int` בלי `=` הוא הערת טיפוס (Annotation) בלבד: הוא מודיע לכלים מה הטיפוס המתוכנן, אבל לא יוצר משתנה ולא נותן לו ערך. לכן `print(count)` זורק `NameError`. בפייתון אין ערך ברירת מחדל לפי טיפוס."
+  optionExplanations:
+    "1": "פייתון לא מאתחלת משתנים לפי הטיפוס שלהם, כמו בשפות אחרות. המשתנה פשוט לא קיים."
+    "2": "גם `None` הוא ערך שצריך להציב במפורש: `count: int | None = None`."
+    "3": "השורה `count: int` חוקית ולא זורקת שגיאה, ולכן `ok` מודפס לפני הכישלון."
+
+- id: py.advanced.type-hints.004
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    age: int = "twenty"
+    print(age, type(age).__name__)
+  options: ["twenty str", "TypeError", "twenty int", "20 int"]
+  answer: 0
+  explanation: "רמז הטיפוס על משתנה לא ממיר את הערך ולא בודק אותו. `age` מצביע על מחרוזת, ולכן הטיפוס שלו בזמן ריצה הוא `str`. רק בודק טיפוסים סטטי יתריע שהערך לא תואם להצהרה."
+  optionExplanations:
+    "1": "ההשמה מתבצעת בלי שום בדיקה. פייתון לא אוכפת רמזי טיפוס."
+    "2": "`type` מחזיר את הטיפוס האמיתי של הערך, ולא את מה שנכתב ברמז."
+    "3": "רמז טיפוס לא ממיר ערכים. גם `int(\"twenty\")` לא היה מצליח."
+
+- id: py.advanced.type-hints.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from typing import Optional
+
+    def find(names: list[str], target: str) -> Optional[int]:
+        for i, name in enumerate(names):
+            if name == target:
+                return i
+        return None
+
+    print(find(["dan", "noa"], "noa"), find(["dan"], "eli"))
+  options: ["1 None", "1 -1", "noa None", "TypeError"]
+  answer: 0
+  explanation: "`Optional[int]` אומר שהפונקציה מחזירה `int` או `None`. כאן `\"noa\"` נמצא באינדקס `1`, ו-`\"eli\"` לא נמצא ולכן מוחזר `None`. הרמז מזהיר את הקורא: לפני שמשתמשים בתוצאה כמספר, צריך לבדוק אם היא `None`."
+  optionExplanations:
+    "1": "`-1` הוא מה ש-`str.find` מחזיר כשלא נמצאה התאמה. הפונקציה כאן מחזירה במפורש `None`."
+    "2": "הפונקציה מחזירה את האינדקס `i` מ-`enumerate`, ולא את השם עצמו."
+    "3": "החזרת `None` תואמת לרמז `Optional[int]`, וגם בלי זה פייתון לא הייתה זורקת שגיאה בגלל רמז."
+
+- id: py.advanced.type-hints.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    nums: list[int] = [1, 2]
+    nums.append("three")
+    print(isinstance(nums, list))
+    print(isinstance(nums, list[int]))
+  options: ["True\nTypeError", "True\nFalse", "True\nTrue", "TypeError"]
+  answer: 0
+  explanation: "הרמז `list[int]` לא מנע להכניס מחרוזת לרשימה. `isinstance(nums, list)` בודק את הטיפוס האמיתי ומחזיר `True`. אבל `list[int]` הוא כינוי גנרי (Generic Alias) לשימוש ברמזים בלבד, ו-`isinstance` לא יודע לבדוק את טיפוסי האיברים, ולכן הוא זורק `TypeError`."
+  optionExplanations:
+    "1": "`isinstance` לא עובר על האיברים כדי להחזיר `False`. הוא מסרב לקבל `list[int]` בכלל."
+    "2": "פייתון לא בודקת את טיפוסי האיברים ברשימה, ו-`isinstance` לא מקבל טיפוס גנרי עם פרמטרים."
+    "3": "`append` של מחרוזת עובד בלי שגיאה, והשורה הראשונה מדפיסה `True`."
+
+- id: py.advanced.type-hints.007
+  type: single
+  difficulty: 1
+  prompt: איזו חתימה אומרת נכון שהפונקציה מקבלת רשימה של מספרים שלמים ומחזירה מספר עשרוני?
+  options:
+    - "`def average(nums: list[int]) -> float:`"
+    - "`def average(nums: list(int)) -> float:`"
+    - "`def average(nums -> list[int]) : float:`"
+    - "`def average(list[int] nums) -> float:`"
+  answer: 0
+  explanation: "רמז לפרמטר נכתב אחרי שמו עם נקודתיים, ורמז לערך ההחזרה נכתב אחרי הסוגריים עם `->`. טיפוס האיברים ברשימה נכתב בסוגריים מרובעים: `list[int]`."
+  optionExplanations:
+    "1": "`list(int)` היא קריאה שמנסה לבנות רשימה מהמחלקה `int`, ונכשלת עם `TypeError`. טיפוס גנרי נכתב בסוגריים מרובעים."
+    "2": "החץ `->` מסמן רק את ערך ההחזרה. רמז לפרמטר נכתב עם נקודתיים."
+    "3": "הטיפוס לפני השם הוא תחביר של C# או Java. בפייתון השם בא קודם ואחריו `: type`."
+
+- id: py.advanced.type-hints.008
+  type: single
+  difficulty: 2
+  prompt: "מה המשמעות של רמז הטיפוס `Optional[str]`?"
+  options:
+    - "הערך הוא `str` או `None`, וזה שקול ל-`str | None`"
+    - "הפרמטר אופציונלי: מותר לא להעביר אותו בקריאה"
+    - "הערך הוא `str`, ואם הוא חסר הוא מוחלף במחרוזת ריקה"
+    - "הערך יכול להיות מכל טיפוס, ו-`str` הוא רק המלצה"
+  answer: 0
+  explanation: "`Optional[X]` הוא קיצור של `X | None`: הערך יכול להיות `None`. השם מטעה, כי הוא לא קובע אם חייבים להעביר את הפרמטר. מה שהופך פרמטר לכזה שאפשר לדלג עליו הוא ערך ברירת מחדל, למשל `name: Optional[str] = None`."
+  optionExplanations:
+    "1": "זו הטעות הנפוצה בגלל השם. פרמטר `x: Optional[str]` בלי ערך ברירת מחדל עדיין חובה בקריאה."
+    "2": "רמז טיפוס לא ממיר ולא משלים ערכים. `None` נשאר `None`."
+    "3": "לכל ערך כלשהו משתמשים ב-`Any`. `Optional[str]` מתיר רק `str` או `None`."
+
+- id: py.advanced.type-hints.009
+  type: single
+  difficulty: 2
+  prompt: "בקוד כתוב `total: int = \"5\"`. מי יגלה שהערך לא תואם לרמז הטיפוס?"
+  options:
+    - "בודק טיפוסים סטטי כמו mypy, שקורא את הקוד בלי להריץ אותו"
+    - "המפרש של פייתון, שיזרוק `TypeError` כשהשורה תרוץ"
+    - "המפרש של פייתון, שימיר את `\"5\"` למספר `5` כשהשורה תרוץ"
+    - "אף כלי לא יכול לגלות את זה, כי רמזי טיפוס הם הערות שנמחקות"
+  answer: 0
+  explanation: "פייתון שומרת את הרמזים ולא אוכפת אותם. את הבדיקה עושים כלים חיצוניים: בודק טיפוסים סטטי (Static Type Checker) כמו mypy או pyright, ועורכי קוד שמשתמשים בהם. הם מנתחים את הקוד לפני הריצה ומסמנים אי־התאמות."
+  optionExplanations:
+    "1": "השורה רצה בלי שגיאה, ו-`total` מצביע על המחרוזת `\"5\"`."
+    "2": "רמזי טיפוס לא ממירים ערכים. `total` נשאר מחרוזת."
+    "3": "הרמזים לא נמחקים: הם נשמרים בקוד ובמילון `__annotations__`, וכלים חיצוניים קוראים אותם."
+
+- id: py.advanced.type-hints.010
+  type: single
+  difficulty: 3
+  prompt: איזו פונקציה בודק טיפוסים כמו mypy יסמן כשגויה, ולמה?
+  code: |
+    def first_word(text: str | None) -> str:
+        if text is None:
+            return ""
+        return text.split()[0]
+
+    def shout(text: str | None) -> str:
+        return text.upper()
+  options:
+    - "`shout`, כי `text` יכול להיות `None`, ול-`None` אין מתודה `upper`"
+    - "`first_word`, כי היא מחזירה מחרוזת ריקה ולא `None`"
+    - "`first_word`, כי `split()[0]` מחזיר רשימה ולא `str`"
+    - "אף אחת, כי פייתון לא בודקת רמזי טיפוס"
+  answer: 0
+  explanation: "בודק הטיפוסים מתחשב בתנאים בקוד: ב-`first_word`, אחרי הבדיקה `if text is None`, הוא יודע ש-`text` הוא `str` (צמצום טיפוס, Type Narrowing). ב-`shout` אין בדיקה כזו, ולכן `text.upper()` עלול לרוץ על `None`. זו בדיוק הטעות ש-`Optional` נועד לחשוף."
+  optionExplanations:
+    "1": "הרמז `-> str` מבטיח מחרוזת, ו-`\"\"` היא מחרוזת. החזרת `None` הייתה דווקא שגיאה."
+    "2": "`split()` מחזיר רשימה, אבל `[0]` שולף ממנה איבר אחד, שהוא `str`."
+    "3": "נכון שפייתון לא בודקת, אבל השאלה היא על mypy, שכן בודק לפני הריצה."
+
+- id: py.advanced.type-hints.011
+  type: single
+  difficulty: 2
+  prompt: "מה מתאר רמז הטיפוס `dict[str, list[int]]`?"
+  options:
+    - "מילון שהמפתחות שלו מחרוזות והערכים שלו רשימות של מספרים שלמים"
+    - "מילון שהמפתחות שלו רשימות של מספרים שלמים והערכים שלו מחרוזות"
+    - "מילון עם שני מפתחות בדיוק: אחד מטיפוס `str` ואחד מטיפוס `list[int]`"
+    - "רשימה של מילונים, שבכל אחד מהם מפתח `str` וערך `int`"
+  answer: 0
+  explanation: "ב-`dict[K, V]` הפרמטר הראשון הוא טיפוס המפתחות והשני טיפוס הערכים. למשל `{\"dan\": [90, 85], \"noa\": [100]}` תואם לרמז. אפשר לקנן טיפוסים גנריים כדי לתאר מבנים מורכבים."
+  optionExplanations:
+    "1": "הסדר קבוע: קודם המפתח ואחר כך הערך. רשימה גם לא יכולה להיות מפתח, כי היא ניתנת לשינוי."
+    "2": "הרמז מתאר את הטיפוס של כל המפתחות ושל כל הערכים, ולא את מספרם."
+    "3": "הטיפוס החיצוני הוא `dict`, ולכן זה מילון אחד, והערכים בו הם רשימות."
+
+- id: py.advanced.type-hints.012
+  type: truefalse
+  difficulty: 1
+  prompt: "המפרש של פייתון לא בודק בזמן ריצה שהארגומנטים שמועברים לפונקציה תואמים לרמזי הטיפוס שלה."
+  answer: true
+  explanation: "רמזי טיפוס נשמרים ב-`__annotations__` אבל לא נאכפים. אפשר להעביר `\"abc\"` לפרמטר עם הרמז `int`, והקוד ירוץ עד שפעולה כלשהי תיכשל בגלל הטיפוס האמיתי. הבדיקה נעשית בכלים חיצוניים כמו mypy."
+
+- id: py.advanced.type-hints.013
+  type: truefalse
+  difficulty: 2
+  prompt: "בפונקציה שהחתימה שלה `def f() -> None:` והגוף שלה `return 5`, הקריאה `f()` מחזירה `None`, כי הרמז קובע את ערך ההחזרה."
+  answer: false
+  explanation: "הרמז לא משנה את מה שהפונקציה עושה. `f()` מחזירה `5`, כי זה מה שכתוב ב-`return`. רמז שלא תואם לקוד הוא תיעוד שגוי: בודק טיפוסים יסמן אותו, אבל המפרש מתעלם ממנו."
+
+- id: py.advanced.type-hints.014
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה מקבלת גילים כמחרוזות (למשל משורות של קובץ) ואמורה להחזיר את סכומם כמספר שלם. באיזו שורה הבאג?"
+  code: |
+    def total_age(ages: list[str]) -> int:
+        total = 0
+        for age in ages:
+            total += age
+        return total
+
+    print(total_age(["30", "25"]))
+  answer: 4
+  explanation: "הרמז `-> int` לא ממיר את הערכים. `0 + \"30\"` הוא חיבור של `int` ו-`str`, וזורק `TypeError`. צריך להמיר במפורש: `total += int(age)`. רמזי טיפוס מתעדים כוונה; את ההמרה עצמה הקוד צריך לעשות."
+  fixed: |
+    def total_age(ages: list[str]) -> int:
+        total = 0
+        for age in ages:
+            total += int(age)
+        return total
+
+    print(total_age(["30", "25"]))
+
+- id: py.advanced.type-hints.015
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר את השם באות ראשונה גדולה, או `anonymous` אם התקבל `None`. באיזו שורה הבאג?"
+  code: |
+    def label(name: str | None) -> str:
+        if name is not None:
+            return "anonymous"
+        return name.title()
+  answer: 2
+  explanation: "התנאי הפוך: הפונקציה מחזירה `anonymous` דווקא כשיש שם, וכשמתקבל `None` היא מגיעה ל-`None.title()` וזורקת `AttributeError`. הרמז `str | None` מזכיר לטפל ב-`None` קודם, אבל לא בודק שהטיפול נכון. התנאי הנכון: `if name is None`."
+  fixed: |
+    def label(name: str | None) -> str:
+        if name is None:
+            return "anonymous"
+        return name.title()
+
+- id: py.advanced.type-hints.016
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      def send_email(to: str, subject: str, body: str) -> bool:
+          ...
+    - |
+      def send_email(to, subject, body):
+          # to: str, subject: str, body: str
+          # returns: bool
+          ...
+    - |
+      from typing import Any
+
+      def send_email(to: Any, subject: Any, body: Any) -> Any:
+          ...
+  answer: 0
+  explanation: "רמזי טיפוס בחתימה מתעדים את הפונקציה במקום שבו הקורא מסתכל, ובניגוד להערות, עורכי קוד ובודקי טיפוסים משתמשים בהם להשלמה אוטומטית ולגילוי שגיאות. שלוש הגרסאות מתנהגות אותו דבר בזמן ריצה."
+  optionExplanations:
+    "1": "הערות עם טיפוסים הן תיעוד שכלים לא קוראים, ושקל לשכוח לעדכן כשהחתימה משתנה."
+    "2": "`Any` מבטל את הבדיקה: הוא אומר לכלים שכל ערך מותר, ולכן הרמזים לא מוסיפים מידע."

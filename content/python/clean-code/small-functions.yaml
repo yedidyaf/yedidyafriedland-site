@@ -1,0 +1,346 @@
+- id: py.clean-code.small-functions.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def create_user(first_name, last_name, email, phone,
+                    street, city, zip_code, country, birth_date):
+        ...
+  options:
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "מתודה ארוכה - Long Method"
+    - "מחלקת אל - God Class"
+    - "דגל בוליאני - Flag Argument"
+  answer: 0
+  explanation: "תשעה פרמטרים קשה לזכור, ובקריאה לפונקציה קל להחליף את הסדר שלהם בלי לשים לב. פרמטרים שהולכים תמיד יחד, כמו `street`, `city`, `zip_code` ו-`country`, מבקשים להפוך לאובייקט אחד, למשל `Address`."
+  optionExplanations:
+    "1": "גוף הפונקציה לא מוצג כלל. הבעיה נראית כבר בחתימה."
+    "2": "זו פונקציה אחת, לא מחלקה שמרכזת אחריויות רבות."
+    "3": "אין כאן פרמטר בוליאני שמחליף את ההתנהגות של הפונקציה."
+
+- id: py.clean-code.small-functions.002
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def get_total(cart):
+        total = sum(item.price for item in cart.items)
+        cart.items.clear()
+        return total
+  options:
+    - "מתודה ארוכה - Long Method"
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+    - "מספר קסם - Magic Number"
+    - "קוד מת - Dead Code"
+  answer: 1
+  explanation: "השם `get_total` מבטיח רק לחשב סכום, אבל הפונקציה גם מרוקנת את העגלה. מי שיקרא לה פעמיים יקבל `0` בפעם השנייה. אם צריך גם לרוקן את העגלה, זו פעולה נפרדת עם שם משלה, למשל `clear_cart`."
+  optionExplanations:
+    "0": "הפונקציה בת שלוש שורות. הבעיה היא במה שהיא עושה, לא באורך."
+    "2": "אין בקוד מספר בלי שם."
+    "3": "כל השורות רצות ומשפיעות על התוצאה, ולכן אין כאן קוד מת."
+
+- id: py.clean-code.small-functions.003
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def format_price(amount, for_report):
+        if for_report:
+            return f"{amount:,.2f} ILS"
+        return f"{amount:.0f} ILS"
+
+
+    print(format_price(1250.5, True))
+  options:
+    - "קינון עמוק - Deep Nesting"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "דגל בוליאני - Flag Argument"
+    - "קנאת תכונות - Feature Envy"
+  answer: 2
+  explanation: "הפרמטר `for_report` הופך את הפונקציה לשתי פונקציות שונות שגרות באותו גוף, ובקריאה `format_price(1250.5, True)` אי אפשר להבין מה `True` עושה. עדיף שתי פונקציות עם שמות שמסבירים את עצמם, למשל `format_report_price` ו-`format_short_price`."
+  optionExplanations:
+    "0": "יש רק `if` אחד, בלי תנאים מקוננים."
+    "1": "שני פרמטרים הם מספר קטן. הבעיה היא בסוג של הפרמטר השני."
+    "3": "הפונקציה משתמשת רק בנתונים שהיא מקבלת, ולא בנתונים של מחלקה אחרת."
+
+- id: py.clean-code.small-functions.004
+  type: single
+  difficulty: 3
+  prompt: "מה הבעיה העיקרית בפונקציה `checkout`?"
+  code: |
+    import sqlite3
+
+
+    def checkout(cart, user):
+        validate_cart(cart)
+        total = calculate_total(cart)
+        conn = sqlite3.connect("shop.db")
+        conn.execute("INSERT INTO orders VALUES (?, ?)", (user.id, total))
+        conn.commit()
+        send_receipt(user, total)
+  options:
+    - "יש לה יותר מדי פרמטרים. עדיף שתקבל רק את `cart`"
+    - "היא חייבת להחזיר ערך, אחרת היא לא פונקציה תקינה"
+    - "צריך לאחד את `validate_cart` ו-`calculate_total` לפונקציה אחת כדי לקצר"
+    - "היא מערבבת רמות הפשטה: צעדים כלליים כמו `validate_cart` לצד פרטי SQL. עדיף לחלץ את השמירה ל-`save_order(user, total)`"
+  answer: 3
+  explanation: "רמת הפשטה אחידה (Single Level of Abstraction): כל שורה בפונקציה צריכה להיות באותו גובה. `validate_cart` ו-`send_receipt` מתארים מה קורה, ושלוש שורות ה-SQL מתארות איך. אחרי חילוץ `save_order`, הפונקציה נקראת כמו רשימת צעדים: לאמת, לחשב, לשמור, לשלוח קבלה."
+  optionExplanations:
+    "0": "שני פרמטרים הם מספר סביר, ושניהם נחוצים: הקבלה נשלחת למשתמש."
+    "1": "פונקציה שמבצעת פעולה ואינה מחזירה ערך היא תקינה לגמרי."
+    "2": "אימות וחישוב הם שתי אחריויות שונות. איחוד שלהן יפגע בעיקרון של דבר אחד לכל פונקציה."
+
+- id: py.clean-code.small-functions.005
+  type: cleaner
+  difficulty: 1
+  prompt: "`scores` היא רשימה של מספרים שלמים. איזו גרסה של הדפסת הממוצע נקייה יותר?"
+  options:
+    - |
+      def print_report(scores):
+          total = 0
+          for s in scores:
+              total += s
+          print(f"Average: {total / len(scores):.1f}")
+    - |
+      def average(scores):
+          return sum(scores) / len(scores)
+
+
+      def print_report(scores):
+          print(f"Average: {average(scores):.1f}")
+  answer: 1
+  explanation: "בגרסה הנקייה כל פונקציה עושה דבר אחד: `average` מחשבת, ו-`print_report` מציגה. את `average` אפשר לבדוק ולהשתמש בה גם במקום אחר, בלי להדפיס."
+  optionExplanations:
+    "0": "חישוב והדפסה מעורבבים בפונקציה אחת, והחישוב כתוב ידנית במקום `sum`. אי אפשר לקבל את הממוצע בלי להדפיס אותו."
+
+- id: py.clean-code.small-functions.006
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה של `publish_post` נקייה יותר?"
+  options:
+    - |
+      def make_slug(title):
+          return title.lower().replace(" ", "-")
+
+
+      def publish_post(post):
+          validate(post)
+          post.slug = make_slug(post.title)
+          save(post)
+    - |
+      def publish_post(post):
+          validate(post)
+          post.slug = post.title.lower().replace(" ", "-")
+          save(post)
+  answer: 0
+  explanation: "ב-`publish_post` כל שורה היא צעד ברמה גבוהה: לאמת, לקבוע כתובת, לשמור. חילוץ `make_slug` שומר על רמת הפשטה אחידה ונותן שם למושג Slug, כך שהקורא לא צריך לפענח שרשרת של מתודות מחרוזת."
+  optionExplanations:
+    "1": "שרשרת `lower().replace(...)` היא פרט מימוש ברמה נמוכה שתקוע בין צעדים כלליים כמו `validate` ו-`save`."
+
+- id: py.clean-code.small-functions.007
+  type: cleaner
+  difficulty: 3
+  prompt: "`grades` היא רשימה של ציונים שלמים. איזו גרסה של `report` נקייה יותר?"
+  options:
+    - |
+      def step1(grades):
+          return [g for g in grades if 0 <= g <= 100]
+
+
+      def step2(x):
+          return sum(x) / len(x) if x else 0
+
+
+      def report(grades):
+          return f"Average: {step2(step1(grades)):.1f}"
+    - |
+      def report(grades):
+          total = 0
+          count = 0
+          for g in grades:
+              if g >= 0:
+                  if g <= 100:
+                      total += g
+                      count += 1
+          avg = total / count if count else 0
+          return f"Average: {avg:.1f}"
+    - |
+      def valid_grades(grades):
+          return [g for g in grades if 0 <= g <= 100]
+
+
+      def average(numbers):
+          return sum(numbers) / len(numbers) if numbers else 0
+
+
+      def report(grades):
+          return f"Average: {average(valid_grades(grades)):.1f}"
+  answer: 2
+  explanation: "פיצול לפונקציות קטנות עוזר רק כשלכל אחת שם שמסביר מה היא עושה. בגרסה הנקייה `report` נקראת כמו משפט: הממוצע של הציונים התקינים."
+  optionExplanations:
+    "0": "הפיצול נכון, אבל `step1`, `step2` ו-`x` לא אומרים כלום. פונקציה קטנה בלי שם טוב לא חוסכת לקורא את הפענוח."
+    "1": "הסינון, הספירה והחישוב מעורבבים בלולאה אחת עם תנאים מקוננים, במקום פונקציות קטנות שכל אחת עושה דבר אחד."
+
+- id: py.clean-code.small-functions.008
+  type: single
+  difficulty: 1
+  prompt: איך אפשר לזהות שפונקציה עושה יותר מדבר אחד?
+  options:
+    - "יש בה יותר משלוש שורות"
+    - "יש בה לולאה"
+    - "כדי לתאר מה היא עושה צריך לומר «וגם», למשל: מאמתת את הטופס וגם שומרת אותו וגם שולחת מייל"
+    - "היא מקבלת פרמטרים וגם מחזירה ערך"
+  answer: 2
+  explanation: "«דבר אחד» נמדד באחריות, לא במספר שורות. אם התיאור של הפונקציה דורש «וגם», כל חלק כזה הוא מועמד לפונקציה משלו, והפונקציה המקורית תקרא להן לפי הסדר."
+  optionExplanations:
+    "0": "פונקציה של עשר שורות יכולה לעשות דבר אחד בלבד, ופונקציה של שתי שורות יכולה לעשות שני דברים."
+    "1": "לולאה היא חלק רגיל מביצוע של משימה אחת, למשל חישוב סכום."
+    "3": "קבלת קלט והחזרת פלט הן הצורה הרגילה של פונקציה שעושה דבר אחד."
+
+- id: py.clean-code.small-functions.009
+  type: single
+  difficulty: 2
+  prompt: איך כדאי לפצל את הפונקציה?
+  code: |
+    def handle_signup(form):
+        if "@" not in form["email"]:
+            raise ValueError("invalid email")
+        user = {"email": form["email"].lower(), "name": form["name"].strip()}
+        users_db.append(user)
+        print(f"Welcome, {user['name']}!")
+        return user
+  options:
+    - "לפונקציה נפרדת לכל שורה, בלי קשר למה שהשורה עושה"
+    - "ל-`validate_signup`, `build_user`, `save_user` ו-`welcome_user`, ו-`handle_signup` תקרא להן לפי הסדר"
+    - "ל-`handle_signup_part1` ול-`handle_signup_part2`, עם חצי מהשורות בכל אחת"
+    - "לא לפצל, אלא להעביר אותה כמו שהיא למחלקה חדשה `SignupManager`"
+  answer: 1
+  explanation: "הפונקציה עושה ארבעה דברים: מאמתת, בונה משתמש, שומרת ומברכת. פיצול לפי אחריות נותן ארבע פונקציות קטנות עם שמות ברורים, ו-`handle_signup` נשארת כתיאור קצר של התהליך כולו."
+  optionExplanations:
+    "0": "פיצול צריך להיות לפי משמעות. פונקציה לכל שורה מפזרת את הקוד בלי להוסיף בהירות."
+    "2": "חלוקה לפי מספר שורות יוצרת חלקים בלי משמעות, ושמות כמו `part1` לא מסבירים כלום."
+    "3": "העברה למחלקה לא משנה את העובדה שגוף אחד עושה ארבעה דברים."
+
+- id: py.clean-code.small-functions.010
+  type: single
+  difficulty: 2
+  prompt: מה השיפור המתאים ביותר לחתימה?
+  code: |
+    def book_flight(passenger_name, passport_id, birth_date,
+                    origin, destination, departure_date, seat_class):
+        ...
+  options:
+    - "להחליף את כל הפרמטרים ב-`*args`"
+    - "לקבל מילון אחד בשם `data` עם כל השדות"
+    - "להפוך את הפרמטרים למשתנים גלובליים שהפונקציה קוראת"
+    - "לקבץ פרמטרים קשורים לאובייקטים, למשל `Passenger` ו-`FlightRequest`, ולכתוב `book_flight(passenger, request)`"
+  answer: 3
+  explanation: "שבעה פרמטרים הם רשימת פרמטרים ארוכה (Long Parameter List). שלושת הראשונים מתארים נוסע, והשאר מתארים טיסה מבוקשת. אובייקט לכל קבוצה מקצר את החתימה, נותן שם למושג ומאפשר להעביר את הנוסע הלאה כיחידה אחת."
+  optionExplanations:
+    "0": "`*args` מסתיר את הפרמטרים לגמרי: אי אפשר לדעת מה להעביר ובאיזה סדר."
+    "1": "מילון כללי מסתיר את המבנה: אין רשימת שדות ברורה, וטעות בשם של מפתח תתגלה רק בזמן ריצה."
+    "2": "משתנים גלובליים יוצרים תלות נסתרת ותופעות לוואי, וזה גרוע יותר מרשימה ארוכה."
+
+- id: py.clean-code.small-functions.011
+  type: single
+  difficulty: 2
+  prompt: איזו קריאה לפונקציה הכי ברורה למי שקורא אותה?
+  code: |
+    def send_email(to, subject, body, cc=None, urgent=False, html=False):
+        ...
+  options:
+    - '`send_email("dana@example.com", "Hi", "See you", None, True, False)`'
+    - '`send_email("dana@example.com", "Hi", "See you", urgent=True)`'
+    - '`send_email("dana@example.com", "Hi", "See you", cc=None, urgent=True, html=False)`'
+  answer: 1
+  explanation: "ארגומנט בשם (Keyword Argument) אומר מה הערך עושה: `urgent=True` מובן מיד. מעבירים רק את מה ששונה מברירת המחדל, ולכן הקריאה קצרה ומדגישה את מה שחשוב."
+  optionExplanations:
+    "0": "`None, True, False` לפי מיקום מחייבים לפתוח את החתימה כדי להבין מה כל ערך עושה."
+    "2": "חזרה על ערכי ברירת המחדל מוסיפה רעש ומסתירה את הדבר היחיד ששונה: `urgent=True`."
+
+- id: py.clean-code.small-functions.012
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def sorted_names(names):
+        names.sort()
+        return names
+
+
+    team = ["Noa", "Avi", "Lior"]
+    ordered = sorted_names(team)
+    print(team[0])
+  options: ["Noa", "Avi", "Lior", "['Avi', 'Lior', 'Noa']"]
+  answer: 1
+  explanation: "`names` ו-`team` מצביעים על אותה רשימה, ו-`sort` ממיינת אותה במקום. לכן גם `team` ממוינת, והאיבר הראשון שלה הוא `Avi`. זו תופעת לוואי נסתרת (Hidden Side Effect): השם מבטיח להחזיר רשימה ממוינת, לא לשנות את הרשימה של מי שקרא. `return sorted(names)` מחזירה רשימה חדשה ומשאירה את המקור כמו שהוא."
+  optionExplanations:
+    "0": "זו הייתה התשובה אם הפונקציה הייתה יוצרת רשימה חדשה. `sort` משנה את הרשימה המקורית."
+    "2": "`Lior` הוא האיבר האחרון אחרי המיון, לא הראשון."
+    "3": "מודפס `team[0]`, איבר אחד, ולא הרשימה כולה."
+
+- id: py.clean-code.small-functions.013
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להוסיף תגית לרשימה שהתקבלה. אם לא התקבלה רשימה, היא אמורה להחזיר בכל קריאה רשימה חדשה שמכילה רק את התגית. באיזו שורה הבאג?"
+  code: |
+    def add_tag(tag, tags=[]):
+        if tags is None:
+            tags = []
+        tags.append(tag)
+        return tags
+  answer: 1
+  explanation: "ערך ברירת המחדל `[]` נוצר פעם אחת, כשהפונקציה מוגדרת, ומשותף לכל הקריאות. לכן קריאה שנייה בלי רשימה תחזיר את התגית הקודמת וגם את החדשה, ותנאי ה-`None` לא מתקיים כשלא מעבירים רשימה. זו תופעת לוואי מפתיעה בין קריאות. ברירת מחדל `None` מפעילה את התנאי שכבר כתוב ויוצרת רשימה חדשה בכל קריאה."
+  fixed: |
+    def add_tag(tag, tags=None):
+        if tags is None:
+            tags = []
+        tags.append(tag)
+        return tags
+
+- id: py.clean-code.small-functions.014
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה להחזיר רשימה חדשה של מחירים אחרי הנחה, בלי לשנות את הרשימה המקורית. באיזו שורה הבאג?"
+  code: |
+    def discounted(prices, rate):
+        result = prices
+        for i in range(len(result)):
+            result[i] = result[i] * (1 - rate)
+        return result
+  answer: 2
+  explanation: "השמה לא מעתיקה רשימה: `result` ו-`prices` הם שני שמות לאותה רשימה, ולכן הלולאה משנה את המקור. זו תופעת לוואי (Side Effect) שהקורא לא מצפה לה. התיקון הוא `prices.copy()`, וגרסה נקייה עוד יותר היא `return [p * (1 - rate) for p in prices]`."
+  fixed: |
+    def discounted(prices, rate):
+        result = prices.copy()
+        for i in range(len(result)):
+            result[i] = result[i] * (1 - rate)
+        return result
+
+- id: py.clean-code.small-functions.015
+  type: single
+  difficulty: 3
+  prompt: האם יש בפונקציה תופעת לוואי מפתיעה?
+  code: |
+    def pop_cheapest(products):
+        cheapest = min(products, key=lambda p: p.price)
+        products.remove(cheapest)
+        return cheapest
+  options:
+    - "כן. כל פונקציה שמשנה את הקלט שלה היא תופעת לוואי מפתיעה"
+    - "כן. `min` מסדר מחדש את הרשימה המקורית"
+    - "לא. הפונקציה לא משנה כלום, כי `remove` מחזירה רשימה חדשה"
+    - "לא. היא משנה את הרשימה, אבל השם `pop_` מצהיר על כך, בדומה ל-`list.pop`"
+  answer: 3
+  explanation: "תופעת לוואי אינה פסולה כשהיא חלק מהחוזה שהשם מצהיר עליו. `pop` בפייתון פירושו להוציא איבר ולהחזיר אותו, ולכן הקורא מצפה שהרשימה תשתנה. הבעיה מתחילה כששם כמו `get_cheapest` מסתיר את השינוי."
+  optionExplanations:
+    "0": "שינוי של הקלט מותר כשהשם אומר זאת, כמו `list.sort` או `list.pop`. הבעיה היא שינוי שלא מוצהר."
+    "1": "`min` רק קוראת את הרשימה ואינה משנה אותה."
+    "2": "`remove` משנה את הרשימה במקום ומחזירה `None`."
+
+- id: py.clean-code.small-functions.016
+  type: truefalse
+  difficulty: 1
+  prompt: פונקציה שעושה דבר אחד חייבת להיות קצרה מחמש שורות.
+  answer: false
+  explanation: "«דבר אחד» הוא עניין של אחריות, לא של מספר שורות. פונקציה של עשר שורות שכולן בונות טבלה אחת עושה דבר אחד. לעומת זאת, פונקציה של שתי שורות שמחשבת סכום וגם מוחקת את הקלט עושה שני דברים. פונקציות קצרות הן תוצאה טבעית של העיקרון, לא ההגדרה שלו."

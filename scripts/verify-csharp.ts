@@ -84,7 +84,8 @@ public static class __Runner {
       } catch (AggregateException ae) {
         var ex = ae.InnerException!;
         sw.Flush();
-        sw.WriteLine();
+        var sofar = sw.ToString();
+        if (sofar.Length > 0 && !sofar.EndsWith("\\n")) sw.WriteLine();
         sw.Write(ex.GetType().Name);
       } finally { Console.SetOut(realOut); }
       results[ns] = sw.ToString();

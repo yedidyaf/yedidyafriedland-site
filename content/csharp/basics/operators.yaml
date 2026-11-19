@@ -10,3 +10,226 @@
   options: ["3\n1", "3.5\n1", "3\n0", "3.5\n0.5"]
   answer: 0
   explanation: "חלוקה בין שני `int` היא חלוקה שלמה: 7/2 = 3. השארית `7 % 2` היא 1."
+
+- id: cs.basics.operators.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int i = 5;
+    int a = i++;
+    int b = ++i;
+    Console.WriteLine($"{a} {b} {i}");
+  options: ["5 7 7", "6 7 7", "5 6 6", "6 6 7"]
+  answer: 0
+  explanation: "`i++` (Postfix) מחזיר את הערך הנוכחי ורק אחר כך מגדיל, ולכן `a` הוא 5 ו-`i` הופך ל-6. `++i` (Prefix) מגדיל קודם ומחזיר את הערך החדש, ולכן `i` הופך ל-7 ו-`b` הוא 7."
+  optionExplanations:
+    "1": "`i++` מחזיר את הערך שלפני ההגדלה, ולכן `a` מקבל 5 ולא 6."
+    "2": "גם `i++` וגם `++i` מגדילים את `i`. אחרי שתי ההגדלות `i` הוא 7."
+
+- id: cs.basics.operators.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(2 + 3 * 4);
+    Console.WriteLine((2 + 3) * 4);
+  options: ["14\n20", "20\n20", "14\n14", "20\n14"]
+  answer: 0
+  explanation: "לכפל יש קדימות (Precedence) גבוהה מלחיבור, כמו במתמטיקה: `2 + 3 * 4` הוא `2 + 12`, כלומר 14. סוגריים משנים את הסדר: `(2 + 3) * 4` הוא `5 * 4`, כלומר 20."
+  optionExplanations:
+    "1": "החישוב לא נעשה פשוט משמאל לימין. בשורה הראשונה הכפל מתבצע לפני החיבור."
+
+- id: cs.basics.operators.004
+  type: single
+  difficulty: 2
+  prompt: איזה מהביטויים הבאים ערכו `3.5`?
+  options: ["`7 / 2.0`", "`7 / 2`", "`(double)(7 / 2)`", "`7 / 2 * 1.0`"]
+  answer: 0
+  explanation: "חלוקה עשרונית מתבצעת כשלפחות אחד האופרנדים הוא מטיפוס עשרוני. ב-`7 / 2.0` המחלק הוא `double`, ולכן התוצאה 3.5. בכל שאר הביטויים החלוקה `7 / 2` מתבצעת קודם בין שני `int` ומחזירה 3, ומה שבא אחריה כבר לא מחזיר את החלק שאבד."
+  optionExplanations:
+    "1": "שני האופרנדים `int`, ולכן זו חלוקה שלמה שמחזירה 3."
+    "2": "הסוגריים גורמים לחלוקה השלמה להתבצע קודם (3), וההמרה ל-`double` מגיעה מאוחר מדי ונותנת 3.0."
+    "3": "`7 / 2` מחושב ראשון ונותן 3, ורק אז הכפל ב-1.0 הופך אותו ל-3.0."
+
+- id: cs.basics.operators.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(-7 % 3);
+    Console.WriteLine(7 % -3);
+  options: ["-1\n1", "2\n-2", "2\n1", "-1\n-1"]
+  answer: 0
+  explanation: "ב-C# לשארית (Remainder), כשהיא לא אפס, יש תמיד אותו סימן כמו למחולק, המספר השמאלי. `-7 / 3` הוא 2- (עיגול לכיוון אפס), ו-`-7 - (3 * -2)` הוא 1-. באותו אופן `7 % -3` הוא 1. זה שונה מ-Python, שבה סימן השארית הוא כמו סימן המחלק."
+  optionExplanations:
+    "1": "זו התשובה של Python, שבה `-7 % 3` הוא 2. ב-C# האופרטור `%` שומר על סימן המחולק."
+    "2": "בשורה הראשונה המחולק שלילי, ולכן גם השארית שלילית: 1-."
+    "3": "בשורה השנייה המחולק 7 חיובי, ולכן השארית חיובית, למרות שהמחלק שלילי."
+
+- id: cs.basics.operators.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string name = null;
+    string display = name ?? "Guest";
+    Console.WriteLine(display);
+  options: ["Guest", "null", "NullReferenceException", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "האופרטור `??` (Null-coalescing) מחזיר את הצד השמאלי אם הוא לא `null`, ואחרת את הצד הימני. `name` הוא `null`, ולכן `display` מקבל `\"Guest\"`."
+  optionExplanations:
+    "1": "`??` נועד בדיוק להחליף `null` בערך חלופי, ולכן `display` לא נשאר `null`."
+    "2": "`??` רק בודק אם הערך `null` ולא ניגש לאובייקט, ולכן לא נזרקת חריגה."
+
+- id: cs.basics.operators.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string a = "";
+    string b = null;
+    Console.WriteLine((a ?? "X") + "|" + (b ?? "Y"));
+  options: ["|Y", "X|Y", "X|", "|"]
+  answer: 0
+  explanation: "`??` בודק רק `null`. מחרוזת ריקה `\"\"` היא ערך תקין שאינו `null`, ולכן `a ?? \"X\"` מחזיר את המחרוזת הריקה. `b` הוא `null`, ולכן `b ?? \"Y\"` מחזיר `\"Y\"`. התוצאה היא `|Y`."
+  optionExplanations:
+    "1": "מחרוזת ריקה אינה `null`. כדי לטפל גם במחרוזת ריקה צריך `string.IsNullOrEmpty`."
+    "2": "זה הפוך: `a` אינו `null` ונשאר ריק, ודווקא `b` מוחלף."
+
+- id: cs.basics.operators.008
+  type: single
+  difficulty: 3
+  prompt: "הכלל: מותר להיכנס אם הגיל לפחות 18, או אם הגיל לפחות 12 ויש מלווה. איזה ביטוי מממש את הכלל נכון?"
+  options:
+    - "`age >= 18 || age >= 12 && withParent`"
+    - "`age >= 18 && age >= 12 || withParent`"
+    - "`(age >= 18 || age >= 12) && withParent`"
+    - "`age >= 18 || age >= 12 || withParent`"
+  answer: 0
+  explanation: "ל-`&&` יש קדימות גבוהה מ-`||`, כמו שכפל קודם לחיבור. לכן הביטוי הראשון מתפרש כ-`age >= 18 || (age >= 12 && withParent)`, וזה בדיוק הכלל. גם כשהקדימות עובדת לטובתכם, כדאי להוסיף את הסוגריים במפורש כדי שהקורא לא יצטרך לזכור אותה."
+  optionExplanations:
+    "1": "זה מתפרש כ-`(age >= 18 && age >= 12) || withParent`, ולכן ילד בן 5 עם מלווה ייכנס."
+    "2": "כאן גם מבוגר בן 30 חייב מלווה, כי `&& withParent` חל על הכול."
+    "3": "עם `||` בלבד, כל מי שיש לו מלווה נכנס בלי קשר לגיל, וכל מי שמעל 12 נכנס גם בלי מלווה."
+
+- id: cs.basics.operators.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    bool a = true;
+    bool b = false;
+    Console.WriteLine(a ^ b);
+    Console.WriteLine(!a || b);
+  options: ["True\nFalse", "False\nFalse", "True\nTrue", "False\nTrue"]
+  answer: 0
+  explanation: "`^` הוא XOR (או בלעדי): הוא מחזיר `true` רק כשבדיוק אחד מהצדדים אמת, וכאן `a` אמת ו-`b` שקר, ולכן `True`. ב-`!a || b`, `!a` הוא `false` וגם `b` הוא `false`, ולכן `False`."
+  optionExplanations:
+    "1": "`^` ב-C# אינו חזקה. על `bool` הוא XOR, ומחזיר `true` כשהערכים שונים."
+    "2": "`!` הופך את `a` ל-`false` לפני ה-`||`, וגם `b` שקר, ולכן התוצאה `False`."
+
+- id: cs.basics.operators.010
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `True` כי 3- הוא מספר אי־זוגי. באיזו שורה הבאג?"
+  code: |
+    int temperature = -3;
+    bool isOdd = temperature % 2 == 1;
+    Console.WriteLine(isOdd);
+  answer: 2
+  explanation: "ב-C# השארית שומרת על סימן המחולק, ולכן `-3 % 2` הוא 1- ולא 1. הבדיקה `== 1` נכשלת לכל מספר אי־זוגי שלילי. הבדיקה הנכונה לאי־זוגיות היא `% 2 != 0`, שעובדת גם למספרים שליליים."
+  fixed: |
+    int temperature = -3;
+    bool isOdd = temperature % 2 != 0;
+    Console.WriteLine(isOdd);
+
+- id: cs.basics.operators.011
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את אחוז התשובות הנכונות, `90`. באיזו שורה הבאג?"
+  code: |
+    int correct = 45;
+    int total = 50;
+    double percent = correct / total * 100;
+    Console.WriteLine(percent);
+  answer: 3
+  explanation: "`correct / total` היא חלוקה בין שני `int`, ולכן 45/50 נותן 0, ו-0 כפול 100 הוא 0. ההצבה למשתנה `double` קורית רק אחרי שהחישוב כבר הסתיים. צריך שאחד האופרנדים יהיה עשרוני לפני החלוקה, למשל `100.0 * correct / total`."
+  fixed: |
+    int correct = 45;
+    int total = 50;
+    double percent = 100.0 * correct / total;
+    Console.WriteLine(percent);
+
+- id: cs.basics.operators.012
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור לספור שני מבקרים ולהדפיס `2`. באיזו שורה הבאג?"
+  code: |
+    int visitors = 0;
+    visitors++;
+    visitors = visitors++;
+    Console.WriteLine(visitors);
+  answer: 3
+  explanation: "`visitors++` מגדיל את המשתנה ל-2, אבל מחזיר את הערך הישן, 1. ההצבה `visitors = ...` מתבצעת אחרונה ודורסת את ההגדלה בערך הישן, ולכן מודפס `1`. כדי להגדיל כותבים רק `visitors++;`, בלי הצבה."
+  fixed: |
+    int visitors = 0;
+    visitors++;
+    visitors++;
+    Console.WriteLine(visitors);
+
+- id: cs.basics.operators.013
+  type: single
+  difficulty: 1
+  prompt: "מה ערכו של הביטוי `17 % 5`?"
+  options: ["2", "3", "3.4", "12"]
+  answer: 0
+  explanation: "האופרטור `%` (Remainder) מחזיר את השארית של חלוקה שלמה. 5 נכנס ב-17 שלוש פעמים (15), ונשארת שארית 2."
+  optionExplanations:
+    "1": "3 הוא המנה, התוצאה של `17 / 5`. האופרטור `%` מחזיר את מה שנשאר."
+    "2": "3.4 הוא תוצאת החלוקה העשרונית `17 / 5.0`, לא השארית."
+
+- id: cs.basics.operators.014
+  type: truefalse
+  difficulty: 1
+  prompt: "הביטוי `++x` מחזיר את הערך של `x` לפני ההגדלה."
+  answer: false
+  explanation: "`++x` (Prefix) מגדיל קודם ומחזיר את הערך החדש. מי שמחזיר את הערך הישן הוא `x++` (Postfix). אם `x` הוא 5, `++x` מחזיר 6 ו-`x++` מחזיר 5, ובשני המקרים `x` הופך ל-6."
+
+- id: cs.basics.operators.015
+  type: truefalse
+  difficulty: 2
+  prompt: "אחרי `name ??= \"Guest\";` המשתנה `name` מקבל את `\"Guest\"` רק אם ערכו הקודם היה `null`."
+  answer: true
+  explanation: "`??=` (Null-coalescing Assignment) הוא קיצור של `name = name ?? \"Guest\";`. אם `name` לא `null`, ערכו נשאר כמו שהוא. זו דרך מקובלת לתת ערך ברירת מחדל רק כשחסר ערך."
+
+- id: cs.basics.operators.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      string name = Console.ReadLine();
+      string display = name ?? "Guest";
+      Console.WriteLine(display);
+    - |
+      string name = Console.ReadLine();
+      string display;
+      if (name == null)
+      {
+          display = "Guest";
+      }
+      else
+      {
+          display = name;
+      }
+      Console.WriteLine(display);
+    - |
+      string name = Console.ReadLine();
+      string display = name != null ? name : "Guest";
+      Console.WriteLine(display);
+  answer: 0
+  explanation: "`??` נבנה בדיוק בשביל המקרה הזה: \"הערך, ואם הוא `null` אז ברירת מחדל\". שורה אחת שאומרת את הכוונה ישירות, בלי לחזור על שם המשתנה ובלי לפזר את ההצבה על פני כמה ענפים."
+  optionExplanations:
+    "1": "הצהרה בלי ערך ושני ענפים בשביל ברירת מחדל אחת. זה נכון, אבל מסתיר כוונה פשוטה בתוך מבנה ארוך."
+    "2": "האופרטור הטרנרי עובד, אבל חוזר על `name` פעמיים. `??` עושה את אותו דבר בצורה קצרה וברורה יותר."

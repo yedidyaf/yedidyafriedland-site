@@ -1,0 +1,308 @@
+- id: py.advanced.modules-packages.001
+  type: output
+  difficulty: 1
+  prompt: "הקובץ `app.py` מורץ ישירות, עם הפקודה `python app.py`. מה יודפס?"
+  code: |
+    def main():
+        print("main runs")
+
+    print(__name__)
+    if __name__ == "__main__":
+        main()
+  options: ["__main__\nmain runs", "app\nmain runs", "__main__", "app"]
+  answer: 0
+  explanation: "לכל מודול (Module) יש משתנה `__name__`. כשקובץ מורץ ישירות, פייתון נותנת לו את הערך `\"__main__\"`, ולכן התנאי מתקיים ו-`main()` רצה. רק כשהקובץ מיובא עם `import`, הערך הוא שם המודול, `\"app\"`."
+  optionExplanations:
+    "1": "`__name__` שווה לשם הקובץ רק כשהוא מיובא ממודול אחר. בהרצה ישירה הוא `__main__`."
+    "2": "`__name__` הוא `__main__`, ולכן התנאי מתקיים ו-`main()` כן נקראת."
+    "3": "בהרצה ישירה `__name__` הוא `__main__`, ולכן גם `main runs` מודפס."
+
+- id: py.advanced.modules-packages.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from math import sqrt
+    print(sqrt(9))
+    print(math.sqrt(16))
+  options: ["3.0\nNameError", "3.0\n4.0", "NameError", "3\n4"]
+  answer: 0
+  explanation: "`from math import sqrt` יוצר בקובץ רק את השם `sqrt`. השם `math` עצמו לא מוגדר, ולכן `math.sqrt` זורק `NameError`. כדי להשתמש בשתי הצורות צריך גם `import math`."
+  optionExplanations:
+    "1": "`from ... import` מכניס לטווח רק את השמות שנבחרו, ולא את שם המודול."
+    "2": "השורה הראשונה תקינה ומדפיסה `3.0` לפני שהשנייה נכשלת."
+    "3": "`sqrt` מחזיר תמיד `float`, ולכן מודפס `3.0`."
+
+- id: py.advanced.modules-packages.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from math import pi
+
+    def area(r):
+        return pi * r * r
+
+    pi = 3
+    print(area(1))
+  options: ["3", "3.141592653589793", "NameError", "3.0"]
+  answer: 0
+  explanation: "`from math import pi` יוצר בקובץ משתנה רגיל בשם `pi`, שמצביע על הערך מהמודול. ההשמה `pi = 3` מחליפה את המשתנה הזה, והפונקציה קוראת את `pi` רק בזמן הריצה שלה, אחרי ההשמה. זו סכנה של `from ... import`: שם מקומי יכול לדרוס בטעות שם מיובא."
+  optionExplanations:
+    "1": "השם `pi` בקובץ אינו קשור יותר ל-`math`. ההשמה החליפה אותו, והפונקציה רואה את הערך העדכני."
+    "2": "`pi` מוגדר: הוא קיבל ערך גם מה-import וגם מההשמה."
+    "3": "`3 * 1 * 1` הוא מכפלת מספרים שלמים, ולכן התוצאה `3` ולא `3.0`."
+
+- id: py.advanced.modules-packages.004
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    import json
+    print(json.__name__)
+    print(__name__)
+  options: ["json\n__main__", "__main__\n__main__", "json\njson", "__main__\njson"]
+  answer: 0
+  explanation: "`__name__` של מודול מיובא הוא השם שלו, כאן `json`. הקובץ שמורץ ישירות הוא היחיד שמקבל `__main__`. זה בדיוק מה שמאפשר לתנאי `if __name__ == \"__main__\"` להבחין בין הרצה ישירה לייבוא."
+  optionExplanations:
+    "1": "רק הקובץ שהורץ ישירות מקבל `__main__`. מודול מיובא שומר על שמו."
+    "2": "`__name__` בלי קידומת מתייחס לקובץ הנוכחי, שהורץ ישירות, ולכן הוא `__main__`."
+    "3": "הסדר הפוך: `json.__name__` הוא שם המודול, ו-`__name__` של הקובץ הנוכחי הוא `__main__`."
+
+- id: py.advanced.modules-packages.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def load():
+        import json
+        return json.dumps([1, 2])
+
+    print(load())
+    print(json.dumps([3]))
+  options: ["[1, 2]\nNameError", "[1, 2]\n[3]", "NameError", "[1, 2]\nImportError"]
+  answer: 0
+  explanation: "`import` הוא השמה של שם: הוא יוצר את השם `json` בטווח שבו הוא כתוב. כאן זה הטווח המקומי של `load`, ולכן מחוץ לפונקציה השם `json` לא קיים. המודול עצמו כן נטען, אבל השם שמצביע עליו מקומי."
+  optionExplanations:
+    "1": "ייבוא בתוך פונקציה לא יוצר שם גלובלי. השם `json` קיים רק בתוך `load`."
+    "2": "הקריאה הראשונה תקינה ומדפיסה `[1, 2]` לפני שהשורה האחרונה נכשלת."
+    "3": "המודול נמצא ונטען בהצלחה. החסר הוא השם `json` בטווח הגלובלי, ולכן זו `NameError`."
+
+- id: py.advanced.modules-packages.006
+  type: single
+  difficulty: 1
+  prompt: "בראש הקובץ כתוב `import math`. איזו קריאה תקינה?"
+  options:
+    - "`math.sqrt(4)`"
+    - "`sqrt(4)`"
+    - "`math(sqrt(4))`"
+    - "`math::sqrt(4)`"
+  answer: 0
+  explanation: "`import math` יוצר שם אחד, `math`, שמצביע על המודול. ניגשים לתוכן המודול בנקודה: `math.sqrt`. כדי לקרוא ל-`sqrt` בלי קידומת צריך `from math import sqrt`."
+  optionExplanations:
+    "1": "`import math` לא מכניס את `sqrt` לטווח. בלי קידומת יתקבל `NameError`."
+    "2": "מודול הוא לא פונקציה ואי אפשר לקרוא לו. ניגשים לתוכן שלו עם נקודה."
+    "3": "`::` הוא תחביר של C++ או Rust. בפייתון ניגשים לתוכן מודול עם נקודה."
+
+- id: py.advanced.modules-packages.007
+  type: single
+  difficulty: 2
+  prompt: "זה מבנה הפרויקט. איזו שורת ייבוא נכונה כדי להשתמש בפונקציה `charge` שמוגדרת ב-`card.py`, מתוך `main.py`?"
+  code: |
+    # project/
+    #     main.py
+    #     shop/
+    #         __init__.py
+    #         cart.py
+    #         payments/
+    #             __init__.py
+    #             card.py
+  options:
+    - "`from shop.payments.card import charge`"
+    - "`from shop/payments/card import charge`"
+    - "`import charge from shop.payments.card`"
+    - "`from card import charge`"
+  answer: 0
+  explanation: "חבילה (Package) היא תיקייה של מודולים, ובייבוא מפרידים בין רמות בנקודה ולא בלוכסן: חבילה, תת־חבילה ומודול. `main.py` נמצא בתיקייה שמכילה את `shop`, ולכן הנתיב מתחיל ב-`shop`."
+  optionExplanations:
+    "1": "`import` לא מקבל נתיב קבצים. רמות החבילה מופרדות בנקודות."
+    "2": "זה תחביר של JavaScript. בפייתון הצורה היא `from <module> import <name>`."
+    "3": "`card` אינו מודול ברמה העליונה. מ-`main.py` הוא נגיש רק דרך `shop.payments`."
+
+- id: py.advanced.modules-packages.008
+  type: single
+  difficulty: 2
+  prompt: "מה התפקיד של הקובץ `__init__.py` בתיקייה `shop/`?"
+  options:
+    - "הוא מסמן את התיקייה כחבילה רגילה, והקוד שבו רץ פעם אחת כשהחבילה מיובאת לראשונה"
+    - "הוא חייב להכיל את כל הפונקציות של החבילה, אחרת לא יהיה אפשר לייבא אותן"
+    - "הוא רץ מחדש בכל פעם ששורת `import shop` מופיעה בקוד"
+    - "הוא מגדיר בנאי שרץ בכל פעם שיוצרים מופע של החבילה, כמו `__init__` במחלקה"
+  answer: 0
+  explanation: "`__init__.py` הופך תיקייה לחבילה רגילה (Regular Package) ומשמש כגוף שלה: הוא רץ בייבוא הראשון של החבילה, ואפשר לשים בו אתחול או ייבוא של השמות הציבוריים. לרוב הוא קצר ואפילו ריק, והקוד עצמו נמצא במודולים שבתיקייה."
+  optionExplanations:
+    "1": "הפונקציות נמצאות בדרך כלל במודולים שבחבילה, כמו `shop/cart.py`, ומייבאים אותן משם."
+    "2": "פייתון שומרת מודולים שנטענו ב-`sys.modules`, ולכן `__init__.py` רץ פעם אחת בלבד."
+    "3": "חבילה היא לא מחלקה ואין לה מופעים. השם הדומה ל-`__init__` של מחלקה מקרי."
+
+- id: py.advanced.modules-packages.009
+  type: single
+  difficulty: 2
+  prompt: "בקוד מוצגים שני קבצים באותה תיקייה. מה יודפס כשמריצים `python app.py`?"
+  code: |
+    # --- greetings.py ---
+    print("loading greetings")
+
+    def hello():
+        print("hello")
+
+    if __name__ == "__main__":
+        hello()
+
+    # --- app.py ---
+    import greetings
+    greetings.hello()
+  options:
+    - "`loading greetings` ואחריו `hello`"
+    - "`loading greetings` ואחריו `hello` פעמיים"
+    - "רק `hello`"
+    - "רק `loading greetings`"
+  answer: 0
+  explanation: "`import` מריץ את כל הקוד שברמה העליונה של המודול, ולכן `loading greetings` מודפס. בתוך `greetings.py` הערך של `__name__` הוא `\"greetings\"`, ולכן הבלוק שבתנאי לא רץ. `hello` מודפס פעם אחת, מהקריאה ב-`app.py`."
+  optionExplanations:
+    "1": "הבלוק `if __name__ == \"__main__\"` ב-`greetings.py` לא רץ בייבוא, ולכן `hello` לא מודפס ממנו."
+    "2": "ייבוא מריץ את קוד המודול, כולל ה-`print` שברמה העליונה."
+    "3": "`app.py` קורא במפורש ל-`greetings.hello()`, ולכן `hello` מודפס."
+
+- id: py.advanced.modules-packages.010
+  type: single
+  difficulty: 3
+  prompt: "בקוד מוצגים שני קבצים באותה תיקייה. מה יודפס כשמריצים `python app.py`?"
+  code: |
+    # --- config.py ---
+    print("config loaded")
+    DEBUG = True
+
+    # --- app.py ---
+    import config
+    import config
+    from config import DEBUG
+    print(DEBUG)
+  options:
+    - "`config loaded` פעם אחת, ואחריו `True`"
+    - "`config loaded` שלוש פעמים, ואחריו `True`"
+    - "`config loaded` פעמיים, ואחריו `True`"
+    - "רק `True`"
+  answer: 0
+  explanation: "בייבוא הראשון פייתון מריצה את המודול ושומרת אותו במטמון (Cache) בשם `sys.modules`. כל ייבוא נוסף של אותו מודול, גם בצורת `from ... import`, מקבל את האובייקט השמור בלי להריץ את הקוד שוב."
+  optionExplanations:
+    "1": "מודול לא רץ מחדש בכל `import`. הייבוא השני והשלישי משתמשים במודול שכבר נטען."
+    "2": "גם `from config import DEBUG` טוען את המודול דרך אותו מטמון, ולא רק `import config`."
+    "3": "הייבוא הראשון כן מריץ את קוד המודול, ולכן `config loaded` מודפס פעם אחת."
+
+- id: py.advanced.modules-packages.011
+  type: single
+  difficulty: 3
+  prompt: "בקובץ `shop/checkout.py`, בתוך החבילה `shop`, כתוב `from .cart import add_item`. מה המשמעות של הנקודה?"
+  options:
+    - "ייבוא יחסי: המודול `cart` נמצא באותה חבילה שבה נמצא `checkout.py`"
+    - "המודול `cart` נמצא בתיקייה שממנה הורצה הפקודה `python`"
+    - "מייבאים את כל השמות מ-`cart`, כמו ב-`from cart import *`"
+    - "המודול `cart` נמצא בחבילת האב של `shop`"
+  answer: 0
+  explanation: "ייבוא יחסי (Relative Import) מחפש מודולים ביחס לחבילה של הקובץ הנוכחי, ולא לפי התיקייה שממנה הורצה התוכנית: נקודה אחת היא החבילה הנוכחית, ושתי נקודות (`..`) הן חבילת האב. כך הקוד בתוך החבילה לא תלוי בשם החבילה."
+  optionExplanations:
+    "1": "ייבוא יחסי תלוי במיקום הקובץ בתוך החבילה, ולא בתיקייה שממנה מריצים."
+    "2": "הנקודה מציינת מיקום. היא לא מייבאת את כל השמות; כאן מיובא רק `add_item`."
+    "3": "חבילת האב מסומנת בשתי נקודות: `from ..cart import add_item`."
+
+- id: py.advanced.modules-packages.012
+  type: truefalse
+  difficulty: 2
+  prompt: "`from math import sqrt` טוען רק את הפונקציה `sqrt`, ושאר הקוד של המודול `math` לא רץ כלל."
+  answer: false
+  explanation: "בכל צורה של ייבוא, פייתון טוענת ומריצה את המודול כולו (אם הוא עוד לא במטמון). ההבדל בין `import math` לבין `from math import sqrt` הוא רק אילו שמות נוצרים בקובץ שלכם: `math` או `sqrt`."
+
+- id: py.advanced.modules-packages.013
+  type: truefalse
+  difficulty: 1
+  prompt: "כשמייבאים את `utils.py` ממודול אחר, הערך של `__name__` בתוך `utils.py` הוא `\"utils\"`, ולכן הקוד שבתוך `if __name__ == \"__main__\":` שלו לא רץ."
+  answer: true
+  explanation: "רק הקובץ שהורץ ישירות מקבל `__name__ == \"__main__\"`. לכן נהוג לשים בתוך התנאי את הקוד שמריץ את התוכנית או בדיקה מהירה: הוא ירוץ כשמריצים את הקובץ, ולא יופעל בטעות כשמישהו מייבא ממנו פונקציה."
+
+- id: py.advanced.modules-packages.014
+  type: bug
+  difficulty: 1
+  prompt: "כשמריצים את הקובץ ישירות, הוא אמור לקרוא ל-`main`. כשמייבאים אותו, `main` לא צריכה לרוץ. באיזו שורה הבאג?"
+  code: |
+    def main():
+        print("Running report...")
+
+    if __name__ == "main":
+        main()
+  answer: 4
+  explanation: "בהרצה ישירה הערך של `__name__` הוא `\"__main__\"`, עם שני קווים תחתונים מכל צד. ההשוואה ל-`\"main\"` לעולם לא מתקיימת, ולכן הקובץ לא עושה כלום, בלי שום הודעת שגיאה."
+  fixed: |
+    def main():
+        print("Running report...")
+
+    if __name__ == "__main__":
+        main()
+
+- id: py.advanced.modules-packages.015
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציות אמורות לבנות נתיבים לקבצים בתוך תיקייה. באיזו שורה הבאג?"
+  code: |
+    import os.path
+
+    def config_file(folder):
+        return path.join(folder, "config.ini")
+
+    def log_file(folder):
+        return path.join(folder, "app.log")
+  answer: 1
+  explanation: "`import os.path` טוען את `os.path`, אבל יוצר בקובץ רק את השם `os`. לכן `path` לבדו לא מוגדר, ושתי הפונקציות זורקות `NameError`. התיקון בשורה אחת: `from os import path`, שיוצר את השם `path`."
+  fixed: |
+    from os import path
+
+    def config_file(folder):
+        return path.join(folder, "config.ini")
+
+    def log_file(folder):
+        return path.join(folder, "app.log")
+
+- id: py.advanced.modules-packages.016
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה במודול של החבילה שאליו היא שייכת.
+  requirement: "חבילה בשם `weather` להתראות מזג אוויר: שולפת תחזית לעיר מ-API חיצוני, מחליטה אם צריך לשלוח התראה, וניתנת להרצה משורת הפקודה עם `python -m weather.cli`."
+  targets:
+    - id: weather/models.py
+      desc: מחלקות הנתונים
+    - id: weather/client.py
+      desc: תקשורת עם ה-API החיצוני
+    - id: weather/alerts.py
+      desc: כללי ההתראה
+    - id: weather/cli.py
+      desc: נקודת הכניסה משורת הפקודה
+  items:
+    - label: "class Forecast: def __init__(self, city: str, temp_c: float, wind_kmh: float)"
+      answer: weather/models.py
+      why: מחלקת נתונים בלי לוגיקה ובלי תקשורת, שכל שאר המודולים משתמשים בה.
+    - label: "def http_get_json(url: str, timeout: float) -> dict"
+      answer: weather/client.py
+      why: בקשת רשת היא פרט טכני של התקשורת עם ה-API.
+    - label: "def fetch_forecast(city: str) -> Forecast"
+      answer: weather/client.py
+      why: שליפת התחזית מה-API והחזרתה כאובייקט היא האחריות של הלקוח.
+    - label: "def should_alert(forecast: Forecast, max_wind_kmh: float) -> bool"
+      answer: weather/alerts.py
+      why: ההחלטה מתי להתריע היא כלל עסקי, שלא תלוי באיך התחזית הגיעה.
+    - label: "def is_heatwave(forecast: Forecast) -> bool"
+      answer: weather/alerts.py
+      why: גם זה כלל התראה שמקבל תחזית ומחליט, בלי רשת ובלי ממשק.
+    - label: "def main(argv: list[str]) -> int"
+      answer: weather/cli.py
+      why: "קוראת את הארגומנטים, מפעילה את שאר המודולים ומדפיסה תוצאה. בסוף הקובץ: `if __name__ == \"__main__\": main(sys.argv[1:])`."
+  explanation: "חלוקה טובה לחבילה נותנת לכל מודול אחריות אחת: `models` מחזיק נתונים, `client` מדבר עם העולם החיצוני, `alerts` מחליט לפי כללים, ו-`cli` מחבר הכול. כך אפשר לבדוק את `alerts` בלי רשת, ולייבא את החבילה בלי שהתוכנית תרוץ, כי רק `cli.py` מכיל את בלוק ה-`__main__`."

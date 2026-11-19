@@ -1,0 +1,288 @@
+- id: py.clean-code.naming.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def calc(d):
+        t = 0
+        for x in d:
+            t += x
+        return t / len(d)
+  options:
+    - "מספר קסם - Magic Number"
+    - "קינון עמוק - Deep Nesting"
+    - "שם לא ברור - Unclear Name"
+    - "מתודה ארוכה - Long Method"
+  answer: 2
+  explanation: "אי אפשר לדעת מה `calc`, `d` ו-`t` מייצגים בלי לקרוא את כל הגוף. שמות שמסבירים כוונה (Intention-Revealing Names), כמו `average(numbers)` ו-`total`, הופכים את הקוד לקריא מיד. אין כאן מספר קסם, קינון עמוק או פונקציה ארוכה: הבעיה היא השמות."
+  optionExplanations:
+    "0": "אין בקוד מספר בלי שם. ה-`0` הוא ערך התחלתי טבעי של סכום."
+    "1": "יש רק לולאה אחת, בלי תנאים מקוננים."
+    "3": "הפונקציה בת ארבע שורות. היא קצרה, רק השמות שלה לא אומרים כלום."
+
+- id: py.clean-code.naming.002
+  type: single
+  difficulty: 1
+  prompt: "הפונקציה `upd_usr_addr(usr, addr)` מעדכנת את הכתובת של משתמש. איזה שם עדיף?"
+  options:
+    - "`updateUserAddress(user, address)`"
+    - "`update_user_address(user, address)`"
+    - "`update(u, a)`"
+    - "`upd_usr_addr(usr, addr)`, כי הוא קצר יותר"
+  answer: 1
+  explanation: "קיצורים כמו `upd` ו-`usr` מאלצים את הקורא לפענח. מילים מלאות עולות כמה תווים ונקראות מיד. בפייתון שמות של פונקציות ופרמטרים נכתבים ב-snake_case."
+  optionExplanations:
+    "0": "camelCase אינו המוסכמה לשמות פונקציות בפייתון. לפי PEP 8 כותבים snake_case."
+    "2": "`update` כללי מדי, ו-`u` ו-`a` לא אומרים כלום על מה שמעדכנים."
+    "3": "קיצור חוסך הקלדה פעם אחת, אבל כל קורא משלם עליו בפענוח."
+
+- id: py.clean-code.naming.003
+  type: cleaner
+  difficulty: 1
+  prompt: איזו שורה מגדירה בצורה הנקייה ביותר את מספר השניות ביממה כקבוע של המודול?
+  options:
+    - "spd = 24 * 60 * 60"
+    - "x = 86400"
+    - "SECONDS_PER_DAY = 24 * 60 * 60"
+  answer: 2
+  explanation: "השם אומר בדיוק מה הערך, והביטוי `24 * 60 * 60` מראה מאיפה הוא בא. אותיות גדולות מסמנות קבוע (Constant) לפי PEP 8."
+  optionExplanations:
+    "0": "`spd` הוא קיצור שצריך לנחש את פירושו, ואותיות קטנות לא מסמנות שזה קבוע."
+    "1": "`x` לא אומר כלום, ו-`86400` הוא מספר קסם שצריך לחשב כדי להבין מה הוא."
+
+- id: py.clean-code.naming.004
+  type: single
+  difficulty: 1
+  prompt: איזה שם הכי מתאים למחלקה שכל מופע שלה מייצג הזמנה אחת בחנות?
+  options:
+    - "`Order`"
+    - "`Orders`"
+    - "`ProcessOrder`"
+    - "`order_class`"
+  answer: 0
+  explanation: "שם של מחלקה הוא שם עצם ביחיד, כי כל מופע (Instance) הוא הזמנה אחת, והוא נכתב ב-CapWords לפי PEP 8. שם ברבים מתאים לאוסף, ופועל מתאים לפונקציה."
+  optionExplanations:
+    "1": "`Orders` נשמע כמו אוסף של הזמנות, אבל כל מופע הוא הזמנה אחת."
+    "2": "`ProcessOrder` הוא פעולה, ולכן מתאים לשם של פונקציה (`process_order`), לא של מחלקה."
+    "3": "המילה `class` מיותרת בשם, ו-snake_case אינו המוסכמה לשמות של מחלקות."
+
+- id: py.clean-code.naming.005
+  type: cleaner
+  difficulty: 1
+  prompt: "איזו לולאה על המילון `grades` (שם תלמיד ← ציון) נקייה יותר?"
+  options:
+    - |
+      grades = {"Dana": 92, "Omer": 85}
+      for k, v in grades.items():
+          print(f"{k}: {v}")
+    - |
+      grades = {"Dana": 92, "Omer": 85}
+      for student, grade in grades.items():
+          print(f"{student}: {grade}")
+    - |
+      grades = {"Dana": 92, "Omer": 85}
+      for item in grades.items():
+          print(f"{item[0]}: {item[1]}")
+  answer: 1
+  explanation: "פירוק הזוג לשני שמות בעלי משמעות, `student` ו-`grade`, מספר לקורא מה יש במילון בלי לחפש את ההגדרה שלו."
+  optionExplanations:
+    "0": "`k` ו-`v` הם שמות טכניים (מפתח וערך) שלא אומרים מה המפתח ומה הערך."
+    "2": "`item[0]` ו-`item[1]` מחייבים לזכור מה נמצא בכל אינדקס."
+
+- id: py.clean-code.naming.006
+  type: single
+  difficulty: 2
+  prompt: בקובץ אחד יש שלוש פונקציות, וכולן קוראות רשומה אחת ממסד הנתונים. מה הבעיה בשמות?
+  code: |
+    def fetch_customer(customer_id): ...
+    def get_order(order_id): ...
+    def retrieve_product(product_id): ...
+  options:
+    - "השמות ארוכים מדי. עדיף `cust`, `ord` ו-`prod`"
+    - "חסר בשמות הטיפוס המוחזר, למשל `get_order_dict`"
+    - "שם של פונקציה צריך להיות שם עצם, למשל `customer(customer_id)`"
+    - "שלוש מילים שונות לאותה פעולה, והקורא יחפש הבדל שאין. עדיף מילה אחת, למשל `get_`, בכל הפונקציות"
+  answer: 3
+  explanation: "עקביות בשמות: מילה אחת לכל מושג. כש-`fetch`, `get` ו-`retrieve` מופיעים יחד, הקורא מניח שיש ביניהם הבדל (אולי אחת ניגשת לרשת?) ומבזבז זמן לבדוק. אותה פעולה מקבלת תמיד אותו פועל."
+  optionExplanations:
+    "0": "קיצורים הופכים את השמות לפחות ברורים, ולא פותרים את חוסר העקביות."
+    "1": "קידוד הטיפוס בשם מוסיף רעש, והוא הופך לשקר כשהטיפוס משתנה."
+    "2": "פונקציה מבצעת פעולה, ולכן מקובל ששמה יתחיל בפועל."
+
+- id: py.clean-code.naming.007
+  type: truefalse
+  difficulty: 2
+  prompt: "כדאי לכלול בשם המשתנה את הטיפוס שלו, למשל `str_title` או `lst_users`, כדי שיהיה ברור מה הטיפוס."
+  answer: false
+  explanation: "קידוד הטיפוס בשם (Hungarian Notation) מוסיף רעש, והוא הופך לשקר כשהטיפוס משתנה, למשל כשרשימה הופכת ל-set. שם צריך לתאר תפקיד: `title`, `users`. כדי לציין טיפוס משתמשים ברמז טיפוס (Type Hint), למשל `users: list[User]`."
+
+- id: py.clean-code.naming.008
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה מקבלת רשימת מחירים ושיעור הנחה (למשל `0.1` עבור 10%), ואמורה להחזיר את הסכום אחרי ההנחה. באיזו שורה הבאג?"
+  code: |
+    def final_price(prices, discount):
+        total = 0
+        for price in prices:
+            total += price
+        discount_amount = total * discount
+        return total - discount
+  answer: 6
+  explanation: "בשורה 6 מחסירים את שיעור ההנחה (`0.1`) במקום את סכום ההנחה, `discount_amount`. הבאג נולד מהשם: `discount` יכול להתפרש גם כשיעור וגם כסכום. שם מדויק כמו `discount_rate` היה מונע את הבלבול."
+  fixed: |
+    def final_price(prices, discount):
+        total = 0
+        for price in prices:
+            total += price
+        discount_amount = total * discount
+        return total - discount_amount
+
+- id: py.clean-code.naming.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    list = [3, 1, 2]
+    print(sorted(list))
+    letters = list("abc")
+    print(letters)
+  options:
+    - "[1, 2, 3]\n['a', 'b', 'c']"
+    - "[1, 2, 3]\nTypeError"
+    - "TypeError"
+    - "[3, 1, 2]\nTypeError"
+  answer: 1
+  explanation: "השם `list` דורס את הפונקציה המובנית (Built-in) `list`. השורה השנייה עובדת, אבל בשורה השלישית `list` הוא כבר רשימה, וקריאה לרשימה כמו לפונקציה זורקת `TypeError`. אל תתנו למשתנים שמות כמו `list`, `str`, `sum` או `id`. שם שמתאר את התוכן, כמו `scores`, גם ברור יותר."
+  optionExplanations:
+    "0": "אחרי `list = [3, 1, 2]` השם `list` כבר לא מצביע על הפונקציה המובנית."
+    "2": "השגיאה קורית רק בשורה 3. השורה 2 כבר הדפיסה את הרשימה הממוינת."
+    "3": "`sorted` מחזירה רשימה חדשה וממוינת, ולכן מודפס `[1, 2, 3]`."
+
+- id: py.clean-code.naming.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה מקבלת זמן התחלה במילישניות (Milliseconds) ואמורה להחזיר את מועד הסיום במילישניות, אחרי פרק הזמן הקצוב. באיזו שורה הבאג?"
+  code: |
+    TIMEOUT_SECONDS = 30
+
+
+    def deadline_ms(start_ms):
+        return start_ms + TIMEOUT_SECONDS
+  answer: 5
+  explanation: "בשורה 5 מחברים שניות למילישניות, וצריך `TIMEOUT_SECONDS * 1000`. כאן השמות עשו את העבודה: הסיומות `_ms` ו-`_SECONDS` חושפות שהיחידות לא מתאימות. אילו הקבוע היה נקרא רק `TIMEOUT`, הבאג היה נסתר. כשלערך יש יחידות, כדאי לכלול אותן בשם."
+  fixed: |
+    TIMEOUT_SECONDS = 30
+
+
+    def deadline_ms(start_ms):
+        return start_ms + TIMEOUT_SECONDS * 1000
+
+- id: py.clean-code.naming.011
+  type: single
+  difficulty: 2
+  prompt: "באיזה מקרה שם של אות אחת, כמו `i`, מקובל?"
+  options:
+    - "פרמטר של פונקציה ציבורית שמשתמשים בה בכמה קבצים"
+    - "קבוע ברמת המודול שמשמש בכל התוכנית"
+    - "מונה בלולאה קצרה, שכל הטווח שלה נראה במבט אחד"
+    - "תכונה (Attribute) של מחלקה"
+  answer: 2
+  explanation: "אורך השם צריך להתאים לטווח ההכרה (Scope) שלו. בלולאה של שתי שורות הקורא רואה מיד מה `i`. ככל ששם חי רחוק יותר ממקום ההגדרה שלו, כך הוא צריך להסביר את עצמו יותר."
+  optionExplanations:
+    "0": "מי שקורא את הקריאה לפונקציה בקובץ אחר לא רואה את הגוף שלה, ולכן השם חייב להסביר את עצמו."
+    "1": "קבוע משמש בכל התוכנית, רחוק מהמקום שבו הוגדר, ולכן הוא צריך שם מפורש."
+    "3": "תכונה נגישה מכל מקום שיש בו מופע של המחלקה, ולכן היא צריכה שם מפורש."
+
+- id: py.clean-code.naming.012
+  type: single
+  difficulty: 2
+  prompt: מה כדאי לשפר בשמות התכונות של המחלקה?
+  code: |
+    class Customer:
+        def __init__(self, customer_name, customer_email):
+            self.customer_name = customer_name
+            self.customer_email = customer_email
+  options:
+    - "לשנות את שם המחלקה ל-`CustomerClass`, כדי שיהיה ברור שזו מחלקה"
+    - "להסיר את הקידומת `customer_`. המחלקה כבר נותנת את ההקשר, ו-`customer.name` נקרא טוב יותר מ-`customer.customer_name`"
+    - "לקצר ל-`self.cn` ול-`self.ce` כדי לחסוך הקלדה"
+    - "לכתוב את התכונות ב-camelCase, למשל `customerName`"
+  answer: 1
+  explanation: "הקשר מיותר (Redundant Context): שם המחלקה כבר אומר שמדובר בלקוח, ולכן הקידומת רק חוזרת עליו. `customer.customer_name` אומר את אותה מילה פעמיים, ו-`customer.name` אומר את אותו דבר בקצרה."
+  optionExplanations:
+    "0": "הסיומת `Class` לא מוסיפה מידע. מוסכמת CapWords כבר מסמנת שזו מחלקה."
+    "2": "קיצורים כמו `cn` מאלצים את הקורא לנחש."
+    "3": "לפי PEP 8 תכונות נכתבות ב-snake_case, לא ב-camelCase."
+
+- id: py.clean-code.naming.013
+  type: single
+  difficulty: 3
+  prompt: "לפונקציה קוראים `filter_expired(coupons)`. מה הבעיה העיקרית בשם?"
+  options:
+    - "לפי PEP 8 היה צריך לכתוב `filterExpired`"
+    - "השם צריך לכלול את הטיפוס המוחזר, למשל `filter_expired_list`"
+    - "הפועל צריך להופיע בסוף השם, למשל `expired_filter`"
+    - "לא ברור אם היא משאירה רק את הקופונים שפג תוקפם או מסירה אותם. שם כמו `remove_expired` או `active_coupons` הוא חד־משמעי"
+  answer: 3
+  explanation: "המילה filter דו־משמעית: היא יכולה לתאר את מה ששומרים או את מה שזורקים. שם טוב לא משאיר לקורא שתי פרשנויות. `remove_expired` או `keep_expired` אומרים בדיוק מה יוצא מהפונקציה."
+  optionExplanations:
+    "0": "PEP 8 דורש snake_case לשמות פונקציות, ולכן `filter_expired` כתוב נכון מבחינת סגנון."
+    "1": "קידוד הטיפוס בשם לא פותר את הדו־משמעות, רק מוסיף רעש."
+    "2": "שם של פונקציה מתחיל בדרך כלל בפועל, ו-`expired_filter` נשמע כמו שם של אובייקט."
+
+- id: py.clean-code.naming.014
+  type: single
+  difficulty: 3
+  prompt: מה הבעיה העיקרית בקוד?
+  code: |
+    def get_active_users(users):
+        return [u for u in users if u.is_active or u.is_admin]
+  options:
+    - "השם מטעה: הפונקציה מחזירה גם מנהלים לא פעילים, ומי שקורא לה יסמוך על השם ולא יבדוק"
+    - "`u` הוא שם קצר מדי, גם בתוך List Comprehension של שורה אחת"
+    - "שם הפונקציה צריך להיות `getActiveUsers`"
+    - "צריך להחליף את ה-List Comprehension בלולאת `for` רגילה"
+  answer: 0
+  explanation: "שם שמבטיח דבר אחד וקוד שעושה דבר אחר הם מהבעיות המסוכנות ביותר, כי הקורא מאמין לשם. צריך להחליט: לתקן את התנאי, או לשנות את השם ל-`get_active_or_admin_users`. השם `u` מקובל כאן, כי כל הטווח שלו הוא שורה אחת."
+  optionExplanations:
+    "1": "ב-Comprehension קצר הטווח של `u` הוא שורה אחת, ולכן שם קצר מקובל."
+    "2": "camelCase אינו המוסכמה בפייתון. שם הפונקציה כתוב נכון ב-snake_case."
+    "3": "List Comprehension הוא דרך אידיומטית לסינון, והבעיה היא בשם ולא בתחביר."
+
+- id: py.clean-code.naming.015
+  type: single
+  difficulty: 3
+  prompt: מה הבעיה בשם הפונקציה?
+  code: |
+    def get_user(user_id):
+        user = db.find_user(user_id)
+        if user is None:
+            user = db.create_user(user_id)
+        return user
+  options:
+    - "לפי PEP 8 שם של פונקציה צריך להיות `getUser`"
+    - "שם של פונקציה צריך להיות שם עצם, למשל `user(user_id)`"
+    - "השם מסתיר שהפונקציה עלולה גם ליצור משתמש חדש. שם כמו `get_or_create_user` מספר את כל האמת"
+    - "צריך לכלול בשם את הטיפוס המוחזר, למשל `get_user_object`"
+  answer: 2
+  explanation: "מי שקורא `get_user(42)` מניח שזו קריאה בלבד, ולא מצפה שמזהה שגוי ייצור רשומה חדשה במסד. כשפונקציה עושה יותר ממה שהשם שלה אומר, משנים את השם כך שיתאר את כל ההתנהגות, כמו `get_or_create_user`, או מפצלים אותה."
+  optionExplanations:
+    "0": "בפייתון שמות פונקציות נכתבים ב-snake_case, ולכן `get_user` כתוב נכון מבחינת סגנון."
+    "1": "שם עצם מסתיר עוד יותר שהפונקציה מבצעת פעולה."
+    "3": "הטיפוס המוחזר לא הבעיה. השם צריך לחשוף את היצירה של משתמש חדש."
+
+- id: py.clean-code.naming.016
+  type: single
+  difficulty: 3
+  prompt: "פונקציה מחזירה `True` או `False` לפי תקינות של כתובת מייל, ואינה זורקת חריגות. איזה שם מתאר אותה הכי טוב?"
+  options:
+    - "`validate_email(email)`"
+    - "`check_email(email)`"
+    - "`email_validator(email)`"
+    - "`is_valid_email(email)`"
+  answer: 3
+  explanation: "פונקציה שמחזירה ערך בוליאני (Predicate) נקראת כמו שאלת כן או לא: `is_`, `has_`, `can_`. כך `if is_valid_email(email):` נקרא כמו משפט, וברור מה פירוש `True`."
+  optionExplanations:
+    "0": "`validate_email` נשמע כמו פעולה שזורקת חריגה כשהכתובת לא תקינה, או מחזירה כתובת מנורמלת."
+    "1": "`check_email` לא אומר מה פירוש התוצאה: האם `True` אומר שהכתובת תקינה או שנמצאה בה בעיה?"
+    "2": "`email_validator` הוא שם עצם, ומתאים יותר למחלקה או לאובייקט מאשר לפונקציה שמחזירה תשובה."

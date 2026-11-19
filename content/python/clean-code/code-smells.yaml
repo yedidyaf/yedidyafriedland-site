@@ -38,3 +38,328 @@
   optionExplanations:
     "1": "if שמחזיר True ו-False הוא שכפול של התנאי עצמו."
     "2": "משתנה עזר ו-if מוסיפים שלוש שורות בלי להוסיף מידע."
+
+- id: py.clean-code.code-smells.003
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def can_withdraw(account, amount):
+        if account is not None:
+            if account.is_active:
+                if amount > 0:
+                    if account.balance >= amount:
+                        return True
+        return False
+  options:
+    - "מתודה ארוכה - Long Method"
+    - "קינון עמוק - Deep Nesting"
+    - "שכפול קוד - Duplicated Code"
+    - "מספר קסם - Magic Number"
+  answer: 1
+  explanation: "ארבע רמות של `if` מקוננים מאלצות את הקורא להחזיק בראש את כל התנאים כדי להבין מתי מגיעים ל-`return True`. אפשר לשטח את הקוד עם תנאי שמירה (Guard Clauses) שיוצאים מוקדם, או, כאן, לכתוב ביטוי אחד עם `and`."
+  optionExplanations:
+    "0": "הפונקציה קצרה. הבעיה היא העומק, לא האורך."
+    "2": "כל תנאי בודק דבר אחר, ואין שורה שחוזרת על עצמה."
+    "3": "`0` כאן הוא גבול טבעי של סכום חיובי, לא מספר קסם."
+
+- id: py.clean-code.code-smells.004
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה של `ship` נקייה יותר?"
+  options:
+    - |
+      def ship(order):
+          if not order.is_paid:
+              return "not paid"
+          if not order.items:
+              return "empty order"
+          if not order.address:
+              return "missing address"
+          send_to_courier(order)
+          return "shipped"
+    - |
+      def ship(order):
+          if order.is_paid:
+              if order.items:
+                  if order.address:
+                      send_to_courier(order)
+                      return "shipped"
+                  else:
+                      return "missing address"
+              else:
+                  return "empty order"
+          else:
+              return "not paid"
+  answer: 0
+  explanation: "תנאי שמירה (Guard Clauses) מטפלים בכל מקרה שגוי מיד ויוצאים. כך כל הודעת שגיאה צמודה לתנאי שגרם לה, והמסלול התקין נשאר בסוף, בלי הזחה."
+  optionExplanations:
+    "1": "קינון עמוק (Deep Nesting): כל `else` רחוק מה-`if` שלו, וצריך לספור הזחות כדי לדעת איזו הודעה שייכת לאיזה תנאי."
+
+- id: py.clean-code.code-smells.005
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class ShopApp:
+        def add_product(self, product): ...
+        def calculate_tax(self, total): ...
+        def send_email(self, to, body): ...
+        def save_to_database(self, record): ...
+        def render_homepage(self): ...
+        def parse_csv(self, path): ...
+  options:
+    - "קנאת תכונות - Feature Envy"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "מתודה ארוכה - Long Method"
+    - "מחלקת אל - God Class"
+  answer: 3
+  explanation: "מחלקה אחת אחראית על מוצרים, מסים, מיילים, מסד נתונים, תצוגה וקבצים. כל שינוי במערכת יגיע אליה, וקשה לבדוק או להבין אותה. מפצלים לפי אחריות: `ProductCatalog`, `TaxCalculator`, `EmailSender` וכן הלאה."
+  optionExplanations:
+    "0": "המתודות לא פונות לנתונים של מחלקה אחרת. הבעיה הפוכה: הכול נמצא באותה מחלקה."
+    "1": "לכל מתודה יש פרמטר אחד או שניים."
+    "2": "המתודות לא ממומשות כאן כלל. הבעיה היא כמות האחריויות במחלקה."
+
+- id: py.clean-code.code-smells.006
+  type: smell
+  difficulty: 3
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Invoice:
+        def __init__(self, customer, amount):
+            self.customer = customer
+            self.amount = amount
+
+        def customer_label(self):
+            name = self.customer.first_name + " " + self.customer.last_name
+            if self.customer.is_vip:
+                name += " (VIP)"
+            return name
+  options:
+    - "מחלקת אל - God Class"
+    - "קנאת תכונות - Feature Envy"
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+    - "דגל בוליאני - Flag Argument"
+  answer: 1
+  explanation: "`customer_label` שייכת ל-`Invoice`, אבל לא נוגעת באף נתון של החשבונית: היא משתמשת רק בנתונים של הלקוח. זו קנאת תכונות (Feature Envy). התיקון הוא להעביר אותה ל-`Customer` כמתודה `label()`, ואז `Invoice` תקרא `self.customer.label()`."
+  optionExplanations:
+    "0": "למחלקה יש שתי תכונות ומתודה אחת. היא רחוקה מלהיות עמוסה."
+    "2": "`name` הוא משתנה מקומי. המתודה לא משנה את הלקוח או את החשבונית."
+    "3": "`is_vip` הוא תכונה של הלקוח, לא פרמטר שמשנה את התנהגות המתודה."
+
+- id: py.clean-code.code-smells.007
+  type: smell
+  difficulty: 3
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def add_prices(amount1, currency1, amount2, currency2):
+        if currency1 != currency2:
+            raise ValueError("currency mismatch")
+        return amount1 + amount2, currency1
+  options:
+    - "קוד מת - Dead Code"
+    - "קינון עמוק - Deep Nesting"
+    - "אובססיית טיפוסים פרימיטיביים - Primitive Obsession"
+    - "קנאת תכונות - Feature Envy"
+  answer: 2
+  explanation: "סכום כסף הוא מושג אחד, סכום ומטבע, אבל הוא מיוצג כאן בשני ערכים פרימיטיביים נפרדים שמועברים בזוגות. מחלקה `Money` עם מתודת חיבור (`__add__`) תחזיק את שניהם יחד ותבדוק את המטבע במקום אחד, במקום שכל פונקציה תחזור על הבדיקה."
+  optionExplanations:
+    "0": "כל השורות רצות בחלק מהמקרים, ואין קוד שלא נגיע אליו."
+    "1": "יש `if` אחד בלבד."
+    "3": "הפונקציה לא פונה לנתונים של אובייקט אחר. הבעיה היא שאין אובייקט בכלל."
+
+- id: py.clean-code.code-smells.008
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def final_price(price, discount):
+        if discount > price:
+            return 0
+        return price - discount
+        print("discount applied")
+  options:
+    - "קוד מת - Dead Code"
+    - "הערה מיותרת - Redundant Comment"
+    - "שם לא ברור - Unclear Name"
+    - "מתודה ארוכה - Long Method"
+  answer: 0
+  explanation: "השורה האחרונה באה אחרי `return`, ולכן היא לעולם לא תרוץ. קוד מת (Dead Code) מבלבל את הקורא, שחושב שההודעה מודפסת. פשוט מוחקים אותו."
+  optionExplanations:
+    "1": "אין בקוד הערות בכלל."
+    "2": "`final_price`, `price` ו-`discount` הם שמות ברורים."
+    "3": "חמש שורות הן פונקציה קצרה."
+
+- id: py.clean-code.code-smells.009
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def add_item(cart, item):
+        # append the item to the cart
+        cart.append(item)
+        # return the cart
+        return cart
+  options:
+    - "קוד מת - Dead Code"
+    - "שכפול קוד - Duplicated Code"
+    - "הערה מיותרת - Redundant Comment"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+  answer: 2
+  explanation: "כל הערה חוזרת במילים על השורה שמתחתיה ולא מוסיפה מידע. הערות כאלה רק מכפילות את מה שצריך לקרוא, ומתיישנות כשהקוד משתנה. הערה טובה מסבירה למה, לא מה."
+  optionExplanations:
+    "0": "הערה אינה קוד מת. קוד מת הוא קוד שלעולם לא רץ."
+    "1": "ההערות חוזרות על הקוד, אבל אין כאן קוד שמופיע פעמיים."
+    "3": "שני פרמטרים הם מספר קטן."
+
+- id: py.clean-code.code-smells.010
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def process_order(order):
+        if not order["items"]:
+            raise ValueError("empty order")
+        if not order["email"]:
+            raise ValueError("missing email")
+        subtotal = 0
+        for item in order["items"]:
+            subtotal += item["price"] * item["qty"]
+        total = subtotal * (1 + VAT_RATE)
+        lines = [f"{i['name']} x{i['qty']}" for i in order["items"]]
+        receipt = "\n".join(lines) + f"\nTotal: {total:.2f}"
+        send_email(order["email"], receipt)
+        save_order(order, total)
+        return total
+  options:
+    - "מתודה ארוכה - Long Method"
+    - "מחלקת אל - God Class"
+    - "קינון עמוק - Deep Nesting"
+    - "מספר קסם - Magic Number"
+  answer: 0
+  explanation: "פונקציה אחת מאמתת, מחשבת, בונה קבלה, שולחת מייל ושומרת. כדי להבין שורה אחת צריך לקרוא את כולן. מחלצים פונקציות עם שמות, למשל `validate_order`, `calculate_total` ו-`build_receipt`, ו-`process_order` הופכת לרשימה קצרה של צעדים."
+  optionExplanations:
+    "1": "זו פונקציה, לא מחלקה. הבעיה דומה, אבל ברמה של פונקציה אחת."
+    "2": "יש רק רמה אחת של לולאה, והתנאים אינם מקוננים."
+    "3": "שיעור המע\"מ מופיע כקבוע עם שם, `VAT_RATE`."
+
+- id: py.clean-code.code-smells.011
+  type: single
+  difficulty: 2
+  prompt: "מה התיקון המקובל לקנאת תכונות (Feature Envy)?"
+  options:
+    - "להפוך את התכונות של המחלקה האחרת לפרטיות, כדי שאי אפשר יהיה לגשת אליהן"
+    - "להעתיק את הנתונים למחלקה הנוכחית, כדי שלא תצטרך לפנות לאחרת"
+    - "להעביר את המתודה, או את החלק שלה שמשתמש בנתונים, אל המחלקה שהנתונים שייכים לה"
+    - "לפצל את המתודה לשתי מתודות קצרות באותה מחלקה"
+  answer: 2
+  explanation: "קנאת תכונות היא מתודה שמתעניינת בנתונים של מחלקה אחרת יותר מאשר בנתונים של המחלקה שלה. מעבירים את ההתנהגות למקום שבו הנתונים נמצאים (Move Method), וכך הנתונים וההתנהגות שפועלת עליהם יושבים יחד."
+  optionExplanations:
+    "0": "הסתרת התכונות תשבור את המתודה, אבל לא תפתור את השאלה איפה היא צריכה לשבת."
+    "1": "העתקת נתונים יוצרת שני עותקים שעלולים לסטות זה מזה."
+    "3": "המתודות הקצרות עדיין יקנאו באותה מחלקה אחרת."
+
+- id: py.clean-code.code-smells.012
+  type: single
+  difficulty: 2
+  prompt: "בקוד מופיע התנאי `if attempts > 3:`, כאשר 3 הוא מספר ניסיונות ההתחברות המרבי. מה התיקון הנכון?"
+  options:
+    - "`THREE = 3`, ואז `if attempts > THREE:`"
+    - "`MAX = 3`, ואז `if attempts > MAX:`"
+    - "להשאיר `if attempts > 3:` ולהוסיף בסוף השורה את ההערה `# 3`"
+    - "`MAX_LOGIN_ATTEMPTS = 3`, ואז `if attempts > MAX_LOGIN_ATTEMPTS:`"
+  answer: 3
+  explanation: "שם של קבוע צריך לומר מה המספר מייצג, לא מה ערכו. `MAX_LOGIN_ATTEMPTS` מסביר את הכלל, ואם המדיניות תשתנה ל-5 ניסיונות, משנים שורה אחת והשם עדיין נכון."
+  optionExplanations:
+    "0": "`THREE` חוזר על הערך ולא מסביר את המשמעות, והשם יהפוך לשקר אם הערך ישתנה ל-5."
+    "1": "`MAX` כללי מדי: מקסימום של מה?"
+    "2": "הערה שחוזרת על המספר לא מוסיפה מידע, והמספר עדיין משוכפל בכל מקום שבו הוא מופיע."
+
+- id: py.clean-code.code-smells.013
+  type: cleaner
+  difficulty: 1
+  prompt: "איזו גרסה של `total` נקייה יותר?"
+  options:
+    - |
+      def total(prices):
+          # old version:
+          # result = 0
+          # for p in prices:
+          #     result += p
+          # return result
+          return sum(prices)
+    - |
+      def total(prices):
+          return sum(prices)
+  answer: 1
+  explanation: "קוד בהערה הוא קוד מת (Dead Code): הוא לא רץ, אבל הקורא צריך לקרוא אותו ולתהות אם הוא עוד חשוב. את הגרסה הישנה שומרת מערכת ניהול הגרסאות (Git), ולכן מוחקים אותה מהקובץ."
+  optionExplanations:
+    "0": "חמש שורות של קוד ישן בהערה מסתירות את השורה היחידה שרצה."
+
+- id: py.clean-code.code-smells.014
+  type: bug
+  difficulty: 2
+  prompt: "בחדר משחק יש מקום לעד 4 שחקנים. `is_full` אמורה להחזיר `True` בדיוק כש-`can_join` מחזירה `False`. באיזו שורה הבאג?"
+  code: |
+    MAX_PLAYERS = 4
+
+
+    def can_join(players):
+        return len(players) < MAX_PLAYERS
+
+
+    def is_full(players):
+        return len(players) >= 5
+  answer: 9
+  explanation: "בשורה 9 כתוב מספר קסם (Magic Number), `5`, במקום הקבוע. כשיש בחדר 4 שחקנים, `can_join` מחזירה `False` אבל `is_full` מחזירה גם היא `False`. שימוש ב-`MAX_PLAYERS` בשני המקומות היה מונע את הסתירה."
+  fixed: |
+    MAX_PLAYERS = 4
+
+
+    def can_join(players):
+        return len(players) < MAX_PLAYERS
+
+
+    def is_full(players):
+        return len(players) >= MAX_PLAYERS
+
+- id: py.clean-code.code-smells.015
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה נכתבה מחדש עם תנאי שמירה (Guard Clauses) במקום קינון עמוק. היא אמורה להחזיר הודעת שגיאה מתאימה, או `None` כשההתחברות תקינה. באיזו שורה הבאג?"
+  code: |
+    def login_error(user, password):
+        if user is None:
+            return "unknown user"
+        if user.is_locked:
+            return "account locked"
+        if user.check_password(password):
+            return "wrong password"
+        return None
+  answer: 6
+  explanation: "תנאי שמירה בודק את המקרה השגוי ויוצא. בשורה 6 חסר `not`: הפונקציה מחזירה «wrong password» דווקא כשהסיסמה נכונה. כשהופכים קוד מקונן לתנאי שמירה, כל תנאי מתהפך, וקל לשכוח להפוך אחד מהם."
+  fixed: |
+    def login_error(user, password):
+        if user is None:
+            return "unknown user"
+        if user.is_locked:
+            return "account locked"
+        if not user.check_password(password):
+            return "wrong password"
+        return None
+
+- id: py.clean-code.code-smells.016
+  type: single
+  difficulty: 3
+  prompt: "למחלקה `ShopApp` יש מתודות לניהול מוצרים, לחישוב מס, לשליחת מיילים, לשמירה במסד הנתונים ולהצגת דפים. מה התיקון הנכון?"
+  options:
+    - "לפצל ל-`ShopApp1` ול-`ShopApp2`, עם חצי מהמתודות בכל אחת"
+    - "לפצל לפי אחריות למחלקות כמו `ProductCatalog`, `TaxCalculator`, `EmailSender` ו-`OrderRepository`, שלכל אחת סיבה אחת להשתנות"
+    - "להוציא את כל המתודות לפונקציות ברמת המודול, באותו קובץ"
+    - "להעביר את המתודות לכמה מחלקות בסיס (Mixins), ש-`ShopApp` תירש מכולן"
+  answer: 1
+  explanation: "מחלקת אל (God Class) מתוקנת בפיצול לפי אחריות: כל מחלקה מרכזת דבר אחד, ולכן יש לה סיבה אחת להשתנות. שינוי בחישוב המס נוגע רק ב-`TaxCalculator`, ואפשר לבדוק אותה בלי מסד נתונים ובלי מיילים."
+  optionExplanations:
+    "0": "חלוקה לפי מספר מתודות יוצרת שתי מחלקות בלי משמעות, שכל אחת עדיין מערבבת אחריויות."
+    "2": "פונקציות באותו קובץ הן אותו ערבוב בלי המילה `class`. האחריויות עדיין לא מופרדות."
+    "3": "אחרי הירושה `ShopApp` עדיין מכילה את כל המתודות ואת כל האחריויות. הקוד רק התפזר על פני יותר קבצים."

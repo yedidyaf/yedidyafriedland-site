@@ -1,0 +1,52 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getContent } from '../../../lib/content';
+import { href } from '../../../lib/url';
+import { bilingual } from '../../../lib/text';
+
+export function getStaticPaths() {
+  return getContent().flatMap((l) => l.chapters.map((c) => ({ params: { lang: l.id, chapter: c.id } })));
+}
+const lang = getContent().find((l) => l.id === Astro.params.lang)!;
+const chapter = lang.chapters.find((c) => c.id === Astro.params.chapter)!;
+const n = chapter.topics.reduce((m, t) => m + t.questions.length, 0);
+const title = `${bilingual(chapter.title_he, chapter.title_en)} | ${lang.title_en}`;
+---
+<Base title={title} description={`${chapter.description_he} ${n} שאלות תרגול ב${lang.title_he} עם הסברים.`}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="פירורי לחם">
+      <a href={href('/')}>בית</a> / <a href={href(`/${lang.id}/`)}>{lang.title_he}</a> / <span>{chapter.title_he}</span>
+    </nav>
+    <h1>{bilingual(chapter.title_he, chapter.title_en)}</h1>
+    <p class="lead muted">{chapter.description_he}</p>
+    <div class="row-actions" style="margin-bottom:24px">
+      <a class="btn" href={href(`/exam/?lang=${lang.id}&mode=chapter&chapter=${chapter.id}`)}>מבחן על כל הפרק (15 שאלות)</a>
+      <a class="btn secondary" href={href(`/${lang.id}/new/?ch=${chapter.id}`)}>מבחן מותאם</a>
+    </div>
+    <div class="grid cols-2">
+      {chapter.topics.map((t) => (
+        <section class="card chapter-card">
+          <h2 style="font-size:1.15rem;margin:0"><a href={href(`/${lang.id}/${chapter.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a></h2>
+          <p class="muted small" style="margin:0">{t.summary_he}</p>
+          <div class="row-actions">
+            <a class="btn sm" href={href(`/exam/?lang=${lang.id}&mode=topic&chapter=${chapter.id}&topic=${t.id}`)}>לתרגל</a>
+            <span class="badge none" data-topic={`${lang.id}/${chapter.id}/${t.id}`}>לא התחלתם</span>
+            <span class="muted small">{t.questions.length} שאלות</span>
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+<script>
+  import { load } from '../../../lib/storage';
+  import { level, mastery, LEVEL_LABEL } from '../../../lib/scoring';
+  const s = load();
+  document.querySelectorAll<HTMLElement>('[data-topic]').forEach((el) => {
+    const r = s.topics[el.dataset.topic!];
+    const lv = level(r);
+    const m = mastery(r ?? []);
+    el.className = `badge ${lv}`;
+    el.textContent = LEVEL_LABEL[lv] + (m !== null ? ` ${m}%` : '');
+  });
+</script>

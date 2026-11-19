@@ -1,0 +1,229 @@
+- id: cs.basics.console-io.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.Write("A");
+    Console.Write("B");
+    Console.WriteLine("C");
+    Console.Write("D");
+  options: ["ABC\nD", "A\nB\nC\nD", "ABCD", "AB\nC\nD"]
+  answer: 0
+  explanation: "`Console.Write` מדפיס את הטקסט ונשאר באותה שורה. `Console.WriteLine` מדפיס את הטקסט ואחריו ירידת שורה. לכן A, B ו-C באותה שורה, והירידה אחרי C מעבירה את D לשורה חדשה."
+  optionExplanations:
+    "1": "`Write` לא מוסיף ירידת שורה, ולכן A ו-B לא בשורות נפרדות."
+    "2": "`WriteLine` אחרי C מוסיף ירידת שורה, ולכן D בשורה הבאה."
+    "3": "ירידת השורה של `WriteLine` באה אחרי הטקסט שלו, לא לפניו."
+
+- id: cs.basics.console-io.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("Total: " + 2 + 3);
+    Console.WriteLine(2 + 3 + " items");
+  options: ["Total: 23\n5 items", "Total: 5\n5 items", "Total: 23\n23 items", "Total: 5\n23 items"]
+  answer: 0
+  explanation: "האופרטור `+` מחושב משמאל לימין. בשורה הראשונה `\"Total: \" + 2` הוא כבר מחרוזת, ולכן גם ה-3 משורשר אליה: `Total: 23`. בשורה השנייה `2 + 3` מחושב קודם כחיבור של מספרים (5), ורק אז משורשר לטקסט."
+  optionExplanations:
+    "1": "ברגע שהצד השמאלי הוא מחרוזת, `+` הוא שרשור. כדי לקבל 5 צריך סוגריים: `\"Total: \" + (2 + 3)`."
+    "2": "בשורה השנייה שני האופרנדים הראשונים מספרים, ולכן הם מחוברים לפני שמגיעים למחרוזת."
+
+- id: cs.basics.console-io.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("{0} + {0} = {1}", 2, 4);
+  options: ["2 + 2 = 4", "2 + 4 = 4", "{0} + {0} = {1}", "2 + 4 = 2"]
+  answer: 0
+  explanation: "זהו עיצוב מורכב (Composite Formatting): כל `{n}` מוחלף בארגומנט שבמקום ה-n אחרי מחרוזת העיצוב, כשהספירה מתחילה מ-0. `{0}` מופיע פעמיים ושני המופעים מוחלפים ב-2, ו-`{1}` מוחלף ב-4."
+  optionExplanations:
+    "1": "המספר בסוגריים המסולסלים הוא האינדקס של הארגומנט, לא מספר סידורי של מקום. שני ה-`{0}` מקבלים את אותו ערך."
+    "2": "`Console.WriteLine` עם כמה ארגומנטים מפרש את המחרוזת הראשונה כתבנית ומחליף את מצייני המקום (Placeholders)."
+
+- id: cs.basics.console-io.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    double price = 3.5;
+    Console.WriteLine(price);
+    Console.WriteLine($"{price:F2}");
+  options: ["3.5\n3.50", "3.50\n3.50", "3.5\n3.5", "3\n3.50"]
+  answer: 0
+  explanation: "הדפסה רגילה של `double` מציגה רק את הספרות הדרושות, ולכן `3.5`. מציין העיצוב (Format Specifier) `F2` מורה להציג בדיוק שתי ספרות אחרי הנקודה, ולכן `3.50`."
+  optionExplanations:
+    "1": "בלי מציין עיצוב, `double` לא מוסיף אפסים בסוף."
+    "2": "`F2` מוסיף אפס כדי להגיע לשתי ספרות אחרי הנקודה."
+    "3": "`price` הוא `double`, ולכן ההדפסה לא חותכת את החלק העשרוני."
+
+- id: cs.basics.console-io.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine($"[{42,5}]");
+    Console.WriteLine($"[{42,-5}]");
+  options: ["[   42]\n[42   ]", "[42   ]\n[   42]", "[00042]\n[42]", "[42]\n[42]"]
+  answer: 0
+  explanation: "המספר שאחרי הפסיק הוא רוחב השדה (Alignment). רוחב חיובי מצמיד את הערך לימין ומשלים ברווחים משמאל, ורוחב שלילי מצמיד לשמאל ומשלים ברווחים מימין. 42 תופס 2 תווים, ולכן נוספים 3 רווחים. זה שימושי ליישור עמודות בטבלה."
+  optionExplanations:
+    "1": "זה הפוך: רוחב חיובי מיישר לימין, ושלילי לשמאל."
+    "2": "רוחב השדה משלים ברווחים ולא באפסים. אפסים מובילים מקבלים עם מציין עיצוב כמו `D5`."
+    "3": "המספר שאחרי הפסיק אינו מתעלם. הוא קובע רוחב מינימלי של 5 תווים."
+
+- id: cs.basics.console-io.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("Hi");
+    Console.WriteLine();
+    Console.WriteLine("Bye");
+  options: ["Hi\n\nBye", "Hi\nBye", "HiBye", "Hi\n()\nBye"]
+  answer: 0
+  explanation: "`Console.WriteLine()` בלי ארגומנטים מדפיס רק ירידת שורה, ולכן נוצרת שורה ריקה בין `Hi` ל-`Bye`. זו הדרך המקובלת להוסיף רווח אנכי בפלט."
+  optionExplanations:
+    "1": "הקריאה בלי ארגומנטים לא מתעלמת: היא מוסיפה שורה ריקה."
+    "2": "כל `WriteLine` מסיים בירידת שורה, ולכן `Hi` ו-`Bye` לא באותה שורה."
+
+- id: cs.basics.console-io.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    string s = null;
+    Console.WriteLine("[" + s + "]");
+    Console.WriteLine(s == null);
+  options: ["[]\nTrue", "[null]\nTrue", "[]\nFalse", "NullReferenceException"]
+  answer: 0
+  explanation: "בשרשור מחרוזות, `null` מתנהג כמו מחרוזת ריקה, ולכן מודפס `[]`. השרשור לא ניגש לאובייקט, ולכן לא נזרקת חריגה. `s` עדיין `null`, ולכן ההשוואה מחזירה `True`."
+  optionExplanations:
+    "1": "C# לא מדפיס את המילה `null`. בשרשור ובהדפסה `null` הופך לטקסט ריק."
+    "2": "השרשור לא משנה את `s`. הוא יוצר מחרוזת חדשה, ו-`s` נשאר `null`."
+    "3": "חריגה נזרקת רק כשניגשים לחבר של `null`, למשל `s.Length`. שרשור עם `+` מטפל ב-`null` בבטחה."
+
+- id: cs.basics.console-io.008
+  type: single
+  difficulty: 1
+  prompt: "מה הטיפוס שמחזירה `Console.ReadLine()`?"
+  options: ["`string`", "`int`", "`char`", "`object`"]
+  answer: 0
+  explanation: "`Console.ReadLine()` קוראת שורה שלמה של טקסט ומחזירה אותה כ-`string`, גם אם המשתמש הקליד ספרות. כדי לקבל מספר צריך להמיר במפורש, למשל עם `int.Parse` או `int.TryParse`."
+  optionExplanations:
+    "1": "C# לא ממיר את הקלט למספר אוטומטית. `\"42\"` שהוקלד הוא מחרוזת עד שממירים אותו."
+    "2": "`ReadLine` קוראת שורה שלמה. לקריאת מקש בודד יש את `Console.ReadKey`."
+
+- id: cs.basics.console-io.009
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור לקרוא גיל ולהדפיס את הגיל בשנה הבאה. למשל, לקלט `20` צריך להיות מודפס `Next year: 21`. באיזו שורה הבאג?"
+  code: |
+    Console.Write("Enter your age: ");
+    string age = Console.ReadLine();
+    Console.WriteLine("Next year: " + age + 1);
+  answer: 3
+  explanation: "`age` היא מחרוזת, וגם הצד השמאלי של `+` הוא מחרוזת, ולכן `+ 1` משרשר את התו 1 ומודפס `Next year: 201`. צריך להמיר את הקלט למספר ולחבר בתוך סוגריים: `(int.Parse(age) + 1)`."
+  fixed: |
+    Console.Write("Enter your age: ");
+    string age = Console.ReadLine();
+    Console.WriteLine("Next year: " + (int.Parse(age) + 1));
+
+- id: cs.basics.console-io.010
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להדפיס כותרת, ומתחתיה כל שם בשורה נפרדת. באיזו שורה הבאג?
+  code: |
+    Console.WriteLine("Students:");
+    Console.Write("Dana");
+    Console.WriteLine("Avi");
+  answer: 2
+  explanation: "`Console.Write` לא מוסיף ירידת שורה, ולכן `Avi` מודפס צמוד: `DanaAvi`. כדי שכל שם יהיה בשורה משלו, צריך `Console.WriteLine` גם בשורה 2."
+  fixed: |
+    Console.WriteLine("Students:");
+    Console.WriteLine("Dana");
+    Console.WriteLine("Avi");
+
+- id: cs.basics.console-io.011
+  type: single
+  difficulty: 3
+  prompt: "מה מחזירה `Console.ReadLine()` כשאין יותר קלט לקרוא, למשל כשהקלט מגיע מקובץ שנגמר?"
+  options: ["`null`", "מחרוזת ריקה `\"\"`", "זורקת `EndOfStreamException`", "ממתינה לנצח לשורה הבאה"]
+  answer: 0
+  explanation: "בסוף הקלט `Console.ReadLine()` מחזירה `null`. זה שונה משורה ריקה: אם המשתמש פשוט לוחץ Enter, מתקבלת מחרוזת ריקה `\"\"`. לכן קוד שקורא קלט צריך לטפל גם ב-`null`, למשל עם `??`."
+  optionExplanations:
+    "1": "מחרוזת ריקה מתקבלת כשהמשתמש לוחץ Enter בלי להקליד. בסוף הקלט מתקבל `null`."
+    "2": "`ReadLine` לא זורקת חריגה בסוף הקלט. היא מסמנת אותו בערך `null`."
+    "3": "כשאין יותר קלט אין למה לחכות, ולכן הקריאה חוזרת מיד עם `null`."
+
+- id: cs.basics.console-io.012
+  type: truefalse
+  difficulty: 1
+  prompt: "`Console.WriteLine` מוסיפה ירידת שורה אחרי הטקסט, ו-`Console.Write` לא מוסיפה."
+  answer: true
+  explanation: "זה ההבדל היחיד ביניהן. `Write` משאירה את הסמן באותה שורה, ולכן מתאימה למשל להצגת בקשה לפני קלט: `Console.Write(\"Name: \")`. `WriteLine` מסיימת את השורה."
+
+- id: cs.basics.console-io.013
+  type: truefalse
+  difficulty: 2
+  prompt: "`Console.ReadLine()` מחזירה `int` כשהמשתמש מקליד ספרות, ו-`string` כשהוא מקליד אותיות."
+  answer: false
+  explanation: "לכל מתודה ב-C# יש טיפוס החזרה אחד שנקבע בזמן קומפילציה. `Console.ReadLine()` תמיד מחזירה `string`, גם עבור הקלט `42`. ההמרה למספר היא באחריותכם, למשל עם `int.Parse` או `int.TryParse`."
+
+- id: cs.basics.console-io.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine('A' + 'B');
+    Console.WriteLine("A" + 'B');
+  options: ["131\nAB", "AB\nAB", "AB\n131", "131\n131"]
+  answer: 0
+  explanation: "`'A'` ו-`'B'` הם `char`, ו-`+` בין שני `char` הוא חיבור מספרי של הקודים שלהם: 65 + 66 = 131, מטיפוס `int`. בשורה השנייה `\"A\"` הוא `string`, ולכן `+` הוא שרשור והתו `B` מתווסף לטקסט."
+  optionExplanations:
+    "1": "גרשיים בודדים יוצרים `char`, לא מחרוזת. בין שני `char` האופרטור `+` מחבר מספרים."
+    "2": "זה הפוך: השורה הראשונה היא חיבור מספרי, והשנייה שרשור."
+    "3": "כשאחד הצדדים הוא `string`, `+` הוא תמיד שרשור."
+
+- id: cs.basics.console-io.015
+  type: single
+  difficulty: 2
+  prompt: "בהינתן `decimal price = 12.5m;`, איזו שורה מדפיסה בדיוק `Price: 12.50`?"
+  options:
+    - "`Console.WriteLine($\"Price: {price:F2}\");`"
+    - "`Console.WriteLine(\"Price: {price:F2}\");`"
+    - "`Console.WriteLine($\"Price: {price}\");`"
+    - "`Console.WriteLine(\"Price: \" + price + \":F2\");`"
+  answer: 0
+  explanation: "מחרוזת אינטרפולציה (Interpolated String) מתחילה ב-`$`, ובתוכה `{price:F2}` מציב את הערך עם מציין העיצוב `F2`, כלומר שתי ספרות אחרי הנקודה. `12.5m` מודפס כברירת מחדל `12.5`, ולכן צריך את `F2` כדי לקבל `12.50`."
+  optionExplanations:
+    "1": "בלי `$` לפני המחרוזת, הסוגריים המסולסלים הם טקסט רגיל ויודפס `Price: {price:F2}`."
+    "2": "בלי מציין עיצוב מודפס הערך כמו שהוא, `12.5`, בלי אפס בסוף."
+    "3": "`:F2` כאן הוא סתם טקסט שמשורשר, ויודפס `Price: 12.5:F2`."
+
+- id: cs.basics.console-io.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      string name = "Dana";
+      int age = 30;
+      Console.WriteLine($"{name} is {age} years old");
+    - |
+      string name = "Dana";
+      int age = 30;
+      Console.WriteLine(name + " is " + age + " years old");
+    - |
+      string name = "Dana";
+      int age = 30;
+      Console.Write(name);
+      Console.Write(" is ");
+      Console.Write(age);
+      Console.WriteLine(" years old");
+  answer: 0
+  explanation: "מחרוזת אינטרפולציה עם `$` מראה את המשפט בדיוק כמו שיודפס, והערכים מופיעים במקומם. קל לקרוא אותה ולראות את הרווחים, ואין סכנה לשכוח רווח בין חלקים משורשרים."
+  optionExplanations:
+    "1": "השרשור עובד, אבל המשפט מפוצל לחתיכות עם מרכאות ופלוסים, וקל לשכוח רווח בקצה של אחת מהן."
+    "2": "ארבע קריאות הדפסה למשפט אחד מפזרות שורה אחת של פלט על פני ארבע שורות קוד."

@@ -1,0 +1,424 @@
+- id: py.oop.abstract-classes.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Shape(ABC):
+        @abstractmethod
+        def area(self):
+            pass
+
+    s = Shape()
+    print("created")
+  options: ["created", "TypeError", "AttributeError", "NotImplementedError"]
+  answer: 1
+  explanation: "`Shape` היא מחלקה מופשטת (Abstract Class): היא יורשת מ-`ABC` ויש בה מתודה מופשטת (Abstract Method). פייתון לא מאפשרת ליצור ממנה מופע, ולכן `Shape()` זורקת `TypeError`, ו-`created` לא מודפס."
+  optionExplanations:
+    "0": "פייתון חוסמת את יצירת המופע עוד לפני שמגיעים להדפסה. גוף כמו `pass` לא הופך את המתודה לממומשת."
+    "2": "השגיאה נזרקת ביצירת המופע, ולא בגישה לתכונה."
+    "3": "`NotImplementedError` נזרקת רק כשקוד זורק אותה במפורש. כאן פייתון עצמה חוסמת את יצירת המופע עם `TypeError`."
+
+- id: py.oop.abstract-classes.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Storage(ABC):
+        @abstractmethod
+        def save(self, data): ...
+
+        @abstractmethod
+        def load(self): ...
+
+    class MemoryStorage(Storage):
+        def save(self, data):
+            self.data = data
+
+    print("defined")
+    m = MemoryStorage()
+    print("created")
+  options: ["defined\ncreated", "TypeError", "defined\nTypeError", "defined\nNotImplementedError"]
+  answer: 2
+  explanation: "`MemoryStorage` מממשת רק את `save`, ולכן `load` עדיין מופשטת, ו-`MemoryStorage` עצמה נשארת מופשטת. הגדרת המחלקה עוברת בלי שגיאה, ו-`defined` מודפס. השגיאה נזרקת רק בניסיון ליצור מופע. כדי לקיים את החוזה צריך לממש את כל המתודות המופשטות."
+  optionExplanations:
+    "0": "מימוש חלקי לא מספיק. כל עוד מתודה מופשטת אחת לא מומשה, אי אפשר ליצור מופע."
+    "1": "פייתון לא בודקת את המימוש בזמן הגדרת המחלקה, אלא רק כשיוצרים ממנה מופע."
+    "3": "המתודה `load` לא נקראת בכלל. פייתון חוסמת את יצירת המופע עם `TypeError`."
+
+- id: py.oop.abstract-classes.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Greeter(ABC):
+        @abstractmethod
+        def name(self): ...
+
+        def greet(self):
+            return "Hello, " + self.name()
+
+    class English(Greeter):
+        def name(self):
+            return "Bob"
+
+    print(English().greet())
+  options: ["TypeError", "Hello, None", "Hello, Bob", "Hello, "]
+  answer: 2
+  explanation: "`English` מממשת את המתודה המופשטת `name`, ולכן אפשר ליצור ממנה מופע. המתודה הרגילה `greet` עוברת בירושה, וקוראת ל-`self.name()`, שמגיעה למימוש של `English`. מחלקה מופשטת יכולה לספק קוד משותף שנשען על המתודות שהיורשות ימלאו."
+  optionExplanations:
+    "0": "המחלקה `English` מימשה את כל המתודות המופשטות, ולכן היא מחלקה רגילה (Concrete) ואפשר ליצור ממנה מופע."
+    "1": "`self.name()` רצה מהמחלקה של האובייקט, `English`, ולא מהגרסה הריקה של `Greeter`."
+
+- id: py.oop.abstract-classes.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Validator(ABC):
+        @abstractmethod
+        def validate(self, value):
+            return value is not None
+
+    class PositiveValidator(Validator):
+        def validate(self, value):
+            return super().validate(value) and value > 0
+
+    v = PositiveValidator()
+    print(v.validate(5), v.validate(None))
+  options: ["TypeError", "True False", "True None", "None None"]
+  answer: 1
+  explanation: "מתודה מופשטת יכולה להכיל מימוש, והמחלקה היורשת יכולה לקרוא לו עם `super()`. ההגדרה המופשטת רק מחייבת לדרוס את המתודה. עבור 5 שני התנאים מתקיימים (`True`). עבור `None`, הבסיס מחזיר `False`, ו-`and` עוצר שם בלי לבדוק `value > 0`."
+  optionExplanations:
+    "0": "`PositiveValidator` דורסת את `validate`, ולכן אפשר ליצור ממנה מופע. גם הקריאה ל-`super().validate` חוקית לגמרי."
+    "2": "`and` מחזיר את הערך הראשון שהוא שקר, כאן `False`, שהגיע מ-`value is not None`."
+    "3": "גוף המתודה המופשטת רץ באמת ומחזיר ערך בוליאני. הוא לא מתעלם מהקוד שבתוכו."
+
+- id: py.oop.abstract-classes.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Animal(ABC):
+        @abstractmethod
+        def sound(self): ...
+
+        @abstractmethod
+        def move(self): ...
+
+    class Bird(Animal):
+        def move(self):
+            return "fly"
+
+    class Crow(Bird):
+        def sound(self):
+            return "caw"
+
+    c = Crow()
+    print(c.move(), c.sound())
+    b = Bird()
+  options: ["TypeError", "fly caw", "fly caw\nTypeError", "None caw\nTypeError"]
+  answer: 2
+  explanation: "`Bird` מממשת רק את `move`, ולכן היא עדיין מופשטת. `Crow` מממשת את `sound` ויורשת את `move` מ-`Bird`, וכך כל המתודות המופשטות ממומשות בשרשרת, ו-`Crow` היא מחלקה רגילה. השורה מודפסת, ורק `Bird()` זורקת `TypeError`."
+  optionExplanations:
+    "0": "לא צריך לממש את כל המתודות באותה מחלקה. מספיק שבסוף השרשרת לכולן יש מימוש."
+    "1": "`Bird` לא מימשה את `sound`, ולכן אי אפשר ליצור ממנה מופע, והשורה האחרונה נכשלת."
+    "3": "`c.move()` מגיעה למימוש של `Bird`, שמחזיר `fly`."
+
+- id: py.oop.abstract-classes.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from abc import ABC
+
+    class Base(ABC):
+        def hello(self):
+            return "hi"
+
+    print(Base().hello())
+  options: ["hi", "TypeError", "None", "AttributeError"]
+  answer: 0
+  explanation: "ירושה מ-`ABC` לבדה לא הופכת מחלקה למופשטת. מה שחוסם יצירת מופע הוא מתודה שמסומנת ב-`@abstractmethod` ולא מומשה. ל-`Base` אין מתודות מופשטות, ולכן אפשר ליצור ממנה מופע כרגיל."
+  optionExplanations:
+    "1": "`TypeError` נזרקת רק אם נשארו מתודות מופשטות שלא מומשו. כאן אין אף אחת."
+    "2": "`hello` מחזירה `hi` כרגיל. ירושה מ-`ABC` לא משנה את ההתנהגות של מתודות רגילות."
+
+- id: py.oop.abstract-classes.007
+  type: hierarchy
+  difficulty: 2
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Notifier(ABC):
+        @abstractmethod
+        def send(self, message: str) -> None: ...
+
+    class EmailNotifier(Notifier):
+        def send(self, message: str) -> None: ...
+
+    class SmsNotifier(Notifier):
+        def send(self, message: str) -> None: ...
+
+    class UrgentSmsNotifier(SmsNotifier): ...
+
+    class AlertService:
+        def __init__(self, notifier: Notifier):
+            self.notifier = notifier
+  targets:
+    - id: ABC
+    - id: Notifier
+    - id: SmsNotifier
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: Notifier
+      answer: ABC
+      why: "ירושה מ-`ABC` היא מה שמאפשר ל-`@abstractmethod` לחסום יצירת מופעים."
+    - label: EmailNotifier
+      answer: Notifier
+    - label: UrgentSmsNotifier
+      answer: SmsNotifier
+      why: "היא יורשת את המימוש של `send` מ-`SmsNotifier`, ולכן אינה מופשטת."
+    - label: AlertService
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "`AlertService` מחזיקה `Notifier` (has-a) ולא יורשת ממנו. היא תלויה בחוזה, לא חלק מההיררכיה."
+  explanation: "מחלקה מופשטת יושבת בראש ההיררכיה ומגדירה את החוזה. מחלקות רגילות יורשות ממנה ומממשות אותו. מחלקות שמשתמשות בחוזה מחזיקות אותו, ולא יורשות ממנו."
+
+- id: py.oop.abstract-classes.008
+  type: hierarchy
+  difficulty: 2
+  prompt: "לפי הקוד, מה היחס בין כל זוג מחלקות?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class PaymentGateway(ABC):
+        @abstractmethod
+        def charge(self, amount: float) -> bool: ...
+
+    class StripeGateway(PaymentGateway):
+        def charge(self, amount: float) -> bool: ...
+
+    class PayPalGateway(PaymentGateway):
+        def charge(self, amount: float) -> bool: ...
+
+    class Checkout:
+        def __init__(self, gateway: PaymentGateway):
+            self.gateway = gateway
+
+    class ReceiptPrinter:
+        def print_receipt(self, checkout: Checkout) -> None: ...
+  targets:
+    - id: implements
+      desc: "מימוש החוזה - יורשת ממחלקה מופשטת ומממשת אותה"
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: uses
+      desc: שימוש - Dependency
+  items:
+    - label: "StripeGateway ו-PaymentGateway"
+      answer: implements
+    - label: "PayPalGateway ו-PaymentGateway"
+      answer: implements
+    - label: "Checkout ו-PaymentGateway"
+      answer: has-a
+      why: "`Checkout` שומרת את שער התשלום כתכונה. היא מכירה רק את החוזה, ולכן כל מימוש שלו מתאים."
+    - label: "ReceiptPrinter ו-Checkout"
+      answer: uses
+      why: "`ReceiptPrinter` מקבלת `Checkout` כפרמטר של מתודה ולא שומרת אותו."
+  explanation: "המחלקות הרגילות מממשות את החוזה של `PaymentGateway`. `Checkout` מחזיקה את החוזה ולא מימוש מסוים, ולכן אפשר להחליף ספק תשלום בלי לשנות אותה."
+
+- id: py.oop.abstract-classes.009
+  type: hierarchy
+  difficulty: 3
+  prompt: "לכל מחלקה, בחרו אם אפשר ליצור ממנה מופע."
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Report(ABC):
+        @abstractmethod
+        def title(self): ...
+
+        @abstractmethod
+        def body(self): ...
+
+    class SalesReport(Report):
+        def title(self):
+            return "Sales"
+
+    class MonthlySales(SalesReport):
+        def body(self):
+            return "..."
+
+    class Summary(ABC):
+        def text(self):
+            return "summary"
+  targets:
+    - id: concrete
+      desc: "אפשר ליצור מופע"
+    - id: abstract
+      desc: "יצירת מופע תזרוק TypeError"
+  items:
+    - label: Report
+      answer: abstract
+    - label: SalesReport
+      answer: abstract
+      why: "`SalesReport` מימשה רק את `title`. `body` עדיין מופשטת, ולכן גם היא מחלקה מופשטת."
+    - label: MonthlySales
+      answer: concrete
+      why: "`title` הגיעה בירושה מ-`SalesReport` ו-`body` מומשה כאן, כך שלא נשארו מתודות מופשטות."
+    - label: Summary
+      answer: concrete
+      why: "`Summary` יורשת מ-`ABC` אבל אין בה אף מתודה מופשטת, ולכן אפשר ליצור ממנה מופע."
+  explanation: "מחלקה היא מופשטת כל עוד נשארה בה, ישירות או בירושה, מתודה מופשטת שלא מומשה. ירושה מ-`ABC` לבדה לא מספיקה כדי לחסום יצירת מופעים."
+
+- id: py.oop.abstract-classes.010
+  type: single
+  difficulty: 1
+  prompt: "מה התפקיד העיקרי של מחלקה מופשטת (Abstract Class)?"
+  options:
+    - "לאפשר ליצור מופעים מהר יותר"
+    - "להגדיר חוזה: אילו מתודות כל מחלקה יורשת חייבת לממש, בלי שאפשר ליצור מופע של המחלקה המופשטת עצמה"
+    - "להסתיר את התכונות של המחלקה מקוד חיצוני"
+    - "למנוע ממחלקות אחרות לרשת ממנה"
+  answer: 1
+  explanation: "מחלקה מופשטת מתארת מה כל סוג במשפחה חייב לדעת לעשות, ומשאירה ליורשות להחליט איך. פייתון אוכפת את החוזה: אי אפשר ליצור מופע ממחלקה שלא מימשה את כל המתודות המופשטות."
+  optionExplanations:
+    "0": "מחלקה מופשטת לא קשורה לביצועים. היא כלי לעיצוב ולאכיפת חוזה."
+    "2": "הסתרת נתונים היא כימוס (Encapsulation), נושא אחר. מחלקה מופשטת לא מסתירה תכונות."
+    "3": "ההפך: מחלקה מופשטת קיימת כדי שירשו ממנה. בלי יורשות אין לה שימוש."
+
+- id: py.oop.abstract-classes.011
+  type: single
+  difficulty: 1
+  prompt: "איך מגדירים בפייתון מחלקה מופשטת `Shape` עם מתודה מופשטת `area`?"
+  options:
+    - "`abstract class Shape:` ובתוכה `def area(self): ...`"
+    - "`class Shape(abstract):` ומעל המתודה `@abstract`"
+    - "`from abc import ABC` ואז `class Shape(ABC):` ומעל המתודה `@ABC.abstractmethod`"
+    - "`from abc import ABC, abstractmethod` ואז `class Shape(ABC):` ומעל המתודה `@abstractmethod`"
+  answer: 3
+  explanation: "המודול `abc` (Abstract Base Classes) מספק את מחלקת הבסיס `ABC` ואת המעצב (Decorator) `abstractmethod`. יורשים מ-`ABC` ומסמנים כל מתודה מופשטת ב-`@abstractmethod`."
+  optionExplanations:
+    "0": "בפייתון אין מילה שמורה `abstract`. זה תחביר של Java ו-C#, והוא שגיאת תחביר כאן."
+    "1": "`abstract` ו-`@abstract` לא קיימים בפייתון. השמות הנכונים מגיעים מהמודול `abc`."
+    "2": "`abstractmethod` היא פונקציה במודול `abc`, ולא תכונה של המחלקה `ABC`. צריך לייבא אותה ישירות."
+
+- id: py.oop.abstract-classes.012
+  type: bug
+  difficulty: 3
+  prompt: "`Exporter` אמורה להיות מחלקה מופשטת: אסור ליצור ממנה מופע, וכל יורשת חייבת לממש `export`. אבל `Exporter()` עובד בלי שגיאה. באיזו שורה הבאג?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Exporter:
+        @abstractmethod
+        def export(self, data): ...
+
+    class CsvExporter(Exporter):
+        def export(self, data):
+            return ",".join(data)
+
+    e = Exporter()
+  answer: 3
+  explanation: "`@abstractmethod` רק מסמן את המתודה. מי שאוכף את הסימון הוא המנגנון של `ABC`, ולכן הוא עובד רק במחלקה שיורשת מ-`ABC`. כאן `Exporter` לא יורשת ממנה, והסימון מתעלם בשקט. התיקון: `class Exporter(ABC):`."
+  fixed: |
+    from abc import ABC, abstractmethod
+
+    class Exporter(ABC):
+        @abstractmethod
+        def export(self, data): ...
+
+    class CsvExporter(Exporter):
+        def export(self, data):
+            return ",".join(data)
+
+    e = Exporter()
+
+- id: py.oop.abstract-classes.013
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את שטח העיגול, אבל כבר יצירת `Circle(2)` זורקת `TypeError`. באיזו שורה הבאג?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Shape(ABC):
+        @abstractmethod
+        def area(self): ...
+
+    class Circle(Shape):
+        def __init__(self, r):
+            self.r = r
+
+        def get_area(self):
+            return 3.14 * self.r ** 2
+
+    c = Circle(2)
+    print(c.area())
+  answer: 11
+  explanation: "החוזה של `Shape` דורש מתודה בשם `area`. `Circle` הגדירה `get_area`, שם אחר, ולכן `area` נשארה מופשטת ו-`Circle` עדיין מופשטת. זה היתרון של מחלקה מופשטת: הטעות מתגלה מיד ביצירת המופע, ולא מאוחר יותר בקריאה שמחזירה תוצאה שגויה."
+  fixed: |
+    from abc import ABC, abstractmethod
+
+    class Shape(ABC):
+        @abstractmethod
+        def area(self): ...
+
+    class Circle(Shape):
+        def __init__(self, r):
+            self.r = r
+
+        def area(self):
+            return 3.14 * self.r ** 2
+
+    c = Circle(2)
+    print(c.area())
+
+- id: py.oop.abstract-classes.014
+  type: truefalse
+  difficulty: 1
+  prompt: "מחלקה מופשטת יכולה להכיל גם מתודות רגילות עם מימוש מלא, לצד מתודות מופשטות."
+  answer: true
+  explanation: "מחלקה מופשטת היא מחלקה רגילה לכל דבר, עם כמה מתודות שמסומנות כמופשטות. המתודות הרגילות עוברות בירושה כרגיל, ולעיתים קרובות הן קוראות למתודות המופשטות שהיורשות מממשות."
+
+- id: py.oop.abstract-classes.015
+  type: truefalse
+  difficulty: 2
+  prompt: "מתודה שמסומנת ב-`@abstractmethod` חייבת להיות ריקה: אסור לכתוב בה קוד."
+  answer: false
+  explanation: "מותר לכתוב קוד במתודה מופשטת. הסימון רק מחייב כל מחלקה יורשת רגילה לדרוס אותה. המחלקה היורשת יכולה לקרוא למימוש של הבסיס עם `super()`, למשל כדי להשתמש בבדיקה משותפת."
+
+- id: py.oop.abstract-classes.016
+  type: single
+  difficulty: 2
+  prompt: "מה היתרון בכך ש-`OrderService` תלויה במחלקה המופשטת `Repository`, ולא במחלקה רגילה מסוימת כמו `SqlRepository`?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Repository(ABC):
+        @abstractmethod
+        def get(self, key): ...
+
+    class OrderService:
+        def __init__(self, repo: Repository):
+            self.repo = repo
+  options:
+    - "פייתון בודקת בזמן ריצה ש-`repo` הוא תמיד מופע של `Repository`"
+    - "הקוד רץ מהר יותר, כי מתודות מופשטות לא מבצעות כלום"
+    - "אפשר להעביר ל-`OrderService` כל מימוש של החוזה, למשל מסד נתונים אמיתי או מאגר בזיכרון לבדיקות, בלי לשנות אותה"
+    - "`OrderService` יורשת אוטומטית את `get` ויכולה לקרוא לה ישירות בתור `self.get`"
+  answer: 2
+  explanation: "`OrderService` מכירה רק את החוזה: שיש ל-`repo` מתודה `get`. כל מחלקה שמממשת את `Repository` מתאימה, ולכן אפשר להחליף מימוש, או להעביר מימוש מדומה בבדיקות, בלי לגעת ב-`OrderService`."
+  optionExplanations:
+    "0": "type hint כמו `repo: Repository` לא נאכף בזמן ריצה. הוא תיעוד ועזרה לכלים."
+    "1": "מחלקה מופשטת לא קשורה לביצועים, והמתודה שרצה בפועל היא המימוש של המחלקה היורשת."
+    "3": "`OrderService` לא יורשת מ-`Repository`. היא מחזיקה אותו (has-a), ולכן קוראת `self.repo.get`."

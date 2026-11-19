@@ -49,3 +49,392 @@
       answer: "object (אין מחלקת בסיס מפורשת)"
       why: Canvas מכילה רשימת צורות (has-a), אבל לא יורשת מאף אחת מהן.
   explanation: "Square יורשת מ-Polygon, שיורשת מ-Shape. Canvas לא יורשת מצורה, אלא מחזיקה צורות. זו הרכבה."
+
+- id: py.oop.composition.003
+  type: hierarchy
+  difficulty: 2
+  prompt: "בכל שורה מתואר צורך במערכת. בחרו אם נכון לממש אותו בירושה או בהרכבה."
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "דמות במשחק שיכולה להחליף נשק במהלך המשחק"
+      answer: has-a
+      why: "הנשק משתנה בזמן ריצה. דמות מחזיקה נשק ויכולה להחליף אותו, ואילו ירושה נקבעת פעם אחת בהגדרת המחלקה."
+    - label: "AdminUser הוא משתמש עם הרשאות נוספות, וצריך לעבוד בכל מקום שבו משתמשים ב-User"
+      answer: is-a
+      why: "מנהל הוא באמת סוג של משתמש, ואפשר להעביר אותו בכל מקום שמצפה ל-`User`."
+    - label: "Report צריכה לשלוח את עצמה במייל, ויש כבר מחלקה EmailSender"
+      answer: has-a
+      why: "דוח הוא לא סוג של שולח מיילים. הוא משתמש בשולח, ולכן מחזיק אותו כתכונה."
+    - label: "Order מורכבת מכמה שורות הזמנה (OrderLine)"
+      answer: has-a
+    - label: "ExpressShipping היא סוג של Shipping עם זמן אספקה קצר יותר"
+      answer: is-a
+  explanation: "ירושה מתאימה כשהמחלקה החדשה היא באמת סוג של מחלקת הבסיס ויכולה להחליף אותה בכל מקום. הרכבה מתאימה כשמחלקה צריכה יכולת של מחלקה אחרת, או כשהחלק צריך להתחלף בזמן ריצה."
+
+- id: py.oop.composition.004
+  type: hierarchy
+  difficulty: 3
+  prompt: "לפי הקוד, מה היחס בין כל זוג מחלקות?"
+  code: |
+    class Address: ...
+
+    class Person:
+        def __init__(self, address: Address):
+            self.address = address
+
+    class Teacher(Person):
+        def __init__(self, address: Address, subject: str):
+            super().__init__(address)
+            self.subject = subject
+
+    class School:
+        def __init__(self):
+            self.teachers: list[Teacher] = []
+
+    class ReportPrinter:
+        def print_staff(self, school: School) -> None: ...
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: uses
+      desc: שימוש - Dependency
+  items:
+    - label: "Teacher ו-Person"
+      answer: is-a
+    - label: "Teacher ו-Address"
+      answer: has-a
+      why: "`Teacher` לא מגדירה כתובת בעצמה, אבל יורשת מ-`Person` את התכונה `self.address`. לכן לכל מורה יש כתובת."
+    - label: "School ו-Teacher"
+      answer: has-a
+      why: "בית הספר שומר רשימת מורים כתכונה. הרכבה יכולה להכיל גם אוסף של אובייקטים."
+    - label: "ReportPrinter ו-School"
+      answer: uses
+      why: "`ReportPrinter` מקבלת בית ספר כפרמטר של מתודה בלבד ולא שומרת אותו. זו תלות (Dependency), לא הרכבה."
+  explanation: "ירושה מופיעה בסוגריים של הגדרת המחלקה. הרכבה היא אובייקט שנשמר כתכונה, גם אם התכונה הגיעה בירושה. שימוש הוא אובייקט שמתקבל רק לצורך פעולה אחת ולא נשמר."
+
+- id: py.oop.composition.005
+  type: single
+  difficulty: 1
+  prompt: "מתי נכון להשתמש בירושה?"
+  options:
+    - "כשרוצים להשתמש במתודה אחת של מחלקה אחרת"
+    - "כשמחלקה צריכה להחזיק אובייקט של מחלקה אחרת"
+    - "כשהמחלקה החדשה היא באמת סוג של מחלקת הבסיס, ויכולה לשמש בכל מקום שבו משתמשים בבסיס"
+    - "תמיד, כי ירושה חוסכת יותר קוד מהרכבה"
+  answer: 2
+  explanation: "ירושה מבטאת יחס is-a: «X הוא סוג של Y». המבחן המעשי הוא שאפשר להעביר מופע של המחלקה היורשת לכל קוד שמצפה למחלקת הבסיס, והוא יעבוד כמצופה."
+  optionExplanations:
+    "0": "כדי להשתמש ביכולת של מחלקה אחרת מספיק להחזיק מופע שלה (has-a). ירושה רק בשביל מתודה אחת גוררת גם את כל השאר."
+    "1": "החזקת אובייקט כתכונה היא בדיוק הגדרת ההרכבה, לא ירושה."
+    "3": "ירושה במקום הלא נכון יוצרת קשר הדוק בין מחלקות וחושפת מתודות שלא מתאימות. לכן לרוב מעדיפים הרכבה."
+
+- id: py.oop.composition.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Engine:
+        def __init__(self, hp):
+            self.hp = hp
+
+        def start(self):
+            return f"Engine {self.hp}hp started"
+
+    class Car:
+        def __init__(self, hp):
+            self.engine = Engine(hp)
+
+        def start(self):
+            return "Car: " + self.engine.start()
+
+    print(Car(150).start())
+  options: ["Engine 150hp started", "Car: Engine 150hp started", "Car: ", "AttributeError"]
+  answer: 1
+  explanation: "`Car` מחזיקה מנוע (has-a) ויוצרת אותו ב-`__init__`. המתודה `start` של הרכב מאצילה (Delegation) את העבודה למנוע: היא קוראת ל-`self.engine.start()` ומוסיפה טקסט משלה."
+  optionExplanations:
+    "0": "רצה המתודה `start` של `Car`, והיא מוסיפה `Car: ` לפני התוצאה של המנוע."
+    "2": "`self.engine.start()` מחזירה מחרוזת, והיא מחוברת לטקסט של הרכב."
+    "3": "`self.engine` נוצר ב-`__init__` של `Car`, ולכן הוא קיים כשקוראים ל-`start`."
+
+- id: py.oop.composition.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Engine:
+        def start(self):
+            return "vroom"
+
+    class Car:
+        def __init__(self):
+            self.engine = Engine()
+
+    car = Car()
+    print(car.engine.start())
+    print(car.start())
+  options: ["vroom\nvroom", "AttributeError", "vroom\nNone", "vroom\nAttributeError"]
+  answer: 3
+  explanation: "בהרכבה, המתודות של הרכיב לא הופכות למתודות של המחלקה המכילה. `car.engine.start()` עובדת, כי היא פונה למנוע. אבל ל-`Car` עצמה אין `start`, ולכן `car.start()` זורקת `AttributeError`. כדי לחשוף את היכולת צריך מתודה ב-`Car` שמאצילה אותה למנוע."
+  optionExplanations:
+    "0": "רק ירושה מעבירה מתודות אוטומטית. בהרכבה צריך לפנות לרכיב דרך התכונה, `car.engine`."
+    "1": "השורה הראשונה פונה למנוע ישירות ועובדת. השגיאה נזרקת רק בשורה השנייה."
+    "2": "מתודה שלא קיימת לא מחזירה `None`. הגישה אליה זורקת שגיאה."
+
+- id: py.oop.composition.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Battery:
+        def __init__(self):
+            self.level = 100
+
+    class Phone:
+        def __init__(self, battery):
+            self.battery = battery
+
+        def call(self):
+            self.battery.level -= 10
+
+    b = Battery()
+    p1 = Phone(b)
+    p2 = Phone(b)
+    p1.call()
+    p2.call()
+    print(b.level, p1.battery.level)
+  options: ["90 90", "100 80", "80 80", "90 80"]
+  answer: 2
+  explanation: "שני הטלפונים קיבלו את אותו אובייקט `Battery`, ולא עותקים שלו. כל שיחה מורידה 10 מאותה סוללה, ולכן הרמה היא 80, וזה מה שרואים גם דרך `b` וגם דרך `p1.battery`. כשמעבירים רכיב מבחוץ, חשוב לדעת אם הוא משותף."
+  optionExplanations:
+    "0": "זה היה נכון אם לכל טלפון הייתה סוללה משלו. כאן `Phone(b)` שומר הפניה לאותה סוללה."
+    "1": "`b` ו-`p1.battery` הם אותו אובייקט, ולכן אי אפשר שיהיו להם ערכים שונים."
+    "3": "`p1.battery` הוא `b` עצמו, ולכן גם השינוי של `p2` נראה דרכו."
+
+- id: py.oop.composition.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Walk:
+        def move(self):
+            return "walking"
+
+    class Fly:
+        def move(self):
+            return "flying"
+
+    class Hero:
+        def __init__(self):
+            self.mover = Walk()
+
+        def act(self):
+            return self.mover.move()
+
+    h = Hero()
+    before = h.act()
+    h.mover = Fly()
+    print(before, h.act())
+  options: ["walking walking", "flying flying", "walking flying", "AttributeError"]
+  answer: 2
+  explanation: "בזכות ההרכבה, ההתנהגות של `Hero` נקבעת לפי הרכיב שהוא מחזיק כרגע. `before` נשמר כשהרכיב היה `Walk`, ואחרי ההחלפה ל-`Fly` אותו גיבור מתנהג אחרת. בירושה, ההתנהגות נקבעת בהגדרת המחלקה ואי אפשר להחליף אותה כך בזמן ריצה."
+  optionExplanations:
+    "0": "`act` קוראת ל-`self.mover` בכל פעם מחדש, ולכן אחרי ההחלפה היא משתמשת ב-`Fly`."
+    "1": "`before` חושב לפני ההחלפה ושמר את המחרוזת `walking`. ההחלפה לא משנה ערך שכבר חושב."
+    "3": "ל-`Fly` יש מתודה `move`, ולכן `Hero` יכול להשתמש בו בדיוק כמו ב-`Walk`."
+
+- id: py.oop.composition.010
+  type: single
+  difficulty: 2
+  prompt: "מה יתרון מרכזי של הרכבה (Composition) על פני ירושה?"
+  options:
+    - "אפשר להחליף את הרכיב, גם בזמן ריצה, בלי לשנות את המחלקה המכילה ובלי לקשור אותה להיררכיה"
+    - "הרכבה רצה מהר יותר מירושה"
+    - "בהרכבה, כל המתודות של הרכיב זמינות אוטומטית במחלקה המכילה"
+    - "הרכבה מאפשרת לקרוא ל-`super()` מכל מחלקה"
+  answer: 0
+  explanation: "בהרכבה, המחלקה תלויה רק במה שהרכיב יודע לעשות, ולא יורשת את כל הפרטים שלו. לכן קל להחליף רכיב (למשל רכיב מדומה בבדיקות), לשלב כמה רכיבים, ולשנות אחד בלי לשבור את האחרים. מכאן העיקרון «העדיפו הרכבה על פני ירושה» (Composition over Inheritance)."
+  optionExplanations:
+    "1": "ההבדל בביצועים זניח ולא רלוונטי לבחירה. הבחירה היא שאלה של עיצוב."
+    "2": "זה נכון לירושה, לא להרכבה. בהרכבה פונים לרכיב דרך התכונה או מאצילים אליו במתודה."
+    "3": "`super()` קשורה לירושה בלבד, ואין לה תפקיד בהרכבה."
+
+- id: py.oop.composition.011
+  type: single
+  difficulty: 3
+  prompt: מה הבעיה העיקרית בעיצוב הזה?
+  code: |
+    class Stack(list):
+        def push(self, item):
+            self.append(item)
+
+        def pop_top(self):
+            return self.pop()
+
+    s = Stack()
+    s.push(1)
+    s.push(2)
+    s.insert(0, 99)
+  options:
+    - "אסור לרשת ממחלקות מובנות כמו `list`, ולכן הגדרת המחלקה תזרוק שגיאה"
+    - "חסר `__init__` שקורא ל-`super().__init__()`, ולכן `s.push(1)` ייכשל"
+    - "`push` צריכה להחזיר את המחסנית, אחרת אי אפשר להשתמש בה"
+    - "מחסנית היא לא באמת סוג של רשימה: הירושה חושפת גם `insert`, `sort` ועוד, שמאפשרים לשבור את כללי המחסנית. עדיף להחזיק רשימה בתוך `Stack`"
+  answer: 3
+  explanation: "ירושה חושפת את כל הממשק של מחלקת הבסיס. מחסנית מאפשרת רק להוסיף ולהוציא מהראש, אבל כאן אפשר להכניס איבר לתחתית עם `insert`. עם הרכבה, `self._items = []`, המחלקה חושפת רק את הפעולות שמתאימות למחסנית."
+  optionExplanations:
+    "0": "מותר לרשת מ-`list`, והקוד רץ בלי שגיאה. הבעיה היא עיצובית, לא תחבירית."
+    "1": "אם לא מגדירים `__init__`, יורשים את זו של `list`, והרשימה מאותחלת כרגיל."
+    "2": "החזרת `None` ממתודה שמשנה אובייקט היא מוסכמה רגילה בפייתון, כמו ב-`list.append`."
+
+- id: py.oop.composition.012
+  type: cleaner
+  difficulty: 2
+  prompt: בשתי הגרסאות, ביצוע הזמנה שולח אימייל ללקוח. איזו גרסה נקייה יותר?
+  options:
+    - |
+      class EmailSender:
+          def send(self, to, text):
+              print(f"Sending to {to}: {text}")
+
+      class OrderService(EmailSender):
+          def place_order(self, customer_email):
+              self.send(customer_email, "Order placed")
+    - |
+      class EmailSender:
+          def send(self, to, text):
+              print(f"Sending to {to}: {text}")
+
+      class OrderService:
+          def __init__(self, sender):
+              self.sender = sender
+
+          def place_order(self, customer_email):
+              self.sender.send(customer_email, "Order placed")
+  answer: 1
+  explanation: "שירות הזמנות הוא לא סוג של שולח אימיילים. הוא משתמש בשולח, ולכן נכון שיחזיק אותו (has-a). כך אפשר להעביר שולח אחר, למשל SMS או שולח מדומה בבדיקות, בלי לשנות את `OrderService`."
+  optionExplanations:
+    "0": "ירושה רק כדי להשתמש במתודה אחת יוצרת יחס is-a שגוי, חושפת את `send` כחלק מהשירות, ונועלת אותו לשולח אחד."
+
+- id: py.oop.composition.013
+  type: truefalse
+  difficulty: 1
+  prompt: "אם המחלקה `Car` שומרת אובייקט `Engine` בתכונה `self.engine`, אז `Car` יורשת את כל המתודות של `Engine`."
+  answer: false
+  explanation: "שמירת אובייקט בתכונה היא הרכבה (has-a), לא ירושה. המתודות של המנוע נשארות של המנוע, ופונים אליהן דרך `self.engine`. ירושה קיימת רק כשכותבים `class Car(Engine)`."
+
+- id: py.oop.composition.014
+  type: bug
+  difficulty: 2
+  prompt: "`MusicApp` אמורה להחזיק פלייליסטים לפי שם. `create_playlist` אמורה ליצור פלייליסט חדש בשם הנתון ולשמור אותו, והקוד אמור להדפיס `['Imagine']`. באיזו שורה הבאג?"
+  code: |
+    class Playlist:
+        def __init__(self, name):
+            self.name = name
+            self.songs = []
+
+        def add(self, song):
+            self.songs.append(song)
+
+    class MusicApp:
+        def __init__(self):
+            self.playlists = {}
+
+        def create_playlist(self, name):
+            self.playlists[name] = Playlist
+
+    app = MusicApp()
+    app.create_playlist("chill")
+    app.playlists["chill"].add("Imagine")
+    print(app.playlists["chill"].songs)
+  answer: 14
+  explanation: "בשורה 14 נשמרת המחלקה `Playlist` עצמה, ולא מופע שלה. לכן `add(\"Imagine\")` נקראת דרך המחלקה, המחרוזת נכנסת ל-`self`, ונזרקת `TypeError` על ארגומנט חסר. הרכבה דורשת להחזיק אובייקט: `Playlist(name)`."
+  fixed: |
+    class Playlist:
+        def __init__(self, name):
+            self.name = name
+            self.songs = []
+
+        def add(self, song):
+            self.songs.append(song)
+
+    class MusicApp:
+        def __init__(self):
+            self.playlists = {}
+
+        def create_playlist(self, name):
+            self.playlists[name] = Playlist(name)
+
+    app = MusicApp()
+    app.create_playlist("chill")
+    app.playlists["chill"].add("Imagine")
+    print(app.playlists["chill"].songs)
+
+- id: py.oop.composition.015
+  type: bug
+  difficulty: 1
+  prompt: "לאופניים יש שני גלגלים נפרדים. `inflate` אמורה להוסיף לחץ לשני הגלגלים. באיזו שורה הבאג?"
+  code: |
+    class Wheel:
+        def __init__(self):
+            self.pressure = 30
+
+    class Bike:
+        def __init__(self):
+            self.front = Wheel()
+            self.back = Wheel()
+
+        def inflate(self, amount):
+            self.front.pressure += amount
+            self.front.pressure += amount
+  answer: 12
+  explanation: "השורה האחרונה הועתקה ולא עודכנה: היא מנפחת שוב את הגלגל הקדמי, והאחורי נשאר בלי שינוי. כל רכיב באובייקט המכיל הוא אובייקט נפרד, וצריך לפנות לכל אחד בשם התכונה שלו: `self.back`."
+  fixed: |
+    class Wheel:
+        def __init__(self):
+            self.pressure = 30
+
+    class Bike:
+        def __init__(self):
+            self.front = Wheel()
+            self.back = Wheel()
+
+        def inflate(self, amount):
+            self.front.pressure += amount
+            self.back.pressure += amount
+
+- id: py.oop.composition.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Logger:
+        def __init__(self):
+            self.lines = []
+
+        def log(self, text):
+            self.lines.append(text)
+
+    class Service:
+        logger = Logger()
+
+        def run(self, name):
+            self.logger.log(name)
+
+    a = Service()
+    b = Service()
+    a.run("a")
+    b.run("b")
+    print(len(a.logger.lines))
+  options: ["1", "0", "2", "AttributeError"]
+  answer: 2
+  explanation: "הרכיב `Logger()` נוצר פעם אחת, בהגדרת המחלקה, כתכונת מחלקה. לכן כל מופעי `Service` חולקים אותו לוגר, ושתי הקריאות נרשמות באותה רשימה. אם כל שירות צריך רכיב משלו, יוצרים אותו ב-`__init__`: `self.logger = Logger()`."
+  optionExplanations:
+    "0": "זה היה נכון אם לכל `Service` היה לוגר משלו. אבל הלוגר הוא תכונת מחלקה, ונוצר פעם אחת בלבד."
+    "1": "שתי הקריאות ל-`run` מוסיפות שורה ללוגר, והשינוי נשמר."
+    "3": "`self.logger` נמצא במחלקה, וחיפוש תכונה דרך מופע מגיע גם לתכונות המחלקה."

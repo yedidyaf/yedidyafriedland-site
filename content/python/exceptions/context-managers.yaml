@@ -1,0 +1,343 @@
+- id: py.exceptions.context-managers.001
+  type: single
+  difficulty: 1
+  prompt: "מה מבטיח הבלוק `with open(\"data.txt\") as f:`?"
+  options:
+    - "הקובץ ייסגר בסוף הבלוק, גם אם נזרקה בו חריגה"
+    - "הקובץ ייסגר בסוף הבלוק, אבל רק אם לא נזרקה בו חריגה"
+    - "חריגות שנזרקות בתוך הבלוק ייבלעו ולא יעצרו את התוכנית"
+    - "תוכן הקובץ כולו ייקרא לזיכרון כבר בתחילת הבלוק"
+  answer: 0
+  explanation: "`with` מפעיל מנהל הקשר (Context Manager). הקובץ הוא מנהל הקשר שסוגר את עצמו ביציאה מהבלוק, בכל דרך יציאה: סיום רגיל, `return` או חריגה. כך לא נשארים קבצים פתוחים בטעות."
+  optionExplanations:
+    "1": "זה היתרון המרכזי של `with`: הסגירה מתבצעת גם כשנזרקת חריגה, בדומה ל-`finally`."
+    "2": "קובץ לא בולע חריגות. הוא נסגר, והחריגה ממשיכה לעלות כרגיל."
+    "3": "`with` לא קורא את הקובץ. הקריאה מתבצעת רק כשקוראים למתודה כמו `f.read()`."
+
+- id: py.exceptions.context-managers.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Door:
+        def __enter__(self):
+            print("open")
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            print("close")
+
+
+    with Door():
+        print("inside")
+    print("after")
+  options: ["open\ninside\nclose\nafter", "inside\nopen\nclose\nafter", "open\ninside\nafter\nclose", "open\nclose\ninside\nafter"]
+  answer: 0
+  explanation: "בכניסה לבלוק `with` נקראת `__enter__`, אחר כך רץ גוף הבלוק, וביציאה ממנו נקראת `__exit__`. רק אחרי כל אלה ממשיכה השורה שמחוץ לבלוק."
+  optionExplanations:
+    "1": "`__enter__` רצה לפני גוף הבלוק, לא אחריו."
+    "2": "`__exit__` נקראת מיד ביציאה מהבלוק, לפני הקוד שאחריו, ולא בסוף התוכנית."
+    "3": "`__exit__` נקראת רק אחרי שכל גוף הבלוק רץ."
+
+- id: py.exceptions.context-managers.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Timer:
+        def __enter__(self):
+            return "started"
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+
+    with Timer() as t:
+        print(t)
+  options: ["started", "Timer", "None", "False"]
+  answer: 0
+  explanation: "המשתנה שאחרי `as` מקבל את הערך ש-`__enter__` מחזירה, לא בהכרח את האובייקט שנוצר. לכן מנהלי הקשר רבים כותבים `return self`, וכאן מוחזרת המחרוזת `\"started\"`."
+  optionExplanations:
+    "1": "`as` לא מקבל את האובייקט `Timer()` עצמו אלא את מה ש-`__enter__` החזירה."
+    "2": "`__enter__` מחזירה ערך מפורש, ולכן `t` אינו `None`."
+    "3": "ערך ההחזרה של `__exit__` לא נשמר במשתנה. הוא רק קובע אם לבלוע חריגה."
+
+- id: py.exceptions.context-managers.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Resource:
+        def __enter__(self):
+            print("acquire")
+
+        def __exit__(self, exc_type, exc, tb):
+            print("release", exc_type.__name__)
+
+
+    with Resource():
+        print("work")
+        raise ValueError("fail")
+    print("end")
+  options:
+    - "acquire\nwork\nrelease ValueError\nValueError"
+    - "acquire\nwork\nValueError"
+    - "acquire\nwork\nrelease ValueError\nend"
+    - "acquire\nwork\nrelease None\nValueError"
+  answer: 0
+  explanation: "כשנזרקת חריגה בתוך הבלוק, `__exit__` נקראת ומקבלת את פרטי החריגה: הסוג, האובייקט וה-traceback. היא מחזירה `None`, ולכן החריגה ממשיכה לעלות אחרי השחרור, והתוכנית נעצרת לפני `end`."
+  optionExplanations:
+    "1": "`__exit__` נקראת גם כשהבלוק נקטע בחריגה. זו כל המטרה של מנהל הקשר."
+    "2": "`__exit__` לא החזירה ערך אמת, ולכן החריגה לא נבלעת והתוכנית נעצרת."
+    "3": "כשיש חריגה, `exc_type` הוא מחלקת החריגה עצמה. הוא `None` רק כשהבלוק הסתיים בלי חריגה."
+
+- id: py.exceptions.context-managers.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Ignore:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            print("exit:", exc_type is not None)
+            return True
+
+
+    with Ignore():
+        print("a")
+        1 / 0
+        print("b")
+    print("c")
+  options: ["a\nexit: True\nc", "a\nexit: True\nb\nc", "a\nexit: True\nZeroDivisionError", "a\nb\nexit: False\nc"]
+  answer: 0
+  explanation: "כש-`__exit__` מחזירה ערך אמת, החריגה נבלעת (Suppressed) והתוכנית ממשיכה מהשורה שאחרי הבלוק. היא לא חוזרת לתוך הבלוק, ולכן `b` לא מודפס, אבל `c` כן."
+  optionExplanations:
+    "1": "בליעת החריגה לא מחזירה את הביצוע לתוך הבלוק. השורות שאחרי החריגה מדולגות."
+    "2": "`return True` מ-`__exit__` מסמן ל-Python שהחריגה טופלה, ולכן היא לא ממשיכה לעלות."
+    "3": "`1 / 0` זורק `ZeroDivisionError`, ולכן `b` לא מודפס ו-`exc_type` אינו `None`."
+
+- id: py.exceptions.context-managers.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Lock:
+        def __enter__(self):
+            print("lock")
+
+        def __exit__(self, *args):
+            print("unlock")
+
+
+    def update():
+        with Lock():
+            print("update")
+            return "done"
+
+
+    print(update())
+  options: ["lock\nupdate\nunlock\ndone", "lock\nupdate\ndone", "lock\nupdate\ndone\nunlock", "lock\nunlock\nupdate\ndone"]
+  answer: 0
+  explanation: "`return` בתוך `with` יוצא מהבלוק, ולכן `__exit__` נקראת לפני שהפונקציה מחזירה. ה-`print` החיצוני מדפיס את הערך רק אחרי שהפונקציה סיימה, כלומר אחרי `unlock`."
+  optionExplanations:
+    "1": "`return` לא מדלג על `__exit__`. מנהל הקשר מבטיח שחרור בכל דרך יציאה."
+    "2": "`print(update())` מדפיס רק אחרי שהפונקציה החזירה, ואז `__exit__` כבר רצה."
+    "3": "`__exit__` רצה ביציאה מהבלוק, אחרי גופו, לא מיד אחרי `__enter__`."
+
+- id: py.exceptions.context-managers.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Tag:
+        def __init__(self, name):
+            self.name = name
+
+        def __enter__(self):
+            print("<" + self.name + ">")
+
+        def __exit__(self, *args):
+            print("</" + self.name + ">")
+
+
+    with Tag("a"), Tag("b"):
+        print("text")
+  options:
+    - "<a>\n<b>\ntext\n</b>\n</a>"
+    - "<a>\n<b>\ntext\n</a>\n</b>"
+    - "<a>\ntext\n</a>\n<b>\ntext\n</b>"
+    - "<a>\n</a>\n<b>\n</b>\ntext"
+  answer: 0
+  explanation: "`with` עם כמה מנהלי הקשר שקול ל-`with` מקוננים: נכנסים לפי הסדר משמאל לימין, ויוצאים בסדר הפוך. מה שנפתח אחרון נסגר ראשון, כמו תגיות HTML מקוננות."
+  optionExplanations:
+    "1": "היציאה היא בסדר הפוך לכניסה. `b` נכנס אחרון, ולכן הוא יוצא ראשון."
+    "2": "גוף הבלוק רץ פעם אחת, כששני מנהלי ההקשר כבר פעילים."
+    "3": "שני מנהלי ההקשר נכנסים לפני גוף הבלוק ויוצאים רק אחריו."
+
+- id: py.exceptions.context-managers.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Connection:
+        def __enter__(self):
+            print("connect")
+
+        def __exit__(self, *args):
+            print("disconnect")
+
+        def query(self):
+            return "rows"
+
+
+    with Connection() as conn:
+        print(conn.query())
+  options: ["connect\ndisconnect\nAttributeError", "connect\nrows\ndisconnect", "connect\nAttributeError", "connect\nNone\ndisconnect"]
+  answer: 0
+  explanation: "`__enter__` לא מחזירה דבר, ולכן `conn` הוא `None`. הקריאה `conn.query()` זורקת `AttributeError`, ולפני שהחריגה עוצרת את התוכנית נקראת `__exit__` ומדפיסה `disconnect`. התיקון: `return self` בסוף `__enter__`."
+  optionExplanations:
+    "1": "`as conn` מקבל את ערך ההחזרה של `__enter__`, לא את האובייקט `Connection()`."
+    "2": "`__exit__` נקראת גם כשנזרקת חריגה בתוך הבלוק, ולכן `disconnect` מודפס לפני שהתוכנית נעצרת."
+    "3": "`conn` הוא `None`, ול-`None` אין מתודה `query`, ולכן נזרקת חריגה ולא מודפס `None`."
+
+- id: py.exceptions.context-managers.009
+  type: bug
+  difficulty: 2
+  prompt: מנהל ההקשר אמור להדפיס `closed` ביציאה ולתת לכל חריגה מתוך הבלוק להמשיך הלאה. באיזו שורה הבאג?
+  code: |
+    class Session:
+        def __enter__(self):
+            print("opened")
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            print("closed")
+            return True
+  answer: 8
+  explanation: "ערך אמת שמוחזר מ-`__exit__` אומר ל-Python שהחריגה טופלה, ולכן כל חריגה בתוך הבלוק נבלעת בשקט. כדי שהחריגה תמשיך, מחזירים `False` או לא מחזירים דבר (`None`)."
+  fixed: |
+    class Session:
+        def __enter__(self):
+            print("opened")
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            print("closed")
+            return False
+
+- id: py.exceptions.context-managers.010
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה לכתוב לקובץ את כל השורות ואחריהן שורה `END`. באיזו שורה הבאג?
+  code: |
+    def save_report(path, lines):
+        with open(path, "w") as f:
+            for line in lines:
+                f.write(line + "\n")
+        f.write("END\n")
+  answer: 5
+  explanation: "השורה האחרונה נמצאת מחוץ לבלוק `with`, ושם הקובץ כבר נסגר. המשתנה `f` עדיין קיים, אבל כתיבה לקובץ סגור זורקת `ValueError: I/O operation on closed file`. צריך להזיח את השורה לתוך הבלוק."
+  fixed: |
+    def save_report(path, lines):
+        with open(path, "w") as f:
+            for line in lines:
+                f.write(line + "\n")
+            f.write("END\n")
+
+- id: py.exceptions.context-managers.011
+  type: bug
+  difficulty: 3
+  prompt: המחלקה אמורה לשמש ב-`with` ולהגדיל את רמת ההזחה בכניסה ולהקטין אותה ביציאה. באיזו שורה הבאג?
+  code: |
+    class Indent:
+        def __init__(self):
+            self.level = 0
+
+        def __enter__(self):
+            self.level += 1
+            return self
+
+        def __exit__(self):
+            self.level -= 1
+  answer: 9
+  explanation: "Python קוראת ל-`__exit__` תמיד עם שלושה ארגומנטים מלבד `self`: סוג החריגה, החריגה וה-traceback (או שלושה `None`). חתימה בלי הפרמטרים האלה גורמת ל-`TypeError` ביציאה מכל בלוק `with`."
+  fixed: |
+    class Indent:
+        def __init__(self):
+            self.level = 0
+
+        def __enter__(self):
+            self.level += 1
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            self.level -= 1
+
+- id: py.exceptions.context-managers.012
+  type: truefalse
+  difficulty: 1
+  prompt: "כדי שאפשר יהיה להשתמש באובייקט ב-`with`, המחלקה שלו צריכה להגדיר את `__enter__` ואת `__exit__`."
+  answer: true
+  explanation: "אלה שתי המתודות של פרוטוקול מנהל ההקשר (Context Manager Protocol). `__enter__` נקראת בכניסה לבלוק ו-`__exit__` ביציאה ממנו. אובייקט בלי אחת מהן יגרום ל-`TypeError` בשורת ה-`with`."
+
+- id: py.exceptions.context-managers.013
+  type: truefalse
+  difficulty: 2
+  prompt: "אחרי שבלוק `with open(path) as f:` מסתיים, המשתנה `f` כבר לא קיים."
+  answer: false
+  explanation: "`with` לא יוצר טווח הכרה (Scope) חדש, ולכן `f` ממשיך להתקיים אחרי הבלוק. מה שהשתנה הוא שהקובץ סגור: `f.closed` הוא `True`, וכל ניסיון לקרוא או לכתוב בו יזרוק `ValueError`."
+
+- id: py.exceptions.context-managers.014
+  type: single
+  difficulty: 2
+  prompt: "איזה ערכים מקבלת `__exit__(self, exc_type, exc, tb)` כשגוף הבלוק הסתיים בלי חריגה?"
+  options:
+    - "`None`, `None`, `None`"
+    - "`False`, `False`, `False`"
+    - "את ערך ההחזרה של `__enter__` בפרמטר הראשון, ו-`None` בשניים האחרים"
+    - "היא לא נקראת בכלל כשאין חריגה"
+  answer: 0
+  explanation: "`__exit__` נקראת תמיד ביציאה מהבלוק. כשאין חריגה, שלושת הפרמטרים הם `None`, וכך המתודה יכולה לבדוק `if exc_type is None` ולדעת אם הבלוק הצליח."
+  optionExplanations:
+    "1": "הערך שמסמן חוסר חריגה הוא `None`, לא `False`."
+    "2": "ערך ההחזרה של `__enter__` מגיע רק למשתנה שאחרי `as`, לא ל-`__exit__`."
+    "3": "`__exit__` רצה בכל יציאה מהבלוק, בדיוק כמו `finally`. רק כך אפשר לשחרר משאבים תמיד."
+
+- id: py.exceptions.context-managers.015
+  type: single
+  difficulty: 3
+  prompt: "בשורה `with open(\"a.txt\") as src, open(\"b.txt\", \"w\") as dst:` הקובץ `a.txt` נפתח בהצלחה, אבל הפתיחה של `b.txt` נכשלת וזורקת חריגה. מה קורה ל-`a.txt`?"
+  options:
+    - "הוא נסגר אוטומטית, כי מנהל ההקשר שלו כבר נכנס לפעולה"
+    - "הוא נשאר פתוח, כי גוף הבלוק לא התחיל לרוץ"
+    - "הוא נסגר רק אם יש `except` שתופס את החריגה"
+    - "הוא נשאר פתוח עד שהמשתנה `src` נמחק"
+  answer: 0
+  explanation: "שני מנהלי הקשר בשורה אחת מתנהגים כמו `with` מקוננים. ה-`with` של `a.txt` כבר נכנס, וה-`open` השני נכשל בתוכו, ולכן ביציאה בגלל החריגה נקראת `__exit__` של `a.txt` והוא נסגר. אחר כך החריגה ממשיכה לעלות."
+  optionExplanations:
+    "1": "`__exit__` נקראת לכל מנהל הקשר שכבר נכנס, גם אם הבלוק עצמו לא התחיל."
+    "2": "הסגירה לא תלויה בתפיסת החריגה. היא קורית בכל מקרה, והחריגה ממשיכה לעלות."
+    "3": "`with` לא מסתמך על מחיקת המשתנה. הוא סוגר את הקובץ במפורש ביציאה מההקשר."
+
+- id: py.exceptions.context-managers.016
+  type: cleaner
+  difficulty: 1
+  prompt: שתי הגרסאות מתנהגות אותו דבר. איזו נקייה יותר?
+  options:
+    - |
+      def read_config(path):
+          with open(path) as f:
+              return f.read()
+    - |
+      def read_config(path):
+          f = open(path)
+          try:
+              return f.read()
+          finally:
+              f.close()
+  answer: 0
+  explanation: "`with` עושה בדיוק את מה ש-`try` ו-`finally` עושים כאן: סוגר את הקובץ בכל מקרה. הוא קצר יותר, ואי אפשר לשכוח בו את הסגירה או לכתוב אותה במקום הלא נכון."
+  optionExplanations:
+    "1": "הקוד נכון, אבל הוא מממש ידנית את מה שמנהל ההקשר של הקובץ כבר עושה."

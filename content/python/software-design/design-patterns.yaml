@@ -1,0 +1,405 @@
+- id: py.software-design.design-patterns.001
+  type: single
+  difficulty: 1
+  prompt: "באפליקציית משלוחים, חישוב המחיר תלוי בשיטה שהלקוח בוחר: רגיל, מהיר או איסוף עצמי. רוצים להחליף את החישוב בזמן ריצה בלי שרשרת `if`. איזו תבנית מתאימה?"
+  options:
+    - "אסטרטגיה - Strategy"
+    - "יחידון - Singleton"
+    - "מתאם - Adapter"
+    - "מאגר - Repository"
+  answer: 0
+  explanation: "תבנית אסטרטגיה (Strategy) מגדירה משפחה של אלגוריתמים מתחלפים עם ממשק משותף. כל שיטת משלוח היא אסטרטגיה, והקוד שמחשב את ההזמנה מקבל אחת מהן ומפעיל אותה."
+  optionExplanations:
+    "1": "יחידון מבטיח מופע אחד של מחלקה. כאן צריך כמה חישובים מתחלפים."
+    "2": "מתאם מתרגם ממשק קיים לממשק אחר. כאן אין ממשק זר להתאים."
+    "3": "מאגר מסתיר גישה לנתונים, לא בחירה בין אלגוריתמים."
+
+- id: py.software-design.design-patterns.002
+  type: single
+  difficulty: 1
+  prompt: "כשמחיר מניה משתנה צריך לעדכן גרף, לשלוח התראה ולכתוב ליומן, ומחלקת המניה לא אמורה להכיר אף אחד מהם. איזו תבנית מתאימה?"
+  options:
+    - "צופה - Observer"
+    - "מפעל - Factory"
+    - "אסטרטגיה - Strategy"
+    - "יחידון - Singleton"
+  answer: 0
+  explanation: "בתבנית צופה (Observer) הנושא (Subject) מחזיק רשימה של צופים ומודיע לכולם כשמשהו משתנה. המניה מכירה רק את הממשק של הצופה, ואפשר להוסיף צופה חדש בלי לשנות אותה."
+  optionExplanations:
+    "1": "מפעל עוסק ביצירת אובייקטים, לא בהודעה על שינויים."
+    "2": "אסטרטגיה מחליפה אלגוריתם אחד. כאן צריך להודיע לכמה מקבלים בבת אחת."
+    "3": "יחידון לא עוזר להודיע לכמה מקבלים."
+
+- id: py.software-design.design-patterns.003
+  type: single
+  difficulty: 2
+  prompt: "המערכת עובדת רק עם חיישנים שיש להם `read_celsius`. איזו תבנית מממשת `CelsiusSensor`?"
+  code: |
+    class LegacyThermometer:
+        def read_fahrenheit(self) -> float:
+            return 98.6
+
+
+    class CelsiusSensor:
+        def __init__(self, legacy: LegacyThermometer):
+            self.legacy = legacy
+
+        def read_celsius(self) -> float:
+            return (self.legacy.read_fahrenheit() - 32) * 5 / 9
+  options:
+    - "מתאם - Adapter"
+    - "אסטרטגיה - Strategy"
+    - "צופה - Observer"
+    - "מפעל - Factory"
+  answer: 0
+  explanation: "מתאם (Adapter) עוטף אובייקט קיים עם ממשק לא מתאים, ומציג את הממשק שהמערכת מצפה לו. `CelsiusSensor` מתרגם את `read_fahrenheit` ל-`read_celsius`, בלי לשנות את `LegacyThermometer`."
+  optionExplanations:
+    "1": "אין כאן כמה אלגוריתמים מתחלפים. יש תרגום של ממשק אחד לממשק אחר."
+    "2": "אין כאן רשימת מאזינים או הודעה על שינוי."
+    "3": "המחלקה לא יוצרת אובייקטים. היא עוטפת אובייקט קיים."
+
+- id: py.software-design.design-patterns.004
+  type: single
+  difficulty: 2
+  prompt: איזו תבנית עיצוב מממשת הפונקציה?
+  code: |
+    def create_parser(file_name: str) -> Parser:
+        if file_name.endswith(".csv"):
+            return CsvParser()
+        if file_name.endswith(".json"):
+            return JsonParser()
+        raise ValueError(f"unsupported file: {file_name}")
+  options:
+    - "מפעל - Factory"
+    - "אסטרטגיה - Strategy"
+    - "מתאם - Adapter"
+    - "יחידון - Singleton"
+  answer: 0
+  explanation: "מפעל (Factory) מרכז במקום אחד את ההחלטה איזו מחלקה ליצור. הקוד שקורא ל-`create_parser` מקבל `Parser` ולא יודע אם נוצר `CsvParser` או `JsonParser`. בהוספת פורמט משנים רק את המפעל."
+  optionExplanations:
+    "1": "המפענחים עצמם יכולים לשמש כאסטרטגיות, אבל הפונקציה הזאת לא מפענחת. התפקיד שלה הוא ליצור את המפענח המתאים."
+    "2": "אין כאן עטיפה של אובייקט קיים עם ממשק אחר."
+    "3": "כל קריאה יוצרת אובייקט חדש, ולכן זה לא יחידון."
+
+- id: py.software-design.design-patterns.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Config:
+        _instance = None
+
+        def __new__(cls):
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+                cls._instance.values = {}
+            return cls._instance
+
+    a = Config()
+    b = Config()
+    a.values["mode"] = "dark"
+    print(b.values["mode"], a is b)
+  options: ["dark True", "KeyError", "dark False", "None True"]
+  answer: 0
+  explanation: "זה מימוש של יחידון (Singleton) עם `__new__`: הקריאה הראשונה יוצרת את המופע ושומרת אותו ב-`_instance`, והקריאה השנייה מחזירה את אותו מופע. לכן `a` ו-`b` הם אותו אובייקט, והשינוי דרך `a` נראה דרך `b`."
+  optionExplanations:
+    "1": "`KeyError` היה נזרק אם `b` היה מופע נפרד עם מילון ריק. כאן `b` הוא אותו מופע."
+    "2": "`__new__` מחזירה את המופע השמור, ולכן `a is b` הוא `True`."
+    "3": "המפתח `mode` קיים, כי `a` ו-`b` חולקים את אותו מילון."
+
+- id: py.software-design.design-patterns.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Button:
+        def __init__(self):
+            self.listeners = []
+        def subscribe(self, fn):
+            self.listeners.append(fn)
+        def click(self):
+            for fn in self.listeners:
+                fn("click")
+
+    log = []
+    b = Button()
+    b.subscribe(lambda e: log.append(e))
+    b.subscribe(lambda e: log.append(e.upper()))
+    b.click()
+    b.click()
+    print(log)
+  options:
+    - "['click', 'CLICK', 'click', 'CLICK']"
+    - "['click', 'click', 'CLICK', 'CLICK']"
+    - "['click', 'CLICK']"
+    - "['CLICK', 'CLICK']"
+  answer: 0
+  explanation: "זו תבנית צופה (Observer): בכל `click` הכפתור קורא לכל המאזינים לפי סדר ההרשמה. כל לחיצה מוסיפה `click` ואחריו `CLICK`, ושתי לחיצות נותנות ארבעה פריטים."
+  optionExplanations:
+    "1": "הלולאה עוברת על כל המאזינים בכל לחיצה, ולא מאזין אחד על כל הלחיצות."
+    "2": "`click` נקראת פעמיים, ובכל פעם שני המאזינים רצים."
+    "3": "המאזין השני לא מחליף את הראשון. שניהם נשארים ברשימה."
+
+- id: py.software-design.design-patterns.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def regular(price):
+        return price
+
+    def vip(price):
+        return price * 0.8
+
+    class Checkout:
+        def __init__(self, pricing):
+            self.pricing = pricing
+        def total(self, prices):
+            return sum(self.pricing(p) for p in prices)
+
+    c = Checkout(regular)
+    first = c.total([100, 50])
+    c.pricing = vip
+    print(first, c.total([100, 50]))
+  options: ["150 120.0", "150 120", "120.0 120.0", "150 150"]
+  answer: 0
+  explanation: "בפייתון פונקציה יכולה לשמש כאסטרטגיה (Strategy). `first` חושב עם `regular` ונשמר כ-`150`. אחר כך מחליפים את האסטרטגיה ל-`vip`, שמחזירה `80.0` ו-`40.0`, וסכומם `120.0`. כפל ב-`0.8` מחזיר `float`."
+  optionExplanations:
+    "1": "`price * 0.8` מחזיר `float`, ולכן הסכום הוא `120.0` ולא `120`."
+    "2": "`first` חושב לפני ההחלפה ונשמר כמספר. החלפת האסטרטגיה לא משנה אותו."
+    "3": "ההשמה `c.pricing = vip` מחליפה את האסטרטגיה, והחישוב השני משתמש בה."
+
+- id: py.software-design.design-patterns.008
+  type: cleaner
+  difficulty: 2
+  prompt: "צפויות להתווסף עוד שיטות משלוח רבות, ולכל אחת חישוב משלה. איזו גרסה נקייה יותר?"
+  options:
+    - |
+      def standard(weight: float) -> float:
+          return 20 + weight * 2
+
+
+      def express(weight: float) -> float:
+          return 45 + weight * 3
+
+
+      SHIPPING_RATES = {"standard": standard, "express": express}
+
+
+      def shipping_cost(method: str, weight: float) -> float:
+          return SHIPPING_RATES[method](weight)
+    - |
+      def shipping_cost(method: str, weight: float) -> float:
+          if method == "standard":
+              return 20 + weight * 2
+          elif method == "express":
+              return 45 + weight * 3
+          else:
+              raise KeyError(method)
+  answer: 0
+  explanation: "בגרסה הנבחרת כל חישוב הוא אסטרטגיה בפונקציה משלה, ומילון ממפה שם של שיטה לאסטרטגיה. שיטה חדשה היא פונקציה חדשה ושורה במילון, ו-`shipping_cost` לא משתנה. אפשר גם לבדוק כל חישוב לבד."
+  optionExplanations:
+    "1": "כל שיטה חדשה מוסיפה `elif` לאותה פונקציה, והיא תלך ותגדל. זו הפרה של עקרון פתוח לסגור."
+
+- id: py.software-design.design-patterns.009
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה משתמשת נכון בתבנית מאגר (Repository)?
+  options:
+    - |
+      class UserService:
+          def __init__(self, users: UserRepository):
+              self.users = users
+
+          def register(self, email: str) -> None:
+              if self.users.find_by_email(email) is not None:
+                  raise ValueError("email taken")
+              self.users.add(email)
+    - |
+      class UserService:
+          def __init__(self, conn: sqlite3.Connection):
+              self.conn = conn
+
+          def register(self, email: str) -> None:
+              row = self.conn.execute(
+                  "SELECT 1 FROM users WHERE email = ?", (email,)
+              ).fetchone()
+              if row is not None:
+                  raise ValueError("email taken")
+              self.conn.execute("INSERT INTO users (email) VALUES (?)", (email,))
+  answer: 0
+  explanation: "מאגר (Repository) מציג לשירות פעולות במונחים של התחום, כמו `find_by_email` ו-`add`, ומסתיר את ה-SQL. השירות נשאר קצר ומתאר רק את הכלל, ובבדיקה אפשר להעביר לו מאגר בזיכרון."
+  optionExplanations:
+    "1": "השירות כותב SQL בעצמו, כלומר הלוגיקה העסקית קשורה ל-SQLite. מעבר למסד אחר או בדיקה בלי מסד מחייבים לשנות את השירות."
+
+- id: py.software-design.design-patterns.010
+  type: hierarchy
+  difficulty: 1
+  prompt: לכל זוג מחלקות בקוד, בחרו את סוג היחס ביניהן.
+  code: |
+    from abc import ABC, abstractmethod
+
+    class PaymentGateway(ABC):
+        @abstractmethod
+        def pay(self, amount: float) -> str: ...
+
+    class StripeClient:  # third-party library
+        def create_charge(self, cents: int) -> dict: ...
+
+    class StripeAdapter(PaymentGateway):
+        def __init__(self):
+            self.client = StripeClient()
+
+        def pay(self, amount: float) -> str:
+            return self.client.create_charge(int(amount * 100))["id"]
+
+    class Checkout:
+        def __init__(self, gateway: PaymentGateway):
+            self.gateway = gateway
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "StripeAdapter ו-PaymentGateway"
+      answer: is-a
+      why: "המתאם יורש מהממשק שהמערכת מצפה לו."
+    - label: "StripeAdapter ו-StripeClient"
+      answer: has-a
+      why: "המתאם מחזיק את הספרייה החיצונית ומתרגם אליה קריאות. הוא לא יורש ממנה."
+    - label: "Checkout ו-PaymentGateway"
+      answer: has-a
+      why: "הקופה מחזיקה שער תשלום כלשהו ולא יודעת שמדובר ב-Stripe."
+  explanation: "במתאם (Adapter) יש שני יחסים: is-a כלפי הממשק של המערכת, ו-has-a כלפי האובייקט הזר שהוא עוטף. כך `Checkout` עובדת עם `PaymentGateway` בלבד, ואפשר להחליף ספק תשלומים בלי לגעת בה."
+
+- id: py.software-design.design-patterns.011
+  type: single
+  difficulty: 3
+  prompt: "מה החיסרון העיקרי של יחידון (Singleton) כמו `Config` גלובלי, שכל המחלקות ניגשות אליו ישירות עם `Config()`?"
+  options:
+    - "הוא יוצר מצב גלובלי (Global State) ותלות נסתרת, ולכן קשה להחליף אותו בבדיקות"
+    - "הוא צורך יותר זיכרון, כי כל מחלקה מקבלת עותק משלה"
+    - "אי אפשר לממש אותו בפייתון, כי אין בה מילה שמורה `static`"
+    - "הוא מאט את התוכנית, כי כל גישה אליו יוצרת אובייקט חדש"
+  answer: 0
+  explanation: "החתימה של מחלקה שקוראת ל-`Config()` לא מגלה שהיא תלויה בהגדרות, ובדיקה אחת שמשנה את ההגדרות משפיעה על כל הבדיקות שאחריה. לכן עדיף ליצור את האובייקט פעם אחת ולהעביר אותו כפרמטר למי שצריך."
+  optionExplanations:
+    "1": "להפך: היחידון קיים בדיוק פעם אחת, וכולם חולקים אותו."
+    "2": "אפשר לממש יחידון בפייתון, למשל עם `__new__` או עם מופע ברמת המודול."
+    "3": "יחידון יוצר את האובייקט רק בפעם הראשונה ומחזיר אותו בכל פעם אחר כך."
+
+- id: py.software-design.design-patterns.012
+  type: truefalse
+  difficulty: 1
+  prompt: "תבנית מאגר (Repository) מסתירה מהלוגיקה העסקית את פרטי האחסון, כך שהשירות קורא למתודות כמו `find_by_id` במקום לכתוב שאילתות SQL."
+  answer: true
+  explanation: "זו מטרת התבנית: ממשק בשפת התחום, למשל `find_by_id` ו-`add`, שמאחוריו SQL, קבצים או זיכרון. השירות לא יודע איפה הנתונים נשמרים."
+
+- id: py.software-design.design-patterns.013
+  type: truefalse
+  difficulty: 1
+  prompt: "בתבנית מתאם (Adapter) משנים את הקוד של הספרייה החיצונית כדי שתתאים לממשק שהמערכת מצפה לו."
+  answer: false
+  explanation: "המתאם עוטף את הספרייה ולא נוגע בה. בדרך כלל אי אפשר לשנות קוד של ספרייה חיצונית, וגם לא כדאי, כי השינוי יימחק בעדכון הבא. המתאם מתרגם קריאות מהממשק של המערכת לממשק של הספרייה."
+
+- id: py.software-design.design-patterns.014
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת מעקב המניות, שבנויה לפי תבנית צופה (Observer).
+  requirement: "כשמחיר של מניה משתנה, גרף המחירים מתעדכן, ומשתמש שהגדיר סף מקבל SMS אם המחיר ירד מתחתיו. מחלקת המניה לא מייבאת את הגרף ולא את ההתראות."
+  targets:
+    - id: observer.py
+      desc: ממשק הצופה, בלי מימוש
+    - id: stock.py
+      desc: "הנושא (Subject): המניה, שמחזיקה רשימת צופים"
+    - id: price_chart.py
+      desc: הגרף שמציג את המחירים
+    - id: price_alerts.py
+      desc: התראות SMS כשהמחיר יורד מתחת לסף
+  items:
+    - label: "class StockObserver(Protocol): def on_price_change(self, symbol: str, price: float) -> None"
+      answer: observer.py
+      why: "הממשק שכל צופה מממש, והמניה מכירה רק אותו."
+    - label: "Stock.attach(self, observer: StockObserver) -> None"
+      answer: stock.py
+      why: "הרשמה של צופה היא חלק מהנושא."
+    - label: "Stock.set_price(self, price: float) -> None"
+      answer: stock.py
+      why: "משנה את המחיר ומודיעה לכל הצופים ברשימה."
+    - label: "class PriceChart: def on_price_change(self, symbol: str, price: float) -> None"
+      answer: price_chart.py
+      why: "צופה שמוסיף נקודה לגרף."
+    - label: "class PriceAlert: def __init__(self, threshold: float, phone: str)"
+      answer: price_alerts.py
+      why: "צופה שמחזיק את הסף ואת מספר הטלפון, ושולח SMS כשצריך."
+  explanation: "המניה תלויה רק ב-`StockObserver`, ולא ב-`PriceChart` או ב-`PriceAlert`. צופה חדש, למשל יומן, הוא קובץ חדש שמממש את הממשק ונרשם עם `attach`, ו-`stock.py` לא משתנה."
+
+- id: py.software-design.design-patterns.015
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מודול ייצוא הדוחות, שמשלב מפעל (Factory) ואסטרטגיה (Strategy).
+  requirement: "המשתמש בוחר פורמט לייצוא דוח המכירות: CSV או JSON. הקוד שמכין את הדוח לא יודע באיזה פורמט מדובר, והוספת פורמט PDF בעתיד תשנה רק את המפעל ותוסיף קובץ אחד."
+  targets:
+    - id: exporters/base.py
+      desc: ההפשטה של מייצא, בלי מימוש
+    - id: exporters/csv_exporter.py
+      desc: ייצוא ל-CSV
+    - id: exporters/json_exporter.py
+      desc: ייצוא ל-JSON
+    - id: exporters/factory.py
+      desc: בחירת המייצא לפי שם הפורמט
+    - id: report_service.py
+      desc: הכנת נתוני הדוח וייצוא שלו
+  items:
+    - label: "class Exporter(ABC): def export(self, rows: list[dict]) -> bytes"
+      answer: exporters/base.py
+      why: "הממשק המשותף לכל האסטרטגיות."
+    - label: "class CsvExporter(Exporter)"
+      answer: exporters/csv_exporter.py
+      why: "אסטרטגיה אחת."
+    - label: "class JsonExporter(Exporter): def __init__(self, indent: int = 2)"
+      answer: exporters/json_exporter.py
+      why: "אסטרטגיה שנייה, עם הגדרה שרלוונטית רק ל-JSON."
+    - label: "def create_exporter(fmt: str) -> Exporter"
+      answer: exporters/factory.py
+      why: "המקום היחיד שמכיר את כל המימושים ומחליט איזה ליצור."
+    - label: "def sales_rows(month: date) -> list[dict]"
+      answer: report_service.py
+      why: "הכנת נתוני הדוח לא תלויה בפורמט."
+    - label: "def export_sales(month: date, exporter: Exporter) -> bytes"
+      answer: report_service.py
+      why: "מקבלת מייצא כלשהו ומפעילה אותו, בלי לדעת איזה הוא."
+  explanation: "המפעל יוצר, האסטרטגיה מבצעת, והשירות רק משתמש. `report_service.py` תלוי ב-`Exporter` בלבד, ולכן הוספת PDF היא קובץ `pdf_exporter.py` ושורה אחת ב-`create_exporter`."
+
+- id: py.software-design.design-patterns.016
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת המרת המחירים, שמשלבת מתאם (Adapter) ומאגר (Repository).
+  requirement: "חנות מציגה מחירים במטבע שהלקוח בוחר. שערי המטבע מגיעים מספרייה ישנה שמחזירה XML, והמחירים בשקלים שמורים במסד. החנות צריכה לעבוד גם עם ספק שערים אחר בעתיד."
+  targets:
+    - id: rates.py
+      desc: ההפשטה של ספק שערים, בלי מימוש
+    - id: adapters/legacy_xml_rates.py
+      desc: מתאם לספרייה הישנה
+    - id: product_repository.py
+      desc: גישה למחירי המוצרים במסד
+    - id: pricing_service.py
+      desc: חישוב המחירים במטבע המבוקש
+  items:
+    - label: "class RateProvider(ABC): def rate(self, currency: str) -> Decimal"
+      answer: rates.py
+      why: "הממשק שהחנות מצפה לו מכל ספק שערים."
+    - label: "class LegacyXmlRates(RateProvider): def __init__(self, client: LegacyXmlClient)"
+      answer: adapters/legacy_xml_rates.py
+      why: "המתאם מממש את `RateProvider` ומחזיק את הלקוח הישן."
+    - label: "def parse_rate_xml(xml_text: str) -> Decimal"
+      answer: adapters/legacy_xml_rates.py
+      why: "XML הוא פורמט של הספרייה הישנה בלבד. רק המתאם צריך לדעת עליו."
+    - label: "ProductRepository.prices_ils(self) -> dict[str, Decimal]"
+      answer: product_repository.py
+      why: "שליפת המחירים מהמסד."
+    - label: "def prices_in(currency: str, rates: RateProvider, products: ProductRepository) -> dict[str, Decimal]"
+      answer: pricing_service.py
+      why: "הלוגיקה מקבלת ספק שערים ומאגר מופשטים, ולא יודעת על XML או על SQL."
+  explanation: "המתאם מסתיר את הספרייה הזרה, והמאגר מסתיר את המסד. שירות התמחור תלוי רק בהפשטות, ולכן ספק שערים חדש הוא מתאם חדש, ושום קוד אחר לא משתנה."

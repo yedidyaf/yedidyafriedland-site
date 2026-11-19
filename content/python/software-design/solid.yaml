@@ -1,0 +1,420 @@
+- id: py.software-design.solid.001
+  type: single
+  difficulty: 1
+  prompt: איזה עיקרון SOLID המחלקה מפרה בצורה הבולטת ביותר?
+  code: |
+    class SalesReport:
+        def __init__(self, sales: list[float]):
+            self.sales = sales
+
+        def total(self) -> float:
+            return sum(self.sales)
+
+        def save_pdf(self, path: str) -> None:
+            ...
+
+        def email_to_manager(self, address: str) -> None:
+            ...
+  options:
+    - "אחריות יחידה - Single Responsibility"
+    - "פתוח לסגור - Open/Closed"
+    - "החלפת ליסקוב - Liskov Substitution"
+    - "הפרדת ממשקים - Interface Segregation"
+  answer: 0
+  explanation: "למחלקה יש שלוש סיבות להשתנות: אופן החישוב, פורמט ה-PDF ואופן שליחת האימייל. לפי עקרון האחריות היחידה (Single Responsibility) מפצלים אותה: `SalesReport` מחשבת, `PdfExporter` שומר ו-`ReportMailer` שולח."
+  optionExplanations:
+    "1": "פתוח לסגור עוסק בהוספת התנהגות בלי לשנות קוד קיים. כאן הבעיה היא ריבוי אחריויות במחלקה אחת."
+    "2": "אין כאן ירושה, ולכן אין מחלקה יורשת שאפשר להחליף בה את מחלקת הבסיס."
+    "3": "אין כאן ממשק שמחלקות נאלצות לממש. הבעיה היא שהמחלקה עצמה עושה יותר מדי."
+
+- id: py.software-design.solid.002
+  type: single
+  difficulty: 2
+  prompt: "בכל פעם שמוסיפים צורה חדשה, צריך לפתוח את הפונקציה ולהוסיף `elif`. איזה עיקרון מופר?"
+  code: |
+    def area(shape: dict) -> float:
+        if shape["kind"] == "circle":
+            return 3.14159 * shape["r"] ** 2
+        elif shape["kind"] == "square":
+            return shape["side"] ** 2
+        elif shape["kind"] == "triangle":
+            return shape["base"] * shape["height"] / 2
+        raise ValueError(shape["kind"])
+  options:
+    - "פתוח לסגור - Open/Closed"
+    - "אחריות יחידה - Single Responsibility"
+    - "החלפת ליסקוב - Liskov Substitution"
+    - "היפוך תלויות - Dependency Inversion"
+  answer: 0
+  explanation: "עקרון פתוח לסגור (Open/Closed) אומר שמוסיפים התנהגות בקוד חדש, בלי לשנות קוד שכבר עובד. התיקון: מחלקת בסיס `Shape` עם מתודה `area`, ומחלקה לכל צורה. צורה חדשה היא מחלקה חדשה, והפונקציות הקיימות לא משתנות."
+  optionExplanations:
+    "1": "לפונקציה יש אחריות אחת, חישוב שטח. הבעיה היא שכל הרחבה מחייבת לשנות אותה."
+    "2": "אין כאן ירושה, ולכן אין מחלקה יורשת שמפרה את החוזה של מחלקת הבסיס."
+    "3": "הפונקציה לא תלויה במימוש של מודול אחר. הבעיה היא שרשרת ה-`elif` שגדלה."
+
+- id: py.software-design.solid.003
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Rectangle:
+        def __init__(self, w, h):
+            self.w, self.h = w, h
+        def set_width(self, w):
+            self.w = w
+        def area(self):
+            return self.w * self.h
+
+    class Square(Rectangle):
+        def set_width(self, w):
+            self.w = self.h = w
+
+    def stretch(r):
+        r.set_width(10)
+        return r.area()
+
+    print(stretch(Rectangle(2, 5)), stretch(Square(5, 5)))
+  options: ["50 100", "50 50", "50 25", "100 100"]
+  answer: 0
+  explanation: "המלבן מקבל רוחב 10 וגובהו נשאר 5, ולכן 50. בריבוע `set_width` משנה גם את הגובה, ולכן 10 כפול 10 שווה 100. `stretch` מניחה שהגובה לא משתנה, ו-`Square` שובר את ההנחה הזאת. זו הפרה של עקרון החלפת ליסקוב (Liskov Substitution): אי אפשר להעביר ריבוע לכל מקום שמצפה למלבן."
+  optionExplanations:
+    "1": "זה היה נכון אם `Square` לא היה דורס את `set_width`. הוא דורס אותה ומשנה גם את `h`."
+    "2": "`set_width(10)` נקראת לפני `area`, ולכן הריבוע כבר לא 5 על 5."
+    "3": "המלבן משנה רק את הרוחב, וגובהו נשאר 5."
+
+- id: py.software-design.solid.004
+  type: single
+  difficulty: 2
+  prompt: "`Robot` נאלץ לממש מתודה שאין לו בה צורך. איזה עיקרון מופר, ומה התיקון?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Worker(ABC):
+        @abstractmethod
+        def work(self) -> None: ...
+
+        @abstractmethod
+        def eat_lunch(self) -> None: ...
+
+    class Robot(Worker):
+        def work(self) -> None:
+            print("assembling")
+
+        def eat_lunch(self) -> None:
+            raise NotImplementedError("robots do not eat")
+  options:
+    - "הפרדת ממשקים - Interface Segregation: לפצל את `Worker` להפשטות קטנות, למשל `Workable` ו-`Eater`"
+    - "אחריות יחידה - Single Responsibility: להעביר את `work` למחלקה אחרת"
+    - "היפוך תלויות - Dependency Inversion: להעביר את `Robot` כפרמטר לבנאי של `Worker`"
+    - "פתוח לסגור - Open/Closed: להוסיף ב-`eat_lunch` תנאי שבודק אם העובד הוא רובוט"
+  answer: 0
+  explanation: "לפי עקרון הפרדת הממשקים (Interface Segregation), אסור לכפות על מחלקה לממש מתודות שאין לה בהן צורך. מפצלים את הממשק הגדול לממשקים קטנים, ו-`Robot` יורש רק את `Workable`. בנוסף, מתודה שזורקת `NotImplementedError` שוברת גם את האפשרות להחליף `Worker` ב-`Robot`."
+  optionExplanations:
+    "1": "`work` היא בדיוק מה ש-`Robot` עושה. הבעיה היא המתודה שהוא נאלץ לממש בלי צורך."
+    "2": "הזרקת תלויות לא פותרת את העובדה שהממשק גדול מדי."
+    "3": "בדיקת טיפוס בתוך המתודה היא בדיוק מה שעקרון פתוח לסגור מנסה למנוע."
+
+- id: py.software-design.solid.005
+  type: single
+  difficulty: 2
+  prompt: "`SignupService` יוצר בעצמו `MySqlDatabase`. מה התיקון לפי עקרון היפוך התלויות?"
+  code: |
+    class MySqlDatabase:
+        def insert(self, table: str, row: dict) -> None: ...
+
+    class SignupService:
+        def __init__(self):
+            self.db = MySqlDatabase()
+
+        def signup(self, email: str) -> None:
+            self.db.insert("users", {"email": email})
+  options:
+    - "להגדיר הפשטה `UserStore` עם מתודה `add_user`, ולקבל אותה כפרמטר בבנאי של `SignupService`"
+    - "לגרום ל-`SignupService` לרשת מ-`MySqlDatabase`"
+    - "להעביר את המחלקה `MySqlDatabase` לאותו קובץ של `SignupService`"
+    - "ליצור את `MySqlDatabase` פעם אחת כמשתנה גלובלי ברמת המודול, ולהשתמש בו ב-`signup`"
+  answer: 0
+  explanation: "עקרון היפוך התלויות (Dependency Inversion) אומר שמודול ברמה גבוהה, כמו תהליך ההרשמה, לא תלוי במימוש ברמה נמוכה, כמו MySQL. שניהם תלויים בהפשטה. השירות מקבל `UserStore` מבחוץ, ואפשר להעביר לו MySQL, PostgreSQL או מאגר מזויף לבדיקות."
+  optionExplanations:
+    "1": "ירושה רק מחזקת את הקשר: השירות הופך לסוג של מסד MySQL."
+    "2": "מיקום הקובץ לא משנה את התלות. השירות עדיין יוצר מימוש מסוים."
+    "3": "משתנה גלובלי עדיין קושר את השירות ל-MySQL, ומוסיף מצב גלובלי (Global State) שקשה להחליף בבדיקות."
+
+- id: py.software-design.solid.006
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה שומרת על עקרון האחריות היחידה?
+  options:
+    - |
+      def parse_scores(line: str) -> list[int]:
+          return [int(x) for x in line.split(",")]
+
+
+      def average(scores: list[int]) -> float:
+          return sum(scores) / len(scores)
+
+
+      def report(line: str) -> str:
+          return f"avg={average(parse_scores(line)):.1f}"
+    - |
+      def report(line: str) -> str:
+          scores = []
+          for x in line.split(","):
+              scores.append(int(x))
+          total = 0
+          for s in scores:
+              total += s
+          return f"avg={total / len(scores):.1f}"
+  answer: 0
+  explanation: "בגרסה הנבחרת לכל פונקציה תפקיד אחד: פענוח, חישוב ועיצוב. אפשר להשתמש ב-`average` גם לציונים שהגיעו ממסד נתונים, ולבדוק כל חלק לבד."
+  optionExplanations:
+    "1": "פונקציה אחת מפענחת, מחשבת ומעצבת, כלומר יש לה שלוש סיבות להשתנות. אי אפשר לחשב ממוצע בלי לעבור דרך מחרוזת."
+
+- id: py.software-design.solid.007
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה תואמת את עקרון היפוך התלויות?
+  options:
+    - |
+      class ReminderService:
+          def __init__(self, sender: MessageSender):
+              self.sender = sender
+
+          def remind(self, phone: str) -> None:
+              self.sender.send(phone, "Your appointment is tomorrow")
+    - |
+      class ReminderService:
+          def __init__(self):
+              self.sender = TwilioSmsSender(api_key="abc123")
+
+          def remind(self, phone: str) -> None:
+              self.sender.send(phone, "Your appointment is tomorrow")
+  answer: 0
+  explanation: "בגרסה הנבחרת השירות תלוי בהפשטה `MessageSender` ומקבל את המימוש מבחוץ. אפשר לשלוח SMS, וואטסאפ או מימוש מזויף בבדיקה, בלי לשנות את `ReminderService`."
+  optionExplanations:
+    "1": "השירות יוצר בעצמו ספק SMS מסוים, ואפילו מחזיק את מפתח ה-API שלו. כל החלפת ספק או בדיקה מחייבת לשנות את המחלקה."
+
+- id: py.software-design.solid.008
+  type: hierarchy
+  difficulty: 2
+  prompt: "בעקבות הפרדת הממשקים יש שתי הפשטות קטנות. ממה צריכה לרשת כל מחלקה?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Notifier(ABC):
+        @abstractmethod
+        def send(self, to: str, text: str) -> None: ...
+
+    class FileStorage(ABC):
+        @abstractmethod
+        def save(self, name: str, data: bytes) -> None: ...
+
+        @abstractmethod
+        def load(self, name: str) -> bytes: ...
+  targets:
+    - id: Notifier
+    - id: FileStorage
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: "class SmsNotifier: def send(self, to: str, text: str) -> None"
+      answer: Notifier
+    - label: "class SlackNotifier: def send(self, to: str, text: str) -> None"
+      answer: Notifier
+    - label: "class S3Storage: def save(self, name: str, data: bytes) -> None; def load(self, name: str) -> bytes"
+      answer: FileStorage
+    - label: "class LocalDiskStorage: def save(self, name: str, data: bytes) -> None; def load(self, name: str) -> bytes"
+      answer: FileStorage
+    - label: "class InvoiceService: def __init__(self, storage: FileStorage, notifier: Notifier)"
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "השירות משתמש בשתי ההפשטות דרך הרכבה (has-a). הוא לא סוג של התראה ולא סוג של אחסון."
+  explanation: "כל מימוש יורש רק את ההפשטה שהוא באמת ממלא, ולכן `SmsNotifier` לא נאלץ לממש `save` ו-`load`. `InvoiceService` תלוי בשתי ההפשטות ומקבל אותן בבנאי. זה שילוב של הפרדת ממשקים והיפוך תלויות."
+
+- id: py.software-design.solid.009
+  type: truefalse
+  difficulty: 1
+  prompt: "עקרון האחריות היחידה (Single Responsibility) אומר שלכל מחלקה מותר שתהיה מתודה אחת בלבד."
+  answer: false
+  explanation: "העיקרון עוסק בסיבות לשינוי, לא במספר המתודות. למחלקה `ShoppingCart` יכולות להיות `add`, `remove` ו-`total`, וכולן שייכות לאחריות אחת: ניהול העגלה. ההפרה מתחילה כשאותה מחלקה גם שומרת למסד וגם שולחת אימייל."
+
+- id: py.software-design.solid.010
+  type: truefalse
+  difficulty: 2
+  prompt: "לפי עקרון היפוך התלויות (Dependency Inversion), גם המודול ברמה הגבוהה וגם המודול ברמה הנמוכה צריכים להיות תלויים בהפשטה, ולא זה בזה."
+  answer: true
+  explanation: "זה בדיוק ההגדרה. תהליך ההזמנה (רמה גבוהה) תלוי ב-`OrderRepository` המופשט, וגם `SqlOrderRepository` (רמה נמוכה) תלוי בו, כי הוא מממש אותו. ההפשטה נמצאת באמצע, וכל צד אפשר להחליף בלי לגעת בשני."
+
+- id: py.software-design.solid.011
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מודול התשלומים כך שאמצעי תשלום חדש יתווסף בלי לשנות קוד קיים.
+  requirement: "חנות מקבלת תשלום בכרטיס אשראי וב-PayPal, ובקרוב תתווסף העברה בנקאית. כל אמצעי תשלום מחייב את הלקוח בדרך אחרת, ותהליך הקופה צריך לעבוד עם כל אחד מהם."
+  targets:
+    - id: payments/base.py
+      desc: ההפשטה המשותפת לכל אמצעי התשלום, בלי מימוש
+    - id: payments/credit_card.py
+      desc: חיוב בכרטיס אשראי
+    - id: payments/paypal.py
+      desc: חיוב דרך PayPal
+    - id: checkout.py
+      desc: תהליך הקופה
+  items:
+    - label: "class PaymentMethod(ABC): def charge(self, amount: Decimal) -> Receipt"
+      answer: payments/base.py
+      why: "ההפשטה שכל אמצעי תשלום מממש ושהקופה תלויה בה."
+    - label: "class CreditCardPayment(PaymentMethod): def __init__(self, card_number: str, cvv: str)"
+      answer: payments/credit_card.py
+      why: "מימוש מסוים, עם הנתונים שרק כרטיס אשראי צריך."
+    - label: "def luhn_check(card_number: str) -> bool"
+      answer: payments/credit_card.py
+      why: "אלגוריתם Luhn בודק ספרת ביקורת של מספר כרטיס אשראי. רק המימוש של כרטיס האשראי צריך אותו."
+    - label: "class PayPalPayment(PaymentMethod): def __init__(self, account_email: str)"
+      answer: payments/paypal.py
+      why: "מימוש מסוים של PayPal."
+    - label: "def checkout(cart: Cart, method: PaymentMethod) -> Receipt"
+      answer: checkout.py
+      why: "הקופה מקבלת `PaymentMethod` כללי ולא יודעת איזה מימוש קיבלה."
+  explanation: "כדי להוסיף העברה בנקאית יוצרים קובץ חדש `payments/bank_transfer.py` עם `BankTransferPayment(PaymentMethod)`. `checkout.py` וה-base לא משתנים. זה עקרון פתוח לסגור (Open/Closed): המערכת פתוחה להרחבה וסגורה לשינוי."
+
+- id: py.software-design.solid.012
+  type: architecture
+  difficulty: 3
+  prompt: "מפצלים את המחלקה הענקית `UserManager` לפי עקרון האחריות היחידה. שבצו כל חתימה בקובץ החדש שלה."
+  requirement: "בהרשמה בודקים שהאימייל בפורמט תקין ושאינו רשום כבר, מגבבים את הסיסמה, שומרים את המשתמש ושולחים אימייל ברוכים הבאים. היום כל זה נמצא במחלקה אחת."
+  targets:
+    - id: validation.py
+      desc: בדיקות פורמט של קלט, בלי גישה לנתונים
+    - id: passwords.py
+      desc: גיבוב (Hashing) ואימות של סיסמאות
+    - id: user_repository.py
+      desc: שמירה ושליפה של משתמשים במסד
+    - id: mailer.py
+      desc: שליחת אימיילים דרך SMTP
+    - id: registration.py
+      desc: תהליך ההרשמה, שמתאם בין כל השאר
+  items:
+    - label: "def is_valid_email(email: str) -> bool"
+      answer: validation.py
+      why: "בדיקת פורמט טהורה של מחרוזת, בלי מסד ובלי רשת."
+    - label: "def hash_password(password: str) -> str"
+      answer: passwords.py
+      why: "גיבוב סיסמה הוא אחריות של מודול הסיסמאות."
+    - label: "def verify_password(password: str, hashed: str) -> bool"
+      answer: passwords.py
+      why: "השוואת סיסמה לגיבוב שלה חייבת להשתמש באותו אלגוריתם כמו `hash_password`, ולכן הן יושבות יחד."
+    - label: "def email_exists(email: str) -> bool"
+      answer: user_repository.py
+      why: "כדי לדעת אם האימייל כבר רשום צריך לשאול את המסד. זו לא בדיקת פורמט."
+    - label: "def save_user(user: User) -> None"
+      answer: user_repository.py
+      why: "שמירה במסד היא גישה לנתונים."
+    - label: "def send_email(to: str, subject: str, body: str) -> None"
+      answer: mailer.py
+      why: "שליחת אימייל כללית, בלי ידע על הרשמה."
+    - label: "def register(email: str, password: str) -> User"
+      answer: registration.py
+      why: "הפונקציה קובעת את הסדר: בדיקה, גיבוב, שמירה ושליחה. היא קוראת לכל המודולים האחרים."
+  explanation: "לכל קובץ יש עכשיו סיבה אחת להשתנות: שינוי אלגוריתם גיבוב נוגע רק ב-`passwords.py`, ומעבר לספק אימייל אחר נוגע רק ב-`mailer.py`. `email_exists` היא המלכודת: היא נשמעת כמו בדיקת תקינות, אבל היא שאילתה למסד."
+
+- id: py.software-design.solid.013
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת המדפסות במשרד בקובץ המתאים.
+  requirement: "במשרד יש מדפסות פשוטות שרק מדפיסות, ומכונות משולבות שמדפיסות וסורקות. קוד המשרד מדפיס מסמכים וסורק ארכיון, ואף מכשיר לא אמור לממש פעולה שאין לו."
+  targets:
+    - id: interfaces.py
+      desc: הפשטות קטנות, בלי מימוש
+    - id: basic_printer.py
+      desc: מדפסת פשוטה
+    - id: multifunction.py
+      desc: מכונה משולבת
+    - id: office.py
+      desc: הקוד של המשרד שמשתמש במכשירים
+  items:
+    - label: "class Printer(ABC): def print_doc(self, doc: Document) -> None"
+      answer: interfaces.py
+      why: "הפשטה של יכולת אחת: הדפסה."
+    - label: "class Scanner(ABC): def scan(self) -> Document"
+      answer: interfaces.py
+      why: "הפשטה נפרדת לסריקה, כדי שמדפסת פשוטה לא תיאלץ לממש אותה."
+    - label: "class BasicPrinter(Printer)"
+      answer: basic_printer.py
+      why: "מממשת רק את `Printer`, כי זה כל מה שהיא יודעת לעשות."
+    - label: "class MultiFunctionDevice(Printer, Scanner)"
+      answer: multifunction.py
+      why: "מממשת את שתי ההפשטות, כי יש לה את שתי היכולות."
+    - label: "def print_all(printer: Printer, docs: list[Document]) -> None"
+      answer: office.py
+      why: "קוד שמשתמש במכשיר ודורש רק את היכולת שהוא צריך, `Printer`."
+    - label: "def digitize_archive(scanner: Scanner, pages: int) -> list[Document]"
+      answer: office.py
+      why: "דורש רק `Scanner`, ולכן אפשר להעביר לו כל סורק, משולב או לא."
+  explanation: "הפרדת ממשקים (Interface Segregation): במקום ממשק גדול אחד עם `print_doc`, `scan` ו-`fax`, יש ממשקים קטנים. כל מכשיר מממש רק מה שיש לו, וכל פונקציה במשרד דורשת רק את מה שהיא צריכה."
+
+- id: py.software-design.solid.014
+  type: single
+  difficulty: 3
+  prompt: "כל המחלקות הבאות יורשות מ-`Storage`. איזו מהן מפרה את עקרון החלפת ליסקוב?"
+  code: |
+    class Storage:
+        def save(self, key: str, data: bytes) -> None:
+            """Stores data so that load(key) returns it later."""
+            ...
+
+        def load(self, key: str) -> bytes:
+            ...
+  options:
+    - "`ReadOnlyStorage`, שבה `save` זורקת תמיד `PermissionError`"
+    - "`CachedStorage`, ששומרת עותק בזיכרון ואז קוראת ל-`super().save`"
+    - "`CompressedStorage`, שדוחסת את המידע ב-`save` ופורסת אותו ב-`load`"
+    - "`LoggingStorage`, שכותבת שורת לוג ואז קוראת ל-`super().save`"
+  answer: 0
+  explanation: "עקרון החלפת ליסקוב (Liskov Substitution) דורש שכל מחלקה יורשת תקיים את החוזה של מחלקת הבסיס. החוזה של `save` הוא ש-`load` תחזיר אחר כך את המידע. קוד שמקבל `Storage` וקורא ל-`save` יקרוס כשיקבל `ReadOnlyStorage`. אחסון לקריאה בלבד צריך הפשטה משלו, בלי `save`."
+  optionExplanations:
+    "1": "מטמון (Cache) רק מוסיף התנהגות, והחוזה נשמר: `load` מחזירה את מה שנשמר."
+    "2": "הדחיסה פנימית. מבחוץ `load` עדיין מחזירה בדיוק את מה שהועבר ל-`save`."
+    "3": "כתיבת לוג היא תוספת שלא משנה את מה שהקוד הקורא מקבל."
+
+- id: py.software-design.solid.015
+  type: single
+  difficulty: 1
+  prompt: "מה המשמעות של עקרון פתוח לסגור (Open/Closed)?"
+  options:
+    - "אפשר להוסיף התנהגות חדשה על ידי כתיבת קוד חדש, בלי לשנות קוד קיים שכבר עובד"
+    - "מתודות ציבוריות פתוחות לכל הקוד, ומשתנים פרטיים סגורים בתוך המחלקה"
+    - "כל קובץ נפתח לעריכה פעם אחת, ואחרי שהוא נבדק אסור לגעת בו לעולם"
+    - "מחלקה צריכה להיות פתוחה לירושה, ולכן אסור להגדיר בה מתודות מופשטות"
+  answer: 0
+  explanation: "פתוח להרחבה (Extension) וסגור לשינוי (Modification): תכונה חדשה מגיעה כמחלקה או פונקציה חדשה, למשל `HolidayDiscount`, ולא כעוד `elif` בקוד קיים. כך קוד שכבר נבדק לא נשבר."
+  optionExplanations:
+    "1": "זה תיאור של כימוס (Encapsulation), עיקרון אחר."
+    "2": "מותר ואף צריך לתקן באגים בקוד קיים. העיקרון מדבר על הוספת התנהגות חדשה, לא על איסור לגעת בקוד."
+    "3": "להפך: מתודות מופשטות הן הדרך הנפוצה לאפשר הרחבה."
+
+- id: py.software-design.solid.016
+  type: single
+  difficulty: 1
+  prompt: "רוצים להוסיף הנחת חג. איזה שינוי עומד בעקרון פתוח לסגור?"
+  code: |
+    from abc import ABC, abstractmethod
+
+    class Discount(ABC):
+        @abstractmethod
+        def apply(self, price: float) -> float: ...
+
+    class StudentDiscount(Discount):
+        def apply(self, price: float) -> float:
+            return price * 0.9
+
+    def final_price(price: float, discount: Discount) -> float:
+        return round(discount.apply(price), 2)
+  options:
+    - "לכתוב מחלקה חדשה `HolidayDiscount(Discount)` עם `apply` משלה"
+    - "להוסיף ל-`final_price` תנאי `if isinstance(discount, HolidayDiscount)`"
+    - "להוסיף ל-`final_price` פרמטר `is_holiday: bool`"
+    - "להעתיק את `final_price` לפונקציה חדשה `final_holiday_price`"
+  answer: 0
+  explanation: "המבנה כבר פתוח להרחבה: `final_price` עובדת עם כל `Discount`. מחלקה חדשה מוסיפה את ההתנהגות, ושום שורה קיימת לא משתנה."
+  optionExplanations:
+    "1": "בדיקת טיפוס בתוך `final_price` מחייבת לשנות אותה בכל הנחה חדשה."
+    "2": "דגל בוליאני משנה את חתימת הפונקציה ואת כל מי שקורא לה."
+    "3": "העתקה יוצרת שכפול קוד, וכל תיקון יצטרך להיעשות פעמיים."

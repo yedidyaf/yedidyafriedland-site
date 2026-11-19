@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import { getContent } from '../lib/content';
+import { href } from '../lib/url';
+import { SITE, siteName } from '../site';
+const langs = getContent();
+const count = (l: (typeof langs)[number]) => l.chapters.reduce((n, c) => n + c.topics.reduce((m, t) => m + t.questions.length, 0), 0);
+const total = langs.reduce((n, l) => n + count(l), 0);
+const description = `לומדים Python ו-C# דרך מבחנים: ${total} שאלות עם הסבר מלא, מבחני סימולציה, קוד נקי, OOP וארכיטקטורה. בחינם, בלי הרשמה.`;
+---
+<Base title={siteName} description={description}>
+  <section class="hero container">
+    <h1>לומדים תכנות דרך מבחנים</h1>
+    <p class="lead">
+      כמו תרגול למבחן התאוריה, רק בתכנות. עונים על שאלה, ומיד מקבלים הסבר: למה התשובה נכונה ומה הטעות שמאחורי התשובות האחרות.
+      כל קטע קוד באתר נבדק בהרצה אמיתית.
+    </p>
+    <p class="muted">בלי הרשמה ובלי איסוף מידע. ההתקדמות נשמרת רק בדפדפן שלכם.</p>
+  </section>
+
+  <section class="container">
+    <div class="grid cols-2">
+      {langs.map((l) => (
+        <a class="card lang-card" href={href(`/${l.id}/`)}>
+          <span class="big">{l.title_he} <span class="en">- {l.title_en}</span></span>
+          <span class="muted">{l.description_he}</span>
+          <span class="badge">{count(l)} שאלות · {l.chapters.length} פרקים · {l.title_en} {l.version}</span>
+          <span class="btn" style="align-self:flex-start">להתחיל לתרגל</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container section">
+    <h2>איך זה עובד</h2>
+    <ol class="steps">
+      <li><div><strong>בוחרים נושא.</strong> כל שפה מחולקת לפרקים ולנושאים, מסוגי נתונים ועד ארכיטקטורה.</div></li>
+      <li><div><strong>עונים על שאלות.</strong> חיזוי פלט, מציאת באג, בחירת הקוד הנקי יותר, שיבוץ חתימות בקבצים ובניית יחסי ירושה.</div></li>
+      <li><div><strong>לומדים מההסבר.</strong> אחרי כל תשובה מופיע הסבר קצר, ובשאלות באג גם הקוד המתוקן.</div></li>
+      <li><div><strong>נבחנים בסימולציה.</strong> 30 שאלות, 40 דקות, ציון עובר 85. מד המוכנות מראה מתי אתם מוכנים.</div></li>
+    </ol>
+  </section>
+
+  <section class="container">
+    <div class="card cta">
+      <h2>מי עומד מאחורי האתר</h2>
+      <p>{SITE.name_he} ({SITE.name_en}), מורה לתכנות. כתבתי את האתר כדי שכל אחד יוכל להתאמן ברצינות, בעברית ובחינם.</p>
+      <a class="btn secondary" href={href('/about/')}>עוד עליי</a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,339 @@
+- id: py.oop.special-methods.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Book:
+        def __init__(self, title):
+            self.title = title
+
+        def __str__(self):
+            return f"Book: {self.title}"
+
+    print(Book("Dune"))
+  options: ["Dune", "Book: Dune", "<__main__.Book object at 0x...>", "Book"]
+  answer: 1
+  explanation: "`print` ממירה את האובייקט למחרוזת בעזרת `str()`, שקוראת למתודה המיוחדת (Special Method) `__str__`. כך המחלקה קובעת איך האובייקט שלה ייראה בהדפסה."
+  optionExplanations:
+    "0": "`print` לא בוחרת תכונה בעצמה. היא מדפיסה בדיוק את מה ש-`__str__` מחזירה."
+    "2": "זו תצוגת ברירת המחדל, שמופיעה רק כשאין במחלקה לא `__str__` ולא `__repr__`. כאן `__str__` מוגדרת."
+
+- id: py.oop.special-methods.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Point:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        def __str__(self):
+            return f"({self.x}, {self.y})"
+
+        def __repr__(self):
+            return f"Point({self.x}, {self.y})"
+
+    p = Point(1, 2)
+    print(p, [p])
+  options: ["(1, 2) [(1, 2)]", "Point(1, 2) [Point(1, 2)]", "(1, 2) [Point(1, 2)]", "(1, 2) ['(1, 2)']"]
+  answer: 2
+  explanation: "`print(p)` משתמשת ב-`__str__`, התצוגה הקריאה למשתמש. אבל כשמדפיסים רשימה, הרשימה מציגה כל איבר שלה בעזרת `__repr__`, התצוגה המדויקת למפתחים. לכן אותו אובייקט מופיע פעמיים בשתי צורות שונות."
+  optionExplanations:
+    "0": "רשימה לא קוראת ל-`__str__` של האיברים שלה. היא משתמשת ב-`__repr__` שלהם."
+    "1": "כשיש `__str__`, `print` של האובייקט עצמו משתמשת בה ולא ב-`__repr__`."
+    "3": "הרשימה לא ממירה את האיברים למחרוזות עם `str`. היא מציגה את ה-`__repr__` שלהם, בלי מרכאות נוספות."
+
+- id: py.oop.special-methods.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Coin:
+        def __init__(self, value):
+            self.value = value
+
+    a = Coin(5)
+    b = Coin(5)
+    print(a == b, a == a)
+  options: ["True True", "False False", "TypeError", "False True"]
+  answer: 3
+  explanation: "בלי `__eq__`, האופרטור `==` משווה זהות: האם שני הצדדים הם אותו אובייקט בדיוק. `a` ו-`b` הם שני אובייקטים נפרדים, גם אם הערכים שלהם זהים, ולכן `False`. `a == a` הוא אותו אובייקט, ולכן `True`."
+  optionExplanations:
+    "0": "פייתון לא משווה תכונות אוטומטית. כדי ש-`a == b` יחזיר `True` צריך להגדיר `__eq__`."
+    "1": "אובייקט תמיד שווה לעצמו בהשוואת זהות."
+    "2": "`==` תמיד מוגדר. כשאין `__eq__`, הוא משווה זהות ולא זורק שגיאה."
+
+- id: py.oop.special-methods.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Coin:
+        def __init__(self, value):
+            self.value = value
+
+        def __eq__(self, other):
+            return self.value == other.value
+
+    print(Coin(5) == Coin(5), Coin(5) != Coin(1), Coin(5) is Coin(5))
+  options: ["True False False", "True True True", "False True False", "True True False"]
+  answer: 3
+  explanation: "`__eq__` קובעת מה `==` עושה, וכאן הוא משווה ערכים, ולכן `True`. כשאין `__ne__`, פייתון מחשבת את `!=` כהיפוך של `__eq__`, ולכן `5 != 1` נותן `True`. `is` בודק זהות, ואי אפשר לשנות אותו: שני אובייקטים נפרדים, ולכן `False`."
+  optionExplanations:
+    "0": "לא צריך להגדיר `__ne__` בנפרד. פייתון הופכת את התוצאה של `__eq__`."
+    "1": "`is` לא קורא ל-`__eq__`. הוא בודק אם זה אותו אובייקט בזיכרון."
+    "2": "`__eq__` משווה את `value`, ושני המטבעות הראשונים שווים בערכם."
+
+- id: py.oop.special-methods.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Playlist:
+        def __init__(self, songs):
+            self.songs = songs
+
+        def __len__(self):
+            return len(self.songs)
+
+    p = Playlist(["a", "b", "c"])
+    print(len(p), bool(p), bool(Playlist([])))
+  options: ["3 True False", "3 True True", "TypeError", "1 True True"]
+  answer: 0
+  explanation: "`len(p)` קוראת ל-`p.__len__()`, ומחזירה 3. כשאין `__bool__`, פייתון קובעת את ערך האמת לפי `__len__`: אורך 0 הוא `False`, וכל אורך אחר הוא `True`. כך `if playlist:` עובד באופן טבעי."
+  optionExplanations:
+    "1": "בלי `__len__`, כל אובייקט היה `True`. אבל כשהיא מוגדרת, אורך 0 נחשב `False`, כמו רשימה ריקה."
+    "2": "`len` עובדת על כל אובייקט שמגדיר `__len__`, לא רק על טיפוסים מובנים."
+    "3": "`len(p)` מחזירה את מה ש-`__len__` מחזירה, אורך הרשימה הפנימית, ולא את מספר האובייקטים."
+
+- id: py.oop.special-methods.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Money:
+        def __init__(self, amount):
+            self.amount = amount
+
+        def __add__(self, other):
+            return Money(self.amount + other.amount)
+
+    total = Money(10) + Money(5)
+    print(total.amount)
+  options: ["105", "TypeError", "15", "10"]
+  answer: 2
+  explanation: "האופרטור `+` בין שני אובייקטים קורא ל-`__add__` של האובייקט השמאלי, כאן `Money(10).__add__(Money(5))`. המתודה מחברת את הסכומים ומחזירה אובייקט `Money` חדש עם 15."
+  optionExplanations:
+    "0": "`self.amount + other.amount` הוא חיבור של מספרים, לא שרשור מחרוזות."
+    "1": "בלי `__add__` אכן הייתה נזרקת `TypeError`. כאן היא מוגדרת, ולכן `+` עובד."
+
+- id: py.oop.special-methods.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Tag:
+        def __init__(self, name):
+            self.name = name
+
+        def __repr__(self):
+            return f"Tag('{self.name}')"
+
+    t = Tag("py")
+    print(t)
+    print(str(t) == repr(t))
+  options: ["Tag('py')\nTrue", "Tag('py')\nFalse", "py\nFalse", "<__main__.Tag object>\nFalse"]
+  answer: 0
+  explanation: "כשאין `__str__`, הפונקציה `str()` משתמשת ב-`__repr__`. לכן `print(t)` מדפיסה את ה-repr, ו-`str(t)` ו-`repr(t)` מחזירות אותה מחרוזת. ההפך לא נכון: אם מגדירים רק `__str__`, `repr` לא תשתמש בה. לכן כדאי להגדיר לפחות `__repr__`."
+  optionExplanations:
+    "1": "`str(t)` לא מייצרת תצוגה משלה. בלי `__str__` היא מחזירה בדיוק את `repr(t)`."
+    "2": "פייתון לא מדפיסה תכונה בשם `name` אוטומטית. היא משתמשת ב-`__repr__` שהוגדרה."
+    "3": "תצוגת ברירת המחדל מופיעה רק כשאין במחלקה לא `__str__` ולא `__repr__`."
+
+- id: py.oop.special-methods.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class User:
+        def __init__(self, name):
+            self.name = name
+
+        def __eq__(self, other):
+            return self.name == other.name
+
+    users = [User("dana")]
+    print(User("dana") in users)
+    print(len({User("dana")}))
+  options: ["False\n1", "True\n1", "True\nTypeError", "False\nTypeError"]
+  answer: 2
+  explanation: "`in` על רשימה משווה בעזרת `==`, כלומר `__eq__`, ולכן מוצא משתמש שווה: `True`. אבל כשמחלקה מגדירה `__eq__` בלי `__hash__`, פייתון מבטלת את ה-hash שלה, כי אובייקטים שווים חייבים hash זהה. לכן הכנסה ל-set זורקת `TypeError`. הפתרון: להגדיר גם `__hash__`, למשל `return hash(self.name)`."
+  optionExplanations:
+    "0": "`in` על רשימה משתמש ב-`__eq__`, ולכן משתמש חדש עם אותו שם נחשב קיים ברשימה."
+    "1": "הגדרת `__eq__` בלבד הופכת את המופעים ל-unhashable, ולכן אי אפשר להכניס אותם ל-set."
+    "3": "השורה הראשונה מצליחה ומדפיסה `True`, כי `__eq__` משווה לפי שם."
+
+- id: py.oop.special-methods.009
+  type: bug
+  difficulty: 1
+  prompt: "`print(product)` אמורה להדפיס שורה אחת: `Milk: 6.9`. באיזו שורה הבאג?"
+  code: |
+    class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+        def __str__(self):
+            print(f"{self.name}: {self.price}")
+
+    product = Product("Milk", 6.9)
+    print(product)
+  answer: 7
+  explanation: "`__str__` חייבת להחזיר (`return`) מחרוזת, ולא להדפיס אותה. כאן היא מדפיסה ומחזירה `None`, ולכן אחרי ההדפסה מתוך המתודה, `print` החיצונית זורקת `TypeError`. הדפסה היא תפקיד של מי שקורא, לא של `__str__`."
+  fixed: |
+    class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+        def __str__(self):
+            return f"{self.name}: {self.price}"
+
+    product = Product("Milk", 6.9)
+    print(product)
+
+- id: py.oop.special-methods.010
+  type: bug
+  difficulty: 3
+  prompt: "`Pages` מחלקת רשימה לעמודים בגודל קבוע, ו-`len` אמורה להחזיר את מספר העמודים. הקוד אמור להדפיס `3`. באיזו שורה הבאג?"
+  code: |
+    class Pages:
+        def __init__(self, items, page_size):
+            self.items = items
+            self.page_size = page_size
+
+        def __len__(self):
+            return (len(self.items) + self.page_size - 1) / self.page_size
+
+    print(len(Pages(list(range(25)), 10)))
+  answer: 7
+  explanation: "`__len__` חייבת להחזיר מספר שלם. החילוק `/` מחזיר תמיד `float` (כאן `3.4`), ולכן `len` זורקת `TypeError`. חילוק שלם `//` מחזיר `3`, ויחד עם התוספת `page_size - 1` הוא מעגל כלפי מעלה."
+  fixed: |
+    class Pages:
+        def __init__(self, items, page_size):
+            self.items = items
+            self.page_size = page_size
+
+        def __len__(self):
+            return (len(self.items) + self.page_size - 1) // self.page_size
+
+    print(len(Pages(list(range(25)), 10)))
+
+- id: py.oop.special-methods.011
+  type: single
+  difficulty: 1
+  prompt: "לאיזו מתודה מיוחדת קוראת `print(obj)` כדי לקבל את הטקסט להדפסה, כשהמחלקה מגדירה אותה?"
+  options:
+    - "`__print__`"
+    - "`__init__`"
+    - "`__str__`"
+    - "`__len__`"
+  answer: 2
+  explanation: "`print` קוראת ל-`str(obj)`, ו-`str` קוראת ל-`__str__`. אם `__str__` לא מוגדרת, פייתון משתמשת ב-`__repr__`. שמות המתודות המיוחדות מוקפים בשני קווים תחתונים, ולכן הן נקראות גם Dunder Methods (Double Underscore)."
+  optionExplanations:
+    "0": "אין מתודה מיוחדת בשם `__print__`. ההמרה למחרוזת עוברת דרך `str`."
+    "1": "`__init__` רצה רק ביצירת האובייקט, כדי לאתחל אותו."
+    "3": "`__len__` משמשת את `len()`, ואין לה קשר להדפסה."
+
+- id: py.oop.special-methods.012
+  type: single
+  difficulty: 2
+  prompt: "מה ההבדל המקובל בין `__str__` ל-`__repr__`?"
+  options:
+    - "`__str__` מיועדת להצגה קריאה למשתמש, ו-`__repr__` לתצוגה מדויקת וחד משמעית למפתחים, שרצוי שתיראה כמו קוד שיוצר את האובייקט"
+    - "`__repr__` רצה רק בזמן ניפוי שגיאות, ו-`__str__` רק בזמן ריצה רגילה"
+    - "`__str__` מחזירה מחרוזת, ו-`__repr__` מדפיסה אותה ישירות למסך"
+    - "אין הבדל: אלה שני שמות לאותה מתודה, ומספיק להגדיר אחת מהן"
+  answer: 0
+  explanation: "`__str__` עונה על השאלה «איך להציג את זה למשתמש», למשל `(1, 2)`. `__repr__` עונה על «מה זה בדיוק», למשל `Point(1, 2)`, והיא מופיעה במסוף האינטראקטיבי, ברשימות ובהודעות ניפוי. שתיהן מחזירות מחרוזת."
+  optionExplanations:
+    "1": "שתיהן זמינות תמיד. `repr()` נקראת למשל בכל הצגה של רשימה, גם בריצה רגילה."
+    "2": "שתי המתודות חייבות להחזיר מחרוזת. אף אחת מהן לא אמורה להדפיס."
+    "3": "אלה מתודות נפרדות. `str` נופלת ל-`__repr__` כשאין `__str__`, אבל ההפך לא קורה."
+
+- id: py.oop.special-methods.013
+  type: truefalse
+  difficulty: 1
+  prompt: "הקריאה `len(obj)` מפעילה מאחורי הקלעים את המתודה `obj.__len__()`."
+  answer: true
+  explanation: "פונקציות ואופרטורים מובנים מתורגמים לקריאות למתודות מיוחדות: `len(x)` ל-`__len__`, `str(x)` ל-`__str__`, `a == b` ל-`__eq__`, `a + b` ל-`__add__`. לכן הגדרת המתודות האלה גורמת לאובייקטים שלנו לעבוד עם הכלים הרגילים של השפה."
+
+- id: py.oop.special-methods.014
+  type: single
+  difficulty: 2
+  prompt: "איזו מתודה מיוחדת צריך להגדיר במחלקה כדי שהביטוי `obj[0]` יעבוד?"
+  options:
+    - "`__index__`"
+    - "`__getitem__`"
+    - "`__get__`"
+    - "`__len__`"
+  answer: 1
+  explanation: "גישה בסוגריים מרובעים, `obj[key]`, מתורגמת ל-`obj.__getitem__(key)`. כך אפשר לגרום לאובייקט להתנהג כמו רשימה או מילון, למשל `playlist[0]` שמחזיר את השיר הראשון."
+  optionExplanations:
+    "0": "`__index__` מאפשרת להשתמש באובייקט עצמו כמספר שלם בתוך הסוגריים, לא לגשת לאיברים שלו."
+    "2": "`__get__` שייכת למנגנון אחר, ואינה קשורה לגישה עם סוגריים מרובעים."
+    "3": "`__len__` מחזירה את האורך עבור `len()`, אבל לא מאפשרת גישה לאיבר."
+
+- id: py.oop.special-methods.015
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Task:
+        def __init__(self, name, priority):
+            self.name = name
+            self.priority = priority
+
+        def __lt__(self, other):
+            return self.priority < other.priority
+
+    tasks = [Task("b", 2), Task("a", 3), Task("c", 1)]
+    print([t.name for t in sorted(tasks)])
+  options: ["['a', 'b', 'c']", "['b', 'a', 'c']", "TypeError", "['c', 'b', 'a']"]
+  answer: 3
+  explanation: "`sorted` משווה איברים עם `<`, שמתורגם ל-`__lt__` (less than). כאן `__lt__` משווה לפי עדיפות, ולכן הסדר הוא לפי 1, 2, 3: `c`, `b`, `a`."
+  optionExplanations:
+    "0": "המיון לא לפי השם. `sorted` משתמשת ב-`__lt__`, שמשווה את `priority`."
+    "1": "`sorted` מחזירה רשימה ממוינת. זה הסדר המקורי של הרשימה."
+    "2": "בלי `__lt__` אכן הייתה נזרקת `TypeError`. כאן היא מוגדרת, ולכן המיון עובד."
+
+- id: py.oop.special-methods.016
+  type: cleaner
+  difficulty: 2
+  prompt: בשתי הגרסאות מודפס `(1, 2)`. איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Point:
+          def __init__(self, x, y):
+              self.x = x
+              self.y = y
+
+          def to_string(self):
+              return f"({self.x}, {self.y})"
+
+      print(Point(1, 2).to_string())
+    - |
+      class Point:
+          def __init__(self, x, y):
+              self.x = x
+              self.y = y
+
+          def __str__(self):
+              return f"({self.x}, {self.y})"
+
+      print(Point(1, 2))
+  answer: 1
+  explanation: "`__str__` משתלבת בכלים הרגילים של השפה: `print`, `str()` ו-f-strings משתמשים בה אוטומטית. מי שמשתמש במחלקה לא צריך לזכור שם מתודה מיוחד."
+  optionExplanations:
+    "0": "מתודה כמו `to_string` ממציאה מחדש את מה ש-`__str__` כבר עושה. שכחה לקרוא לה תדפיס את תצוגת ברירת המחדל הלא קריאה."

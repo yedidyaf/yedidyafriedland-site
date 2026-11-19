@@ -1,0 +1,394 @@
+- id: py.oop.polymorphism.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Shape:
+        def area(self):
+            return 0
+
+    class Square(Shape):
+        def __init__(self, side):
+            self.side = side
+
+        def area(self):
+            return self.side * self.side
+
+    shapes = [Square(3), Shape(), Square(2)]
+    print(sum(s.area() for s in shapes))
+  options: ["0", "9", "13", "TypeError"]
+  answer: 2
+  explanation: "זה פולימורפיזם (Polymorphism): אותה קריאה, `s.area()`, מריצה קוד שונה לפי סוג האובייקט. לכל `Square` רצה הגרסה שלו (9 ו-4), ול-`Shape` רצה גרסת הבסיס (0). הסכום הוא 13."
+  optionExplanations:
+    "0": "הרשימה מכילה צורות שונות, אבל לכל אובייקט רצה המתודה של המחלקה שלו, לא של `Shape`."
+    "1": "גם `Square(2)` נספר: הלולאה עוברת על כל האובייקטים ברשימה."
+    "3": "לכל האובייקטים ברשימה יש `area`, ולכן הקריאה עובדת על כולם."
+
+- id: py.oop.polymorphism.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Notifier:
+        def send(self, msg):
+            return self.prefix() + msg
+
+        def prefix(self):
+            return "[LOG] "
+
+    class SmsNotifier(Notifier):
+        def prefix(self):
+            return "[SMS] "
+
+    n = SmsNotifier()
+    print(n.send("hi"))
+  options: ["[LOG] hi", "[SMS] hi", "[LOG] [SMS] hi", "hi"]
+  answer: 1
+  explanation: "`send` מוגדרת רק במחלקת הבסיס, אבל `self` בתוכה הוא המופע של `SmsNotifier`. לכן `self.prefix()` מחפשת מחדש מהמחלקה של האובייקט ומוצאת את הגרסה הדורסת. כך מחלקת בסיס יכולה להגדיר תהליך כללי, והמחלקות היורשות משנות רק צעד אחד בו."
+  optionExplanations:
+    "0": "הקוד של `send` כתוב ב-`Notifier`, אבל ההחלטה איזו `prefix` לקרוא מתקבלת לפי סוג האובייקט בזמן ריצה, לא לפי המקום שבו הקוד נכתב."
+    "2": "רק גרסה אחת של `prefix` רצה: הראשונה שנמצאת בחיפוש. הדורסת לא קוראת לגרסת הבסיס."
+
+- id: py.oop.polymorphism.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Duck:
+        def speak(self):
+            return "Quack"
+
+    class Robot:
+        def speak(self):
+            return "Beep"
+
+    def make_it_talk(thing):
+        return thing.speak()
+
+    print(make_it_talk(Duck()), make_it_talk(Robot()))
+  options: ["Quack Beep", "Quack Quack", "TypeError", "AttributeError"]
+  answer: 0
+  explanation: "זה Duck Typing: הפונקציה לא בודקת מאיזו מחלקה הגיע האובייקט, רק קוראת ל-`speak`. כל אובייקט שיש לו מתודה כזאת מתאים, גם בלי מחלקת בסיס משותפת."
+  optionExplanations:
+    "1": "לכל אובייקט רצה המתודה של המחלקה שלו. `Robot` מחזיר `Beep`."
+    "2": "פייתון לא דורשת ש-`Robot` ו-`Duck` יירשו ממחלקה משותפת. מספיק שלשניהם יש `speak`."
+    "3": "ל-`Robot` יש מתודה בשם `speak`, ולכן החיפוש מצליח."
+
+- id: py.oop.polymorphism.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class File:
+        def read(self):
+            return "data"
+
+    class Socket:
+        def receive(self):
+            return "packet"
+
+    for source in [File(), Socket()]:
+        print(source.read())
+  options: ["data\npacket", "AttributeError", "data\nAttributeError", "data\nNone"]
+  answer: 2
+  explanation: "ב-Duck Typing הבדיקה מתבצעת רק ברגע הקריאה. הסיבוב הראשון מדפיס `data`. בסיבוב השני, ל-`Socket` אין מתודה בשם `read`, ולכן נזרקת `AttributeError`. מתודה עם תפקיד דומה אבל שם אחר לא מספיקה."
+  optionExplanations:
+    "0": "פייתון לא מנחשת ש-`receive` היא המקבילה של `read`. היא מחפשת בדיוק את השם `read`."
+    "1": "פייתון לא בודקת את כל הרשימה מראש. `File` מטופל ומודפס לפני שמגיעים ל-`Socket`."
+    "3": "מתודה שלא קיימת לא מחזירה `None`. הגישה אליה זורקת שגיאה."
+
+- id: py.oop.polymorphism.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Animal:
+        def speak(self):
+            return "..."
+
+        def intro(self):
+            return "I say " + self.speak()
+
+    class Dog(Animal):
+        def speak(self):
+            return "Woof"
+
+    d = Dog()
+    print(Animal.speak(d), Animal.intro(d))
+  options: ["Woof I say Woof", "... I say ...", "... I say Woof", "TypeError"]
+  answer: 2
+  explanation: "`Animal.speak(d)` קוראת במפורש לפונקציה שמוגדרת ב-`Animal`, ולכן מחזירה `...`. גם `Animal.intro(d)` רצה מ-`Animal`, אבל בתוכה `self.speak()` מחפשת לפי סוג האובייקט, `Dog`, ומוצאת `Woof`. קריאה דרך שם המחלקה קובעת רק את המתודה הנקראת, לא את הקריאות שבתוכה."
+  optionExplanations:
+    "0": "`Animal.speak(d)` עוקפת את החיפוש הרגיל ומריצה ישירות את הגרסה של `Animal`."
+    "1": "בתוך `intro`, הקריאה `self.speak()` היא קריאה רגילה דרך האובייקט, ולכן היא פולימורפית ומגיעה ל-`Dog`."
+    "3": "מותר להעביר מופע של מחלקה יורשת כ-`self` למתודה של מחלקת הבסיס."
+
+- id: py.oop.polymorphism.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def combine(a, b):
+        return a + b
+
+    print(combine(2, 3), combine("2", "3"), combine([2], [3]))
+  options: ["5 5 [5]", "5 23 [2, 3]", "5 23 [5]", "TypeError"]
+  answer: 1
+  explanation: "האופרטור `+` הוא פולימורפי: כל טיפוס מגדיר מה הוא עושה. מספרים מתחברים, מחרוזות ורשימות משורשרות. `combine` עובדת עם כל טיפוס שתומך ב-`+`, בלי לדעת מראש מה יגיע. זה Duck Typing גם בלי מחלקות שכתבנו."
+  optionExplanations:
+    "0": "`\"2\" + \"3\"` משרשר מחרוזות ולא ממיר אותן למספרים."
+    "2": "חיבור רשימות יוצר רשימה חדשה עם האיברים של שתיהן, ולא מחבר את האיברים."
+    "3": "הפונקציה לא מגדירה טיפוסים לפרמטרים, ולכן היא מקבלת כל ערך שתומך ב-`+`."
+
+- id: py.oop.polymorphism.007
+  type: hierarchy
+  difficulty: 2
+  prompt: "לכל קריאה, בחרו באיזו מחלקה מוגדרת המתודה שתרוץ בפועל."
+  code: |
+    class Payment:
+        def process(self): ...
+        def receipt(self): ...
+
+    class CardPayment(Payment):
+        def process(self): ...
+
+    class PayPalPayment(Payment):
+        def process(self): ...
+        def receipt(self): ...
+
+    class GiftCardPayment(CardPayment):
+        pass
+  targets:
+    - id: Payment
+    - id: CardPayment
+    - id: PayPalPayment
+    - id: GiftCardPayment
+  items:
+    - label: "CardPayment().process()"
+      answer: CardPayment
+    - label: "CardPayment().receipt()"
+      answer: Payment
+      why: "`CardPayment` לא דורסת את `receipt`, ולכן החיפוש ממשיך למחלקת הבסיס."
+    - label: "PayPalPayment().receipt()"
+      answer: PayPalPayment
+    - label: "GiftCardPayment().process()"
+      answer: CardPayment
+      why: "`GiftCardPayment` ריקה. ההורה הישיר שלה, `CardPayment`, מגדיר `process`, והוא נמצא לפני `Payment`."
+    - label: "GiftCardPayment().receipt()"
+      answer: Payment
+      why: "גם `GiftCardPayment` וגם `CardPayment` לא מגדירות `receipt`, ולכן מגיעים עד `Payment`."
+  explanation: "כל קריאה מתחילה לחפש במחלקה של האובייקט ועולה בשרשרת הירושה עד שהיא מוצאת את המתודה. כך כל סוג תשלום מתנהג אחרת, והקוד שקורא ל-`process` לא צריך לדעת איזה סוג קיבל."
+
+- id: py.oop.polymorphism.008
+  type: hierarchy
+  difficulty: 1
+  prompt: "שבצו כל מחלקה חדשה מתחת למחלקת הבסיס המתאימה, כדי שקוד שעובר על רשימת צורות או רשימת עובדים יוכל לקרוא לה בצורה פולימורפית."
+  code: |
+    class Shape:
+        def area(self) -> float: ...
+
+    class Employee:
+        def monthly_cost(self) -> float: ...
+  targets:
+    - id: Shape
+    - id: Employee
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: Triangle
+      answer: Shape
+    - label: Contractor
+      answer: Employee
+      why: "קבלן הוא סוג של עובד לצורך חישוב עלות חודשית, ולכן הוא דורס את `monthly_cost`."
+    - label: Circle
+      answer: Shape
+    - label: "Drawing - מחזיקה רשימה של צורות"
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "ציור הוא לא סוג של צורה. הוא מכיל צורות (has-a), ולכן לא יורש מ-`Shape`."
+  explanation: "מחלקה יורשת היא סוג של מחלקת הבסיס, ודורסת את המתודות שלה. כך קוד כמו `sum(s.area() for s in shapes)` עובד על כל צורה, גם על צורות שיתווספו בעתיד."
+
+- id: py.oop.polymorphism.009
+  type: hierarchy
+  difficulty: 3
+  prompt: "הפונקציה `total_area` מקבלת רשימת אובייקטים. לכל מחלקה, בחרו מה יקרה כשמופע שלה יופיע ברשימה."
+  code: |
+    class Shape:
+        def area(self):
+            return 0
+
+    class Square(Shape):
+        def area(self):
+            return 4
+
+    class Circle:
+        def area(self):
+            return 3
+
+    class Line(Shape):
+        pass
+
+    class Text:
+        def length(self):
+            return 5
+
+    def total_area(items):
+        return sum(item.area() for item in items)
+  targets:
+    - id: inherits
+      desc: "יורשת מ-Shape ולכן יש לה area"
+    - id: duck-typing
+      desc: "לא יורשת, אבל מתאימה בזכות Duck Typing"
+    - id: fails
+      desc: "תיכשל עם AttributeError"
+  items:
+    - label: Square
+      answer: inherits
+    - label: Circle
+      answer: duck-typing
+      why: "`Circle` לא יורשת מ-`Shape`, אבל יש לה `area`, וזה כל מה ש-`total_area` צריכה."
+    - label: Line
+      answer: inherits
+      why: "`Line` לא דורסת את `area`, ולכן מקבלת את גרסת הבסיס ומחזירה 0."
+    - label: Text
+      answer: fails
+      why: "ל-`Text` אין `area` בכלל, לא משלה ולא בירושה."
+  explanation: "בפייתון, מה שקובע אם אובייקט מתאים הוא אם יש לו את המתודה הנדרשת, ולא מאיזו מחלקה הוא יורש. ירושה היא דרך אחת לקבל את המתודה, ו-Duck Typing מאפשר גם למחלקות לא קשורות להתאים."
+
+- id: py.oop.polymorphism.010
+  type: single
+  difficulty: 1
+  prompt: "מה פירוש Duck Typing בפייתון?"
+  options:
+    - "כל אובייקט שמועבר לפונקציה חייב לרשת ממחלקת בסיס משותפת"
+    - "פייתון בודקת את טיפוס הפרמטר לפי ה-type hint לפני שהפונקציה רצה"
+    - "אובייקט מתאים לקוד אם יש לו את המתודות שהקוד משתמש בהן, בלי קשר למחלקה שלו"
+    - "אסור ששתי מחלקות שונות יגדירו מתודה באותו שם"
+  answer: 2
+  explanation: "«אם זה הולך כמו ברווז ומגעגע כמו ברווז, זה ברווז». פייתון לא בודקת טיפוסים מראש. היא פשוט קוראת למתודה, ואם היא קיימת באובייקט, הקוד עובד."
+  optionExplanations:
+    "0": "ירושה משותפת אינה תנאי. מספיק שהמתודה הנדרשת קיימת."
+    "1": "פייתון לא אוכפת type hints בזמן ריצה. הם עוזרים לקורא ולכלים, אבל לא עוצרים את הקוד."
+    "3": "ההפך: מתודות באותו שם במחלקות שונות הן בדיוק מה שמאפשר פולימורפיזם."
+
+- id: py.oop.polymorphism.011
+  type: single
+  difficulty: 2
+  prompt: "בלולאה `for a in animals: a.speak()`, הרשימה מכילה מופעים של כמה מחלקות. לפי מה פייתון בוחרת איזו `speak` להריץ?"
+  options:
+    - "לפי המחלקה של האובייקט שנמצא ב-`a` באותו סיבוב, בזמן הריצה"
+    - "לפי ה-type hint שהוגדר לרשימה, למשל `list[Animal]`"
+    - "תמיד לפי מחלקת הבסיס המשותפת של כל האובייקטים"
+    - "לפי המחלקה של האובייקט הראשון ברשימה"
+  answer: 0
+  explanation: "ההחלטה מתקבלת מחדש בכל קריאה, לפי סוג האובייקט שבפועל נמצא במשתנה. לכן באותה שורת קוד יכולות לרוץ גרסאות שונות של `speak` בכל סיבוב."
+  optionExplanations:
+    "1": "type hints לא משפיעים על הריצה. גם עם `list[Animal]`, אובייקט `Dog` יריץ את `speak` של `Dog`."
+    "2": "גרסת הבסיס רצה רק אם המחלקה של האובייקט לא דורסת את המתודה."
+    "3": "כל אובייקט נבדק בנפרד. אין קשר בין האובייקט הראשון לשאר."
+
+- id: py.oop.polymorphism.012
+  type: single
+  difficulty: 2
+  prompt: מה הבעיה העיקרית בעיצוב הזה, ומה הפתרון?
+  code: |
+    def area(shape):
+        if isinstance(shape, Square):
+            return shape.side ** 2
+        if isinstance(shape, Circle):
+            return 3.14 * shape.radius ** 2
+        if isinstance(shape, Triangle):
+            return shape.base * shape.height / 2
+  options:
+    - "`isinstance` איטית, ולכן עדיף לבדוק `type(shape) == Square`"
+    - "צריך לאחד את כל הצורות למחלקה אחת עם שדה `kind`, ולבדוק אותו בפונקציה"
+    - "כל צורה חדשה מחייבת לשנות את הפונקציה. עדיף שלכל מחלקה תהיה מתודת `area` משלה, ולקרוא `shape.area()`"
+    - "הפונקציה ארוכה מדי, ולכן צריך לפצל אותה לשלוש פונקציות נפרדות"
+  answer: 2
+  explanation: "שרשרת של בדיקות טיפוס היא סימן שחסר פולימורפיזם. כשכל צורה מממשת `area` בעצמה, הקוד שמשתמש בצורות לא משתנה כשמוסיפים צורה חדשה, והידע על כל צורה נמצא במחלקה שלה."
+  optionExplanations:
+    "0": "`type` רק מחליפה בדיקה אחת בבדיקה אחרת, ואף פוגעת במחלקות יורשות. הבעיה היא עצם הבדיקה."
+    "1": "שדה `kind` הוא אותה שרשרת `if` בצורה אחרת. כל צורה חדשה עדיין דורשת שינוי בפונקציה."
+    "3": "גם אחרי פיצול, מישהו צריך לבדוק את הטיפוס ולבחור פונקציה. הבעיה נשארת."
+
+- id: py.oop.polymorphism.013
+  type: bug
+  difficulty: 2
+  prompt: "`HalfPrice` אמורה לחצות את המחיר, והקוד אמור להדפיס `50.0`. בפועל הוא מדפיס `100`. באיזו שורה הבאג?"
+  code: |
+    class Discount:
+        def apply(self, price):
+            return price
+
+    class HalfPrice(Discount):
+        def aply(self, price):
+            return price / 2
+
+    def checkout(price, discount):
+        return discount.apply(price)
+
+    print(checkout(100, HalfPrice()))
+  answer: 6
+  explanation: "בגלל שגיאת הקלדה, `HalfPrice` לא דורסת את `apply`, אלא מוסיפה מתודה חדשה בשם `aply`. `checkout` קוראת ל-`apply`, ומוצאת את הגרסה של `Discount`, שמחזירה את המחיר בלי שינוי. דריסה עובדת רק כששם המתודה זהה בדיוק."
+  fixed: |
+    class Discount:
+        def apply(self, price):
+            return price
+
+    class HalfPrice(Discount):
+        def apply(self, price):
+            return price / 2
+
+    def checkout(price, discount):
+        return discount.apply(price)
+
+    print(checkout(100, HalfPrice()))
+
+- id: py.oop.polymorphism.014
+  type: bug
+  difficulty: 3
+  prompt: "כל מייצא אמור לקבל רשימת נתונים ולהחזיר אותה כמחרוזת בפורמט שלו, והלולאה אמורה לעבוד על כל מייצא. באיזו שורה הבאג?"
+  code: |
+    class Exporter:
+        def export(self, data):
+            return str(data)
+
+    class CsvExporter(Exporter):
+        def export(self, data):
+            return ",".join(data)
+
+    class JsonExporter(Exporter):
+        def export(self):
+            return "[" + ", ".join(data) + "]"
+
+    for exporter in [CsvExporter(), JsonExporter()]:
+        print(exporter.export(["a", "b"]))
+  answer: 10
+  explanation: "פולימורפיזם עובד רק אם כל המחלקות שומרות על אותה חתימה. `JsonExporter.export` לא מקבלת `data`, ולכן הקריאה `exporter.export([...])` זורקת `TypeError`. דריסה צריכה לקבל את אותם פרמטרים כמו מתודת הבסיס, כדי שהקוד שקורא לה לא יצטרך לדעת עם איזו מחלקה הוא עובד."
+  fixed: |
+    class Exporter:
+        def export(self, data):
+            return str(data)
+
+    class CsvExporter(Exporter):
+        def export(self, data):
+            return ",".join(data)
+
+    class JsonExporter(Exporter):
+        def export(self, data):
+            return "[" + ", ".join(data) + "]"
+
+    for exporter in [CsvExporter(), JsonExporter()]:
+        print(exporter.export(["a", "b"]))
+
+- id: py.oop.polymorphism.015
+  type: truefalse
+  difficulty: 2
+  prompt: "כדי ששתי מחלקות יוכלו לשמש באותה פונקציה בצורה פולימורפית, בפייתון הן חייבות לרשת ממחלקת בסיס משותפת."
+  answer: false
+  explanation: "בזכות Duck Typing, מספיק שלשתי המחלקות יש את המתודות שהפונקציה קוראת להן. מחלקת בסיס משותפת היא דרך טובה לשתף קוד ולהגדיר חוזה, אבל היא לא תנאי לפולימורפיזם בפייתון."
+
+- id: py.oop.polymorphism.016
+  type: truefalse
+  difficulty: 1
+  prompt: "פולימורפיזם (Polymorphism) פירושו שאותה קריאה, למשל `shape.area()`, יכולה להריץ קוד שונה לפי סוג האובייקט."
+  answer: true
+  explanation: "פולימורפיזם, «רב צורתיות», מאפשר לכתוב קוד אחד שעובד עם אובייקטים מסוגים שונים. כל אובייקט מגיב לקריאה לפי ההגדרה במחלקה שלו, והקוד הקורא לא צריך לבדוק את הסוג."
