@@ -347,8 +347,8 @@
   explanation: "`when` הוא מסנן חריגות (Exception Filter): הוא חלק מההחלטה אם הבלוק מתאים. כשהתנאי שקר, הבלוק נחשב לא מתאים, כאילו הטיפוס לא תאם, ו-C# ממשיך לחפש בבלוקים הבאים ובמתודות שקראו."
   optionExplanations:
     "1": "עם `when` הבלוק לא נכנס כלל כשהתנאי שקר, ולכן אין צורך לזרוק מחדש."
-    "3": "התנאי הוא חלק מבחירת ה-`catch`, ולכן הוא נבדק לפני כניסה לבלוק."
-    "4": "תנאי שקר רק מדלג על הבלוק הזה; בלוק אחר יכול עדיין לתפוס."
+    "2": "התנאי הוא חלק מבחירת ה-`catch`, ולכן הוא נבדק לפני כניסה לבלוק."
+    "3": "תנאי שקר רק מדלג על הבלוק הזה; בלוק אחר יכול עדיין לתפוס."
 
 - id: cs.exceptions.try-catch.014
   type: truefalse
@@ -362,7 +362,7 @@
   difficulty: 2
   prompt: "חלוקה של `double` באפס, למשל `double d = 0; Console.WriteLine(5.0 / d);`, זורקת `DivideByZeroException`."
   answer: false
-  explanation: "רק חלוקה של מספרים שלמים (`int`, `long`, `decimal`) באפס זורקת `DivideByZeroException`. בחישוב עם `double` התוצאה היא הערך המיוחד `Infinity` (או `NaN` עבור `0.0 / 0`), בלי חריגה."
+  explanation: "רק חלוקה באפס של טיפוסים שלמים (`int`, `long`) או של `decimal` זורקת `DivideByZeroException`. בחישוב עם `double` התוצאה היא הערך המיוחד `Infinity` (או `NaN` עבור `0.0 / 0`), בלי חריגה."
 
 - id: cs.exceptions.try-catch.016
   type: cleaner
