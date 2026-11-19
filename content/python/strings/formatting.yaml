@@ -138,7 +138,7 @@
           return name + ": " + str(count) + " x " + format(price, ".2f")
     - |
       def describe(name, count, price):
-          return "%s: %d x %.2f" % (name, count, price)
+          return "%s: %s x %.2f" % (name, count, price)
   answer: 0
   explanation: "f-string מציגה את המשתנים במקום שבו הם מופיעים בטקסט, כך שרואים מיד איך התוצאה תיראה. אין צורך בהמרות `str` ובשרשור, ואין צורך להתאים סדר של ערכים לסימנים."
   optionExplanations:

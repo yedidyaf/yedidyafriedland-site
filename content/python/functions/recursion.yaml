@@ -1,0 +1,287 @@
+- id: py.functions.recursion.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def factorial(n):
+        if n == 0:
+            return 1
+        return n * factorial(n - 1)
+
+    print(factorial(4))
+  options: ["24", "10", "0", "4"]
+  answer: 0
+  explanation: "פונקציה רקורסיבית (Recursive Function) קוראת לעצמה עם בעיה קטנה יותר. `factorial(4)` היא `4 * factorial(3)`, וכך הלאה עד `factorial(0)`, מקרה הבסיס שמחזיר 1. התוצאה: `4 * 3 * 2 * 1 * 1 = 24`."
+  optionExplanations:
+    "1": "10 הוא סכום המספרים 1 עד 4. כאן כל שלב כופל ולא מחבר."
+    "2": "מקרה הבסיס מחזיר 1 ולא 0, ולכן המכפלה לא מתאפסת."
+    "3": "הקריאה הראשונה לא מחזירה את `n` לבד, אלא את `n` כפול התוצאה של הקריאה הרקורסיבית."
+
+- id: py.functions.recursion.002
+  type: single
+  difficulty: 1
+  prompt: "מהו מקרה הבסיס (Base Case) בפונקציה רקורסיבית?"
+  options:
+    - "המקרה שבו הפונקציה מחזירה תשובה ישירות, בלי לקרוא לעצמה שוב"
+    - "הקריאה הראשונה לפונקציה, מתוך הקוד הראשי"
+    - "השורה שבה הפונקציה קוראת לעצמה"
+    - "המקרה שבו הקלט הוא הגדול ביותר"
+  answer: 0
+  explanation: "כל פונקציה רקורסיבית צריכה שני חלקים: מקרה בסיס, שבו התשובה ידועה בלי רקורסיה, וקריאה רקורסיבית (Recursive Call), שמקטינה את הבעיה ומתקרבת למקרה הבסיס. בלי מקרה בסיס הקריאות לא נגמרות."
+  optionExplanations:
+    "1": "הקריאה הראשונה יכולה להיות כל קלט. מקרה הבסיס הוא התנאי שבו הרקורסיה נעצרת."
+    "2": "זו הקריאה הרקורסיבית, החלק השני של הפונקציה."
+    "3": "בדרך כלל מקרה הבסיס הוא דווקא הקלט הקטן ביותר, כמו 0 או רשימה ריקה."
+
+- id: py.functions.recursion.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def show(n):
+        if n == 0:
+            return
+        show(n - 1)
+        print(n)
+
+    show(3)
+  options:
+    - "1\n2\n3"
+    - "3\n2\n1"
+    - "3"
+    - "0\n1\n2\n3"
+  answer: 0
+  explanation: "ההדפסה באה אחרי הקריאה הרקורסיבית, ולכן כל קריאה מחכה שהקריאה הפנימית תסתיים לפני שהיא מדפיסה. `show(3)` קוראת ל-`show(2)`, וזו ל-`show(1)`, שמדפיסה 1 ראשונה. ההדפסות מתבצעות בדרך חזרה, מהקריאה העמוקה ביותר החוצה."
+  optionExplanations:
+    "1": "כך היה מודפס אילו `print(n)` היה לפני הקריאה הרקורסיבית."
+    "2": "גם הקריאות `show(2)` ו-`show(1)` מגיעות ל-`print`, אחרי שהקריאה הפנימית שלהן חוזרת."
+    "3": "`show(0)` חוזרת מיד במקרה הבסיס, לפני ההדפסה."
+
+- id: py.functions.recursion.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def echo(n):
+        if n == 0:
+            return
+        print("in", n)
+        echo(n - 1)
+        print("out", n)
+
+    echo(2)
+  options:
+    - "in 2\nin 1\nout 1\nout 2"
+    - "in 2\nout 2\nin 1\nout 1"
+    - "in 2\nin 1\nout 2\nout 1"
+    - "in 2\nin 1"
+  answer: 0
+  explanation: "כל קריאה מדפיסה `in`, ממתינה עד שהקריאה הפנימית מסתיימת, ורק אז מדפיסה `out`. הקריאה האחרונה שנכנסה היא הראשונה שיוצאת, כמו במחסנית (Stack). לכן `out 1` מודפס לפני `out 2`."
+  optionExplanations:
+    "1": "`echo(2)` לא מגיעה ל-`out 2` לפני שהקריאה `echo(1)` מסתיימת לגמרי."
+    "2": "הקריאה הפנימית, `echo(1)`, מסתיימת ראשונה, ולכן `out 1` קודם ל-`out 2`."
+    "3": "אחרי שהקריאה הרקורסיבית חוזרת, הפונקציה ממשיכה לשורה הבאה ומדפיסה `out`."
+
+- id: py.functions.recursion.005
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def forever(n):
+        return forever(n + 1)
+
+    print(forever(0))
+  options: ["RecursionError", "0", "None", "SyntaxError"]
+  answer: 0
+  explanation: "אין כאן מקרה בסיס, ולכן כל קריאה פותחת קריאה חדשה בלי סוף. כל קריאה שעוד לא הסתיימה תופסת מקום במחסנית הקריאות (Call Stack). כשמספר הקריאות עובר את מגבלת העומק של פייתון, נזרק `RecursionError`."
+  optionExplanations:
+    "1": "הפונקציה אף פעם לא מגיעה ל-`return` שמחזיר ערך. כל `return` מחכה לקריאה הבאה."
+    "2": "אף קריאה לא מסתיימת, ולכן לא מוחזר שום ערך, גם לא `None`."
+    "3": "הקוד תקין מבחינה תחבירית. הבעיה מתגלה רק בזמן ריצה."
+
+- id: py.functions.recursion.006
+  type: truefalse
+  difficulty: 1
+  prompt: "מגבלת עומק הרקורסיה בפייתון היא 1000 כברירת מחדל, ואפשר לבדוק אותה עם `sys.getrecursionlimit()`."
+  answer: true
+  explanation: "פייתון מגבילה את מספר הקריאות שפתוחות בו זמנית, כדי שרקורסיה בלי סוף תיעצר ב-`RecursionError` ולא תפיל את התוכנית. ברירת המחדל היא 1000. אפשר לשנות אותה עם `sys.setrecursionlimit`, אבל רקורסיה עמוקה מאוד היא בדרך כלל סימן שעדיף לולאה."
+
+- id: py.functions.recursion.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def sum_digits(n):
+        if n < 10:
+            return n
+        return n % 10 + sum_digits(n // 10)
+
+    print(sum_digits(4096))
+  options: ["19", "6", "4", "13"]
+  answer: 0
+  explanation: "בכל שלב `n % 10` מוציא את הספרה האחרונה, ו-`n // 10` מסיר אותה. כך: `6 + sum_digits(409)`, `9 + sum_digits(40)`, `0 + sum_digits(4)`. מקרה הבסיס מחזיר 4, והסכום הוא `6 + 9 + 0 + 4 = 19`."
+  optionExplanations:
+    "1": "6 היא רק הספרה האחרונה. הפונקציה מוסיפה אליה את סכום שאר הספרות."
+    "2": "4 הוא רק מה שמקרה הבסיס מחזיר. כל קריאה בדרך חזרה מוסיפה לו את הספרה שלה."
+    "3": "13 מתקבל אם מדלגים על הספרה 6. גם הספרה האחרונה נספרת, בקריאה הראשונה."
+
+- id: py.functions.recursion.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    calls = 0
+
+    def fib(n):
+        global calls
+        calls += 1
+        if n < 2:
+            return n
+        return fib(n - 1) + fib(n - 2)
+
+    print(fib(4), calls)
+  options: ["3 9", "3 4", "3 5", "5 9"]
+  answer: 0
+  explanation: "`fib(4)` היא 3 (הסדרה: 0, 1, 1, 2, 3). כל קריאה שאינה מקרה בסיס פותחת שתי קריאות, ולכן מספר הקריאות גדל מהר: `fib(2)` דורשת 3 קריאות, `fib(3)` דורשת 5, ו-`fib(4)` דורשת `1 + 5 + 3 = 9`. אותם ערכים מחושבים שוב ושוב, ולכן הגרסה הזאת איטית מאוד למספרים גדולים."
+  optionExplanations:
+    "1": "4 קריאות היו מתקבלות אילו כל קריאה הייתה קוראת לעצמה פעם אחת בלבד. כאן כל קריאה מתפצלת לשתיים."
+    "2": "5 הוא מספר הקריאות של `fib(3)`. ל-`fib(4)` מתווספות הקריאה עצמה והקריאות של `fib(2)`."
+    "3": "`fib(4)` היא 3, כי `fib(0)` היא 0 ו-`fib(1)` היא 1."
+
+- id: py.functions.recursion.009
+  type: bug
+  difficulty: 1
+  prompt: "הפונקציה אמורה לחשב `base` בחזקת `exp`. בפועל היא נכשלת ב-`RecursionError`. באיזו שורה הבאג?"
+  code: |
+    def power(base, exp):
+        if exp == 0:
+            return 1
+        return base * power(base, exp)
+  answer: 4
+  explanation: "הקריאה הרקורסיבית מעבירה את אותו `exp`, ולכן הבעיה לא קטנה ולא מגיעים לעולם למקרה הבסיס `exp == 0`. בכל קריאה רקורסיבית הקלט חייב להתקרב למקרה הבסיס: `power(base, exp - 1)`."
+  fixed: |
+    def power(base, exp):
+        if exp == 0:
+            return 1
+        return base * power(base, exp - 1)
+
+- id: py.functions.recursion.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר את מכפלת המספרים ברשימה, למשל `product([2, 3, 4])` צריכה להחזיר 24. בפועל היא תמיד מחזירה 0. באיזו שורה הבאג?"
+  code: |
+    def product(nums):
+        if not nums:
+            return 0
+        return nums[0] * product(nums[1:])
+  answer: 3
+  explanation: "כל שרשרת הכפל מסתיימת במקרה הבסיס, הרשימה הריקה. אם הוא מחזיר 0, כל המכפלה מתאפסת. מקרה הבסיס של מכפלה צריך להחזיר 1, האיבר הנייטרלי של כפל, בדיוק כמו שמקרה הבסיס של סכום מחזיר 0."
+  fixed: |
+    def product(nums):
+        if not nums:
+            return 1
+        return nums[0] * product(nums[1:])
+
+- id: py.functions.recursion.011
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה לבדוק אם מחרוזת היא פלינדרום (נקראת אותו דבר משני הכיוונים). בפועל `is_palindrome(\"abcba\")` מחזירה `False`. באיזו שורה הבאג?"
+  code: |
+    def is_palindrome(s):
+        if len(s) <= 1:
+            return True
+        if s[0] != s[-1]:
+            return False
+        return is_palindrome(s[1:-2])
+  answer: 6
+  explanation: "אחרי שבודקים את התו הראשון והאחרון, צריך להמשיך עם מה שביניהם: `s[1:-1]`. החיתוך `s[1:-2]` מוריד תו נוסף מהסוף, ולכן ב-`\"abcba\"` הקריאה הבאה מקבלת `\"bc\"` במקום `\"bcb\"`, ומחזירה `False`. הקריאה הרקורסיבית חייבת להקטין את הבעיה בדיוק בחלק שכבר נבדק."
+  fixed: |
+    def is_palindrome(s):
+        if len(s) <= 1:
+            return True
+        if s[0] != s[-1]:
+            return False
+        return is_palindrome(s[1:-1])
+
+- id: py.functions.recursion.012
+  type: single
+  difficulty: 2
+  prompt: "בזמן ש-`factorial(3)` רצה, קיימות בו זמנית הקריאות `factorial(3)`, `factorial(2)` ו-`factorial(1)`. מה נכון לגבי הפרמטר `n` שלהן?"
+  options:
+    - "לכל קריאה יש מסגרת (Frame) משלה במחסנית הקריאות, עם `n` נפרד: 3, 2 ו-1"
+    - "יש משתנה `n` אחד משותף, וכל קריאה חדשה דורסת את הערך שלו"
+    - "רק הקריאה האחרונה קיימת בזיכרון, והקודמות כבר הסתיימו"
+    - "`n` הופך למשתנה גלובלי כשהפונקציה קוראת לעצמה"
+  answer: 0
+  explanation: "כל קריאה לפונקציה, גם קריאה רקורסיבית, מקבלת מסגרת (Frame) חדשה במחסנית הקריאות (Call Stack), עם עותק משלה של הפרמטרים והמשתנים המקומיים. כשקריאה פנימית מסתיימת, המסגרת שלה נמחקת, והקריאה החיצונית ממשיכה עם ה-`n` שלה בלי שהוא השתנה."
+  optionExplanations:
+    "1": "אילו `n` היה משותף, `factorial(3)` הייתה חוזרת עם `n` שערכו 1 והתוצאה הייתה שגויה."
+    "2": "הקריאות הקודמות לא הסתיימו. הן ממתינות לתוצאה של הקריאה הפנימית כדי להשלים את הכפל."
+    "3": "קריאה רקורסיבית היא קריאה רגילה לפונקציה, והמשתנים שלה מקומיים כמו בכל קריאה."
+
+- id: py.functions.recursion.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def total(n):
+        if n == 0:
+            return 0
+        n + total(n - 1)
+
+    print(total(3))
+  options: ["TypeError", "6", "None", "0"]
+  answer: 0
+  explanation: "בשורה האחרונה הסכום מחושב אבל לא מוחזר, ולכן כל קריאה שאינה מקרה הבסיס מחזירה `None`. `total(1)` מחשבת `1 + 0` ומחזירה `None`. אז `total(2)` מחשבת `2 + None`, ונזרק `TypeError`. כל ענף בפונקציה רקורסיבית חייב להחזיר את התוצאה שלו."
+  optionExplanations:
+    "1": "6 היה מתקבל עם `return n + total(n - 1)`. בלי `return` הסכום לא עובר לקריאה החיצונית."
+    "2": "`total(1)` אכן מחזירה `None`, אבל `total(2)` מנסה לחבר אותו למספר ונכשלת לפני ש-`total(3)` מסתיימת."
+    "3": "רק מקרה הבסיס מחזיר 0. הקריאות שמעליו מנסות להשתמש בערכים שהן מקבלות."
+
+- id: py.functions.recursion.014
+  type: truefalse
+  difficulty: 3
+  prompt: "פייתון ממירה אוטומטית רקורסיית זנב (Tail Recursion), שבה הקריאה הרקורסיבית היא הפעולה האחרונה, ללולאה. לכן רקורסיה כזו לא מגיעה למגבלת העומק."
+  answer: false
+  explanation: "בניגוד לשפות כמו Scheme, פייתון לא מבצעת אופטימיזציה של רקורסיית זנב (Tail Call Optimization). כל קריאה פותחת מסגרת חדשה במחסנית, גם כשהיא הפעולה האחרונה, ולכן גם רקורסיית זנב עמוקה זורקת `RecursionError`. כשהעומק עלול להיות גדול, כותבים לולאה."
+
+- id: py.functions.recursion.015
+  type: single
+  difficulty: 2
+  prompt: איזו קריאה תגרום ל-`RecursionError`?
+  code: |
+    def countdown(n):
+        if n == 0:
+            return
+        countdown(n - 2)
+  options: ["`countdown(7)`", "`countdown(0)`", "`countdown(4)`", "`countdown(10)`"]
+  answer: 0
+  explanation: "מקרה בסיס לא מספיק, צריך גם להבטיח שמגיעים אליו. ממספר אי זוגי, הקפיצות של 2 עוברות מ-1 ל-1- בלי לפגוש את 0, והקריאות ממשיכות בלי סוף. תנאי בטוח יותר הוא `if n <= 0`."
+  optionExplanations:
+    "1": "0 הוא בדיוק מקרה הבסיס, והפונקציה חוזרת מיד."
+    "2": "מ-4 יורדים ל-2 ואז ל-0, ופוגעים במקרה הבסיס."
+    "3": "10 הוא מספר זוגי, ולכן הירידה בקפיצות של 2 מגיעה ל-0."
+
+- id: py.functions.recursion.016
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def is_even(n):
+        if n == 0:
+            return True
+        return is_odd(n - 1)
+
+    def is_odd(n):
+        if n == 0:
+            return False
+        return is_even(n - 1)
+
+    print(is_even(3), is_odd(3))
+  options: ["False True", "True False", "False False", "RecursionError"]
+  answer: 0
+  explanation: "זו רקורסיה הדדית (Mutual Recursion): כל פונקציה קוראת לשנייה עם מספר קטן ב-1. `is_even(3)` עוברת ל-`is_odd(2)`, ל-`is_even(1)`, ל-`is_odd(0)`, שמחזירה `False`. באותו אופן `is_odd(3)` מגיעה ל-`is_even(0)` ומחזירה `True`. הערך ממקרה הבסיס מוחזר כמו שהוא לאורך כל השרשרת."
+  optionExplanations:
+    "1": "התשובות הפוכות. 3 הוא אי זוגי, ושתי השרשראות מגיעות למקרי הבסיס שמחזירים בהתאם."
+    "2": "`is_odd(3)` מסתיימת ב-`is_even(0)`, שמחזירה `True`."
+    "3": "בכל קריאה `n` קטן ב-1, ולכן מגיעים ל-0 אחרי 3 קריאות בלבד."

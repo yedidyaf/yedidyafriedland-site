@@ -20,14 +20,14 @@
   prompt: מה יודפס?
   code: |
     name = "  Dana  "
-    print(name.strip() + "!")
-  options: ["Dana!", "  Dana  !", "Dana  !", "  Dana!"]
+    print("[" + name.strip() + "]")
+  options: ["[Dana]", "[  Dana  ]", "[Dana  ]", "[  Dana]"]
   answer: 0
-  explanation: "`strip` מחזירה מחרוזת חדשה בלי רווחים בהתחלה ובסוף. לכן `name.strip()` הוא `\"Dana\"`, ואחרי השרשור מתקבל `Dana!`."
+  explanation: "`strip` מחזירה מחרוזת חדשה בלי רווחים לבנים (Whitespace) בהתחלה ובסוף. לכן `name.strip()` הוא `\"Dana\"`, והסוגריים המרובעים מראים שלא נשאר אף רווח."
   optionExplanations:
     "1": "זו התוצאה בלי `strip` בכלל. `strip` מסירה את הרווחים משני הצדדים."
-    "2": "`Dana  !` היה מתקבל עם `lstrip`, שמסירה רק משמאל. `strip` מסירה משני הצדדים."
-    "3": "`  Dana!` היה מתקבל עם `rstrip`, שמסירה רק מימין. `strip` מסירה משני הצדדים."
+    "2": "`[Dana  ]` היה מתקבל עם `lstrip`, שמסירה רק מההתחלה. `strip` מסירה משני הצדדים."
+    "3": "`[  Dana]` היה מתקבל עם `rstrip`, שמסירה רק מהסוף. `strip` מסירה משני הצדדים."
 
 - id: py.strings.string-methods.003
   type: output

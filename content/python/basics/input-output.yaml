@@ -176,7 +176,7 @@
     b = input("Second: ")
     print("Sum:", a + b)
   answer: 2
-  explanation: "בשורה 2 הקלט לא מומר, ולכן `b` הוא מחרוזת. בשורה 3 `a + b` מנסה לחבר `int` עם `str` ונזרקת `TypeError`. צריך להמיר כמו בשורה 1: `int(input(\"Second: \"))`."
+  explanation: "בשורה 2 הקלט לא מומר, ולכן `b` הוא מחרוזת. בשורה 3 `a + b` מנסה לחבר `int` עם `str` ונזרקת `TypeError`. צריך להמיר כמו בשורה 1: `int(input(\"Second: \"))`, כך שהמשתנה `b` יכיל מספר מהרגע שנקרא."
   fixed: |
     a = int(input("First: "))
     b = int(input("Second: "))

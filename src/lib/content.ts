@@ -157,7 +157,7 @@ export function loadContent(opts: LoadOptions = {}): LoadedLanguage[] {
           const prev = allIds.get(q.id);
           if (prev) problems.push(`${tRel}: duplicate id ${q.id} (also in ${prev})`);
           allIds.set(q.id, tRel);
-          const key = normalize(q.prompt + '\n' + ('code' in q && q.code ? q.code : ''));
+          const key = langId + '|' + normalize(JSON.stringify([q.prompt, 'code' in q ? q.code : '', 'options' in q ? q.options : '', 'items' in q ? q.items.map((i) => i.label) : '', q.type === 'truefalse' ? '' : '']));
           const dup = allPrompts.get(key);
           if (dup) problems.push(`${tRel}: ${q.id} duplicates ${dup} (same prompt and code)`);
           allPrompts.set(key, q.id);
