@@ -356,3 +356,4 @@ legend { font-weight: 600; padding: 0 6px; }
 .prose h2 { margin-top: 1.6em; }
 .text-danger { color: var(--danger); }
 .text-success { color: var(--success); }
+.match .sig.plain { font-family: var(--font); font-size: 1rem; font-weight: 550; text-align: start; white-space: normal; }

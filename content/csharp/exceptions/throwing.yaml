@@ -1,0 +1,412 @@
+- id: cs.exceptions.throwing.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        Withdraw(-50);
+        Console.WriteLine("done");
+    }
+    catch (ArgumentException e)
+    {
+        Console.WriteLine(e.Message);
+    }
+
+    static void Withdraw(int amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentException("Amount must be positive");
+        Console.WriteLine($"Withdrew {amount}");
+    }
+  options: ["Amount must be positive", "done\nAmount must be positive", "Withdrew -50\ndone", "ArgumentException"]
+  answer: 0
+  explanation: "`throw` עוצר את המתודה מיד, ולכן `Withdrew` לא מודפס. גם `done` לא מודפס, כי החריגה קופצת ישר ל-`catch`. `e.Message` מחזיר את ההודעה שהעברנו לבנאי של החריגה."
+  optionExplanations:
+    "1": "השורה שאחרי הקריאה ל-`Withdraw` מדולגת, כי החריגה עוברת ישר ל-`catch`."
+    "2": "אחרי `throw` המתודה לא ממשיכה לשורה הבאה."
+    "3": "`Message` מחזיר את טקסט ההודעה, לא את שם הטיפוס."
+
+- id: cs.exceptions.throwing.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int[] stock = { 5, 0, 3 };
+    foreach (int qty in stock)
+    {
+        try
+        {
+            if (qty == 0)
+                throw new InvalidOperationException("Out of stock");
+            Console.WriteLine(qty);
+        }
+        catch (InvalidOperationException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+  options: ["5\nOut of stock\n3", "5\nOut of stock", "5\n0\n3", "5\nOut of stock\n0\n3"]
+  answer: 0
+  explanation: "ה-`try` נמצא בתוך הלולאה, ולכן החריגה נתפסת בתוך אותו סיבוב והלולאה ממשיכה לאיבר הבא. בסיבוב של 0 ה-`throw` מדלג על ההדפסה של `qty`."
+  optionExplanations:
+    "1": "הלולאה הייתה נעצרת רק אם ה-`try` היה עוטף את כל הלולאה מבחוץ."
+    "3": "אחרי `throw` השורה `Console.WriteLine(qty)` לא מתבצעת באותו סיבוב."
+
+- id: cs.exceptions.throwing.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        Greet(null);
+    }
+    catch (ArgumentException e)
+    {
+        Console.WriteLine(e.GetType().Name);
+    }
+
+    static void Greet(string name)
+    {
+        if (name == null)
+            throw new ArgumentNullException(nameof(name));
+        Console.WriteLine($"Hello {name}");
+    }
+  options: ["ArgumentNullException", "ArgumentException", "NullReferenceException", "Hello"]
+  answer: 0
+  explanation: "`ArgumentNullException` יורשת מ-`ArgumentException`, ולכן `catch (ArgumentException)` תופס אותה. `GetType()` מחזיר את הטיפוס האמיתי של האובייקט שנזרק, לא את הטיפוס שכתוב ב-`catch`."
+  optionExplanations:
+    "1": "`GetType()` מחזיר את טיפוס הזמן־ריצה של החריגה, גם כשהיא נתפסת דרך טיפוס הבסיס."
+    "2": "בדקנו את `name` וזרקנו בעצמנו לפני שניסינו להשתמש בו, ולכן לא נוצרת `NullReferenceException`."
+    "3": "הבדיקה זורקת לפני שורת ההדפסה."
+
+- id: cs.exceptions.throwing.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var account = new Account();
+    try
+    {
+        account.Close();
+        account.Deposit(100);
+    }
+    catch (InvalidOperationException e)
+    {
+        Console.WriteLine(e.Message);
+    }
+    Console.WriteLine(account.Balance);
+
+    class Account
+    {
+        private bool _closed;
+        public int Balance { get; private set; }
+        public void Close() => _closed = true;
+        public void Deposit(int amount)
+        {
+            if (_closed)
+                throw new InvalidOperationException("Account is closed");
+            Balance += amount;
+        }
+    }
+  options: ["Account is closed\n0", "Account is closed\n100", "100", "0"]
+  answer: 0
+  explanation: "`InvalidOperationException` מתאימה כשהארגומנט תקין אבל מצב האובייקט לא מאפשר את הפעולה: אי אפשר להפקיד לחשבון סגור. הבדיקה נעשית לפני שינוי היתרה, ולכן היתרה נשארת 0."
+  optionExplanations:
+    "1": "ה-`throw` קורה לפני `Balance += amount`, ולכן היתרה לא משתנה."
+    "2": "החשבון נסגר לפני ההפקדה, ולכן `Deposit` זורקת."
+    "3": "ההודעה מודפסת בבלוק ה-`catch` לפני הדפסת היתרה."
+
+- id: cs.exceptions.throwing.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        Process();
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("outer");
+    }
+
+    static void Process()
+    {
+        try
+        {
+            int.Parse("abc");
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("log");
+            throw;
+        }
+        finally
+        {
+            Console.WriteLine("cleanup");
+        }
+    }
+  options: ["log\ncleanup\nouter", "log\nouter\ncleanup", "log\ncleanup", "log\nouter"]
+  answer: 0
+  explanation: "`throw;` בתוך `catch` זורק מחדש (Rethrow) את אותה חריגה. לפני שהחריגה יוצאת מ-`Process`, רץ ה-`finally` של המתודה. רק אחר כך היא מגיעה ל-`catch` שבחוץ ומודפס `outer`."
+  optionExplanations:
+    "1": "ה-`finally` של `Process` רץ כשהביצוע עוזב את המתודה, לפני שה-`catch` החיצוני מקבל את החריגה."
+    "2": "`throw;` שולח את החריגה הלאה, ולכן ה-`catch` החיצוני תופס אותה."
+    "3": "`finally` רץ גם כשהחריגה נזרקת מחדש מתוך `catch`."
+
+- id: cs.exceptions.throwing.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        LoadPort("abc");
+    }
+    catch (InvalidOperationException e)
+    {
+        Console.WriteLine(e.Message);
+        Console.WriteLine(e.InnerException.GetType().Name);
+    }
+
+    static int LoadPort(string text)
+    {
+        try
+        {
+            return int.Parse(text);
+        }
+        catch (FormatException ex)
+        {
+            throw new InvalidOperationException("Bad port setting", ex);
+        }
+    }
+  options: ["Bad port setting\nFormatException", "Bad port setting\nInvalidOperationException", "FormatException", "Bad port setting"]
+  answer: 0
+  explanation: "החריגה המקורית נעטפת בחריגה חדשה שמתארת את הבעיה ברמה של הקוד הקורא. הבנאי שמקבל `ex` שומר אותה ב-`InnerException`, כך שהמידע על הסיבה המקורית לא הולך לאיבוד."
+  optionExplanations:
+    "1": "`InnerException` היא החריגה המקורית שהועברה לבנאי, כלומר `FormatException`."
+    "2": "ה-`catch` שבחוץ מקבל את החריגה החדשה, ולכן `Message` שלה מודפס ראשון."
+    "3": "`InnerException` לא ריקה, ולכן מודפסת גם השורה השנייה."
+
+- id: cs.exceptions.throwing.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        try
+        {
+            throw new ArgumentException("first");
+        }
+        finally
+        {
+            throw new InvalidOperationException("second");
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"{e.GetType().Name}: {e.Message}");
+    }
+  options: ["InvalidOperationException: second", "ArgumentException: first", "ArgumentException: first\nInvalidOperationException: second", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "חריגה שנזרקת מתוך `finally` מחליפה את החריגה שהייתה בדרך החוצה, והחריגה הראשונה אובדת. לכן ה-`catch` מקבל רק את `InvalidOperationException`. זו סיבה טובה לא לזרוק חריגות מתוך `finally`."
+  optionExplanations:
+    "1": "החריגה הראשונה הוחלפה בזו שנזרקה ב-`finally` ואבדה."
+    "2": "לבלוק `catch` מגיעה חריגה אחת בלבד."
+    "3": "מותר לזרוק מתוך `finally`; אסור רק לצאת ממנו עם `return`, `break` או `continue`."
+
+- id: cs.exceptions.throwing.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var pen = new Product("Pen");
+    Console.WriteLine(pen.Name);
+    try
+    {
+        var empty = new Product(null);
+        Console.WriteLine(empty.Name);
+    }
+    catch (ArgumentNullException e)
+    {
+        Console.WriteLine(e.ParamName);
+    }
+
+    class Product
+    {
+        public string Name { get; }
+        public Product(string name)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
+    }
+  options: ["Pen\nname", "Pen\nName", "Pen\nArgumentNullException", "Pen"]
+  answer: 0
+  explanation: "ביטוי `throw` (Throw Expression) מאפשר לזרוק בתוך ביטוי, למשל בצד הימני של `??`. כש-`name` הוא `null` נזרקת `ArgumentNullException`. `nameof(name)` מחזיר את שם הפרמטר `name`, והוא נשמר במאפיין `ParamName`."
+  optionExplanations:
+    "1": "`nameof(name)` מתייחס לפרמטר `name` של הבנאי, לא למאפיין `Name`."
+    "2": "`ParamName` מחזיר את שם הפרמטר שהועבר לבנאי החריגה, לא את שם הטיפוס."
+    "3": "הבנאי זורק, החריגה נתפסת, ובלוק ה-`catch` מדפיס שורה נוספת."
+
+- id: cs.exceptions.throwing.009
+  type: single
+  difficulty: 2
+  prompt: "מה ההבדל בין `throw;` לבין `throw ex;` בתוך `catch (Exception ex)`?"
+  options:
+    - "`throw;` שומרת את עקבות המחסנית המקוריים, ו-`throw ex;` מאפסת אותם לשורה של ה-`catch`"
+    - "`throw ex;` שומרת את עקבות המחסנית המקוריים, ו-`throw;` מאפסת אותם"
+    - "אין שום הבדל; שתי הצורות זהות לגמרי"
+    - "`throw;` זורקת חריגה חדשה מטיפוס `Exception` בלי הודעה"
+  answer: 0
+  explanation: "עקבות המחסנית (Stack Trace) מראים איפה החריגה נוצרה. `throw;` זורקת מחדש את אותה חריגה ושומרת את המידע הזה. `throw ex;` מתייחסת לחריגה כאילו נזרקה עכשיו, ולכן המיקום המקורי של השגיאה אובד. השתמשו ב-`throw;`."
+  optionExplanations:
+    "1": "זה הפוך: דווקא `throw ex;` מאבדת את המיקום המקורי."
+    "2": "בשתיהן נזרק אותו אובייקט, אבל עקבות המחסנית שונים."
+    "3": "`throw;` זורקת מחדש את אותה חריגה שנתפסה, לא חריגה חדשה."
+
+- id: cs.exceptions.throwing.010
+  type: single
+  difficulty: 1
+  prompt: "המאפיין `Age` מקבל ערך שלילי דרך ה-`set`. איזו חריגה הכי מתאימה לזרוק?"
+  options:
+    - "`ArgumentOutOfRangeException`"
+    - "`IndexOutOfRangeException`"
+    - "`InvalidOperationException`"
+    - "`FormatException`"
+  answer: 0
+  explanation: "הבעיה היא בערך שהתקבל, והוא מחוץ לטווח המותר. לכן מתאימה `ArgumentOutOfRangeException`, שיורשת מ-`ArgumentException`. בחרו תמיד את החריגה הספציפית ביותר שמתארת את הבעיה."
+  optionExplanations:
+    "1": "`IndexOutOfRangeException` שמורה לגישה לאינדקס לא חוקי במערך, וזורקת אותה סביבת הריצה."
+    "2": "`InvalidOperationException` מתאימה כשמצב האובייקט לא מאפשר את הפעולה, לא כשהערך שהתקבל שגוי."
+    "3": "`FormatException` מתאימה לטקסט בפורמט שגוי, ו-`Age` הוא כבר מספר."
+
+- id: cs.exceptions.throwing.011
+  type: single
+  difficulty: 2
+  prompt: "המתודה `Next` נקראת כשאין כרטיסים בתור. איזו חריגה הכי מתאימה לזרוק במקום ההערה?"
+  code: |
+    class TicketQueue
+    {
+        private readonly Queue<string> _tickets = new();
+
+        public string Next()
+        {
+            if (_tickets.Count == 0)
+            {
+                // איזו חריגה לזרוק כאן?
+            }
+            return _tickets.Dequeue();
+        }
+    }
+  options:
+    - "`InvalidOperationException`"
+    - "`ArgumentException`"
+    - "`NullReferenceException`"
+    - "`IndexOutOfRangeException`"
+  answer: 0
+  explanation: "ל-`Next` אין בכלל פרמטרים, והבעיה היא שמצב האובייקט (תור ריק) לא מאפשר את הפעולה. זה בדיוק התפקיד של `InvalidOperationException`, וזו גם החריגה ש-`Queue<T>.Dequeue` זורקת בעצמה על תור ריק."
+  optionExplanations:
+    "1": "`ArgumentException` מתאימה לארגומנט לא חוקי, ול-`Next` אין ארגומנטים."
+    "2": "`NullReferenceException` נזרקת על ידי סביבת הריצה בגישה ל-`null`; לא זורקים אותה בעצמנו."
+    "3": "`IndexOutOfRangeException` שמורה לגישה למערך מחוץ לגבולות, ונזרקת על ידי סביבת הריצה."
+
+- id: cs.exceptions.throwing.012
+  type: single
+  difficulty: 1
+  prompt: מתי נכון לזרוק חריגה?
+  options:
+    - "כשמתודה לא יכולה לבצע את מה שהיא מבטיחה, למשל כי קיבלה ארגומנט לא חוקי"
+    - "כדי להחזיר ערך מתודה בלי להשתמש ב-`return`"
+    - "כדי לצאת מהר מלולאה מקוננת"
+    - "בכל פעם שמשתנה מקבל את הערך 0"
+  answer: 0
+  explanation: "חריגה מסמנת שמתודה נכשלה בתפקידה: ארגומנט לא חוקי, מצב לא מתאים או משאב שלא זמין. היא לא כלי לזרימה רגילה של התוכנית, כי היא איטית יחסית ומסתירה את הכוונה של הקוד."
+  optionExplanations:
+    "1": "ערך מוחזר עם `return`; חריגה מיועדת לדיווח על כישלון."
+    "2": "ליציאה מלולאה יש `break`, `return` או חילוץ מתודה; חריגה כאן היא שימוש לרעה."
+    "3": "0 יכול להיות ערך תקין לגמרי; זורקים רק כשהערך באמת מונע את הפעולה."
+
+- id: cs.exceptions.throwing.013
+  type: truefalse
+  difficulty: 3
+  prompt: "`throw;` לבד, בלי אובייקט חריגה, מותר רק בתוך בלוק `catch`."
+  answer: true
+  explanation: "`throw;` אומר «זרקו מחדש את החריגה שנתפסה עכשיו», ולכן יש לו משמעות רק בתוך `catch`. מחוץ ל-`catch` הקומפיילר מחזיר שגיאה (CS0156), כי אין חריגה נוכחית לזרוק."
+
+- id: cs.exceptions.throwing.014
+  type: truefalse
+  difficulty: 1
+  prompt: "מומלץ לזרוק `new Exception(\"...\")` מהטיפוס הכללי `Exception`, כי כל `catch` יתפוס אותו."
+  answer: false
+  explanation: "חריגה מהטיפוס הכללי `Exception` לא אומרת לקוד הקורא מה השתבש, ומכריחה אותו לתפוס הכול. זרקו את הטיפוס הספציפי ביותר שמתאים, למשל `ArgumentException` או `InvalidOperationException`."
+
+- id: cs.exceptions.throwing.015
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה לזרוק חריגה כאשר הכמות קטנה או שווה ל-0. באיזו שורה הבאג?"
+  code: |
+    class Order
+    {
+        public int Quantity { get; private set; }
+
+        public void SetQuantity(int quantity)
+        {
+            if (quantity <= 0)
+                new ArgumentOutOfRangeException(nameof(quantity));
+            Quantity = quantity;
+        }
+    }
+  answer: 8
+  explanation: "השורה יוצרת אובייקט חריגה, אבל לא זורקת אותו: חסרה המילה `throw`. יצירת חריגה עם `new` היא סתם יצירת אובייקט, ולכן הקוד ממשיך ושומר כמות לא חוקית."
+  fixed: |
+    class Order
+    {
+        public int Quantity { get; private set; }
+
+        public void SetQuantity(int quantity)
+        {
+            if (quantity <= 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            Quantity = quantity;
+        }
+    }
+
+- id: cs.exceptions.throwing.016
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה לעטוף שגיאת פורמט ב-`InvalidOperationException`, ולשמור את החריגה המקורית לצורך איתור התקלה. באיזו שורה הבאג?"
+  code: |
+    class ConfigLoader
+    {
+        public static int ReadTimeout(string text)
+        {
+            try
+            {
+                return int.Parse(text);
+            }
+            catch (FormatException ex)
+            {
+                throw new InvalidOperationException("Invalid timeout setting");
+            }
+        }
+    }
+  answer: 11
+  explanation: "החריגה החדשה נוצרת בלי `ex`, ולכן `InnerException` שלה ריק והמידע על הסיבה המקורית אובד. כשעוטפים חריגה, העבירו את המקורית כארגומנט השני לבנאי."
+  fixed: |
+    class ConfigLoader
+    {
+        public static int ReadTimeout(string text)
+        {
+            try
+            {
+                return int.Parse(text);
+            }
+            catch (FormatException ex)
+            {
+                throw new InvalidOperationException("Invalid timeout setting", ex);
+            }
+        }
+    }

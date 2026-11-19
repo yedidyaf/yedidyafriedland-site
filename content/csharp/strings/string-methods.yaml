@@ -1,0 +1,272 @@
+- id: cs.strings.string-methods.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string s = "programming";
+    Console.WriteLine(s.Substring(3));
+    Console.WriteLine(s.Substring(3, 4));
+  options: ["gramming\ngram", "ramming\nramm", "gramming\ng", "gramming\ngra"]
+  answer: 0
+  explanation: "`Substring(start)` מחזירה מהאינדקס `start` ועד הסוף. `Substring(start, length)` מחזירה `length` תווים החל מ-`start`. הפרמטר השני הוא אורך, לא אינדקס סיום. `s[3]` הוא `g`, ולכן מתקבלים `gramming` ו-`gram`."
+  optionExplanations:
+    "1": "האינדקסים מתחילים מ-0, ולכן אינדקס 3 הוא התו הרביעי, `g`, ולא `r`."
+    "2": "זו טעות של מי שחושב שהפרמטר השני הוא אינדקס סיום, כמו בחיתוך ב-Python. ב-C# הוא מספר התווים."
+    "3": "הפרמטר השני הוא מספר התווים שיוחזרו, ולכן יוחזרו ארבעה תווים ולא שלושה."
+
+- id: cs.strings.string-methods.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string email = "dana@mail.com";
+    int at = email.IndexOf('@');
+    Console.WriteLine(at);
+    Console.WriteLine(email.Substring(0, at));
+    Console.WriteLine(email.IndexOf('#'));
+  options: ["4\ndana\n-1", "5\ndana@\n-1", "4\ndana@\n0", "4\ndana\n0"]
+  answer: 0
+  explanation: "`IndexOf` מחזירה את האינדקס של המופע הראשון, מתחיל מ-0, ולכן `@` נמצא באינדקס 4. `Substring(0, 4)` מחזירה ארבעה תווים: `dana`. כשהתו לא נמצא, `IndexOf` מחזירה `-1` ולא זורקת חריגה."
+  optionExplanations:
+    "1": "ספירה מ-1 נותנת 5, אבל ב-C# האינדקסים מתחילים מ-0."
+    "2": "`Substring(0, 4)` מחזירה ארבעה תווים בלבד, ולכן `@` לא נכלל."
+    "3": "0 הוא אינדקס תקין, של התו הראשון. לכן הערך שמסמן \"לא נמצא\" הוא `-1`."
+
+- id: cs.strings.string-methods.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string csv = "red,,blue,";
+    string[] parts = csv.Split(',');
+    Console.WriteLine(parts.Length);
+    Console.WriteLine(csv.Split(',', StringSplitOptions.RemoveEmptyEntries).Length);
+  options: ["4\n2", "2\n2", "3\n2", "4\n4"]
+  answer: 0
+  explanation: "`Split` מחזירה את מה שיש בין כל שני מפרידים, גם אם זו מחרוזת ריקה. כאן מתקבלים `red`, `\"\"`, `blue` ו-`\"\"`: ארבעה חלקים. `StringSplitOptions.RemoveEmptyEntries` מסננת את החלקים הריקים, ונשארים שניים."
+  optionExplanations:
+    "1": "בלי `RemoveEmptyEntries` החלקים הריקים נשמרים במערך."
+    "2": "גם הפסיק האחרון יוצר חלק, מחרוזת ריקה אחריו. כל פסיק מוסיף חלק אחד."
+    "3": "`RemoveEmptyEntries` מסירה את שני החלקים הריקים, ולכן בשורה השנייה מודפס 2."
+
+- id: cs.strings.string-methods.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string text = "banana";
+    Console.WriteLine(text.Replace("an", "AN"));
+    Console.WriteLine(text);
+  options: ["bANANa\nbanana", "bANana\nbanana", "bANANa\nbANANa", "bANana\nbANana"]
+  answer: 0
+  explanation: "`Replace` מחליפה את כל המופעים, לא רק את הראשון. היא לא משנה את `text`, אלא מחזירה מחרוזת חדשה, כי מחרוזות הן בלתי ניתנות לשינוי (Immutable). לכן `text` נשאר `banana`."
+  optionExplanations:
+    "1": "`Replace` מחליפה כל מופע של `an`, ויש שניים כאלה ב-`banana`."
+    "2": "`Replace` מחזירה מחרוזת חדשה ולא משנה את המחרוזת המקורית."
+    "3": "שתי טעויות: גם ההחלפה מלאה, וגם המחרוזת המקורית לא משתנה."
+
+- id: cs.strings.string-methods.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string raw = "  hello world  ";
+    string clean = raw.Trim();
+    Console.WriteLine(clean.Length);
+    Console.WriteLine($"[{raw.TrimStart()}]");
+  options: ["11\n[hello world  ]", "10\n[hello world  ]", "11\n[hello world]", "15\n[  hello world]"]
+  answer: 0
+  explanation: "`Trim` מסירה רווחים (Whitespace) רק מההתחלה ומהסוף, ולכן הרווח באמצע נשאר ו-`hello world` באורך 11. `TrimStart` מסירה רק מההתחלה, והרווחים בסוף נשארים בתוך הסוגריים."
+  optionExplanations:
+    "1": "`Trim` לא נוגעת ברווחים שבאמצע המחרוזת. להסרת כל הרווחים משתמשים ב-`Replace(\" \", \"\")`."
+    "2": "`TrimStart` מסירה רק את הרווחים בהתחלה. את הסוף מנקה `TrimEnd`."
+    "3": "15 הוא אורך `raw`. `Trim` מחזירה מחרוזת חדשה ומקוצרת, ו-`clean` מצביע עליה."
+
+- id: cs.strings.string-methods.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string sentence = "the quick brown fox";
+    string[] words = sentence.Split(' ');
+    Console.WriteLine(words.Length);
+    Console.WriteLine(string.Join("-", words));
+  options: ["4\nthe-quick-brown-fox", "3\nthe-quick-brown-fox", "4\nthe-quick-brown-fox-", "4\nthe - quick - brown - fox"]
+  answer: 0
+  explanation: "`Split(' ')` מפרקת לפי רווח לארבע מילים. `string.Join` עושה את הפעולה ההפוכה: מחברת את האיברים ושמה את המפריד רק בין איברים סמוכים, לא בהתחלה ולא בסוף."
+  optionExplanations:
+    "1": "שלושה רווחים יוצרים ארבעה חלקים. מספר החלקים גדול באחד ממספר המפרידים."
+    "2": "`Join` לא מוסיפה מפריד אחרי האיבר האחרון. זה בדיוק היתרון שלה על שרשור בלולאה."
+    "3": "`Join` מכניסה את המפריד בדיוק כפי שהועבר, `\"-\"`, בלי רווחים נוספים."
+
+- id: cs.strings.string-methods.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    string s = "Hello, hello";
+    Console.WriteLine(s.Contains("hello"));
+    Console.WriteLine(s.IndexOf("hello"));
+    Console.WriteLine(s.IndexOf('l', 4));
+  options: ["True\n7\n9", "True\n0\n9", "True\n7\n2", "True\n7\n5"]
+  answer: 0
+  explanation: "`Contains` ו-`IndexOf` רגישות לגודל אותיות, ולכן `Hello` שבהתחלה לא נחשב, והמופע של `hello` מתחיל באינדקס 7. הפרמטר השני של `IndexOf` הוא אינדקס התחלת החיפוש: מחפשים `l` מאינדקס 4 והלאה, והמופע הראשון שם הוא באינדקס 9. האינדקס המוחזר נספר תמיד מתחילת המחרוזת."
+  optionExplanations:
+    "1": "`IndexOf` רגישה לגודל אותיות. `Hello` באינדקס 0 מתחיל באות גדולה, ולכן הוא לא תואם ל-`hello`."
+    "2": "החיפוש מתחיל מאינדקס 4, ולכן ה-`l` באינדקסים 2 ו-3 מדולגים."
+    "3": "התוצאה נספרת מתחילת המחרוזת ולא ממקום תחילת החיפוש. 5 הוא המרחק מאינדקס 4, לא האינדקס."
+
+- id: cs.strings.string-methods.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    string code = "AB12";
+    Console.WriteLine(code.Substring(2, 2));
+    Console.WriteLine(code.Substring(2, 3));
+  options: ["12\nArgumentOutOfRangeException", "12\n12", "12\nIndexOutOfRangeException", "12\n1"]
+  answer: 0
+  explanation: "`Substring(2, 3)` מבקשת שלושה תווים מאינדקס 2, אבל נשארו רק שניים. בניגוד לחיתוך ב-Python, `Substring` לא מקצרת את הבקשה בשקט, אלא זורקת `ArgumentOutOfRangeException`, כי הארגומנטים שהועברו חורגים מגבולות המחרוזת."
+  optionExplanations:
+    "1": "C# לא חותכת עד סוף המחרוזת כשהאורך גדול מדי. היא זורקת חריגה."
+    "2": "`IndexOutOfRangeException` נזרקת בגישה ישירה עם `[]`. מתודה שמקבלת ארגומנט לא חוקי זורקת `ArgumentOutOfRangeException`."
+    "3": "`1` היה מתקבל אם הפרמטר השני היה אינדקס סיום. הוא אורך, ושלושה תווים מאינדקס 2 חורגים מהמחרוזת."
+
+- id: cs.strings.string-methods.009
+  type: bug
+  difficulty: 1
+  prompt: "`GetDomain` אמורה להחזיר את הדומיין של כתובת מייל, למשל `mail.com` עבור `dana@mail.com`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(GetDomain("dana@mail.com"));
+
+    static string GetDomain(string email)
+    {
+        int at = email.IndexOf('@');
+        return email.Substring(at);
+    }
+  answer: 6
+  explanation: "`IndexOf` מחזירה את האינדקס של `@` עצמו, ו-`Substring(at)` מתחילה ממנו, ולכן התוצאה היא `@mail.com`. הדומיין מתחיל תו אחד אחרי, ב-`at + 1`."
+  fixed: |
+    Console.WriteLine(GetDomain("dana@mail.com"));
+
+    static string GetDomain(string email)
+    {
+        int at = email.IndexOf('@');
+        return email.Substring(at + 1);
+    }
+
+- id: cs.strings.string-methods.010
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס כל תגית שמכילה את התו `#`. באיזו שורה הבאג?"
+  code: |
+    string[] tags = { "#urgent", "home", "#work" };
+    foreach (string tag in tags)
+    {
+        if (tag.IndexOf('#') > 0)
+        {
+            Console.WriteLine(tag);
+        }
+    }
+  answer: 4
+  explanation: "`IndexOf` מחזירה `-1` כשהתו לא נמצא, ו-0 כשהוא התו הראשון. התנאי `> 0` מפספס בדיוק את המקרה הנפוץ כאן, `#` בתחילת התגית, ולכן לא מודפס כלום. צריך `>= 0`, או פשוט `tag.Contains('#')`."
+  fixed: |
+    string[] tags = { "#urgent", "home", "#work" };
+    foreach (string tag in tags)
+    {
+        if (tag.Contains('#'))
+        {
+            Console.WriteLine(tag);
+        }
+    }
+
+- id: cs.strings.string-methods.011
+  type: single
+  difficulty: 1
+  prompt: "מה מחזירה הקריאה `\"a,b,c\".Split(',')`?"
+  options:
+    - "מערך `string[]` עם שלושה איברים"
+    - "רשימה `List<string>` עם שלושה איברים"
+    - "מערך `char[]` עם שלושה תווים"
+    - "המחרוזת `abc` בלי הפסיקים"
+  answer: 0
+  explanation: "`Split` מחזירה תמיד מערך של מחרוזות, `string[]`, גם כשכל חלק הוא תו אחד. אם צריך רשימה, ממירים עם `ToList()`."
+  optionExplanations:
+    "1": "`Split` מחזירה מערך ולא `List`. המרה לרשימה דורשת קריאה נוספת."
+    "2": "כל חלק הוא מחרוזת, גם אם במקרה הוא באורך תו אחד."
+    "3": "הסרת המפרידים בלבד היא `Replace(\",\", \"\")`. `Split` מפרקת למערך של חלקים."
+
+- id: cs.strings.string-methods.012
+  type: single
+  difficulty: 2
+  prompt: "איזו שורה מסירה את כל הרווחים מהמחרוזת `text`, כך ש-`text` יכיל את התוצאה?"
+  options:
+    - "`text = text.Replace(\" \", \"\");`"
+    - "`text.Replace(\" \", \"\");`"
+    - "`text = text.Trim();`"
+    - "`text = text.Remove(' ');`"
+  answer: 0
+  explanation: "`Replace` מחזירה מחרוזת חדשה בלי לשנות את המקורית, ולכן חייבים להציב את התוצאה בחזרה ב-`text`."
+  optionExplanations:
+    "1": "התוצאה של `Replace` נזרקת, ו-`text` נשאר כמו שהיה."
+    "2": "`Trim` מסירה רווחים רק בקצוות, לא באמצע."
+    "3": "`Remove` מקבלת אינדקס ולא תו. התו `' '` מומר למספר 32, והקריאה מנסה למחוק הכול מאינדקס 32."
+
+- id: cs.strings.string-methods.013
+  type: single
+  difficulty: 2
+  prompt: "איזו בדיקה מחזירה `true` כש-`name` הוא `null`, מחרוזת ריקה, או מחרוזת שיש בה רק רווחים?"
+  options:
+    - "`string.IsNullOrWhiteSpace(name)`"
+    - "`string.IsNullOrEmpty(name)`"
+    - "`name.Trim() == \"\"`"
+    - "`name.Length == 0`"
+  answer: 0
+  explanation: "`string.IsNullOrWhiteSpace` היא מתודה סטטית, ולכן בטוחה גם כש-`name` הוא `null`. היא מכסה את שלושת המקרים בבדיקה אחת."
+  optionExplanations:
+    "1": "`IsNullOrEmpty` מחזירה `false` עבור `\"   \"`, כי מחרוזת של רווחים אינה ריקה."
+    "2": "כש-`name` הוא `null`, הקריאה ל-`Trim` זורקת `NullReferenceException`."
+    "3": "גם כאן `null` גורם ל-`NullReferenceException`, ומחרוזת של רווחים אורכה גדול מ-0."
+
+- id: cs.strings.string-methods.014
+  type: truefalse
+  difficulty: 1
+  prompt: "הביטוי `\"Hello\".Contains(\"hello\")` מחזיר `true`."
+  answer: false
+  explanation: "`Contains` רגישה לגודל אותיות (Case-sensitive), ו-`H` שונה מ-`h`. כדי להתעלם מגודל האותיות כותבים `\"Hello\".Contains(\"hello\", StringComparison.OrdinalIgnoreCase)`."
+
+- id: cs.strings.string-methods.015
+  type: truefalse
+  difficulty: 3
+  prompt: "הקריאה `\"a  b\".Split(' ')` (עם שני רווחים בין `a` ל-`b`) מחזירה מערך עם שלושה איברים."
+  answer: true
+  explanation: "בין שני הרווחים הסמוכים יש מחרוזת ריקה, ולכן מתקבלים `a`, `\"\"` ו-`b`. זה מקור נפוץ לבאגים בפירוק קלט של משתמש. כדי לקבל רק את המילים מוסיפים `StringSplitOptions.RemoveEmptyEntries`."
+
+- id: cs.strings.string-methods.016
+  type: cleaner
+  difficulty: 2
+  prompt: כל הגרסאות בודקות אם הכתובת מתחילה ב-`https://`. איזו גרסה נקייה יותר?
+  options:
+    - |
+      string url = "https://example.com";
+      if (url.StartsWith("https://"))
+      {
+          Console.WriteLine("secure");
+      }
+    - |
+      string url = "https://example.com";
+      if (url.Substring(0, 8) == "https://")
+      {
+          Console.WriteLine("secure");
+      }
+    - |
+      string url = "https://example.com";
+      if (url.IndexOf("https://") == 0)
+      {
+          Console.WriteLine("secure");
+      }
+  answer: 0
+  explanation: "`StartsWith` אומרת בדיוק את הכוונה: \"מתחילה ב-\". אין בה מספרים לספור ואין בה חישוב עקיף, וגם מחרוזת קצרה לא גורמת לחריגה."
+  optionExplanations:
+    "1": "המספר 8 הוא מספר קסם (Magic Number) שחייב להתאים לאורך הקידומת, ו-`Substring` תזרוק חריגה על מחרוזת שקצרה מ-8 תווים."
+    "2": "`IndexOf(...) == 0` היא דרך עקיפה לשאול את אותה שאלה, והיא ממשיכה לחפש בכל המחרוזת גם כשההתחלה לא תואמת."

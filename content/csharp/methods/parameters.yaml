@@ -1,0 +1,329 @@
+- id: cs.methods.parameters.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int a = 1;
+    int b = 1;
+    Inc(a);
+    IncRef(ref b);
+    Console.WriteLine($"{a} {b}");
+
+    static void Inc(int n) => n++;
+    static void IncRef(ref int n) => n++;
+  options: ["1 2", "2 2", "1 1", "2 1"]
+  answer: 0
+  explanation: "ברירת המחדל ב-C# היא העברה לפי ערך (Pass by value): `Inc` מקבלת עותק של `a` ומגדילה את העותק בלבד. עם `ref` הפרמטר הוא כינוי (Alias) למשתנה של הקורא, ולכן `b` גדל ל-2."
+  optionExplanations:
+    "1": "`Inc` משנה עותק של `a`. בלי `ref` השינוי לא חוזר לקורא."
+    "2": "`ref` מעביר את המשתנה עצמו, ולכן השינוי ב-`IncRef` נראה אצל הקורא."
+    "3": "זה הפוך: דווקא הקריאה עם `ref` משנה את המשתנה המקורי."
+
+- id: cs.methods.parameters.002
+  type: single
+  difficulty: 2
+  prompt: "איזה משפט מתאר נכון את ההבדל בין `ref`, `out` ו-`in`?"
+  options:
+    - "`ref` דורש משתנה מאותחל ומאפשר לשנות אותו; `out` לא דורש אתחול אבל מחייב את המתודה להציב בו ערך; `in` מעביר הפניה לקריאה בלבד"
+    - "`ref` לקריאה בלבד; `out` דורש משתנה מאותחל; `in` מחייב את המתודה להציב ערך"
+    - "שלושתם זהים, וההבדל ביניהם הוא רק בסגנון הכתיבה"
+    - "`out` דורש משתנה מאותחל ומאפשר לשנות אותו; `ref` מחייב את המתודה להציב ערך; `in` מעביר עותק של הערך"
+  answer: 0
+  explanation: "שלושתם מעבירים את המשתנה לפי הפניה (By reference), וכל אחד מגדיר חוזה אחר: `ref` הוא קלט ופלט, `out` הוא פלט בלבד (המתודה חייבת להציב ערך לפני שהיא חוזרת), ו-`in` הוא קלט בלבד שהמתודה לא יכולה לשנות."
+  optionExplanations:
+    "1": "התפקידים מבולבלים: `in` הוא זה שלקריאה בלבד, ו-`out` הוא זה שמחייב הצבה."
+    "2": "הקומפיילר אוכף כללים שונים לכל אחד מהם, למשל הצבה חובה ב-`out` ואיסור שינוי ב-`in`."
+    "3": "`out` דווקא לא דורש אתחול, ו-`in` מעביר הפניה ולא עותק."
+
+- id: cs.methods.parameters.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var list = new List<int> { 1, 2 };
+    Reset(list);
+    Console.WriteLine(list.Count);
+
+    static void Reset(List<int> items)
+    {
+        items = new List<int>();
+        items.Add(9);
+    }
+  options: ["2", "1", "0", "3"]
+  answer: 0
+  explanation: "`List<int>` הוא טיפוס הפניה (Reference type), אבל ההפניה עצמה מועברת לפי ערך. `items` הוא עותק של ההפניה. ההצבה `items = new List<int>()` מפנה את העותק לרשימה חדשה, והרשימה של הקורא לא משתנה."
+  optionExplanations:
+    "1": "`1` מניח שההצבה החליפה את הרשימה של הקורא. היא החליפה רק את הפרמטר המקומי."
+    "2": "`0` מניח שהרשימה המקורית התרוקנה, אבל אף פעולה לא בוצעה עליה."
+    "3": "`Add(9)` הופעל על הרשימה החדשה, לא על הרשימה המקורית."
+
+- id: cs.methods.parameters.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[] arr = { 1, 2, 3 };
+    Change(arr);
+    Console.WriteLine(string.Join(",", arr));
+
+    static void Change(int[] a)
+    {
+        a[0] = 10;
+        a = new int[] { 7, 8, 9 };
+        a[1] = 20;
+    }
+  options: ["10,2,3", "7,20,9", "1,2,3", "10,20,3"]
+  answer: 0
+  explanation: "בהתחלה `a` מצביע על אותו מערך של הקורא, ולכן `a[0] = 10` משנה את המערך המקורי. אחרי `a = new int[] ...` הפרמטר מצביע על מערך אחר, והשינוי `a[1] = 20` חל רק על המערך החדש."
+  optionExplanations:
+    "1": "ההצבה לפרמטר לא מחליפה את המשתנה `arr` של הקורא, ולכן הוא לא רואה את המערך החדש."
+    "2": "שינוי איבר דרך ההפניה, `a[0] = 10`, משנה את האובייקט המשותף ונראה אצל הקורא."
+    "3": "`a[1] = 20` רץ אחרי ש-`a` כבר מצביע על המערך החדש."
+
+- id: cs.methods.parameters.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var a = new List<int> { 1 };
+    var b = new List<int> { 1 };
+    Replace(a);
+    ReplaceRef(ref b);
+    Console.WriteLine($"{a.Count} {b.Count}");
+
+    static void Replace(List<int> items) => items = new List<int> { 1, 2, 3 };
+    static void ReplaceRef(ref List<int> items) => items = new List<int> { 1, 2, 3 };
+  options: ["1 3", "3 3", "1 1", "3 1"]
+  answer: 0
+  explanation: "בלי `ref` המתודה מקבלת עותק של ההפניה, וההצבה משנה רק את העותק. עם `ref` הפרמטר הוא המשתנה `b` עצמו, ולכן ההצבה מפנה את `b` לרשימה החדשה עם שלושה איברים."
+  optionExplanations:
+    "1": "טיפוס הפניה לא מספיק כדי שהצבה תשפיע על הקורא. בלי `ref` רק תוכן האובייקט משותף, לא המשתנה."
+    "2": "עם `ref` ההצבה חלה על המשתנה של הקורא, ולכן `b` מצביע עכשיו על הרשימה החדשה."
+    "3": "זה הפוך: רק `ReplaceRef` מחליפה את הרשימה של הקורא."
+
+- id: cs.methods.parameters.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    bool ok = TryHalf(7, out int half);
+    Console.WriteLine($"{ok} {half}");
+
+    static bool TryHalf(int n, out int result)
+    {
+        result = n / 2;
+        return n % 2 == 0;
+    }
+  options: ["False 3", "False 0", "True 3", "False 3.5"]
+  answer: 0
+  explanation: "פרמטר `out` מחזיר ערך נוסף לקורא. המתודה מציבה בו `7 / 2`, שהוא 3 בחלוקה שלמה, ומחזירה `false` כי 7 אינו זוגי. הערך שהוצב ב-`out` מגיע לקורא גם כשהמתודה מחזירה `false`."
+  optionExplanations:
+    "1": "אין איפוס אוטומטי כשהמתודה מחזירה `false`. `half` מקבל את מה שהמתודה הציבה, 3."
+    "2": "`7 % 2` הוא 1, ולכן `n % 2 == 0` הוא `false`."
+    "3": "`result` הוא `int`, ו-`7 / 2` בין שני `int` היא חלוקה שלמה."
+
+- id: cs.methods.parameters.007
+  type: single
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה הבעיה במתודה?
+  code: |
+    static bool TryFind(int[] items, int target, out int index)
+    {
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i] == target)
+            {
+                index = i;
+                return true;
+            }
+        }
+        return false;
+    }
+  options:
+    - "הפרמטר `index` מסוג `out` לא מקבל ערך במסלול שמחזיר `false`, ולכן הקוד לא מתקמפל"
+    - "אסור שלמתודה עם פרמטר `out` יהיה גם ערך החזרה"
+    - "הקורא חייב לאתחל את המשתנה לפני שהוא מעביר אותו כ-`out`, אחרת נזרקת חריגה"
+    - "אין בעיה: אם הערך לא נמצא, `index` מקבל אוטומטית `0`"
+  answer: 0
+  explanation: "הקומפיילר מחייב שכל מסלול שיוצא ממתודה יציב ערך בכל פרמטר `out`. כאן אם הלולאה מסתיימת בלי למצוא, `index` נשאר בלי ערך. התיקון המקובל: `index = -1;` לפני `return false;`, כמו ב-`int.TryParse` שמציבה 0 כשהיא נכשלת."
+  optionExplanations:
+    "1": "זה בדיוק הדפוס של `int.TryParse`: ערך החזרה `bool` ותוצאה דרך `out`."
+    "2": "`out` לא דורש אתחול אצל הקורא. הדרישה היא שהמתודה תציב ערך."
+    "3": "אין הצבה אוטומטית. הקומפיילר מסרב לקמפל מתודה שלא מציבה ערך ב-`out` בכל מסלול."
+
+- id: cs.methods.parameters.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Sum());
+    Console.WriteLine(Sum(1, 2, 3));
+    Console.WriteLine(Sum(new[] { 4, 5 }));
+
+    static int Sum(params int[] numbers)
+    {
+        int total = 0;
+        foreach (int n in numbers)
+            total += n;
+        return total;
+    }
+  options: ["0\n6\n9", "שגיאת קומפילציה", "NullReferenceException", "6\n9"]
+  answer: 0
+  explanation: "`params` מאפשר לקרוא למתודה עם כל מספר ארגומנטים, והקומפיילר אוסף אותם למערך. בלי ארגומנטים בכלל מתקבל מערך ריק, לא `null`, ולכן הסכום הוא 0. אפשר גם להעביר מערך קיים ישירות."
+  optionExplanations:
+    "1": "שלוש הקריאות חוקיות: בלי ארגומנטים, עם רשימת ערכים, ועם מערך מוכן."
+    "2": "בקריאה בלי ארגומנטים `numbers` הוא מערך ריק באורך 0, ולכן הלולאה פשוט לא רצה."
+    "3": "גם `Sum()` מתקמפלת ומדפיסה שורה, `0`."
+
+- id: cs.methods.parameters.009
+  type: single
+  difficulty: 2
+  prompt: "איזו הגדרה של `Log` מתקמפלת?"
+  options:
+    - "`static void Log(string level, params string[] messages)`"
+    - "`static void Log(params string[] messages, string level)`"
+    - "`static void Log(params string[] messages, params int[] codes)`"
+    - "`static void Log(string level, params string message)`"
+  answer: 0
+  explanation: "הכללים של `params`: מותר פרמטר `params` אחד בלבד, הוא חייב להיות האחרון ברשימה, וב-C# 12 הטיפוס שלו חייב להיות מערך חד־ממדי."
+  optionExplanations:
+    "1": "`params` חייב להיות הפרמטר האחרון. אחרת הקומפיילר לא יודע איפה הרשימה נגמרת."
+    "2": "מותר רק פרמטר `params` אחד בכל מתודה."
+    "3": "הטיפוס של `params` חייב להיות מערך, כאן `string[]`."
+
+- id: cs.methods.parameters.010
+  type: output
+  difficulty: 3
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int x = 5;
+    Show(x);
+
+    static void Show(in int value)
+    {
+        value++;
+        Console.WriteLine(value);
+    }
+  options: ["שגיאת קומפילציה", "6", "5"]
+  answer: 0
+  explanation: "פרמטר `in` מועבר לפי הפניה אבל לקריאה בלבד (Read-only). כל ניסיון לשנות אותו, כמו `value++`, הוא שגיאת קומפילציה. הקריאה `Show(x)` עצמה תקינה: מותר לוותר על המילה `in` בצד הקורא."
+  optionExplanations:
+    "1": "`in` לא מאפשר שינוי של הפרמטר, גם לא של עותק מקומי שלו."
+    "2": "הקוד לא מגיע לריצה, כי הקומפיילר חוסם את `value++`."
+
+- id: cs.methods.parameters.011
+  type: bug
+  difficulty: 2
+  prompt: "המתודה `ClearCart` אמורה לרוקן את העגלה, ולכן הקוד אמור להדפיס `0`. באיזו שורה הבאג?"
+  code: |
+    var cart = new List<string> { "milk", "bread" };
+    ClearCart(cart);
+    Console.WriteLine(cart.Count);
+
+    static void ClearCart(List<string> items)
+    {
+        items = new List<string>();
+    }
+  answer: 7
+  explanation: "ההפניה לרשימה מועברת לפי ערך. ההצבה בשורה 7 מפנה רק את הפרמטר המקומי לרשימה חדשה, והעגלה של הקורא לא משתנה, ולכן מודפס `2`. צריך לשנות את האובייקט עצמו: `items.Clear();`."
+  fixed: |
+    var cart = new List<string> { "milk", "bread" };
+    ClearCart(cart);
+    Console.WriteLine(cart.Count);
+
+    static void ClearCart(List<string> items)
+    {
+        items.Clear();
+    }
+
+- id: cs.methods.parameters.012
+  type: bug
+  difficulty: 1
+  prompt: "`Swap` אמורה להחליף בין שני המשתנים, ולכן הקוד אמור להדפיס `2 1`. באיזו שורה הבאג?"
+  code: |
+    int a = 1, b = 2;
+    Swap(ref a, ref b);
+    Console.WriteLine($"{a} {b}");
+
+    static void Swap(ref int x, ref int y)
+    {
+        int temp = x;
+        x = y;
+        y = x;
+    }
+  answer: 9
+  explanation: "השימוש ב-`ref` נכון, אבל בשורה 9 `x` כבר קיבל את הערך של `y`, ולכן `y = x` מציב בו את אותו ערך. מודפס `2 2`. משתנה העזר `temp` נועד בדיוק לזה: `y = temp;`."
+  fixed: |
+    int a = 1, b = 2;
+    Swap(ref a, ref b);
+    Console.WriteLine($"{a} {b}");
+
+    static void Swap(ref int x, ref int y)
+    {
+        int temp = x;
+        x = y;
+        y = temp;
+    }
+
+- id: cs.methods.parameters.013
+  type: truefalse
+  difficulty: 2
+  prompt: "אפשר להעביר משתנה שעדיין לא אותחל כארגומנט `ref`, כל עוד המתודה מציבה בו ערך."
+  answer: false
+  explanation: "ארגומנט `ref` חייב להיות מאותחל לפני הקריאה, כי המתודה רשאית לקרוא את הערך שלו. כדי להעביר משתנה לא מאותחל שהמתודה תמלא, משתמשים ב-`out`."
+
+- id: cs.methods.parameters.014
+  type: truefalse
+  difficulty: 1
+  prompt: "כשמעבירים אובייקט (טיפוס הפניה) למתודה בלי `ref`, שינוי של תוכן האובייקט בתוך המתודה, למשל `list.Add(5)`, נראה גם אצל הקורא."
+  answer: true
+  explanation: "המתודה מקבלת עותק של ההפניה, אבל שני העותקים מצביעים על אותו אובייקט. לכן שינוי התוכן נראה אצל הקורא. מה שלא משפיע על הקורא הוא הצבה של אובייקט חדש לפרמטר."
+
+- id: cs.methods.parameters.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int n = 1;
+    Twice(ref n, ref n);
+    Console.WriteLine(n);
+
+    static void Twice(ref int a, ref int b)
+    {
+        a += 10;
+        b *= 2;
+    }
+  options: ["22", "11", "2", "12"]
+  answer: 0
+  explanation: "שני הפרמטרים הם כינויים (Aliases) לאותו משתנה `n`. `a += 10` הופך את `n` ל-11, ואז `b *= 2` מכפיל את אותו `n` ל-22. `ref` לא מעתיק ערך, הוא מצביע על המשתנה עצמו."
+  optionExplanations:
+    "1": "`11` מניח ש-`b` הוא עותק נפרד. גם `b` מצביע על `n`, ולכן ההכפלה חלה עליו."
+    "2": "`2` מניח שכל פרמטר קיבל עותק של 1 ורק האחרון נכתב חזרה. עם `ref` אין עותקים."
+    "3": "`12` מניח שההכפלה חלה על הערך המקורי 1. היא חלה על `n` אחרי ההוספה."
+
+- id: cs.methods.parameters.016
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Mailer
+    {
+        public void Send(string fromName, string fromEmail, string toName,
+            string toEmail, string subject, string body, int priority)
+        {
+            Console.WriteLine($"{subject} -> {toEmail}");
+        }
+    }
+  options:
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "דגל בוליאני - Flag Argument"
+    - "מחלקת אל - God Class"
+    - "קינון עמוק - Deep Nesting"
+  answer: 0
+  explanation: "שבעה פרמטרים, רובם מסוג `string`, קשה לזכור ובקלות מחליפים את הסדר שלהם בלי שהקומפיילר ישים לב. התיקון: לקבץ ערכים שהולכים יחד לאובייקט, למשל `Send(EmailMessage message)` שמכיל שולח, נמען, נושא ותוכן."
+  optionExplanations:
+    "1": "אין פרמטר `bool` שמשנה את התנהגות המתודה."
+    "2": "למחלקה יש מתודה אחת קטנה, לא אחריות עצומה."
+    "3": "גוף המתודה הוא שורה אחת, בלי קינון."

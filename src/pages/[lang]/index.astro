@@ -2,13 +2,13 @@
 import Base from '../../layouts/Base.astro';
 import { getContent } from '../../lib/content';
 import { href } from '../../lib/url';
-import { bilingual } from '../../lib/text';
+import { bilingual, bidi } from '../../lib/text';
 
 export function getStaticPaths() {
   return getContent().map((l) => ({ params: { lang: l.id } }));
 }
 const lang = getContent().find((l) => l.id === Astro.params.lang)!;
-const title = `מבחנים ב${lang.title_he} - ${lang.title_en} Tests`;
+const title = bidi(`מבחנים ב${lang.title_he} - ${lang.title_en} Tests`);
 const qCount = lang.chapters.reduce((n, c) => n + c.topics.reduce((m, t) => m + t.questions.length, 0), 0);
 const sim = lang.simulation;
 const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/${c.id}/${t.id}`));

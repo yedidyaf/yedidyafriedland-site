@@ -25,7 +25,7 @@ export async function clientQuestion(q: LoadedChapter['topics'][number]['questio
   if ('code' in q && q.code) cq.codeHtml = await highlightLines(q.code, hl);
   if (q.type === 'cleaner') cq.optionsHtml = await Promise.all(q.options.map((o) => highlightLines(o, hl)));
   if (q.type === 'bug' && q.fixed) cq.fixedHtml = await highlightLines(q.fixed, hl);
-  if (q.type === 'architecture' || q.type === 'hierarchy')
+  if (q.type === 'architecture')
     cq.itemsHtml = await Promise.all(q.items.map(async (i) => (await highlightLines(i.label, hl)).join(' ')));
   return cq;
 }

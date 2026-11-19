@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getContent } from '../lib/content';
 import { href } from '../lib/url';
 import { SITE, siteName } from '../site';
+import { bidi } from '../lib/text';
 const langs = getContent();
 const count = (l: (typeof langs)[number]) => l.chapters.reduce((n, c) => n + c.topics.reduce((m, t) => m + t.questions.length, 0), 0);
 const total = langs.reduce((n, l) => n + count(l), 0);
@@ -22,9 +23,9 @@ const description = `לומדים Python ו-C# דרך מבחנים: ${total} ש�
     <div class="grid cols-2">
       {langs.map((l) => (
         <a class="card lang-card" href={href(`/${l.id}/`)}>
-          <span class="big">{l.title_he} <span class="en">- {l.title_en}</span></span>
+          <span class="big">{l.title_he} <span class="en">- {bidi(l.title_en)}</span></span>
           <span class="muted">{l.description_he}</span>
-          <span class="badge">{count(l)} שאלות · {l.chapters.length} פרקים · {l.title_en} {l.version}</span>
+          <span class="badge">{count(l)} שאלות · {l.chapters.length} פרקים · {bidi(l.version.includes(l.title_en) ? l.version : `${l.title_en} ${l.version}`)}</span>
           <span class="btn" style="align-self:flex-start">להתחיל לתרגל</span>
         </a>
       ))}

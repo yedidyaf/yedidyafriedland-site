@@ -3,6 +3,7 @@ import { href } from '../lib/url';
 import { getContent } from '../lib/content';
 import { SITE } from '../site';
 import ThemeToggle from './ThemeToggle';
+import { bidi } from '../lib/text';
 const langs = getContent();
 const path = Astro.url.pathname;
 ---
@@ -14,7 +15,7 @@ const path = Astro.url.pathname;
     </a>
     <nav aria-label="ניווט ראשי">
       {langs.map((l) => (
-        <a href={href(`/${l.id}/`)} aria-current={path.includes(`/${l.id}/`) ? 'page' : undefined}>{l.title_en}</a>
+        <a href={href(`/${l.id}/`)} aria-current={path.includes(`/${l.id}/`) ? 'page' : undefined}>{bidi(l.title_en)}</a>
       ))}
       <a href={href('/progress/')} aria-current={path.includes('/progress/') ? 'page' : undefined}>ההתקדמות שלי</a>
       <a href={href('/about/')} aria-current={path.includes('/about/') ? 'page' : undefined}>אודות</a>

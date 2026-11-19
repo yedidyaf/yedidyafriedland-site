@@ -1,0 +1,328 @@
+- id: cs.methods.recursion.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Factorial(5));
+
+    static int Factorial(int n)
+    {
+        if (n <= 1)
+            return 1;
+        return n * Factorial(n - 1);
+    }
+  options: ["120", "24", "15", "720"]
+  answer: 0
+  explanation: "רקורסיה (Recursion) היא מתודה שקוראת לעצמה. כאן `Factorial(5)` = 5 * 4 * 3 * 2 * `Factorial(1)`, ומקרה הבסיס (Base case) מחזיר 1. התוצאה: 120."
+  optionExplanations:
+    "1": "`24` הוא `Factorial(4)`. הקריאה מתחילה מ-5 ומכפילה גם בו."
+    "2": "`15` הוא סכום 1 עד 5. הפעולה כאן היא כפל."
+    "3": "`720` הוא `Factorial(6)`."
+
+- id: cs.methods.recursion.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Count(3);
+
+    static void Count(int n)
+    {
+        if (n == 0)
+            return;
+        Console.Write(n);
+        Count(n - 1);
+        Console.Write(n);
+    }
+  options: ["321123", "321", "123321", "3210123"]
+  answer: 0
+  explanation: "כל קריאה מדפיסה את `n`, מחכה שהקריאה הרקורסיבית תסתיים, ואז מדפיסה את `n` שוב. בדרך פנימה מודפס `321`, ובחזרה, כשכל קריאה מסתיימת בסדר הפוך, מודפס `123`. לכל קריאה יש `n` משלה, ולכן הערך לא אבד."
+  optionExplanations:
+    "1": "הקריאה הרקורסיבית לא מסיימת את המתודה. אחרי שהיא חוזרת, השורה שאחריה רצה."
+    "2": "ההדפסה הראשונה בכל קריאה קורית לפני הקריאה הרקורסיבית, ולכן `3` מודפס ראשון."
+    "3": "במקרה הבסיס, `n == 0`, המתודה חוזרת לפני ההדפסה, ולכן `0` לא מודפס."
+
+- id: cs.methods.recursion.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(DigitSum(4096));
+
+    static int DigitSum(int n)
+    {
+        if (n < 10)
+            return n;
+        return n % 10 + DigitSum(n / 10);
+    }
+  options: ["19", "6", "4", "4096"]
+  answer: 0
+  explanation: "בכל קריאה `n % 10` הוא הספרה האחרונה ו-`n / 10` מוריד אותה. הקריאות: 6 + 9 + 0 + `DigitSum(4)`, ומקרה הבסיס מחזיר 4. הסכום הוא 19."
+  optionExplanations:
+    "1": "`6` הוא רק הספרה האחרונה. התוצאה של הקריאה הרקורסיבית מתווספת אליה."
+    "2": "`4` הוא ערך מקרה הבסיס בלבד. כל קריאה בדרך חזרה מוסיפה אליו את הספרה שלה."
+    "3": "המספר עצמו מוחזר רק כשהוא קטן מ-10."
+
+- id: cs.methods.recursion.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int calls = 0;
+    Console.WriteLine(Fib(4));
+    Console.WriteLine(calls);
+
+    int Fib(int n)
+    {
+        calls++;
+        if (n < 2)
+            return n;
+        return Fib(n - 1) + Fib(n - 2);
+    }
+  options: ["3\n9", "3\n5", "3\n4", "5\n9"]
+  answer: 0
+  explanation: "`Fib(4)` = 3. כל קריאה שאינה מקרה בסיס פותחת שתי קריאות, ולכן מספר הקריאות הוא 1 ועוד הקריאות של `Fib(3)` (5) ועוד אלה של `Fib(2)` (3), כלומר 9. אותם ערכים מחושבים שוב ושוב, ולכן רקורסיה כזו מתנפחת מהר."
+  optionExplanations:
+    "1": "`5` הוא מספר הקריאות של `Fib(3)` בלבד. צריך לספור גם את הקריאה ל-`Fib(4)` ואת ענף `Fib(2)`."
+    "2": "`4` מניח שיש קריאה אחת לכל ערך של `n`. בפועל `Fib(2)`, `Fib(1)` ו-`Fib(0)` נקראות יותר מפעם אחת."
+    "3": "`Fib(4)` הוא 3 בסדרה 0, 1, 1, 2, 3. `5` הוא `Fib(5)`."
+
+- id: cs.methods.recursion.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Reverse("abc"));
+
+    static string Reverse(string s)
+    {
+        if (s.Length <= 1)
+            return s;
+        return Reverse(s.Substring(1)) + s[0];
+    }
+  options: ["cba", "abc", "bca", "a"]
+  answer: 0
+  explanation: "כל קריאה הופכת את שאר המחרוזת ומוסיפה את התו הראשון בסוף: `Reverse(\"bc\") + 'a'`, ו-`Reverse(\"bc\")` הוא `Reverse(\"c\") + 'b'`. בדרך חזרה מתקבל `c`, אחר כך `cb`, ולבסוף `cba`."
+  optionExplanations:
+    "1": "התו הראשון מתווסף אחרי התוצאה הרקורסיבית, ולכן הוא עובר לסוף."
+    "2": "`bca` הוא הזזה אחת של `a` לסוף. גם `bc` עובר היפוך ברקורסיה."
+    "3": "`a` הוא התו הראשון בלבד. מקרה הבסיס מחזיר מחרוזת באורך 1, כאן `c`."
+
+- id: cs.methods.recursion.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var path = new List<int>();
+    Collect(3, path);
+    Console.WriteLine(string.Join(",", path));
+
+    static void Collect(int n, List<int> acc)
+    {
+        if (n == 0)
+            return;
+        Collect(n - 1, acc);
+        acc.Add(n);
+    }
+  options: ["1,2,3", "3,2,1", "3", ""]
+  answer: 0
+  explanation: "כל הקריאות מקבלות הפניה לאותה רשימה. ה-`Add` נמצא אחרי הקריאה הרקורסיבית, ולכן הוא רץ בדרך חזרה: קודם הקריאה הפנימית ביותר מוסיפה 1, אחריה 2 ולבסוף 3."
+  optionExplanations:
+    "1": "`3,2,1` היה מתקבל אילו `Add` היה לפני הקריאה הרקורסיבית."
+    "2": "כל הקריאות משנות את אותה רשימה, כי ההפניה עוברת בכל קריאה."
+    "3": "הרשימה היא טיפוס הפניה, ולכן ההוספות בתוך המתודה נראות אצל הקורא."
+
+- id: cs.methods.recursion.007
+  type: bug
+  difficulty: 1
+  prompt: "`SumTo(5)` אמורה להחזיר 1 + 2 + 3 + 4 + 5 = `15`, אבל התוכנית קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(SumTo(5));
+
+    static int SumTo(int n)
+    {
+        if (n == 0)
+            return 0;
+        return n + SumTo(n);
+    }
+  answer: 7
+  explanation: "הקריאה הרקורסיבית חייבת לקרב את הבעיה למקרה הבסיס. `SumTo(n)` קוראת לעצמה עם אותו ערך, ולכן `n` אף פעם לא מגיע ל-0. התיקון: `SumTo(n - 1)`."
+  fixed: |
+    Console.WriteLine(SumTo(5));
+
+    static int SumTo(int n)
+    {
+        if (n == 0)
+            return 0;
+        return n + SumTo(n - 1);
+    }
+
+- id: cs.methods.recursion.008
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה לתמוך גם ב-`0` (לפי ההגדרה, `0! = 1`), אבל `Factorial(0)` קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(Factorial(0));
+
+    static long Factorial(int n)
+    {
+        if (n == 1)
+            return 1;
+        return n * Factorial(n - 1);
+    }
+  answer: 5
+  explanation: "מקרה הבסיס בודק רק `n == 1`. עבור 0 הקריאה ממשיכה ל-`-1`, `-2` וכן הלאה, ואף פעם לא פוגעת ב-1. מקרה בסיס צריך לכסות כל קלט שהמתודה מקבלת: `if (n <= 1)`."
+  fixed: |
+    Console.WriteLine(Factorial(0));
+
+    static long Factorial(int n)
+    {
+        if (n <= 1)
+            return 1;
+        return n * Factorial(n - 1);
+    }
+
+- id: cs.methods.recursion.009
+  type: single
+  difficulty: 1
+  prompt: מהו מקרה הבסיס (Base case) במתודה רקורסיבית?
+  options:
+    - "המצב שבו המתודה מחזירה תשובה בלי לקרוא שוב לעצמה"
+    - "הקריאה הראשונה למתודה, מהקוד הראשי"
+    - "הקריאה הרקורסיבית שמקטינה את הבעיה"
+    - "הערך שהמתודה מחזירה בסוף כל הקריאות"
+  answer: 0
+  explanation: "מקרה הבסיס הוא בעיה קטנה מספיק כדי לפתור אותה ישירות, למשל `n <= 1` בעצרת. הוא עוצר את שרשרת הקריאות. בלעדיו, או אם הקריאה הרקורסיבית לא מתקרבת אליו, הרקורסיה לא נגמרת."
+  optionExplanations:
+    "1": "הקריאה הראשונה היא נקודת הכניסה, לא התנאי שעוצר את הרקורסיה."
+    "2": "זה הצעד הרקורסיבי (Recursive step), החלק השני של כל רקורסיה."
+    "3": "הערך הסופי מורכב מכל הקריאות. מקרה הבסיס הוא רק התחנה האחרונה בדרך פנימה."
+
+- id: cs.methods.recursion.010
+  type: single
+  difficulty: 2
+  prompt: "מה יקרה בקריאה `SumTo(3)`?"
+  code: |
+    static int SumTo(int n)
+    {
+        return n + SumTo(n - 1);
+    }
+  options:
+    - "הקריאות ימשיכו עד שמחסנית הקריאות תתמלא, ייזרק `StackOverflowException` והתהליך יסתיים"
+    - "יוחזר `6`"
+    - "שגיאת קומפילציה, כי למתודה אין מקרה בסיס"
+    - "ייזרק `StackOverflowException`, ואפשר לתפוס אותו ב-`try`/`catch` ולהמשיך כרגיל"
+  answer: 0
+  explanation: "אין מקרה בסיס, ולכן `n` ממשיך לרדת: 3, 2, 1, 0, `-1` וכן הלאה. כל קריאה תופסת מקום במחסנית הקריאות (Call stack) עד שהיא נגמרת. ב-.NET אי אפשר לתפוס `StackOverflowException`, והתהליך כולו נסגר."
+  optionExplanations:
+    "1": "שום דבר לא עוצר ב-0. בלי מקרה בסיס, הקריאות ממשיכות למספרים שליליים."
+    "2": "הקומפיילר לא בודק אם לרקורסיה יש מקרה בסיס. הקוד מתקמפל וקורס רק בזמן ריצה."
+    "3": "ב-.NET חריגת `StackOverflowException` מסיימת את התהליך, ובלוק `catch` לא יכול לתפוס אותה."
+
+- id: cs.methods.recursion.011
+  type: truefalse
+  difficulty: 2
+  prompt: "כל חישוב שנכתב ברקורסיה אפשר לכתוב גם בלי רקורסיה, בעזרת לולאות (ולפעמים מחסנית שמנהלים בעצמנו)."
+  answer: true
+  explanation: "רקורסיה ואיטרציה (Iteration) הן שתי דרכים לאותו כוח חישובי. לפעמים הגרסה הרקורסיבית קצרה וברורה יותר, למשל במעבר על עץ. אבל הגרסה האיטרטיבית לא מסתכנת ב-`StackOverflowException` כשהעומק גדול."
+
+- id: cs.methods.recursion.012
+  type: truefalse
+  difficulty: 1
+  prompt: "המשתנים המקומיים של מתודה רקורסיבית משותפים לכל הקריאות שלה, ולכן קריאה פנימית יכולה לשנות משתנה מקומי של הקריאה שקראה לה."
+  answer: false
+  explanation: "כל קריאה מקבלת מסגרת (Stack frame) משלה במחסנית הקריאות, עם עותקים משלה של הפרמטרים והמשתנים המקומיים. לכן אחרי שקריאה פנימית חוזרת, ל-`n` של הקריאה החיצונית יש עדיין הערך שהיה לו."
+
+- id: cs.methods.recursion.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Print(3);
+
+    static void Print(int n)
+    {
+        if (n == 0)
+            return;
+        Print(n - 1);
+        Console.Write(n);
+        Print(n - 1);
+    }
+  options: ["1213121", "321", "123", "3213121"]
+  answer: 0
+  explanation: "`Print(1)` מדפיסה `1`. `Print(2)` מדפיסה את `Print(1)`, אחר כך `2`, ושוב את `Print(1)`: `121`. `Print(3)` מדפיסה `121`, אחר כך `3`, ושוב `121`. כל קריאה עם שתי קריאות רקורסיביות יוצרת עץ קריאות, לא שרשרת."
+  optionExplanations:
+    "1": "ההדפסה באה אחרי הקריאה הרקורסיבית הראשונה, ולכן המספרים הקטנים מודפסים קודם."
+    "2": "יש קריאה רקורסיבית נוספת אחרי ההדפסה, ולכן כל רמה מדפיסה גם בצד השני."
+    "3": "`3` מודפס רק אחרי ש-`Print(2)` הראשונה הסתיימה, כלומר אחרי `121`."
+
+- id: cs.methods.recursion.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Binary(6));
+
+    static string Binary(int n)
+    {
+        if (n < 2)
+            return n.ToString();
+        return Binary(n / 2) + (n % 2);
+    }
+  options: ["110", "011", "6", "3"]
+  answer: 0
+  explanation: "`Binary(6)` = `Binary(3)` + `0`, ו-`Binary(3)` = `Binary(1)` + `1`. מקרה הבסיס מחזיר `\"1\"`. בדרך חזרה כל קריאה מוסיפה את הספרה שלה מימין: `1`, `11`, `110`. זה הייצוג הבינארי של 6."
+  optionExplanations:
+    "1": "הספרה של הקריאה הנוכחית מתווספת אחרי התוצאה הרקורסיבית, ולכן הספרה הראשונה שחושבה, `0`, נמצאת בסוף."
+    "2": "המתודה מחזירה `string`, ו-`+` בין מחרוזת למספר הוא שרשור, לא חיבור."
+    "3": "`3` הוא `6 / 2` בלבד, הצעד הראשון של החישוב."
+
+- id: cs.methods.recursion.015
+  type: single
+  difficulty: 3
+  prompt: "בקריאה `SumTo(4)`, כמה קריאות של `SumTo` נמצאות יחד במחסנית הקריאות (Call stack) ברגע שמגיעים למקרה הבסיס?"
+  code: |
+    static int SumTo(int n)
+    {
+        if (n == 0)
+            return 0;
+        return n + SumTo(n - 1);
+    }
+  options: ["5", "4", "1", "10"]
+  answer: 0
+  explanation: "כשמגיעים למקרה הבסיס, אף קריאה עוד לא הסתיימה: `SumTo(4)`, `SumTo(3)`, `SumTo(2)`, `SumTo(1)` ו-`SumTo(0)` ממתינות כולן. אלה 5 מסגרות. עומק המחסנית גדל עם הקלט, ולכן קלט גדול מאוד יגרום ל-`StackOverflowException`."
+  optionExplanations:
+    "1": "`4` שוכח את הקריאה של מקרה הבסיס עצמו, `SumTo(0)`, שגם היא במחסנית."
+    "2": "קריאה לא יוצאת מהמחסנית לפני שהקריאה הפנימית שלה חוזרת, כי היא עוד צריכה לחבר את `n`."
+    "3": "`10` הוא ערך ההחזרה, 4 + 3 + 2 + 1, לא מספר הקריאות."
+
+- id: cs.methods.recursion.016
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      static int Factorial(int n)
+      {
+          if (n <= 1)
+              return 1;
+          return n * Factorial(n - 1);
+      }
+    - |
+      static int Factorial(int n)
+      {
+          int result;
+          if (n <= 1)
+          {
+              result = 1;
+          }
+          else
+          {
+              result = n * Factorial(n - 1);
+          }
+          return result;
+      }
+  answer: 0
+  explanation: "הדפוס הקלאסי ברקורסיה: בודקים את מקרה הבסיס בראש המתודה ויוצאים מיד, ואחריו כותבים את הצעד הרקורסיבי. זו פסקת שמירה (Guard clause), והיא מראה בבירור את שני החלקים של הרקורסיה."
+  optionExplanations:
+    "1": "משתנה העזר וה-`else` מוסיפים שורות וקינון בלי להוסיף מידע, ומטשטשים את ההפרדה בין מקרה הבסיס לצעד הרקורסיבי."

@@ -143,7 +143,7 @@
 
 - id: cs.strings.string-basics.010
   type: output
-  difficulty: 2
+  difficulty: 3
   prompt: מה יודפס?
   code: |
     string s = "abc";

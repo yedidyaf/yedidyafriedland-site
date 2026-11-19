@@ -35,7 +35,7 @@ const ld = [
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || import.meta.env.PUBLIC_NOINDEX === '1') && <meta name="robots" content="noindex" />}
     <meta name="author" content={`${SITE.name_he} (${SITE.name_en})`} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="he_IL" />

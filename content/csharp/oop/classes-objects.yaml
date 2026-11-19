@@ -1,0 +1,404 @@
+- id: cs.oop.classes-objects.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Counter a = new Counter();
+    Counter b = a;
+    b.Count = 5;
+    Console.WriteLine(a.Count);
+
+    class Counter
+    {
+        public int Count;
+    }
+  options: ["5", "0", "null", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מחלקה (Class) היא טיפוס הפניה (Reference Type). השורה `Counter b = a;` לא יוצרת אובייקט חדש, אלא מעתיקה את ההפניה, ולכן `a` ו-`b` מצביעים על אותו אובייקט. השינוי דרך `b` נראה גם דרך `a`."
+  optionExplanations:
+    "1": "`0` היה מודפס אילו ההשמה הייתה מעתיקה את האובייקט, כמו ב-struct. מחלקה מועתקת לפי הפניה."
+    "2": "`a` מצביע על אובייקט קיים, והשדה `Count` מטיפוס `int` לא יכול להיות `null`."
+
+- id: cs.oop.classes-objects.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var box = new Box();
+    Console.WriteLine(box.Size);
+    Console.WriteLine(box.Label == null);
+
+    class Box
+    {
+        public int Size;
+        public string Label;
+    }
+  options: ["0\nTrue", "0\nFalse", "null\nTrue", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "שדות (Fields) של מחלקה מקבלים ערך ברירת מחדל אוטומטית: `0` עבור `int` ו-`null` עבור טיפוס הפניה כמו `string`. רק משתנים מקומיים חייבים השמה לפני קריאה."
+  optionExplanations:
+    "1": "שדה `string` שלא אותחל הוא `null`, לא מחרוזת ריקה, ולכן ההשוואה מחזירה `True`."
+    "3": "החובה לאתחל לפני שימוש חלה על משתנים מקומיים בלבד, לא על שדות."
+
+- id: cs.oop.classes-objects.003
+  type: single
+  difficulty: 1
+  prompt: "למה מתייחסת המילה `this` בתוך מתודת מופע?"
+  options:
+    - "לאובייקט הנוכחי, זה שעליו נקראה המתודה"
+    - "למחלקה עצמה, בדומה לגישה דרך `static`"
+    - "לאובייקט האחרון שנוצר מהמחלקה"
+    - "למחלקת הבסיס של המחלקה הנוכחית"
+  answer: 0
+  explanation: "`this` הוא הפניה לאובייקט הנוכחי. בקריאה `a.Print()` המילה `this` בתוך `Print` היא `a`. משתמשים בה בעיקר כדי להבחין בין שדה לפרמטר באותו שם: `this.name = name;`."
+  optionExplanations:
+    "1": "במתודה `static` אין אובייקט נוכחי, ולכן אי אפשר להשתמש בה ב-`this`."
+    "2": "`this` תלוי באובייקט שעליו נקראה המתודה, לא בסדר יצירת האובייקטים."
+    "3": "למחלקת הבסיס פונים עם `base`, לא עם `this`."
+
+- id: cs.oop.classes-objects.004
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var account = new Account();
+    account.balance = 100;
+    Console.WriteLine(account.balance);
+
+    class Account
+    {
+        private int balance;
+    }
+  options: ["100", "0", "שגיאת קומפילציה", "שגיאה בזמן ריצה"]
+  answer: 2
+  explanation: "השדה `balance` מוגדר `private`, ולכן אפשר לגשת אליו רק מתוך הקוד של המחלקה `Account`. גישה מבחוץ היא שגיאת קומפילציה, לא שגיאה בזמן ריצה. זו הכימוס (Encapsulation): המחלקה מחליטה מה חשוף."
+  optionExplanations:
+    "0": "הקוד לא מגיע לשלב הריצה: הקומפיילר חוסם גישה לחבר `private` מחוץ למחלקה."
+    "3": "הרשאות גישה נבדקות בזמן קומפילציה, ולכן התוכנית לא נבנית בכלל."
+
+- id: cs.oop.classes-objects.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var a = new Ticket();
+    var b = new Ticket();
+    var c = new Ticket();
+    Console.WriteLine($"{a.Number} {Ticket.Issued}");
+
+    class Ticket
+    {
+        public static int Issued;
+        public int Number;
+
+        public Ticket()
+        {
+            Issued++;
+            Number = Issued;
+        }
+    }
+  options: ["1 3", "3 3", "1 1", "3 1"]
+  answer: 0
+  explanation: "שדה `static` שייך למחלקה ויש ממנו עותק אחד, משותף לכל האובייקטים. שדה מופע (Instance Field) כמו `Number` נפרד לכל אובייקט. `a` קיבל `Number = 1` כשנוצר, ו-`Issued` הגיע ל-3 אחרי שלושה אובייקטים."
+  optionExplanations:
+    "1": "`Number` של `a` נקבע פעם אחת בבנאי שלו, ולא מתעדכן כשנוצרים אובייקטים אחרים."
+    "2": "`Issued` הוא `static`, ולכן כל שלושת הבנאים מקדמים את אותו מונה."
+    "3": "המספרים הפוכים: המונה המשותף הוא 3, והמספר של האובייקט הראשון הוא 1."
+
+- id: cs.oop.classes-objects.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var counter = new Counter();
+    counter.Add(2).Add(3);
+    Console.WriteLine(counter.Total);
+
+    class Counter
+    {
+        public int Total;
+
+        public Counter Add(int n)
+        {
+            Total += n;
+            return this;
+        }
+    }
+  options: ["5", "2", "3", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`Add` מחזירה `this`, כלומר את אותו אובייקט. לכן `Add(3)` נקראת על אותו `counter`, והסכום הוא 5. זו שרשרת קריאות (Method Chaining)."
+  optionExplanations:
+    "1": "`return this` לא מחזיר עותק אלא הפניה לאותו אובייקט, ולכן גם הקריאה השנייה משנה את `counter`."
+    "3": "מתודה יכולה להחזיר את טיפוס המחלקה שלה, ו-`return this` הוא קוד תקין."
+
+- id: cs.oop.classes-objects.007
+  type: single
+  difficulty: 2
+  prompt: כמה אובייקטים מטיפוס `Car` נוצרים בקוד?
+  code: |
+    Car a = new Car();
+    Car b = a;
+    Car c = new Car();
+    Car d = c;
+    Car e = null;
+
+    class Car
+    {
+    }
+  options: ["2", "4", "5", "3"]
+  answer: 0
+  explanation: "אובייקט נוצר רק עם `new`. יש כאן שתי קריאות ל-`new Car()`. המשתנים `b` ו-`d` רק מחזיקים הפניה לאובייקט קיים, ו-`e` לא מצביע על שום אובייקט."
+  optionExplanations:
+    "1": "השמה כמו `Car b = a;` מעתיקה הפניה, לא יוצרת אובייקט."
+    "2": "משתנה הוא לא אובייקט. חמישה משתנים יכולים להצביע על שני אובייקטים בלבד, או על אף אחד (`null`)."
+
+- id: cs.oop.classes-objects.008
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את שטח המלבן, 12, אבל מדפיס 0. באיזו שורה הבאג?"
+  code: |
+    var rect = new Rectangle(3, 4);
+    Console.WriteLine(rect.Area());
+
+    class Rectangle
+    {
+        private int width;
+        private int height;
+
+        public Rectangle(int width, int height)
+        {
+            this.width = width;
+            height = height;
+        }
+
+        public int Area() => width * height;
+    }
+  answer: 12
+  fixed: |
+    var rect = new Rectangle(3, 4);
+    Console.WriteLine(rect.Area());
+
+    class Rectangle
+    {
+        private int width;
+        private int height;
+
+        public Rectangle(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
+        public int Area() => width * height;
+    }
+  explanation: "בתוך הבנאי, השם `height` מתייחס לפרמטר, שמסתיר את השדה באותו שם. `height = height;` מציב את הפרמטר בעצמו, והשדה נשאר 0. צריך `this.height = height;` כדי לפנות לשדה של האובייקט."
+
+- id: cs.oop.classes-objects.009
+  type: truefalse
+  difficulty: 2
+  prompt: "אם מגדירים במחלקה בנאי עם פרמטרים בלבד, הקומפיילר עדיין מוסיף לה אוטומטית בנאי ריק בלי פרמטרים."
+  answer: false
+  explanation: "הקומפיילר מוסיף בנאי ברירת מחדל (Default Constructor) רק כשאין במחלקה אף בנאי. ברגע שמגדירים בנאי כלשהו, `new Person()` בלי ארגומנטים לא יתקמפל, אלא אם מגדירים גם בנאי ריק במפורש."
+
+- id: cs.oop.classes-objects.010
+  type: bug
+  difficulty: 3
+  prompt: "לכל שחקן אמור להיות ניקוד משלו, ולכן הקוד אמור להדפיס 10. בפועל הוא מדפיס 15. באיזו שורה הבאג?"
+  code: |
+    var a = new Player();
+    var b = new Player();
+    a.AddPoints(10);
+    b.AddPoints(5);
+    Console.WriteLine(a.GetScore());
+
+    class Player
+    {
+        private static int score;
+
+        public void AddPoints(int points) => score += points;
+
+        public int GetScore() => score;
+    }
+  answer: 9
+  fixed: |
+    var a = new Player();
+    var b = new Player();
+    a.AddPoints(10);
+    b.AddPoints(5);
+    Console.WriteLine(a.GetScore());
+
+    class Player
+    {
+        private int score;
+
+        public void AddPoints(int points) => score += points;
+
+        public int GetScore() => score;
+    }
+  explanation: "השדה `score` מוגדר `static`, ולכן יש ממנו עותק אחד לכל המחלקה, וכל השחקנים מוסיפים לאותו מונה. נתון ששייך לכל אובייקט בנפרד צריך להיות שדה מופע, בלי `static`."
+
+- id: cs.oop.classes-objects.011
+  type: single
+  difficulty: 2
+  tags: [compile-error]
+  prompt: למה הקוד הבא לא מתקמפל?
+  code: |
+    class Temperature
+    {
+        private double celsius;
+
+        public static double ToFahrenheit()
+        {
+            return celsius * 9 / 5 + 32;
+        }
+    }
+  options:
+    - "מתודה `static` לא שייכת לאף אובייקט, ולכן אין לה `celsius` לגשת אליו"
+    - "שדה `private` לא נגיש מתוך מתודה `public` של אותה מחלקה"
+    - "מתודה `static` חייבת להחזיר `void`"
+    - "אסור לערבב `double` ו-`int` באותו ביטוי חשבוני"
+  answer: 0
+  explanation: "`celsius` הוא שדה מופע: לכל אובייקט `Temperature` יש ערך משלו. מתודה `static` נקראת על המחלקה (`Temperature.ToFahrenheit()`) בלי אובייקט, ולכן לא ברור של מי ה-`celsius`. הפתרון: להסיר את `static`, או לקבל את הטמפרטורה כפרמטר."
+  optionExplanations:
+    "1": "`private` מגביל גישה מחוץ למחלקה בלבד. כל מתודה בתוך המחלקה יכולה לגשת לשדות ה-`private` שלה."
+    "2": "מתודה `static` יכולה להחזיר כל טיפוס, למשל `double`."
+    "3": "`int` מומר אוטומטית ל-`double` בחישוב, וזה תקין."
+
+- id: cs.oop.classes-objects.012
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס 1, אבל נזרקת `NullReferenceException`. באיזו שורה הבאג?"
+  code: |
+    var cart = new Cart();
+    cart.Add("apple");
+    Console.WriteLine(cart.Count());
+
+    class Cart
+    {
+        private List<string> items;
+
+        public void Add(string item) => items.Add(item);
+
+        public int Count() => items.Count;
+    }
+  answer: 7
+  fixed: |
+    var cart = new Cart();
+    cart.Add("apple");
+    Console.WriteLine(cart.Count());
+
+    class Cart
+    {
+        private List<string> items = new List<string>();
+
+        public void Add(string item) => items.Add(item);
+
+        public int Count() => items.Count;
+    }
+  explanation: "השדה `items` הוא טיפוס הפניה, וערך ברירת המחדל שלו הוא `null`. הצהרה על שדה לא יוצרת את הרשימה. צריך לאתחל אותו, בשורת ההצהרה או בבנאי, למשל `= new List<string>();`."
+
+- id: cs.oop.classes-objects.013
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Person
+      {
+          private string name;
+          private int age;
+
+          public Person(string name, int age)
+          {
+              this.name = name;
+              this.age = age;
+          }
+      }
+    - |
+      class Person
+      {
+          private string n;
+          private int a;
+
+          public Person(string x, int y)
+          {
+              n = x;
+              a = y;
+          }
+      }
+  answer: 0
+  explanation: "שמות כמו `name` ו-`age` מסבירים את עצמם. כשהפרמטר והשדה נקראים באותו שם, `this.name = name;` מבחין ביניהם בצורה ברורה, וזה הסגנון המקובל ב-C#."
+  optionExplanations:
+    "1": "השמות `n`, `a`, `x` ו-`y` לא אומרים כלום. מי שקורא את `new Person(...)` לא יודע מה הסדר ומה המשמעות של כל ערך."
+
+- id: cs.oop.classes-objects.014
+  type: truefalse
+  difficulty: 3
+  prompt: "הקוד הבא מתקמפל, אף שמתודה `static` ניגשת לשדה ה-`private` של שני אובייקטים שהיא מקבלת כפרמטרים."
+  code: |
+    class Account
+    {
+        private decimal balance;
+
+        public static bool SameBalance(Account first, Account second)
+        {
+            return first.balance == second.balance;
+        }
+    }
+  answer: true
+  explanation: "`private` ב-C# מגביל גישה לפי מחלקה, לא לפי אובייקט. כל קוד שנמצא בתוך `Account`, כולל מתודה `static`, רשאי לגשת לשדות ה-`private` של כל אובייקט `Account`. כאן אין בעיה של `static`, כי המתודה ניגשת דרך אובייקטים מפורשים (`first`, `second`)."
+
+- id: cs.oop.classes-objects.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var p = new Point();
+    Console.WriteLine($"{p.X},{p.Y}");
+
+    class Point
+    {
+        public int X, Y;
+
+        public Point() : this(1)
+        {
+            Y = 5;
+        }
+
+        public Point(int x)
+        {
+            X = x;
+            Y = x * 2;
+        }
+    }
+  options: ["1,5", "1,2", "0,5", "1,0"]
+  answer: 0
+  explanation: "`: this(1)` היא שרשור בנאים (Constructor Chaining): קודם רץ הבנאי `Point(int x)` במלואו (`X = 1`, `Y = 2`), ורק אחר כך גוף הבנאי הריק, שמשנה את `Y` ל-5."
+  optionExplanations:
+    "1": "הבנאי המשורשר רץ ראשון, ולכן גוף הבנאי הריק רץ אחריו ודורס את `Y`."
+    "2": "`this(1)` אכן מפעיל את הבנאי השני, ולכן `X` מקבל 1."
+
+- id: cs.oop.classes-objects.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var orders = new List<Order>();
+    for (int i = 0; i < 3; i++)
+        orders.Add(new Order());
+    Console.WriteLine(orders[0].Id + orders[2].Id);
+    Console.WriteLine(Order.NextId);
+
+    class Order
+    {
+        public static int NextId = 100;
+        public int Id = NextId++;
+    }
+  options: ["202\n103", "202\n102", "300\n103", "100102\n103"]
+  answer: 0
+  explanation: "`NextId` הוא `static` ומאותחל פעם אחת ל-100. אתחול השדה `Id` רץ בכל יצירת אובייקט: הראשון מקבל 100, השני 101, השלישי 102, ו-`NextId` מתקדם ל-103. הסכום `100 + 102` הוא 202, כי זה חיבור של שני `int`."
+  optionExplanations:
+    "1": "`NextId++` מחזיר את הערך הישן ואז מקדם. אחרי שלושה אובייקטים הערך הוא 103."
+    "2": "אתחול שדה מופע רץ מחדש לכל אובייקט, ולכן לא כל ה-`Id` שווים 100."
+    "3": "`Id` הוא `int`, ולכן `+` הוא חיבור מספרי ולא שרשור מחרוזות."

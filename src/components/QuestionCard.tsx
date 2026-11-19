@@ -45,7 +45,7 @@ export default function QuestionCard({ q, answer, onAnswer, order, mode, number,
             </span>
           )}
           <span class="badge">
-            {label.he} <span class="en-term">- {label.en}</span>
+            {label.he} - <span class="en-term">{label.en}</span>
           </span>
           <span class="diff" title={`רמת קושי ${q.difficulty} מתוך 3`} aria-label={`רמת קושי ${q.difficulty} מתוך 3`}>
             {[1, 2, 3].map((d) => (
@@ -156,7 +156,7 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
           <div class="targets" aria-label="יעדים">
             {q.targets.map((t) => (
               <div class="target">
-                <code class="tid" dir="ltr">
+                <code class="tid" dir="auto">
                   {t.id}
                 </code>
                 {t.desc && <span class="muted"> {t.desc}</span>}
@@ -169,8 +169,8 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
               const ok = locked ? picked === it.answer : undefined;
               return (
                 <li class={`item${locked ? (ok ? ' right' : ' wrong') : ''}`}>
-                  <div class="sig" dir="ltr">
-                    {q.itemsHtml ? <Html html={q.itemsHtml[i]} /> : <code>{it.label}</code>}
+                  <div class={q.itemsHtml ? 'sig' : 'sig plain'} dir={q.itemsHtml ? 'ltr' : 'auto'}>
+                    {q.itemsHtml ? <Html html={q.itemsHtml[i]} /> : <Html html={inline(it.label)} />}
                   </div>
                   <div class="chips" role="radiogroup" aria-label={`יעד עבור ${it.label}`}>
                     {q.targets.map((t) => {
@@ -178,7 +178,7 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
                       const st = locked ? (t.id === it.answer ? 'right' : isPicked ? 'wrong' : '') : isPicked ? 'chosen' : '';
                       return (
                         <button type="button" role="radio" aria-checked={isPicked} class={`chip ${st}`} disabled={locked} onClick={() => set(it.label, t.id)}>
-                          <span dir="ltr">{t.id}</span>
+                          <span dir="auto">{t.id}</span>
                         </button>
                       );
                     })}

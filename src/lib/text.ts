@@ -8,7 +8,7 @@ export function inline(s: string): string {
   return parts
     .map((p) => {
       if (p.length > 1 && p.startsWith('`') && p.endsWith('`')) return `<code class="ic" dir="ltr">${escapeHtml(p.slice(1, -1))}</code>`;
-      return escapeHtml(p).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      return bidi(escapeHtml(p)).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     })
     .join('');
 }
@@ -22,4 +22,7 @@ export function prose(s: string): string {
     .join('');
 }
 
-export const bilingual = (he: string, en: string) => (he === en ? he : `${he} - ${en}`);
+/** Keeps "C#" (and similar names ending in a neutral char) from flipping to "#C" inside RTL text. */
+export const bidi = (s: string) => s.replace(/C#(?!\u200e)/g, 'C#\u200e');
+
+export const bilingual = (he: string, en: string) => bidi(he === en ? he : `${he} - ${en}`);
