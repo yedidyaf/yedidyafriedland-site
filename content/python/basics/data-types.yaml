@@ -1,0 +1,217 @@
+- id: py.basics.data-types.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print(type(3.0))
+  options: ["<class 'float'>", "<class 'int'>", "float", "3.0"]
+  answer: 0
+  explanation: "כל מספר עם נקודה עשרונית הוא `float`, גם אם החלק העשרוני הוא אפס. `type` מחזירה את המחלקה עצמה, ו-`print` מציגה אותה בצורה `<class 'float'>`."
+  optionExplanations:
+    "1": "הערך `3.0` שווה מתמטית ל-`3`, אבל הנקודה העשרונית הופכת אותו ל-`float`."
+    "2": "`type` מחזירה אובייקט של מחלקה, ו-`print` מציגה אותו כ-`<class 'float'>` ולא רק כשם."
+
+- id: py.basics.data-types.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    a = "7"
+    b = 7
+    print(a == b)
+  options: ["False", "True", "TypeError", "7"]
+  answer: 0
+  explanation: "`\"7\"` היא מחרוזת (`str`) ו-`7` הוא מספר שלם (`int`). ערכים מטיפוסים שונים כאלה לעולם אינם שווים זה לזה, ופייתון לא ממירה ביניהם אוטומטית."
+  optionExplanations:
+    "1": "פייתון לא ממירה מחרוזת למספר בהשוואה, בניגוד לשפות כמו JavaScript."
+    "2": "השוואה עם `==` בין טיפוסים שונים חוקית ומחזירה `False`. רק השוואות סדר כמו `<` ביניהם זורקות `TypeError`."
+
+- id: py.basics.data-types.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    x = 3
+    y = 3.0
+    print(x == y, type(x) == type(y))
+  options: ["True False", "False False", "True True", "False True"]
+  answer: 0
+  explanation: "`==` משווה ערכים, ו-`3` שווה מספרית ל-`3.0`. הטיפוסים עצמם שונים: `int` מול `float`. ערך שווה לא אומר טיפוס זהה."
+  optionExplanations:
+    "1": "בין מספרים פייתון משווה ערך מספרי, ולכן `3 == 3.0` מחזיר `True`."
+    "2": "`type(3)` הוא `int` ו-`type(3.0)` הוא `float`, ולכן הם שונים."
+
+- id: py.basics.data-types.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    x = True
+    print(isinstance(x, int), type(x) == int)
+  options: ["True False", "False False", "True True", "False True"]
+  answer: 0
+  explanation: "`bool` הוא תת-טיפוס (Subclass) של `int`. `isinstance` מחזירה `True` גם עבור תת-טיפוסים, ואילו `type(x) == int` בודקת התאמה מדויקת, ו-`type(True)` הוא `bool`. לכן בדרך כלל עדיף `isinstance`."
+  optionExplanations:
+    "1": "`isinstance` מכירה בירושה, ו-`bool` יורש מ-`int`."
+    "2": "`type` מחזירה את הטיפוס המדויק, `bool`, ולא את טיפוס הבסיס."
+
+- id: py.basics.data-types.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print(0.1 + 0.2 == 0.3)
+  options: ["False", "True", "0.3", "TypeError"]
+  answer: 0
+  explanation: "מספרי `float` נשמרים בבסיס 2, ולא כל שבר עשרוני ניתן לייצוג מדויק. `0.1 + 0.2` יוצא `0.30000000000000004`, ולכן ההשוואה נכשלת. משווים מספרי `float` עם סבולת, למשל `math.isclose`."
+  optionExplanations:
+    "1": "מתמטית זה נכון, אבל במחשב `0.1` ו-`0.2` אינם מיוצגים במדויק."
+    "2": "`==` מחזיר ערך בוליאני, לא את תוצאת החיבור."
+
+- id: py.basics.data-types.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    x = None
+    print(x)
+    print(type(x))
+  options: ["None\n<class 'NoneType'>", "\n<class 'NoneType'>", "None\n<class 'None'>", "0\n<class 'NoneType'>"]
+  answer: 0
+  explanation: "`None` מייצג \"אין ערך\". הוא מודפס כ-`None`, והטיפוס שלו הוא `NoneType`. `None` אינו `0` ואינו מחרוזת ריקה, אלא ערך נפרד."
+  optionExplanations:
+    "1": "`print(None)` מדפיסה את המילה `None` ולא שורה ריקה."
+    "2": "`None` הוא הערך היחיד מהטיפוס `NoneType`. אין טיפוס בשם `None`."
+    "3": "`None` אינו מספר, ולכן לא מודפס `0`."
+
+- id: py.basics.data-types.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    nums = [1, 2]
+    text = "ab"
+    nums2 = nums
+    text2 = text
+    nums2.append(3)
+    text2 += "c"
+    print(nums, text)
+  options: ["[1, 2, 3] ab", "[1, 2, 3] abc", "[1, 2] ab", "[1, 2] abc"]
+  answer: 0
+  explanation: "רשימה ניתנת לשינוי (Mutable): `append` משנה את האובייקט עצמו, ו-`nums` רואה את השינוי. מחרוזת אינה ניתנת לשינוי (Immutable): `text2 += \"c\"` יוצרת מחרוזת חדשה ומפנה אליה רק את `text2`, ו-`text` נשאר `ab`."
+  optionExplanations:
+    "1": "מחרוזת לא משתנה במקום. `+=` על מחרוזת יוצרת אובייקט חדש."
+    "2": "`nums2` ו-`nums` מצביעים על אותה רשימה, ולכן ה-`append` נראה גם דרך `nums`."
+    "3": "זה הפוך: הרשימה היא זו שמשתנה במקום, והמחרוזת היא זו שלא."
+
+- id: py.basics.data-types.008
+  type: single
+  difficulty: 1
+  prompt: "איזה מהערכים הבאים הוא מהטיפוס `bool`?"
+  options: ["`False`", "`\"False\"`", "`0`", "`None`"]
+  answer: 0
+  explanation: "לטיפוס `bool` יש בדיוק שני ערכים: `True` ו-`False`, באות גדולה וללא מרכאות."
+  optionExplanations:
+    "1": "המרכאות הופכות את הערך למחרוזת (`str`) שבמקרה מכילה את המילה False."
+    "2": "`0` הוא `int`. הוא אמנם נחשב שקרי בתנאי, אבל הטיפוס שלו אינו `bool`."
+    "3": "`None` הוא מהטיפוס `NoneType`, לא `bool`."
+
+- id: py.basics.data-types.009
+  type: single
+  difficulty: 1
+  prompt: איזה מהטיפוסים הבאים ניתן לשינוי (Mutable)?
+  options: ["`list`", "`str`", "`int`", "`tuple`"]
+  answer: 0
+  explanation: "רשימה ניתנת לשינוי במקום: אפשר להוסיף, להסיר ולהחליף בה איברים. `int`, `str` ו-`tuple` אינם ניתנים לשינוי (Immutable), וכל \"שינוי\" שלהם יוצר בעצם אובייקט חדש."
+  optionExplanations:
+    "1": "מחרוזת אינה ניתנת לשינוי. מתודות כמו `upper` מחזירות מחרוזת חדשה."
+    "2": "`x += 1` לא משנה את המספר, אלא מפנה את `x` למספר חדש."
+    "3": "טאפל דומה לרשימה, אבל אי אפשר לשנות אותו אחרי יצירתו."
+
+- id: py.basics.data-types.010
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "cat"
+    s[0] = "b"
+    print(s)
+  options: ["TypeError", "bat", "cat", "IndexError"]
+  answer: 0
+  explanation: "מחרוזת אינה ניתנת לשינוי, ולכן אי אפשר להשים ערך לאחד מהתווים שלה. השורה השנייה זורקת `TypeError` ('str' object does not support item assignment). כדי לקבל `bat` יוצרים מחרוזת חדשה."
+  optionExplanations:
+    "1": "זה היה עובד ברשימה. מחרוזת אי אפשר לשנות במקום."
+    "2": "השגיאה נזרקת לפני ה-`print`, ולכן שום דבר לא מודפס."
+    "3": "האינדקס `0` קיים. הבעיה היא בשינוי עצמו, לא בגבולות."
+
+- id: py.basics.data-types.011
+  type: truefalse
+  difficulty: 2
+  prompt: "`isinstance(5, float)` מחזיר `True`, כי כל מספר שלם הוא גם מספר ממשי."
+  answer: false
+  explanation: "מתמטית זה נכון, אבל בפייתון `int` ו-`float` הם שני טיפוסים נפרדים, ו-`int` אינו תת-טיפוס של `float`. לכן `isinstance(5, float)` מחזיר `False`. כדי לקבל את שניהם כותבים `isinstance(5, (int, float))`."
+
+- id: py.basics.data-types.012
+  type: truefalse
+  difficulty: 2
+  prompt: "הביטוי `True + True` שווה ל-`2`."
+  answer: true
+  explanation: "`bool` הוא תת-טיפוס של `int`: `True` מתנהג כמו `1` ו-`False` כמו `0` בחישובים. לכן `True + True` הוא `2`, והתוצאה מהטיפוס `int`."
+
+- id: py.basics.data-types.013
+  type: single
+  difficulty: 2
+  prompt: "מה הדרך המקובלת לבדוק אם המשתנה `x` מכיל `None`?"
+  options: ["`x is None`", "`x == \"None\"`", "`not x`", "`type(x) == \"NoneType\"`"]
+  answer: 0
+  explanation: "יש בפייתון אובייקט `None` אחד בלבד, ולכן בודקים זהות עם `is`. זו המוסכמה שממליץ עליה PEP 8."
+  optionExplanations:
+    "1": "זו השוואה למחרוזת שמכילה את המילה None, ולא לערך `None`."
+    "2": "`not x` יחזיר `True` גם עבור `0`, `\"\"` ורשימה ריקה, ולכן הוא לא מבדיל בין `None` לבין ערכים שקריים אחרים."
+    "3": "`type` מחזירה מחלקה ולא מחרוזת, ולכן ההשוואה למחרוזת תמיד `False`."
+
+- id: py.basics.data-types.014
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס `HELLO`. באיזו שורה הבאג?"
+  code: |
+    text = "hello"
+    text.upper()
+    print(text)
+  answer: 2
+  explanation: "מחרוזות אינן ניתנות לשינוי, ולכן `upper` לא משנה את `text` אלא מחזירה מחרוזת חדשה. בשורה 2 הערך המוחזר נזרק, ומודפס `hello`. צריך לשמור את התוצאה: `text = text.upper()`."
+  fixed: |
+    text = "hello"
+    text = text.upper()
+    print(text)
+
+- id: py.basics.data-types.015
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס את הרשימה ממוינת: `[1, 2, 3]`. באיזו שורה הבאג?"
+  code: |
+    items = [3, 1, 2]
+    items = items.sort()
+    print(items)
+  answer: 2
+  explanation: "רשימה ניתנת לשינוי, ולכן `sort` ממיינת אותה במקום ומחזירה `None`. ההשמה בשורה 2 דורסת את הרשימה ב-`None`, וזה מה שמודפס. זה ההפך מהמקרה של מחרוזות: מתודה שמשנה אובייקט במקום מחזירה בדרך כלל `None`, ולכן קוראים לה בלי השמה."
+  fixed: |
+    items = [3, 1, 2]
+    items.sort()
+    print(items)
+
+- id: py.basics.data-types.016
+  type: single
+  difficulty: 3
+  prompt: "איזה ביטוי מחזיר `True` בדיוק כש-`n` הוא `int` או `float`?"
+  options:
+    - "`isinstance(n, (int, float))`"
+    - "`type(n) == int or float`"
+    - "`isinstance(n, int and float)`"
+    - "`type(n) == (int, float)`"
+  answer: 0
+  explanation: "`isinstance` מקבלת גם טאפל של טיפוסים ומחזירה `True` אם הערך מאחד מהם. שימו לב: `True` ו-`False` יעברו את הבדיקה, כי `bool` הוא תת-טיפוס של `int`."
+  optionExplanations:
+    "1": "הביטוי מתפרש כ-`(type(n) == int) or float`. כשהחלק הראשון `False`, התוצאה היא `float` עצמו, שנחשב אמת, ולכן הבדיקה עוברת תמיד."
+    "2": "`int and float` מחושב קודם ומחזיר `float`, ולכן נבדק רק `float`."
+    "3": "טיפוס לעולם לא שווה לטאפל, ולכן הביטוי תמיד `False`."

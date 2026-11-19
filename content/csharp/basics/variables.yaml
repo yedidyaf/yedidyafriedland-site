@@ -1,0 +1,264 @@
+- id: cs.basics.variables.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int x = 5;
+    int y = x;
+    x = 10;
+    Console.WriteLine(y);
+  options: ["5", "10", "15", "0"]
+  answer: 0
+  explanation: "השורה `int y = x;` מעתיקה את הערך שיש ב-`x` באותו רגע (5) לתוך `y`. אחרי ההעתקה אין קשר בין שני המשתנים, ולכן שינוי `x` ל-10 לא משפיע על `y`."
+  optionExplanations:
+    "1": "הצבה מעתיקה ערך פעם אחת. `y` לא \"עוקב\" אחרי `x` ולא מתעדכן כשהוא משתנה."
+    "2": "אין כאן חיבור. `y` קיבל עותק של 5, ו-`x` קיבל ערך חדש בנפרד."
+
+- id: cs.basics.variables.002
+  type: single
+  difficulty: 1
+  prompt: "מה הטיפוס של `n` אחרי ההצהרה `var n = 10;`?"
+  options: ["`int`", "`var`", "`object`", "`long`"]
+  answer: 0
+  explanation: "`var` מבקש מהקומפיילר להסיק (Type Inference) את הטיפוס מהערך שבצד ימין. הליטרל `10` הוא `int`, ולכן `n` הוא `int` לכל דבר, בדיוק כאילו נכתב `int n = 10;`."
+  optionExplanations:
+    "1": "`var` אינו טיפוס. זו מילת מפתח שאומרת לקומפיילר להסיק את הטיפוס בעצמו."
+    "2": "הקומפיילר מסיק את הטיפוס המדויק של הערך, לא טיפוס כללי כמו `object`."
+    "3": "ליטרל שלם בלי סיומת שנכנס בטווח של `int` הוא `int`. כדי לקבל `long` צריך לכתוב `10L`."
+
+- id: cs.basics.variables.003
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var count = 5;
+    count = "five";
+    Console.WriteLine(count);
+  options: ["five", "5", "5five", "שגיאת קומפילציה"]
+  answer: 3
+  explanation: "ב-C# הטיפוס של משתנה נקבע בזמן קומפילציה ולא משתנה לעולם (Static Typing). `var count = 5` קובע ש-`count` הוא `int`, ולכן הצבת מחרוזת אליו היא שגיאת קומפילציה. `var` אינו משתנה דינמי כמו ב-Python או ב-JavaScript."
+  optionExplanations:
+    "0": "זה היה קורה בשפה עם טיפוסים דינמיים. ב-C# `count` נשאר `int` לכל אורך חייו."
+
+- id: cs.basics.variables.004
+  type: truefalse
+  difficulty: 2
+  prompt: "ההצהרה `var total;` (בלי ערך התחלתי) חוקית, והטיפוס ייקבע בהצבה הראשונה."
+  answer: false
+  explanation: "עם `var` הקומפיילר מסיק את הטיפוס מהאתחול, ולכן חובה לאתחל באותה שורה. `var total;` היא שגיאת קומפילציה. כדי להצהיר בלי ערך התחלתי, כתבו את הטיפוס במפורש: `int total;`."
+
+- id: cs.basics.variables.005
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להחליף בין הערכים של `a` ו-`b` ולהדפיס `7 3`. באיזו שורה הבאג?
+  code: |
+    int a = 3;
+    int b = 7;
+    int temp = a;
+    a = b;
+    b = a;
+    Console.WriteLine($"{a} {b}");
+  answer: 5
+  explanation: "בשורה 4 הערך המקורי של `a` נדרס ב-7. לכן בשורה 5 `b = a` מציב שוב 7, והפלט הוא `7 7`. בדיוק בשביל זה שמרנו את הערך המקורי ב-`temp`, וצריך להציב אותו: `b = temp;`."
+  fixed: |
+    int a = 3;
+    int b = 7;
+    int temp = a;
+    a = b;
+    b = temp;
+    Console.WriteLine($"{a} {b}");
+
+- id: cs.basics.variables.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var c = new Counter();
+    Console.WriteLine(c.Value);
+    Console.WriteLine(c.Name == null);
+
+    class Counter
+    {
+        public int Value;
+        public string Name;
+    }
+  options: ["0\nTrue", "0\nFalse", "שגיאת קומפילציה", "NullReferenceException"]
+  answer: 0
+  explanation: "שדות (Fields) של מחלקה מקבלים ערך ברירת מחדל (Default Value) אוטומטית: `0` למספרים ו-`null` לטיפוסי הפניה כמו `string`. לכן `Value` הוא 0 ו-`Name` הוא `null`."
+  optionExplanations:
+    "1": "ערך ברירת המחדל של `string` הוא `null`, לא מחרוזת ריקה."
+    "2": "החובה לאתחל לפני שימוש חלה רק על משתנים מקומיים. שדות מאותחלים אוטומטית."
+    "3": "השוואה `c.Name == null` לא ניגשת לאובייקט ולכן לא זורקת. חריגה הייתה נזרקת רק בגישה כמו `c.Name.Length`."
+
+- id: cs.basics.variables.007
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int total;
+    Console.WriteLine(total);
+  options: ["0", "null", "שגיאת קומפילציה"]
+  answer: 2
+  explanation: "משתנה מקומי (Local Variable) לא מקבל ערך ברירת מחדל. הקומפיילר דורש השמה ודאית (Definite Assignment) לפני כל קריאה, ולכן קריאה של `total` שלא אותחל היא שגיאת קומפילציה. ערכי ברירת מחדל אוטומטיים קיימים רק לשדות ולאיברי מערך."
+  optionExplanations:
+    "0": "רק שדות של מחלקה ואיברי מערך מקבלים 0 אוטומטית. משתנה מקומי חייב השמה לפני שימוש."
+    "1": "`int` הוא טיפוס ערך ולא יכול להכיל `null` בכלל."
+
+- id: cs.basics.variables.008
+  type: single
+  difficulty: 3
+  tags: [compile-error]
+  prompt: איזו מההצהרות בקוד לא מתקמפלת?
+  code: |
+    const int Max = 100;
+    const int Twice = Max * 2;
+    const string Title = "Menu";
+    int size = 5;
+    const int Limit = size + 1;
+  options:
+    - "`const int Max = 100;`"
+    - "`const int Twice = Max * 2;`"
+    - "`const string Title = \"Menu\";`"
+    - "`const int Limit = size + 1;`"
+  answer: 3
+  explanation: "ערך של `const` חייב להיות ידוע בזמן קומפילציה (Compile-time Constant). `size` הוא משתנה רגיל, וערכו ידוע רק בזמן ריצה, ולכן `size + 1` לא יכול לאתחל קבוע. ביטוי שבנוי רק מליטרלים ומקבועים אחרים, כמו `Max * 2`, חוקי."
+  optionExplanations:
+    "1": "`Max` הוא קבוע, ולכן גם `Max * 2` מחושב בזמן קומפילציה. זה חוקי."
+    "2": "`string` הוא אחד הטיפוסים שמותר להגדיר כ-`const`, וליטרל מחרוזת ידוע בזמן קומפילציה."
+
+- id: cs.basics.variables.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var a = 5;
+    var b = 2.0;
+    var c = a / 2;
+    var d = a / b;
+    Console.WriteLine(c);
+    Console.WriteLine(d);
+  options: ["2\n2.5", "2.5\n2.5", "2\n2", "2.5\n2"]
+  answer: 0
+  explanation: "`var` מסיק את הטיפוס מהביטוי. `a` הוא `int` ו-`b` הוא `double` (בגלל הנקודה ב-`2.0`). `a / 2` הוא חלוקה בין שני `int`, ולכן `c` הוא `int` שערכו 2. ב-`a / b` אחד הצדדים `double`, ולכן `d` הוא `double` שערכו 2.5."
+  optionExplanations:
+    "1": "`var` לא בוחר טיפוס \"גמיש\". הביטוי `a / 2` הוא `int` חלקי `int`, ולכן התוצאה שלמה."
+    "2": "כש-`b` הוא `double`, החלוקה `a / b` עשרונית."
+
+- id: cs.basics.variables.010
+  type: truefalse
+  difficulty: 2
+  prompt: "אחרי `var name = \"Dana\";` הטיפוס של `name` הוא `string`, בדיוק כאילו נכתב `string name = \"Dana\";`."
+  answer: true
+  explanation: "`var` הוא קיצור בכתיבה בלבד. הקומפיילר מסיק את הטיפוס `string` מהערך, והקוד שנוצר זהה לחלוטין להצהרה המפורשת. אין שום הבדל בביצועים או בבדיקות הטיפוסים."
+
+- id: cs.basics.variables.011
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(default(int));
+    Console.WriteLine(default(bool));
+    Console.WriteLine(default(char) == '\0');
+    Console.WriteLine(default(double));
+  options: ["0\nFalse\nTrue\n0", "0\nfalse\nTrue\n0.0", "0\nFalse\nFalse\n0", "null\nnull\nTrue\nnull"]
+  answer: 0
+  explanation: "`default(T)` מחזיר את ערך ברירת המחדל של הטיפוס: 0 למספרים, `false` ל-`bool` והתו `'\\0'` (קוד 0) ל-`char`. `bool` מודפס ב-C# עם אות גדולה (`False`), ו-`double` שערכו 0 מודפס `0` בלי `.0`."
+  optionExplanations:
+    "1": "`Console.WriteLine` מדפיס `bool` כ-`True` או `False` עם אות גדולה, ו-`double` שלם מודפס בלי נקודה עשרונית."
+    "2": "ערך ברירת המחדל של `char` הוא התו שקוד שלו 0, כלומר `'\\0'`, ולכן ההשוואה מחזירה `True`."
+    "3": "טיפוסי ערך כמו `int`, `bool` ו-`double` לא יכולים להיות `null`. ערך ברירת המחדל שלהם הוא אפס בצורה המתאימה."
+
+- id: cs.basics.variables.012
+  type: single
+  difficulty: 2
+  prompt: איזה מהשמות הבאים הוא שם חוקי למשתנה ב-C#?
+  options: ["`_count`", "`2ndPlace`", "`first-name`", "`class`"]
+  answer: 0
+  explanation: "מזהה (Identifier) ב-C# מתחיל באות או בקו תחתון, וממשיך באותיות, ספרות וקווים תחתונים. `_count` עומד בכללים. מילים שמורות (Keywords) כמו `class` אסורות כשם, אלא אם מוסיפים להן `@`."
+  optionExplanations:
+    "1": "שם משתנה לא יכול להתחיל בספרה."
+    "2": "המקף מתפרש כאופרטור החיסור, כלומר `first` פחות `name`."
+    "3": "`class` היא מילה שמורה. אפשר רק `@class`, וגם זה לא מומלץ."
+
+- id: cs.basics.variables.013
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור לסכם שלוש רכישות ולהדפיס `60`. באיזו שורה הבאג?
+  code: |
+    int total = 0;
+    int purchase = 10;
+    total += purchase;
+    purchase = 20;
+    total += purchase;
+    purchase = 30;
+    total = purchase;
+    Console.WriteLine(total);
+  answer: 7
+  explanation: "`total = purchase` מחליף את הסכום שנצבר עד עכשיו בערך 30, ולכן מודפס `30`. כדי להוסיף לסכום צריך הצבה מורכבת (Compound Assignment): `total += purchase`, שהיא קיצור של `total = total + purchase`."
+  fixed: |
+    int total = 0;
+    int purchase = 10;
+    total += purchase;
+    purchase = 20;
+    total += purchase;
+    purchase = 30;
+    total += purchase;
+    Console.WriteLine(total);
+
+- id: cs.basics.variables.014
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      const double VatRate = 0.17;
+      double price = 100;
+      double total = price * (1 + VatRate);
+      Console.WriteLine(total);
+    - |
+      double price = 100;
+      double total = price * 1.17;
+      Console.WriteLine(total);
+    - |
+      double vat = 0.17;
+      double price = 100;
+      double total = price * (1 + vat);
+      Console.WriteLine(total);
+  answer: 0
+  explanation: "ערך שלא אמור להשתנות לעולם, כמו שיעור המע\"מ, מתאים ל-`const` עם שם ברור. השם מסביר מה המספר אומר, והקומפיילר מונע שינוי בטעות. לפי המוסכמות של C#, קבועים נכתבים ב-PascalCase."
+  optionExplanations:
+    "1": "`1.17` הוא מספר קסם (Magic Number): הקורא צריך לנחש שמדובר במע\"מ, ואם השיעור ישתנה צריך לחפש כל מופע שלו."
+    "2": "יש שם, אבל משתנה רגיל אפשר לשנות בטעות בהמשך. ערך קבוע צריך להיות מוגדר כ-`const`."
+
+- id: cs.basics.variables.015
+  type: output
+  difficulty: 3
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    object item = "hello";
+    Console.WriteLine(item.Length);
+  options: ["5", "0", "NullReferenceException", "שגיאת קומפילציה"]
+  answer: 3
+  explanation: "הקומפיילר בודק כל גישה לפי הטיפוס הסטטי (Static Type) של המשתנה, כלומר הטיפוס שהוצהר. `item` הוצהר כ-`object`, ול-`object` אין מאפיין `Length`. לא משנה שבזמן ריצה יש בו מחרוזת: הבדיקה נעשית לפני הריצה."
+  optionExplanations:
+    "0": "בזמן ריצה האובייקט אכן מחרוזת באורך 5, אבל הקוד לא מגיע לריצה. הקומפיילר מכיר רק את הטיפוס המוצהר `object`."
+    "2": "`item` אינו `null`, ובכל מקרה הבעיה מתגלה כבר בקומפילציה."
+
+- id: cs.basics.variables.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var letter = 'A';
+    var next = letter + 1;
+    Console.WriteLine(next);
+  options: ["66", "B", "A1", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`letter` הוא `char`. בחיבור `char` עם `int`, התו מומר למספר שלו (65 עבור `'A'`) והתוצאה היא `int`. לכן `var` מסיק ש-`next` הוא `int` שערכו 66. כדי לקבל `B` צריך המרה מפורשת: `(char)(letter + 1)`."
+  optionExplanations:
+    "1": "התוצאה של `char + int` היא `int`, לא `char`. `var` מסיק את הטיפוס מהביטוי, ולכן מודפס מספר."
+    "2": "שרשור טקסט קורה רק כשאחד הצדדים הוא `string`. `'A'` הוא `char`, שמתנהג כמו מספר בחשבון."
+    "3": "חיבור `char` ו-`int` חוקי. ה-`char` מומר אוטומטית ל-`int`."

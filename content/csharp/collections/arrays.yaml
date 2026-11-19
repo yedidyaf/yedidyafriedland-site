@@ -1,0 +1,292 @@
+- id: cs.collections.arrays.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int[] counts = new int[3];
+    bool[] flags = new bool[2];
+    Console.WriteLine(counts[1]);
+    Console.WriteLine(flags[0]);
+  options: ["0\nFalse", "0\nfalse", "null\nnull", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מערך חדש מתמלא בערכי ברירת מחדל (Default Values): `0` ל-`int` ו-`false` ל-`bool`. `Console.WriteLine` מדפיס ערך בוליאני באות גדולה: `False`."
+  optionExplanations:
+    "1": "הערך הוא אכן `false`, אבל ב-C# הוא מודפס כ-`False`, באות גדולה."
+    "2": "`null` הוא ברירת המחדל של טיפוסי הפניה. `int` ו-`bool` הם טיפוסי ערך ולא יכולים להיות `null`."
+    "3": "איברי מערך מאותחלים אוטומטית, ולכן מותר לקרוא אותם בלי השמה קודמת. רק משתנה מקומי חייב השמה לפני קריאה."
+
+- id: cs.collections.arrays.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int[] nums = { 4, 8, 15, 16 };
+    Console.WriteLine(nums.Length);
+    Console.WriteLine(nums[nums.Length - 1]);
+  options: ["4\n16", "3\n15", "4\n15", "3\n16"]
+  answer: 0
+  explanation: "`Length` הוא מספר האיברים, 4. האינדקסים מתחילים ב-0, ולכן האיבר האחרון נמצא באינדקס `Length - 1`, כלומר 3, וערכו `16`."
+  optionExplanations:
+    "1": "`Length` סופר איברים (4), ולא מחזיר את האינדקס האחרון (3)."
+    "2": "`nums[3]` הוא האיבר הרביעי, `16`. הבלבול הוא בין אינדקס שמתחיל ב-0 לבין מיקום שמתחיל ב-1."
+
+- id: cs.collections.arrays.003
+  type: single
+  difficulty: 1
+  prompt: מה יקרה כשהשורה השנייה תרוץ?
+  code: |
+    int[] nums = new int[3];
+    int x = nums[3];
+  options:
+    - "תיזרק `IndexOutOfRangeException`"
+    - "תיזרק `ArgumentOutOfRangeException`"
+    - "תיזרק `NullReferenceException`"
+    - "לא תיזרק חריגה, ו-`x` יקבל `0`"
+  answer: 0
+  explanation: "במערך באורך 3 האינדקסים החוקיים הם 0 עד 2. גישה מחוץ לגבולות מערך זורקת בזמן ריצה `IndexOutOfRangeException`. הקומפיילר לא בודק את זה."
+  optionExplanations:
+    "1": "`ArgumentOutOfRangeException` היא החריגה של `List<T>` באינדקס לא חוקי. מערך זורק `IndexOutOfRangeException`."
+    "2": "המערך עצמו קיים (נוצר עם `new`), ולכן אין כאן הפניה ל-`null`."
+    "3": "C# בודקת גבולות בכל גישה למערך ולא מחזירה ערך ברירת מחדל מחוץ לגבולות."
+
+- id: cs.collections.arrays.004
+  type: truefalse
+  difficulty: 2
+  prompt: "האורך של מערך נקבע ביצירה ולא משתנה. `Array.Resize` לא מגדילה את המערך הקיים, אלא יוצרת מערך חדש, מעתיקה אליו את האיברים ומפנה את המשתנה אליו."
+  answer: true
+  explanation: "למערך יש אורך קבוע (Fixed Length). לכן `Array.Resize(ref arr, n)` מקבלת את המשתנה עם `ref`: היא יוצרת מערך חדש בגודל `n`, מעתיקה את האיברים ומחליפה את ההפניה. כשצריך אוסף שגדל וקטן, משתמשים ב-`List<T>`."
+
+- id: cs.collections.arrays.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[] a = { 1, 2, 3 };
+    int[] b = (int[])a.Clone();
+    int[] c = a;
+    b[0] = 10;
+    c[1] = 20;
+    Console.WriteLine(string.Join(",", a));
+  options: ["1,20,3", "10,20,3", "1,2,3", "10,2,3"]
+  answer: 0
+  explanation: "מערך הוא טיפוס הפניה (Reference Type). `c = a` מעתיק רק את ההפניה, ולכן `c[1] = 20` משנה את אותו מערך ש-`a` מפנה אליו. `Clone` יוצר מערך חדש, ולכן השינוי ב-`b` לא משפיע על `a`."
+  optionExplanations:
+    "1": "`Clone` יוצר עותק נפרד, ולכן `b[0] = 10` לא נוגע ב-`a`."
+    "2": "`c = a` לא מעתיק את המערך. `c` ו-`a` הם שני שמות לאותו מערך."
+    "3": "זו התוצאה אם חושבים ש-`Clone` מחזיר את אותו מערך ו-`c = a` יוצר עותק. בפועל זה הפוך."
+
+- id: cs.collections.arrays.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[] nums = { 1, 2, 3 };
+    Console.WriteLine(nums);
+    Console.WriteLine(string.Join(", ", nums));
+  options: ["System.Int32[]\n1, 2, 3", "[1, 2, 3]\n1, 2, 3", "1 2 3\n1, 2, 3", "System.Int32[]\n123"]
+  answer: 0
+  explanation: "מערך לא דורס את `ToString`, ולכן הדפסה ישירה שלו מדפיסה את שם הטיפוס `System.Int32[]`. כדי להדפיס את האיברים משתמשים ב-`string.Join` עם מפריד."
+  optionExplanations:
+    "1": "כך מדפיסה פייתון רשימה. ב-C# הדפסת מערך מציגה את שם הטיפוס."
+    "3": "`string.Join(\", \", nums)` שם את המפריד `\", \"` בין האיברים, ולכן מתקבל `1, 2, 3`."
+
+- id: cs.collections.arrays.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[,] grid = new int[2, 3];
+    Console.WriteLine(grid.Length);
+    Console.WriteLine(grid.GetLength(0));
+    Console.WriteLine(grid.GetLength(1));
+  options: ["6\n2\n3", "2\n2\n3", "6\n3\n2", "2\n3\n2"]
+  answer: 0
+  explanation: "במערך רב־ממדי (Multidimensional Array) `Length` הוא מספר כל התאים: 2 × 3 = 6. את גודל כל ממד מקבלים עם `GetLength`: ממד 0 הוא השורות (2) וממד 1 הוא העמודות (3)."
+  optionExplanations:
+    "1": "`Length` לא מחזיר את מספר השורות. הוא סופר את כל התאים בכל הממדים."
+    "2": "`GetLength(0)` מחזיר את הממד הראשון בהגדרה `[2, 3]`, כלומר 2."
+
+- id: cs.collections.arrays.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[][] rows = new int[3][];
+    rows[0] = new int[] { 1, 2 };
+    rows[1] = new int[4];
+    Console.WriteLine(rows.Length);
+    Console.WriteLine(rows[1].Length);
+    Console.WriteLine(rows[2] == null);
+  options: ["3\n4\nTrue", "3\n0\nTrue", "6\n4\nFalse", "3\n4\nFalse"]
+  answer: 0
+  explanation: "מערך משונן (Jagged Array) הוא מערך של מערכים. `new int[3][]` יוצר 3 תאים מסוג `int[]`, וכל אחד מהם מתחיל כ-`null` עד שמציבים בו מערך. לכן `rows[2]` הוא `null`, ו-`rows[1]` הוא מערך באורך 4."
+  optionExplanations:
+    "1": "`new int[4]` יוצר מערך באורך 4 שכל ערכיו 0. `Length` הוא מספר התאים ולא סכום הערכים."
+    "2": "`rows.Length` סופר רק את המערכים החיצוניים (3), ולא את כל המספרים שבתוכם."
+    "3": "התאים החיצוניים הם הפניות למערכים, וברירת המחדל שלהם היא `null`. לא נוצר מערך ריק אוטומטית."
+
+- id: cs.collections.arrays.009
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להדפיס את סכום המחירים במערך. באיזו שורה הבאג?
+  code: |
+    int[] prices = { 30, 45, 25 };
+    int total = 0;
+    for (int i = 0; i <= prices.Length; i++)
+    {
+        total += prices[i];
+    }
+    Console.WriteLine(total);
+  answer: 3
+  explanation: "התנאי `i <= prices.Length` מגיע גם ל-`i = 3`, ובמערך באורך 3 האינדקס האחרון הוא 2. הגישה `prices[3]` זורקת `IndexOutOfRangeException`. התנאי הנכון הוא `i < prices.Length`."
+  fixed: |
+    int[] prices = { 30, 45, 25 };
+    int total = 0;
+    for (int i = 0; i < prices.Length; i++)
+    {
+        total += prices[i];
+    }
+    Console.WriteLine(total);
+
+- id: cs.collections.arrays.010
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להפוך את סדר האיברים במערך עצמו (In Place) ולהדפיס `5 4 3 2 1`. באיזו שורה הבאג?"
+  code: |
+    int[] nums = { 1, 2, 3, 4, 5 };
+    for (int i = 0; i < nums.Length; i++)
+    {
+        int j = nums.Length - 1 - i;
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    Console.WriteLine(string.Join(" ", nums));
+  answer: 2
+  explanation: "כל החלפה מטפלת בזוג: איבר מההתחלה ואיבר מהסוף. כשהלולאה עוברת על כל המערך, כל זוג מוחלף פעמיים, ובסוף המערך חוזר לסדר המקורי `1 2 3 4 5`. צריך לעצור באמצע: `i < nums.Length / 2`."
+  fixed: |
+    int[] nums = { 1, 2, 3, 4, 5 };
+    for (int i = 0; i < nums.Length / 2; i++)
+    {
+        int j = nums.Length - 1 - i;
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    Console.WriteLine(string.Join(" ", nums));
+
+- id: cs.collections.arrays.011
+  type: single
+  difficulty: 2
+  prompt: "מה הערך של `names[0]` מיד אחרי השורה הזאת?"
+  code: |
+    string[] names = new string[2];
+  options:
+    - "`null`"
+    - "`\"\"` (מחרוזת ריקה)"
+    - "`\"0\"`"
+    - "אין ערך, וקריאה של `names[0]` היא שגיאת קומפילציה"
+  answer: 0
+  explanation: "`string` הוא טיפוס הפניה, וברירת המחדל של טיפוס הפניה במערך היא `null`. שימו לב: `Console.WriteLine(names[0])` מדפיס שורה ריקה, ולכן קל לחשוב בטעות שזו מחרוזת ריקה. אבל `names[0].Length` יזרוק `NullReferenceException`."
+  optionExplanations:
+    "1": "מחרוזת ריקה היא אובייקט קיים. המערך לא יוצר אובייקטים, אלא רק מאתחל את ההפניות ל-`null`."
+    "2": "`0` הוא ברירת המחדל של `int`. לטיפוס `string` אין המרה אוטומטית כזאת."
+    "3": "איברי מערך מאותחלים תמיד לברירת מחדל, ולכן מותר לקרוא אותם."
+
+- id: cs.collections.arrays.012
+  type: output
+  difficulty: 3
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int[] nums = { 1, 2, 3 };
+    foreach (int n in nums)
+    {
+        n = n * 2;
+    }
+    Console.WriteLine(nums[0]);
+  options: ["שגיאת קומפילציה", "2", "1", "InvalidOperationException"]
+  answer: 0
+  explanation: "משתנה האיטרציה של `foreach` הוא לקריאה בלבד, ולכן השמה ל-`n` היא שגיאת קומפילציה. כדי לשנות איברים במערך משתמשים בלולאת `for` עם אינדקס: `nums[i] = nums[i] * 2`."
+  optionExplanations:
+    "1": "גם אילו ההשמה הייתה מותרת, `n` הוא עותק של הערך, ושינוי שלו לא היה משנה את המערך."
+    "2": "זה מה שהיה קורה אילו ההשמה לעותק הייתה מותרת. אבל C# חוסמת אותה כבר בקומפילציה."
+    "3": "`InvalidOperationException` נזרקת כששינוי מבנה של `List<T>` קורה בזמן `foreach`. כאן הקוד לא מגיע לריצה בכלל."
+
+- id: cs.collections.arrays.013
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[] nums = { 42, 7, 19, 3 };
+    Array.Sort(nums);
+    Console.WriteLine(nums[0] + " " + nums[3]);
+    Console.WriteLine(Array.IndexOf(nums, 42));
+    Console.WriteLine(Array.IndexOf(nums, 5));
+  options: ["3 42\n3\n-1", "3 42\n0\n-1", "42 3\n3\n-1", "3 42\n3\nIndexOutOfRangeException"]
+  answer: 0
+  explanation: "`Array.Sort` ממיינת את המערך עצמו בסדר עולה: `3 7 19 42`. אחרי המיון `42` נמצא באינדקס 3. `Array.IndexOf` מחזירה `-1` כשהערך לא נמצא, בלי לזרוק חריגה."
+  optionExplanations:
+    "1": "`0` היה המיקום של `42` לפני המיון. `Array.Sort` משנה את המערך במקום, ולכן המיקום השתנה."
+    "2": "מיון ברירת המחדל הוא בסדר עולה, מהקטן לגדול."
+    "3": "`IndexOf` לא זורקת חריגה על ערך חסר. היא מחזירה `-1`."
+
+- id: cs.collections.arrays.014
+  type: single
+  difficulty: 2
+  prompt: איזו מההצהרות הבאות לא מתקמפלת?
+  options:
+    - "`int[3] d = { 1, 2, 3 };`"
+    - "`int[] a = new int[3] { 1, 2, 3 };`"
+    - "`int[] b = { 1, 2, 3 };`"
+    - "`int[] c = [1, 2, 3];`"
+  answer: 0
+  explanation: "ב-C# הגודל לא חלק מהטיפוס של המשתנה: הטיפוס הוא `int[]`, והגודל נקבע רק ביצירת המערך (`new int[3]`). שאר הצורות חוקיות: `new` עם גודל ורשימת ערכים, רשימת ערכים מקוצרת, וביטוי אוסף (Collection Expression) של C# 12."
+  optionExplanations:
+    "1": "מותר לציין גם גודל וגם ערכים, כל עוד מספר הערכים שווה לגודל."
+    "2": "זו צורה מקוצרת וחוקית של אתחול מערך בהצהרה."
+    "3": "ביטויי אוסף עם סוגריים מרובעים נוספו ב-C# 12 וחוקיים למערכים."
+
+- id: cs.collections.arrays.015
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      int[] scores = { 90, 75, 88 };
+      int total = 0;
+      foreach (int score in scores)
+      {
+          total += score;
+      }
+      Console.WriteLine(total);
+    - |
+      int[] scores = { 90, 75, 88 };
+      int total = 0;
+      int i = 0;
+      while (i < scores.Length)
+      {
+          total += scores[i];
+          i++;
+      }
+      Console.WriteLine(total);
+    - |
+      int[] scores = { 90, 75, 88 };
+      int total = 0;
+      for (int i = 0; i <= scores.Length - 1; i++)
+      {
+          total = total + scores[i];
+      }
+      Console.WriteLine(total);
+  answer: 0
+  explanation: "כשצריך רק לעבור על כל האיברים ולא צריך את האינדקס, `foreach` הוא הכלי הנכון. אין מונה לנהל ואין סיכוי לטעות בגבול הלולאה (Off-by-One)."
+  optionExplanations:
+    "1": "לולאת `while` עם מונה ידני מוסיפה שלוש שורות ניהול, ושכחה של `i++` תיצור לולאה אינסופית."
+    "2": "התנאי `i <= scores.Length - 1` הוא צורה מסורבלת של `i < scores.Length`, ואין צורך באינדקס בכלל."
+
+- id: cs.collections.arrays.016
+  type: truefalse
+  difficulty: 2
+  prompt: "כמו בפייתון, `nums[-1]` מחזיר את האיבר האחרון במערך `nums`."
+  answer: false
+  explanation: "ב-C# אינדקס שלילי זורק `IndexOutOfRangeException` בזמן ריצה. כדי לגשת לאיבר האחרון כותבים `nums[nums.Length - 1]`, או משתמשים באופרטור האינדקס מהסוף: `nums[^1]`."

@@ -1,0 +1,278 @@
+- id: py.functions.parameters.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def describe(name, age):
+        print(name, "is", age)
+
+    describe(age=30, name="Noa")
+  options: ["Noa is 30", "30 is Noa", "TypeError", "name is age"]
+  answer: 0
+  explanation: "בארגומנטים לפי שם (Keyword Arguments) כל ערך מגיע לפרמטר שהשם שלו נכתב, בלי קשר לסדר בקריאה. לכן `name` מקבל `\"Noa\"` ו-`age` מקבל 30, והסדר בהגדרת הפונקציה קובע את ההדפסה."
+  optionExplanations:
+    "1": "הסדר בקריאה לא משנה כשמציינים שמות. כל ערך מגיע לפרמטר שלו."
+    "2": "מותר להעביר ארגומנטים לפי שם בכל סדר, כל עוד כל פרמטר מקבל ערך אחד בדיוק."
+    "3": "`print` מדפיס את ערכי המשתנים, לא את השמות שלהם."
+
+- id: py.functions.parameters.002
+  type: single
+  difficulty: 1
+  prompt: "נתונה הפונקציה `def power(base, exp=2):`. איזו קריאה תזרוק שגיאה?"
+  options: ["`power(exp=3)`", "`power(3)`", "`power(3, 3)`", "`power(exp=3, base=2)`"]
+  answer: 0
+  explanation: "ל-`exp` יש ערך ברירת מחדל (Default Value), ולכן מותר לוותר עליו. ל-`base` אין ברירת מחדל, ולכן הוא פרמטר חובה. `power(exp=3)` לא מעבירה ערך ל-`base`, ונזרק `TypeError`."
+  optionExplanations:
+    "1": "`exp` מקבל את ברירת המחדל 2, ו-`base` מקבל 3. הקריאה תקינה."
+    "2": "שני הפרמטרים מקבלים ערך לפי מיקום. הקריאה תקינה."
+    "3": "ארגומנטים לפי שם יכולים להופיע בכל סדר, ושני הפרמטרים מקבלים ערך."
+
+- id: py.functions.parameters.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def greet(name, greeting="Hello"):
+        return f"{greeting}, {name}!"
+
+    print(greet("Dan"))
+    print(greet("Dan", "Hi"))
+  options:
+    - "Hello, Dan!\nHi, Dan!"
+    - "Hello, Dan!\nHello, Dan!"
+    - "Hello, Dan!\nDan, Hi!"
+    - "TypeError"
+  answer: 0
+  explanation: "בקריאה הראשונה `greeting` לא קיבל ערך, ולכן נלקחת ברירת המחדל `\"Hello\"`. בקריאה השנייה הארגומנט השני מגיע לפרמטר השני לפי מיקום, ו-`\"Hi\"` מחליף את ברירת המחדל."
+  optionExplanations:
+    "1": "ברירת מחדל משמשת רק כשלא הועבר ערך. ערך שמועבר תמיד גובר עליה."
+    "2": "ארגומנטים לפי מיקום (Positional Arguments) מתאימים לפרמטרים לפי הסדר: הראשון ל-`name`, השני ל-`greeting`."
+    "3": "מותר להעביר פחות ארגומנטים ממספר הפרמטרים, כל עוד לחסרים יש ברירת מחדל."
+
+- id: py.functions.parameters.004
+  type: truefalse
+  difficulty: 2
+  prompt: "בקריאה לפונקציה, ארגומנט לפי מיקום (Positional Argument) לא יכול לבוא אחרי ארגומנט לפי שם (Keyword Argument). למשל `f(a=1, 2)` אינה חוקית."
+  answer: true
+  explanation: "פייתון משייכת קודם את הארגומנטים לפי מיקום, לפי הסדר, ורק אחריהם את אלה שלפי שם. קריאה כמו `f(a=1, 2)` היא שגיאת תחביר (`SyntaxError`). הכיוון ההפוך, `f(2, b=1)`, חוקי."
+
+- id: py.functions.parameters.005
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def total(*args):
+        print(type(args).__name__, sum(args))
+
+    total(1, 2, 3)
+  options: ["tuple 6", "list 6", "int 6", "tuple 123"]
+  answer: 0
+  explanation: "הכוכבית ב-`*args` אוספת את כל הארגומנטים לפי מיקום שלא שויכו לפרמטר אחר לתוך טאפל (Tuple) אחד. לכן `args` הוא `(1, 2, 3)`, ו-`sum` מחבר את האיברים ומחזיר 6."
+  optionExplanations:
+    "1": "`*args` אוסף תמיד לטאפל, לא לרשימה."
+    "2": "`args` הוא אוסף של כל הארגומנטים, לא מספר בודד."
+    "3": "`sum` מחבר מספרים. הוא לא משרשר אותם."
+
+- id: py.functions.parameters.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def show(**kwargs):
+        for key, value in kwargs.items():
+            print(key, value)
+
+    show(color="red", size=3)
+  options:
+    - "color red\nsize 3"
+    - "red\n3"
+    - "{'color': 'red', 'size': 3}"
+    - "TypeError"
+  answer: 0
+  explanation: "`**kwargs` אוסף את כל הארגומנטים לפי שם לתוך מילון (Dictionary): שמות הארגומנטים הם המפתחות, והערכים הם הערכים. `items` מחזיר זוגות של מפתח וערך, והסדר הוא סדר ההעברה בקריאה."
+  optionExplanations:
+    "1": "הלולאה מפרקת כל זוג ל-`key` ול-`value`, ומדפיסה את שניהם."
+    "2": "המילון לא מודפס כולו. הלולאה מדפיסה שורה לכל זוג."
+    "3": "`**kwargs` מקבל כל מספר של ארגומנטים לפי שם, בכל שם."
+
+- id: py.functions.parameters.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def add_tag(tag, tags=[]):
+        tags.append(tag)
+        return tags
+
+    print(add_tag("a"))
+    print(add_tag("b"))
+  options:
+    - "['a']\n['a', 'b']"
+    - "['a']\n['b']"
+    - "['a', 'b']\n['a', 'b']"
+    - "['b']\n['a', 'b']"
+  answer: 0
+  explanation: "ערך ברירת המחדל `[]` נוצר פעם אחת בלבד, כשה-`def` מתבצע, ולא בכל קריאה. שתי הקריאות משתמשות באותה רשימה, ולכן `b` מתווסף לרשימה שכבר מכילה את `a`. זו המלכודת של ערך ברירת מחדל שניתן לשינוי (Mutable Default Argument). הפתרון: `tags=None` ובתוך הפונקציה `if tags is None: tags = []`."
+  optionExplanations:
+    "1": "זו התוצאה שרוב המתחילים מצפים לה, אבל הרשימה לא נוצרת מחדש בכל קריאה. היא משותפת לכל הקריאות."
+    "2": "השורה הראשונה מודפסת מיד אחרי הקריאה הראשונה, כשברשימה יש רק `a`."
+    "3": "`a` נכנס לרשימה בקריאה הראשונה, ונשאר בה גם בשנייה."
+
+- id: py.functions.parameters.008
+  type: bug
+  difficulty: 3
+  prompt: "כל קריאה בלי `roster` אמורה ליצור רשימה חדשה ונפרדת. בפועל, `class_b` מכילה גם את `Dana`. באיזו שורה הבאג?"
+  code: |
+    def add_student(name, roster=[]):
+        if roster is None:
+            roster = []
+        roster.append(name)
+        return roster
+
+    class_a = add_student("Dana")
+    class_b = add_student("Yossi")
+  answer: 1
+  explanation: "הבדיקה `if roster is None` נכונה, אבל ברירת המחדל היא `[]` ולא `None`, ולכן התנאי אף פעם לא מתקיים. הרשימה שבברירת המחדל נוצרת פעם אחת ומשותפת לכל הקריאות. צריך `roster=None`, ואז נוצרת רשימה חדשה בכל קריאה."
+  fixed: |
+    def add_student(name, roster=None):
+        if roster is None:
+            roster = []
+        roster.append(name)
+        return roster
+
+    class_a = add_student("Dana")
+    class_b = add_student("Yossi")
+
+- id: py.functions.parameters.009
+  type: cleaner
+  difficulty: 1
+  prompt: "נתונה הפונקציה `def send_email(to, subject, urgent=False, html=False):`. איזו קריאה נקייה יותר?"
+  options:
+    - |
+      send_email("dana@example.com", "Meeting", urgent=True, html=False)
+    - |
+      send_email("dana@example.com", "Meeting", True, False)
+  answer: 0
+  explanation: "שתי הקריאות עושות בדיוק אותו דבר. ארגומנטים לפי שם הופכים ערכים כמו `True` ו-`False` לקריאים: רואים מיד מה כל ערך אומר, בלי לפתוח את הגדרת הפונקציה."
+  optionExplanations:
+    "1": "`True, False` בלי שמות הם ערכים עלומים. הקורא לא יודע מה כל אחד מהם מפעיל, וקל להחליף ביניהם בטעות."
+
+- id: py.functions.parameters.010
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def log(level, *messages):
+        print(level, len(messages), messages[0])
+
+    log("INFO", "start", "load", "done")
+  options:
+    - "INFO 3 start"
+    - "INFO 4 INFO"
+    - "INFO 1 start"
+    - "INFO 3 ('start', 'load', 'done')"
+  answer: 0
+  explanation: "הארגומנט הראשון מגיע לפרמטר הרגיל `level`. רק הארגומנטים שנשארו נאספים לטאפל `messages`, ולכן יש בו 3 איברים, והראשון הוא `start`."
+  optionExplanations:
+    "1": "`*messages` אוסף רק את מה שנשאר אחרי שהפרמטרים הרגילים קיבלו ערך. `\"INFO\"` כבר שויך ל-`level`."
+    "2": "`*messages` אוסף את כל הארגומנטים הנותרים, לא רק אחד."
+    "3": "`messages[0]` הוא האיבר הראשון בטאפל, לא הטאפל כולו."
+
+- id: py.functions.parameters.011
+  type: single
+  difficulty: 2
+  prompt: "נתונים `def area(width, height): return width * height` ו-`size = [3, 5]`. איזו קריאה מחזירה 15?"
+  options: ["`area(*size)`", "`area(size)`", "`area(**size)`", "`area(size[0])`"]
+  answer: 0
+  explanation: "כוכבית בקריאה לפונקציה עושה את ההפך מ-`*args` בהגדרה: היא פורקת (Unpacking) את הרשימה לארגומנטים נפרדים לפי מיקום. `area(*size)` שקולה ל-`area(3, 5)`."
+  optionExplanations:
+    "1": "כך הרשימה כולה מגיעה ל-`width`, ו-`height` לא מקבל ערך, ולכן נזרק `TypeError`."
+    "2": "שתי כוכביות פורקות מילון לארגומנטים לפי שם. רשימה היא לא מילון, ולכן נזרק `TypeError`."
+    "3": "כך מועבר רק הערך 3, ו-`height` חסר."
+
+- id: py.functions.parameters.012
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה של 10% בשקלים: `90.0 ILS`. באיזו שורה הבאג?"
+  code: |
+    def make_price(amount, currency="ILS", discount=0):
+        final = amount * (1 - discount)
+        return f"{final} {currency}"
+
+    print(make_price(100, 0.1))
+  answer: 5
+  explanation: "הארגומנט השני מגיע לפרמטר השני לפי מיקום, כלומר ל-`currency` ולא ל-`discount`. לכן מודפס `100 0.1`. כשרוצים לדלג על פרמטר עם ברירת מחדל, מעבירים את הבא אחריו לפי שם: `discount=0.1`."
+  fixed: |
+    def make_price(amount, currency="ILS", discount=0):
+        final = amount * (1 - discount)
+        return f"{final} {currency}"
+
+    print(make_price(100, discount=0.1))
+
+- id: py.functions.parameters.013
+  type: truefalse
+  difficulty: 2
+  prompt: "ערך ברירת המחדל של פרמטר מחושב מחדש בכל קריאה לפונקציה."
+  answer: false
+  explanation: "ערך ברירת המחדל מחושב פעם אחת בלבד, כשהשורה של `def` מתבצעת, ונשמר יחד עם הפונקציה. במספר או במחרוזת זה לא מורגש, אבל ברשימה או במילון כל הקריאות חולקות את אותו אובייקט. לכן משתמשים ב-`None` כברירת מחדל ויוצרים את האובייקט בתוך הפונקציה."
+
+- id: py.functions.parameters.014
+  type: single
+  difficulty: 2
+  prompt: איזו הגדרת פונקציה חוקית?
+  options:
+    - "`def f(a, b=1, *args, **kwargs):`"
+    - "`def f(a=1, b):`"
+    - "`def f(**kwargs, *args):`"
+    - "`def f(a, **kwargs, b=1):`"
+  answer: 0
+  explanation: "הסדר המחייב: פרמטרים רגילים, אחריהם פרמטרים עם ברירת מחדל, אחריהם `*args`, ו-`**kwargs` תמיד אחרון. כל הגדרה אחרת ברשימה היא `SyntaxError`."
+  optionExplanations:
+    "1": "פרמטר בלי ברירת מחדל לא יכול לבוא אחרי פרמטר עם ברירת מחדל, כי אז לא ברור לאן הולך ארגומנט לפי מיקום."
+    "2": "`**kwargs` חייב להיות הפרמטר האחרון."
+    "3": "אחרי `**kwargs` אסור להגדיר פרמטר נוסף, גם לא פרמטר עם ברירת מחדל."
+
+- id: py.functions.parameters.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def join_all(*items, sep="-"):
+        print(sep.join(items))
+
+    join_all("a", "b", "c")
+    join_all("a", "b", sep="+")
+  options:
+    - "a-b-c\na+b"
+    - "a-b-c\na-b-+"
+    - "abc\na+b"
+    - "TypeError"
+  answer: 0
+  explanation: "פרמטר שמופיע אחרי `*items` הוא פרמטר לפי שם בלבד (Keyword-Only): `*items` אוסף את כל הארגומנטים לפי מיקום, ולכן אפשר להגיע ל-`sep` רק בשם. בקריאה הראשונה `sep` הוא ברירת המחדל `-`, ובשנייה `+`."
+  optionExplanations:
+    "1": "`sep=\"+\"` לא נאסף ל-`items`. ארגומנט עם שם מגיע לפרמטר בשם הזה."
+    "2": "`sep` יש ברירת מחדל `\"-\"`, והיא משמשת בקריאה הראשונה."
+    "3": "מותר להגדיר פרמטר עם ברירת מחדל אחרי `*items`, והקריאות תקינות."
+
+- id: py.functions.parameters.016
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def save_report(report, compress):
+        if compress:
+            data = zip_text(report)
+            write_file("report.zip", data)
+        else:
+            write_file("report.txt", report)
+  options:
+    - "דגל בוליאני - Flag Argument"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "קוד מת - Dead Code"
+    - "מספר קסם - Magic Number"
+  answer: 0
+  explanation: "הפרמטר הבוליאני `compress` מפצל את הפונקציה לשתי התנהגויות שונות, כלומר היא עושה שני דברים. בקריאה `save_report(r, True)` לא ברור מה `True` אומר. עדיף שתי פונקציות עם שמות ברורים: `save_report` ו-`save_compressed_report`."
+  optionExplanations:
+    "1": "יש רק שני פרמטרים. הבעיה היא לא הכמות אלא שאחד מהם משנה את מה שהפונקציה עושה."
+    "2": "שני הענפים יכולים להתבצע, לפי ערך הדגל. אין כאן קוד שלא רץ אף פעם."
+    "3": "אין כאן מספרים בכלל. שמות הקבצים הם ערכים ברורים במקום שבו משתמשים בהם."

@@ -1,0 +1,234 @@
+- id: py.strings.string-basics.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    s = "code"
+    print(s[1], s[-1])
+  options: ["o e", "c e", "o d", "c d"]
+  answer: 0
+  explanation: "אינדקס (Index) במחרוזת מתחיל מ-0, ולכן `s[1]` הוא התו השני, `o`. אינדקס שלילי סופר מהסוף: `s[-1]` הוא התו האחרון, `e`."
+  optionExplanations:
+    "1": "`c` נמצא באינדקס 0. מי שבוחר בו סופר מ-1 במקום מ-0."
+    "2": "`d` נמצא באינדקס `-2`. האינדקס `-1` הוא התו האחרון, לא הלפני אחרון."
+    "3": "כאן גם הספירה מ-1 וגם האינדקס השלילי שגויים."
+
+- id: py.strings.string-basics.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print("ab" * 3)
+  options: ["ababab", "aaabbb", "ab3", "TypeError"]
+  answer: 0
+  explanation: "הכפלת מחרוזת במספר שלם (Repetition) יוצרת מחרוזת חדשה שבה המחרוזת כולה חוזרת ברצף. `\"ab\" * 3` הוא `\"ab\" + \"ab\" + \"ab\"`."
+  optionExplanations:
+    "1": "ההכפלה לא משכפלת כל תו בנפרד, אלא את המחרוזת כולה כיחידה אחת."
+    "2": "`*` אינו שרשור של המספר כטקסט. הוא חוזר על המחרוזת 3 פעמים."
+    "3": "הכפלה של מחרוזת במספר שלם מותרת. שגיאה מתקבלת רק בהכפלה בשבר או במחרוזת אחרת."
+
+- id: py.strings.string-basics.003
+  type: cleaner
+  difficulty: 1
+  prompt: כל הגרסאות מדפיסות קו של 20 מקפים. איזו גרסה נקייה יותר?
+  options:
+    - |
+      line = "-" * 20
+      print(line)
+    - |
+      line = ""
+      for _ in range(20):
+          line = line + "-"
+      print(line)
+    - |
+      print("--------------------")
+  answer: 0
+  explanation: "הכפלת מחרוזת במספר אומרת במפורש \"20 מקפים\" בשורה אחת. אין צורך בלולאה, ואין צורך לספור תווים בעין."
+  optionExplanations:
+    "1": "לולאה שבונה מחרוזת תו אחר תו מסתירה כוונה פשוטה ש-`*` מבטא ישירות."
+    "2": "כדי לדעת שיש בדיוק 20 מקפים צריך לספור אותם. קשה לקרוא וקל לטעות בשינוי."
+
+- id: py.strings.string-basics.004
+  type: single
+  difficulty: 1
+  prompt: "מה מחזיר `len(\"hi there\")`?"
+  options: ["`8`", "`7`", "`2`", "`9`"]
+  answer: 0
+  explanation: "`len` מחזירה את מספר התווים במחרוזת, וגם רווח הוא תו. ב-`\"hi there\"` יש 2 אותיות, רווח אחד ו-5 אותיות, ובסך הכול 8."
+  optionExplanations:
+    "1": "7 מתקבל אם שוכחים לספור את הרווח. רווח הוא תו לכל דבר."
+    "2": "`len` סופרת תווים, לא מילים."
+    "3": "אין תו נוסף בסוף מחרוזת ב-Python. האורך הוא בדיוק מספר התווים."
+
+- id: py.strings.string-basics.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "cat"
+    s[0] = "b"
+    print(s)
+  options: ["bat", "cat", "TypeError", "IndexError"]
+  answer: 2
+  explanation: "מחרוזות ב-Python אינן ניתנות לשינוי (Immutable). אי אפשר להציב ערך לאינדקס של מחרוזת, ולכן השורה השנייה זורקת `TypeError`. כדי לקבל `bat` יוצרים מחרוזת חדשה: `s = \"b\" + s[1:]`."
+  optionExplanations:
+    "0": "כך זה עובד ברשימה, אבל לא במחרוזת. מחרוזת לא משתנה במקום."
+    "1": "ההדפסה לא מתבצעת בכלל, כי השגיאה נזרקת עוד בשורה השנייה."
+    "3": "האינדקס 0 קיים. השגיאה נובעת מניסיון לשנות, לא מאינדקס לא חוקי."
+
+- id: py.strings.string-basics.006
+  type: truefalse
+  difficulty: 1
+  prompt: "הביטוי `'It's'` יוצר מחרוזת חוקית ב-Python."
+  answer: false
+  explanation: "הגרש שאחרי `It` סוגר את המחרוזת, וה-`s'` שנשאר הוא שגיאת תחביר (SyntaxError). כשהטקסט מכיל גרש, עוטפים אותו במירכאות כפולות, `\"It's\"`, או משתמשים בתו בריחה (Escape): `'It\\'s'`."
+
+- id: py.strings.string-basics.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    x = "5"
+    print(x + "3")
+    print(x * 3)
+  options: ["53\n555", "8\n15", "53\n15", "8\n555"]
+  answer: 0
+  explanation: "`x` היא מחרוזת, לא מספר. `+` בין שתי מחרוזות הוא שרשור (Concatenation), ולכן מתקבל `53`. `*` בין מחרוזת למספר שלם חוזר על המחרוזת, ולכן מתקבל `555`."
+  optionExplanations:
+    "1": "חישוב אריתמטי מתקבל רק אם ממירים קודם למספר, למשל `int(x)`."
+    "2": "גם ההכפלה פועלת על המחרוזת `\"5\"`, ולכן היא חוזרת עליה ולא מחשבת `15`."
+    "3": "`+` בין מחרוזות הוא תמיד שרשור, גם כשהן מכילות ספרות."
+
+- id: py.strings.string-basics.008
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    age = 30
+    print("age: " + age)
+  options: ["age: 30", "age:30", "TypeError", "ValueError"]
+  answer: 2
+  explanation: "Python לא ממירה מספר למחרוזת באופן אוטומטי בשרשור. `+` בין `str` ל-`int` זורק `TypeError`. הפתרון: `\"age: \" + str(age)`."
+  optionExplanations:
+    "0": "כך היה בשפות שממירות אוטומטית, כמו JavaScript. Python דורשת המרה מפורשת עם `str`."
+    "3": "`ValueError` נזרק כשהטיפוס נכון אבל הערך לא מתאים. כאן הבעיה היא שילוב של שני טיפוסים שונים."
+
+- id: py.strings.string-basics.009
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להחזיר את התו האחרון של מחרוזת, או מחרוזת ריקה אם המחרוזת ריקה. באיזו שורה הבאג?
+  code: |
+    def last_char(s):
+        if s == "":
+            return ""
+        return s[len(s)]
+  answer: 4
+  explanation: "במחרוזת באורך `n` האינדקסים החוקיים הם 0 עד `n - 1`. `s[len(s)]` חורג באחד וזורק `IndexError`. התו האחרון הוא `s[len(s) - 1]`, או בקיצור `s[-1]`."
+  fixed: |
+    def last_char(s):
+        if s == "":
+            return ""
+        return s[-1]
+
+- id: py.strings.string-basics.010
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להחזיר את המחרוזת כשהתו הראשון שלה מוחלף בכוכבית. באיזו שורה הבאג?
+  code: |
+    def mask_first(s):
+        if len(s) == 0:
+            return s
+        s[0] = "*"
+        return s
+  answer: 4
+  explanation: "מחרוזת אינה ניתנת לשינוי (Immutable), ולכן הצבה לאינדקס זורקת `TypeError`. בונים מחרוזת חדשה מכוכבית ומשאר התווים: `s = \"*\" + s[1:]`."
+  fixed: |
+    def mask_first(s):
+        if len(s) == 0:
+            return s
+        s = "*" + s[1:]
+        return s
+
+- id: py.strings.string-basics.011
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    s = "abc"
+    t = s
+    s = s + "d"
+    print(t, s, len(t))
+  options: ["abc abcd 3", "abcd abcd 4", "abc abcd 4", "abcd abcd 3"]
+  answer: 0
+  explanation: "`s + \"d\"` לא משנה את המחרוזת `\"abc\"`, אלא יוצר מחרוזת חדשה, ו-`s` מתחיל להצביע עליה. `t` עדיין מצביע על המחרוזת המקורית, שלא השתנתה, ולכן `t` הוא `abc` ואורכו 3."
+  optionExplanations:
+    "1": "כך היה קורה אילו המחרוזת השתנתה במקום. מחרוזת לא משתנה, ו-`t` ממשיך להצביע על הישנה."
+    "2": "`len(t)` מודד את `t`, שעדיין `abc`, ולכן התוצאה 3."
+    "3": "אם `t` היה משתנה ל-`abcd`, גם אורכו היה 4. התשובה הזו לא עקבית עם עצמה."
+
+- id: py.strings.string-basics.012
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    s = "ab"
+    s += s
+    s *= 2
+    print(len(s), s[-3])
+  options: ["8 b", "8 a", "6 b", "4 b"]
+  answer: 0
+  explanation: "`s += s` נותן `abab`, ו-`s *= 2` נותן `abababab` באורך 8. בכל שלב נוצרת מחרוזת חדשה ו-`s` מצביע עליה. `s[-3]` הוא האינדקס 5 (8 פחות 3), ושם נמצא `b`."
+  optionExplanations:
+    "1": "`a` נמצא באינדקסים זוגיים. `s[-3]` הוא אינדקס 5, אי-זוגי."
+    "2": "6 מתקבל אם מחברים במקום להכפיל: `s *= 2` מכפיל את כל `abab`, לא מוסיף עוד `ab`."
+    "3": "4 מתקבל אם מתעלמים מאחת משתי ההשמות. גם `+=` וגם `*=` מציבים מחרוזת חדשה ב-`s`."
+
+- id: py.strings.string-basics.013
+  type: single
+  difficulty: 3
+  prompt: איזה מהביטויים הבאים זורק שגיאה?
+  options: ["`\"ab\" + 2`", "`\"ab\" * 0`", "`\"ab\" * -1`", "`\"ab\" + \"2\"`"]
+  answer: 0
+  explanation: "שרשור עם `+` דורש שני צדדים מסוג מחרוזת, ולכן `\"ab\" + 2` זורק `TypeError`. הכפלה במספר שלם תמיד חוקית: הכפלה ב-0 או במספר שלילי מחזירה מחרוזת ריקה."
+  optionExplanations:
+    "1": "הכפלה ב-0 חוקית ומחזירה מחרוזת ריקה `\"\"`."
+    "2": "גם הכפלה במספר שלילי חוקית. היא לא זורקת שגיאה, אלא מחזירה מחרוזת ריקה."
+    "3": "`\"2\"` היא מחרוזת, ולכן זה שרשור תקין שמחזיר `\"ab2\"`."
+
+- id: py.strings.string-basics.014
+  type: single
+  difficulty: 2
+  prompt: "`s` היא מחרוזת באורך 5. אילו אינדקסים חוקיים לגישה לתו בודד, `s[i]`?"
+  options:
+    - "`0` עד `4`, וגם `-5` עד `-1`"
+    - "`1` עד `5` בלבד"
+    - "`0` עד `5`, וגם `-5` עד `0`"
+    - "`0` עד `4` בלבד"
+  answer: 0
+  explanation: "אינדקסים חיוביים מתחילים ב-0 ומסתיימים ב-`len(s) - 1`. אינדקסים שליליים סופרים מהסוף: `-1` הוא התו האחרון ו-`-5` הוא הראשון. כל אינדקס אחר זורק `IndexError`."
+  optionExplanations:
+    "1": "ב-Python סופרים מ-0, ולכן `s[5]` כבר מחוץ לגבולות."
+    "2": "`s[5]` זורק `IndexError`, ו-`s[0]` הוא התו הראשון, לא חלק מהטווח השלילי."
+    "3": "אינדקסים שליליים חוקיים ב-Python: `s[-1]` הוא התו האחרון."
+
+- id: py.strings.string-basics.015
+  type: truefalse
+  difficulty: 2
+  prompt: "מחרוזת בגרשיים משולשים, `\"\"\"...\"\"\"`, יכולה להשתרע על פני כמה שורות, ותווי השורה החדשה נכללים בה."
+  answer: true
+  explanation: "גרשיים משולשים (Triple Quotes), `\"\"\"` או `'''`, יוצרים מחרוזת מרובת שורות. כל ירידת שורה בקוד נשמרת במחרוזת כתו `\\n` ונספרת ב-`len`."
+
+- id: py.strings.string-basics.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    s = "a\tb\\n"
+    print(len(s))
+  options: ["5", "6", "4", "7"]
+  answer: 0
+  explanation: "תו בריחה (Escape Sequence) נכתב בשני תווים בקוד, אבל הוא תו אחד במחרוזת. `\\t` הוא טאב אחד, ו-`\\\\` הוא לוכסן הפוך אחד. לכן המחרוזת היא: `a`, טאב, `b`, לוכסן הפוך, `n`. בסך הכול 5 תווים."
+  optionExplanations:
+    "1": "6 מתקבל אם סופרים את `\\\\` כשני תווים. זה תו בריחה שמייצג לוכסן הפוך אחד."
+    "2": "4 מתקבל אם חושבים ש-`\\\\n` הוא ירידת שורה. ה-`\\\\` הופך ללוכסן רגיל, וה-`n` נשאר אות רגילה."
+    "3": "7 מתקבל אם סופרים כל תו בקוד, כולל הלוכסנים. תו בריחה נספר כתו אחד."

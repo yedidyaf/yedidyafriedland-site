@@ -1,0 +1,248 @@
+- id: py.data-structures.tuples.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    t = (1, 2, 3)
+    t[0] = 10
+    print(t)
+  options: ["TypeError", "(10, 2, 3)", "(1, 2, 3)", "IndexError"]
+  answer: 0
+  explanation: "טאפל (Tuple) הוא אוסף שאינו ניתן לשינוי (Immutable). אחרי שנוצר, אי אפשר להחליף, להוסיף או למחוק איברים, וניסיון להשים לאינדקס זורק `TypeError`. אם צריך לשנות ערכים, משתמשים ברשימה."
+  optionExplanations:
+    "1": "כך הייתה מתנהגת רשימה. טאפל לא תומך בהשמה לאינדקס."
+    "2": "פייתון לא מתעלמת מהשורה בשקט. היא זורקת שגיאה, וה-`print` לא מגיע לרוץ."
+    "3": "האינדקס 0 קיים. הבעיה היא השינוי עצמו, ולכן השגיאה היא `TypeError`."
+
+- id: py.data-structures.tuples.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    a = (5)
+    b = (5,)
+    print(type(a).__name__, type(b).__name__)
+  options: ["int tuple", "tuple tuple", "int int", "tuple int"]
+  answer: 0
+  explanation: "מה שיוצר טאפל הוא הפסיק, לא הסוגריים. `(5)` הוא פשוט המספר 5 בתוך סוגריים, כמו בחשבון. טאפל של איבר אחד חייב פסיק: `(5,)`."
+  optionExplanations:
+    "1": "סוגריים סביב ערך יחיד רק מקבצים ביטוי. בלי פסיק אין טאפל."
+    "2": "`(5,)` הוא כן טאפל: הפסיק אחרי האיבר הוא מה שהופך אותו לטאפל."
+
+- id: py.data-structures.tuples.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    a, b = 1, 2
+    a, b = b, a + b
+    print(a, b)
+  options: ["2 3", "2 4", "1 2", "2 2"]
+  answer: 0
+  explanation: "בהשמה מרובה, פייתון מחשבת קודם את כל הצד הימני ובונה ממנו טאפל `(2, 3)`, ורק אז מפרקת (Unpacking) אותו לתוך `a` ו-`b`. לכן `a + b` מחושב עם הערך הישן של `a`, שהוא 1."
+  optionExplanations:
+    "1": "זו התוצאה אם ההשמות היו מתבצעות אחת אחרי השנייה. בפועל הצד הימני מחושב כולו לפני ההשמה."
+    "3": "ההשמה בשורה 2 כן משנה את שני המשתנים."
+
+- id: py.data-structures.tuples.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    data = (1, 2, 3)
+    a, b = data
+    print(a, b)
+  options: ["ValueError", "1 2", "1 (2, 3)", "(1, 2) 3"]
+  answer: 0
+  explanation: "בפירוק רגיל מספר המשתנים בצד שמאל חייב להיות שווה למספר האיברים. כאן יש שלושה איברים ושני משתנים, ולכן נזרקת `ValueError` (too many values to unpack). כדי לאסוף את השארית צריך כוכבית: `a, *b = data`."
+  optionExplanations:
+    "1": "פייתון לא זורקת בשקט את האיברים העודפים. חוסר התאמה במספר האיברים הוא שגיאה."
+    "2": "`b` לא אוסף אוטומטית את השארית. בשביל זה צריך לכתוב `*b`."
+
+- id: py.data-structures.tuples.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    first, *rest = (10, 20, 30, 40)
+    print(first, rest)
+  options: ["10 [20, 30, 40]", "10 (20, 30, 40)", "10 20", "ValueError"]
+  answer: 0
+  explanation: "המשתנה עם הכוכבית אוסף את כל האיברים שלא שובצו למשתנים אחרים. הוא תמיד מקבל רשימה, גם כשמפרקים טאפל."
+  optionExplanations:
+    "1": "זו המלכודת: גם כשהמקור הוא טאפל, המשתנה עם הכוכבית מקבל רשימה."
+    "2": "`*rest` אוסף את כל השארית, לא רק איבר אחד."
+    "3": "בזכות הכוכבית מספר האיברים לא חייב להתאים בדיוק, ולכן אין שגיאה."
+
+- id: py.data-structures.tuples.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    t = ([1, 2], 3)
+    t[0].append(9)
+    print(t)
+  options: ["([1, 2, 9], 3)", "TypeError", "([1, 2], 3)", "([1, 2], 3, 9)"]
+  answer: 0
+  explanation: "הטאפל לא ניתן לשינוי במובן שאי אפשר להחליף את האיברים שלו. אבל האיבר הראשון הוא רשימה, והרשימה עצמה ניתנת לשינוי. `append` לא מחליפה את האיבר בטאפל, אלא משנה את תוכן הרשימה שהוא מצביע עליה."
+  optionExplanations:
+    "1": "השגיאה הייתה נזרקת על `t[0] = [...]`. כאן לא משימים לטאפל, אלא קוראים למתודה של הרשימה שבתוכו."
+    "2": "השינוי ברשימה הפנימית אמיתי ונראה דרך הטאפל."
+    "3": "`append` נקראת על הרשימה `t[0]`, לא על הטאפל, ולכן 9 נכנס לתוך הרשימה."
+
+- id: py.data-structures.tuples.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def min_max(nums):
+        return min(nums), max(nums)
+
+
+    result = min_max([4, 1, 8])
+    print(result)
+  options: ["(1, 8)", "[1, 8]", "1 8", "1"]
+  answer: 0
+  explanation: "`return min(nums), max(nums)` מחזירה ערך אחד: טאפל של שני איברים. כך פונקציה \"מחזירה כמה ערכים\". המקבל יכול לשמור את הטאפל כולו, כמו כאן, או לפרק אותו: `low, high = min_max(...)`."
+  optionExplanations:
+    "1": "הפסיק ב-`return` יוצר טאפל, לא רשימה."
+    "2": "כך היה מודפס אילו היינו מפרקים את התוצאה לשני משתנים ומדפיסים את שניהם. כאן מודפס הטאפל עצמו."
+    "3": "`return` לא עוצרת אחרי הערך הראשון. הביטוי כולו, עם הפסיק, הוא הערך המוחזר."
+
+- id: py.data-structures.tuples.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    t = (1, 2)
+    u = t
+    t = t + (3,)
+    print(u, t)
+  options:
+    - "(1, 2) (1, 2, 3)"
+    - "(1, 2, 3) (1, 2, 3)"
+    - "TypeError"
+    - "(1, 2) (1, 2)"
+  answer: 0
+  explanation: "חיבור טאפלים לא משנה את הטאפל הקיים. הוא יוצר טאפל חדש, וההשמה מצמידה את השם `t` לטאפל החדש. `u` עדיין מצביע על הטאפל המקורי, שלא השתנה ולא יכול להשתנות."
+  optionExplanations:
+    "1": "זה היה קורה אילו הטאפל המקורי היה משתנה במקום. טאפל לא ניתן לשינוי, ולכן נוצר טאפל חדש."
+    "2": "מותר לחבר טאפלים. אסור לשנות טאפל קיים, וחיבור לא משנה אותו."
+    "3": "ההשמה `t = ...` כן מעדכנת את `t` לטאפל החדש."
+
+- id: py.data-structures.tuples.009
+  type: single
+  difficulty: 1
+  prompt: איזה ביטוי יוצר טאפל שמכיל איבר אחד, המספר 7?
+  options: ["`(7,)`", "`(7)`", "`tuple(7)`", "`[7]`"]
+  answer: 0
+  explanation: "הפסיק הוא שמגדיר טאפל. `(7,)` הוא טאפל עם איבר אחד, ואילו `(7)` הוא רק המספר 7 בסוגריים."
+  optionExplanations:
+    "1": "בלי פסיק הסוגריים רק מקבצים ביטוי, והתוצאה היא `int`."
+    "2": "`tuple` מצפה לאוסף שאפשר לעבור עליו. על מספר בודד היא זורקת `TypeError`."
+    "3": "סוגריים מרובעים יוצרים רשימה, לא טאפל."
+
+- id: py.data-structures.tuples.010
+  type: single
+  difficulty: 1
+  prompt: "שומרים קואורדינטות של נקודה, `(x, y)`, שלא אמורות להשתנות אחרי היצירה. מה היתרון העיקרי של טאפל על פני רשימה כאן?"
+  options:
+    - "טאפל אינו ניתן לשינוי, כך שאף חלק בקוד לא ישנה את הנקודה בטעות"
+    - "טאפל שומר את האיברים שלו ממוינים באופן אוטומטי"
+    - "טאפל יכול להכיל רק מספרים, ולכן הוא בטוח יותר"
+    - "לטאפל יש מתודה `append` מהירה יותר משל רשימה"
+  answer: 0
+  explanation: "בוחרים טאפל כשמדובר ברשומה קבועה של כמה ערכים שיחד מתארים דבר אחד, כמו נקודה או תאריך. אי־השינוי (Immutability) מבטיח שהערך לא ישתנה מאחורי הגב."
+  optionExplanations:
+    "1": "טאפל שומר את האיברים בדיוק בסדר שבו נוצר. הוא לא ממיין."
+    "2": "טאפל יכול להכיל איברים מכל טיפוס."
+    "3": "לטאפל אין `append` בכלל, בדיוק כי אי אפשר לשנות אותו."
+
+- id: py.data-structures.tuples.011
+  type: single
+  difficulty: 2
+  prompt: "נתון `t = (3, 1, 3, 2)`. איזו מהקריאות הבאות תעבוד בלי שגיאה?"
+  options: ["`t.count(3)`", "`t.append(4)`", "`t.sort()`", "`t.remove(1)`"]
+  answer: 0
+  explanation: "לטאפל יש רק מתודות שקוראות ממנו ולא משנות אותו: `count` (כמה פעמים ערך מופיע) ו-`index` (איפה הוא מופיע). כל מתודה שמשנה את האוסף קיימת רק ברשימה, ובטאפל תזרוק `AttributeError`."
+  optionExplanations:
+    "1": "`append` משנה את האוסף, ולכן היא לא קיימת בטאפל."
+    "2": "מיון במקום משנה את האוסף. לטאפל משתמשים ב-`sorted(t)`, שמחזירה רשימה חדשה."
+    "3": "`remove` משנה את האוסף, ולכן היא לא קיימת בטאפל."
+
+- id: py.data-structures.tuples.012
+  type: truefalse
+  difficulty: 1
+  prompt: "טאפל יכול להכיל אותו ערך כמה פעמים, למשל `(1, 1, 2)`."
+  answer: true
+  explanation: "טאפל, כמו רשימה, הוא אוסף מסודר שמותרות בו כפילויות. האוסף שמונע כפילויות הוא קבוצה (set)."
+
+- id: py.data-structures.tuples.013
+  type: truefalse
+  difficulty: 2
+  prompt: "השורה `point = 3, 4` (בלי סוגריים) זורקת `SyntaxError`, כי טאפל חייב להיכתב בתוך סוגריים."
+  answer: false
+  explanation: "הפסיק הוא שיוצר את הטאפל, והסוגריים ברוב המקרים אופציונליים. `point = 3, 4` יוצר את הטאפל `(3, 4)`. זה גם מה שקורה ב-`return a, b` ובהשמה מרובה כמו `x, y = 1, 2`."
+
+- id: py.data-structures.tuples.014
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר גם את הסכום וגם את הממוצע של הרשימה, כדי שהשורה האחרונה תעבוד. באיזו שורה הבאג?"
+  code: |
+    def stats(nums):
+        total = sum(nums)
+        average = total / len(nums)
+        return total
+
+
+    total, avg = stats([2, 4, 6])
+  answer: 4
+  explanation: "כדי להחזיר כמה ערכים מחזירים טאפל: `return total, average`. כרגע מוחזר מספר אחד, והפירוק `total, avg = ...` נכשל עם `TypeError`, כי אי אפשר לפרק מספר לשני משתנים."
+  fixed: |
+    def stats(nums):
+        total = sum(nums)
+        average = total / len(nums)
+        return total, average
+
+
+    total, avg = stats([2, 4, 6])
+
+- id: py.data-structures.tuples.015
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור לתת גישה רק אם `role` שווה בדיוק לאחד התפקידים המורשים. בפועל הוא מדפיס `access granted` עבור `\"min\"`. באיזו שורה הבאג?"
+  code: |
+    allowed = ("admin")
+    role = "min"
+    if role in allowed:
+        print("access granted")
+  answer: 1
+  explanation: "`(\"admin\")` הוא לא טאפל אלא מחרוזת רגילה בסוגריים. על מחרוזת, `in` בודק אם יש תת־מחרוזת, ו-`\"min\"` אכן מופיע בתוך `\"admin\"`. עם פסיק, `(\"admin\",)`, זה טאפל של איבר אחד, ו-`in` משווה איברים שלמים."
+  fixed: |
+    allowed = ("admin",)
+    role = "min"
+    if role in allowed:
+        print("access granted")
+
+- id: py.data-structures.tuples.016
+  type: cleaner
+  difficulty: 2
+  prompt: "`students` היא רשימה של טאפלים מהצורה `(name, grade)`. איזו גרסה נקייה יותר?"
+  options:
+    - |
+      students = [("Dana", 90), ("Avi", 85)]
+      for name, grade in students:
+          print(name, grade)
+    - |
+      students = [("Dana", 90), ("Avi", 85)]
+      for student in students:
+          print(student[0], student[1])
+    - |
+      students = [("Dana", 90), ("Avi", 85)]
+      for i in range(len(students)):
+          print(students[i][0], students[i][1])
+  answer: 0
+  explanation: "פירוק הטאפל ישירות בכותרת הלולאה נותן לכל חלק שם בעל משמעות. `name` ו-`grade` מסבירים את עצמם, ואילו `[0]` ו-`[1]` מחייבים את הקורא לזכור מה נמצא בכל מקום."
+  optionExplanations:
+    "1": "אינדקסים מספריים מסתירים את המשמעות של כל שדה. פירוק לשמות קריא יותר."
+    "2": "לולאה על אינדקסים מוסיפה רעש. אפשר לעבור ישירות על האיברים ולפרק אותם."
