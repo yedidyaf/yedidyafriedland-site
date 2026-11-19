@@ -224,9 +224,9 @@
 - id: cs.methods.optional-named.012
   type: truefalse
   difficulty: 1
-  prompt: "כשמעבירים את כל הארגומנטים לפי שם (Named arguments), מותר לכתוב אותם בכל סדר."
-  answer: true
-  explanation: "ארגומנט שמי מתאים לפרמטר לפי השם, ולכן הסדר לא משנה את השיוך. `Describe(age: 30, name: \"Noa\")` ו-`Describe(name: \"Noa\", age: 30)` מעבירות את אותם ערכים."
+  prompt: "ארגומנטים שמיים (Named arguments) חייבים להופיע בקריאה באותו סדר שבו הפרמטרים מוגדרים במתודה."
+  answer: false
+  explanation: "ארגומנט שמי מתאים לפרמטר לפי השם, ולכן כשכל הארגומנטים שמיים, הסדר חופשי ולא משנה את השיוך. `Describe(age: 30, name: \"Noa\")` ו-`Describe(name: \"Noa\", age: 30)` מעבירות את אותם ערכים."
 
 - id: cs.methods.optional-named.013
   type: truefalse

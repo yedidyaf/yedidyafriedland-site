@@ -27,12 +27,16 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: npm ci
-      - name: Validate content (strict)
-        run: npm run validate -- --strict
+      - name: Validate content
+        run: npm run validate
       - name: Run Python snippets
         run: npm run verify:python -- --python python
       - name: Compile and run C# snippets
+        if: ${{ !cancelled() }}
         run: npm run verify:csharp
+      - name: Validate content (strict, incl. minimum questions per topic)
+        if: ${{ !cancelled() }}
+        run: npm run validate -- --strict
 
   site:
     name: Site (types, unit tests, build, e2e)
