@@ -79,14 +79,20 @@ test('pages have no horizontal scroll on phones', async ({ page }) => {
   }
 });
 
-test('exam with wide code keeps the page inside the screen', async ({ page }) => {
-  await page.goto('/exam/?lang=csharp&mode=topic&chapter=clean-code&topic=conventions&count=16');
-  for (let i = 0; i < 16; i++) {
-    await page.locator('.palette button').nth(i).click();
-    const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    expect(over, `question ${i + 1}`).toBeLessThanOrEqual(1);
-  }
-});
+for (const [lang, chapter, topic] of [
+  ['csharp', 'clean-code', 'conventions'],
+  ['python', 'software-design', 'architecture-assembly'],
+  ['csharp', 'software-design', 'architecture-assembly'],
+]) {
+  test(`exam with wide code keeps the page inside the screen: ${lang}/${topic}`, async ({ page }) => {
+    await page.goto(`/exam/?lang=${lang}&mode=topic&chapter=${chapter}&topic=${topic}&count=16`);
+    for (let i = 0; i < 16; i++) {
+      await page.locator('.palette button').nth(i).click();
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(over, `question ${i + 1}`).toBeLessThanOrEqual(1);
+    }
+  });
+}
 
 test('multi-line code options keep their line breaks', async ({ page }) => {
   await page.goto('/exam/?lang=csharp&mode=topic&chapter=clean-code&topic=conventions&count=16');
