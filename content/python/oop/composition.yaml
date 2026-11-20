@@ -24,7 +24,7 @@
 
 - id: py.oop.composition.002
   type: hierarchy
-  difficulty: 3
+  difficulty: 2
   prompt: "לפי הקוד, ממי יורשת כל מחלקה?"
   code: |
     class Shape: ...

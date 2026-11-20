@@ -241,7 +241,7 @@
   difficulty: 2
   prompt: "לפי עקרון היפוך התלויות (Dependency Inversion), גם המודול ברמה הגבוהה וגם המודול ברמה הנמוכה צריכים להיות תלויים בהפשטה, ולא זה בזה."
   answer: true
-  explanation: "זה בדיוק ההגדרה. תהליך ההזמנה (רמה גבוהה) תלוי ב-`OrderRepository` המופשט, וגם `SqlOrderRepository` (רמה נמוכה) תלוי בו, כי הוא מממש אותו. ההפשטה נמצאת באמצע, וכל צד אפשר להחליף בלי לגעת בשני."
+  explanation: "זו בדיוק ההגדרה. תהליך ההזמנה (רמה גבוהה) תלוי ב-`OrderRepository` המופשט, וגם `SqlOrderRepository` (רמה נמוכה) תלוי בו, כי הוא מממש אותו. ההפשטה נמצאת באמצע, וכל צד אפשר להחליף בלי לגעת בשני."
 
 - id: py.software-design.solid.011
   type: architecture

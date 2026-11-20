@@ -196,9 +196,9 @@
   items:
     - label: Triangle
       answer: Shape
-    - label: Contractor
+    - label: "PartTimeEmployee - עובד במשרה חלקית"
       answer: Employee
-      why: "קבלן הוא סוג של עובד לצורך חישוב עלות חודשית, ולכן הוא דורס את `monthly_cost`."
+      why: "עובד במשרה חלקית הוא סוג של עובד, עם חישוב עלות חודשית משלו, ולכן הוא דורס את `monthly_cost`."
     - label: Circle
       answer: Shape
     - label: "Drawing - מחזיקה רשימה של צורות"

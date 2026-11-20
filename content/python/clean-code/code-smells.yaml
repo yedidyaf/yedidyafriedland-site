@@ -34,9 +34,9 @@
               result = True
           return result
   answer: 0
-  explanation: "הביטוי `age >= 18` כבר מחזיר ערך בוליאני. אין צורך ב-if שמחזיר True או False."
+  explanation: "הביטוי `age >= 18` כבר מחזיר ערך בוליאני (Boolean). `if` שמחזיר `True` או `False` רק עוטף את התנאי בשורות מיותרות."
   optionExplanations:
-    "1": "if שמחזיר True ו-False הוא שכפול של התנאי עצמו."
+    "1": "`if` שמחזיר `True` ו-`False` חוזר על התנאי עצמו בארבע שורות."
     "2": "משתנה עזר ו-if מוסיפים שלוש שורות בלי להוסיף מידע."
 
 - id: py.clean-code.code-smells.003

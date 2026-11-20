@@ -292,7 +292,7 @@
 - id: py.exceptions.context-managers.014
   type: single
   difficulty: 2
-  prompt: "איזה ערכים מקבלת `__exit__(self, exc_type, exc, tb)` כשגוף הבלוק הסתיים בלי חריגה?"
+  prompt: "אילו ערכים מקבלת `__exit__(self, exc_type, exc, tb)` כשגוף הבלוק הסתיים בלי חריגה?"
   options:
     - "`None`, `None`, `None`"
     - "`False`, `False`, `False`"

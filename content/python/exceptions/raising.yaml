@@ -204,7 +204,7 @@
             ValueError("volume must be 0-100")
         return percent
   answer: 3
-  explanation: "השורה יוצרת אובייקט `ValueError` אבל לא זורקת אותו, ולכן הוא נזרק לפח והפונקציה מחזירה ערך לא תקין. בלי המילה `raise` חריגה היא סתם אובייקט."
+  explanation: "השורה יוצרת אובייקט `ValueError` אבל לא זורקת אותו: האובייקט נוצר ומיד נשכח, והפונקציה ממשיכה ומחזירה ערך לא תקין. בלי המילה `raise`, חריגה היא סתם אובייקט."
   fixed: |
     def set_volume(percent):
         if percent < 0 or percent > 100:
