@@ -27,3 +27,14 @@ describe('negative numbers', () => {
     expect(inline('מחזיר -1 כש')).toBe('מחזיר <bdi dir="ltr">-1</bdi> כש');
   });
 });
+
+describe('multi-line choice options', () => {
+  it('are highlighted as code so line breaks survive', async () => {
+    const { clientQuestion } = await import('../../src/lib/build-data');
+    const q = { id: 'cs.a.b.001', type: 'single', difficulty: 1, prompt: 'p', explanation: 'e', answer: 1, options: ['if (a) {\n    B();\n}\n', 'if (a)\n{\n    B();\n}\n', 'שום דבר'] } as never;
+    const cq = await clientQuestion(q, 'a', 'b', 'csharp');
+    expect(cq.optionsHtml?.[0]).toHaveLength(3);
+    expect(cq.optionsHtml?.[1]).toHaveLength(4);
+    expect(cq.optionsHtml?.[2]).toEqual([]);
+  });
+});

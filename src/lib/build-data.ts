@@ -3,6 +3,8 @@ import { highlightLines } from './highlight';
 import type { LoadedLanguage, LoadedChapter } from './content';
 import type { ChapterData, ClientQuestion, LanguageIndex } from './types';
 
+export const isMultiline = (s: string) => s.trim().includes('\n');
+
 export function languageIndex(lang: LoadedLanguage): LanguageIndex {
   return {
     id: lang.id,
@@ -24,6 +26,9 @@ export async function clientQuestion(q: LoadedChapter['topics'][number]['questio
   const cq: ClientQuestion = { ...q, chapter, topic };
   if ('code' in q && q.code) cq.codeHtml = await highlightLines(q.code, hl);
   if (q.type === 'cleaner') cq.optionsHtml = await Promise.all(q.options.map((o) => highlightLines(o, hl)));
+  // multi-line options of prose types are code snippets: keep their line breaks and indentation
+  if ((q.type === 'single' || q.type === 'smell') && q.options.some(isMultiline))
+    cq.optionsHtml = await Promise.all(q.options.map((o) => (isMultiline(o) ? highlightLines(o.replace(/\n+$/, ''), hl) : [])));
   if (q.type === 'bug' && q.fixed) cq.fixedHtml = await highlightLines(q.fixed, hl);
   if (q.type === 'architecture')
     cq.itemsHtml = await Promise.all(q.items.map(async (i) => (await highlightLines(i.label, hl)).join(' ')));

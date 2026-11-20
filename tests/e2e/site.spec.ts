@@ -78,3 +78,25 @@ test('pages have no horizontal scroll on phones', async ({ page }) => {
     expect(over, url).toBeLessThanOrEqual(1);
   }
 });
+
+test('exam with wide code keeps the page inside the screen', async ({ page }) => {
+  await page.goto('/exam/?lang=csharp&mode=topic&chapter=clean-code&topic=conventions&count=16');
+  for (let i = 0; i < 16; i++) {
+    await page.locator('.palette button').nth(i).click();
+    const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(over, `question ${i + 1}`).toBeLessThanOrEqual(1);
+  }
+});
+
+test('multi-line code options keep their line breaks', async ({ page }) => {
+  await page.goto('/exam/?lang=csharp&mode=topic&chapter=clean-code&topic=conventions&count=16');
+  for (let i = 0; i < 16; i++) {
+    await page.locator('.palette button').nth(i).click();
+    if ((await page.locator('.qprompt').textContent())?.includes('סוגריים מסולסלים')) {
+      const lines = await page.locator('.code-options .opt').evaluateAll((els) => els.map((e) => e.querySelectorAll('.ln').length));
+      expect(lines.sort()).toEqual([3, 4, 4]);
+      return;
+    }
+  }
+  throw new Error('braces question not found');
+});
