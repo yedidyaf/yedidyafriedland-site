@@ -1,0 +1,497 @@
+- id: cs.software-design.solid.001
+  type: single
+  difficulty: 1
+  prompt: "מה אומר עקרון האחריות היחידה (Single Responsibility Principle)?"
+  options:
+    - "למחלקה צריכה להיות סיבה אחת בלבד להשתנות"
+    - "לכל מחלקה מותר להכיל מתודה ציבורית אחת בלבד"
+    - "מחלקה צריכה להיות פתוחה להרחבה וסגורה לשינוי"
+    - "כל מחלקה צריכה לממש ממשק אחד בלבד"
+  answer: 0
+  explanation: "SRP עוסק בסיבות לשינוי: אם שינוי בפורמט הדוח וגם שינוי בחישוב המס מחייבים לפתוח את אותה מחלקה, יש לה שתי אחריויות. אחריות אחת יכולה לכלול כמה מתודות וכמה ממשקים."
+  optionExplanations:
+    "1": "אחריות אחת יכולה לדרוש כמה מתודות. העיקרון לא סופר מתודות."
+    "2": "זו ההגדרה של עקרון פתוח/סגור (Open/Closed), ה-O ב-SOLID."
+    "3": "אין כלל כזה. מחלקה יכולה לממש כמה ממשקים קטנים, וזה אפילו מומלץ."
+
+- id: cs.software-design.solid.002
+  type: single
+  difficulty: 1
+  prompt: "איזה עקרון SOLID המחלקה `Invoice` מפרה בעיקר?"
+  code: |
+    public class Invoice
+    {
+        public List<decimal> Lines { get; } = new();
+
+        public decimal Total()
+        {
+            decimal sum = 0;
+            foreach (var line in Lines)
+                sum += line;
+            return sum;
+        }
+
+        public void SaveToFile(string path) =>
+            File.WriteAllText(path, Total().ToString());
+
+        public void PrintToConsole() =>
+            Console.WriteLine($"Invoice total: {Total()}");
+    }
+  options:
+    - "אחריות יחידה - Single Responsibility"
+    - "החלפת ליסקוב - Liskov Substitution"
+    - "הפרדת ממשקים - Interface Segregation"
+    - "פתוח/סגור - Open/Closed"
+  answer: 0
+  explanation: "למחלקה שלוש סיבות להשתנות: כללי החישוב, אופן השמירה (קובץ, מסד נתונים) ואופן התצוגה. נכון להשאיר ב-`Invoice` את החישוב, ולהעביר שמירה ל-`InvoiceRepository` ותצוגה ל-`InvoicePrinter`."
+  optionExplanations:
+    "1": "אין כאן ירושה, ולכן אין מחלקה יורשת שמפרה את החוזה של הבסיס."
+    "2": "אין כאן ממשק בכלל, ואף מחלקה לא נאלצת לממש מתודות שהיא לא צריכה."
+    "3": "אין כאן שרשרת `if` לפי סוג. הבעיה הבולטת היא ערבוב של שלוש אחריויות."
+
+- id: cs.software-design.solid.003
+  type: single
+  difficulty: 1
+  prompt: "כדי להוסיף צורה חדשה צריך לפתוח את `AreaCalculator` ולהוסיף עוד `if`. איזה עקרון נפגע כאן?"
+  code: |
+    public class AreaCalculator
+    {
+        public double Area(string shape, double size)
+        {
+            if (shape == "square")
+                return size * size;
+            if (shape == "circle")
+                return Math.PI * size * size;
+            if (shape == "triangle")
+                return size * size * Math.Sqrt(3) / 4;
+            throw new ArgumentException($"Unknown shape: {shape}");
+        }
+    }
+  options:
+    - "החלפת ליסקוב - Liskov Substitution"
+    - "הפרדת ממשקים - Interface Segregation"
+    - "פתוח/סגור - Open/Closed"
+    - "היפוך תלויות - Dependency Inversion"
+  answer: 2
+  explanation: "לפי OCP, קוד צריך להיות פתוח להרחבה וסגור לשינוי: הוספת התנהגות חדשה נעשית בקוד חדש. כאן כל צורה חדשה מחייבת לשנות מתודה קיימת. פתרון: ממשק `IShape` עם מתודה `Area()`, ומחלקה לכל צורה."
+  optionExplanations:
+    "0": "אין כאן ירושה, ולכן אין תת־מחלקה שמפרה את החוזה של מחלקת הבסיס."
+    "1": "אין כאן ממשק שמכריח לממש מתודות מיותרות."
+    "3": "המחלקה לא תלויה במחלקה קונקרטית אחרת. הבעיה היא ה-`if` שגדל עם כל צורה."
+
+- id: cs.software-design.solid.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Rectangle r = new Square();
+    r.Width = 5;
+    r.Height = 4;
+    Console.WriteLine(r.Area());
+
+    class Rectangle
+    {
+        public virtual int Width { get; set; }
+        public virtual int Height { get; set; }
+        public int Area() => Width * Height;
+    }
+
+    class Square : Rectangle
+    {
+        public override int Width
+        {
+            get => base.Width;
+            set { base.Width = value; base.Height = value; }
+        }
+
+        public override int Height
+        {
+            get => base.Height;
+            set { base.Width = value; base.Height = value; }
+        }
+    }
+  options: ["20", "16", "25", "שגיאת קומפילציה"]
+  answer: 1
+  explanation: "המאפיינים וירטואליים, ולכן נקראים ה-setters של `Square`. `Height = 4` משנה גם את הרוחב ל-4, והשטח הוא 16. מי שכתב קוד מול `Rectangle` מצפה ל-20, ולכן `Square` לא ניתן להחלפה במקום `Rectangle`: הפרה של עקרון ההחלפה של ליסקוב (Liskov Substitution). פתרון: לא לרשת, ולתת לשתי המחלקות לממש ממשק משותף כמו `IShape`."
+  optionExplanations:
+    "0": "20 היה מודפס עבור `Rectangle` רגיל. כאן ה-setter של `Square` משנה את שתי הצלעות."
+    "2": "הערך האחרון שנקבע הוא 4, ולא 5. ה-setter של `Height` דורס את הרוחב."
+    "3": "דריסה של מאפיין `virtual` עם `override` ושימוש ב-`base` הם קוד תקין."
+
+- id: cs.software-design.solid.005
+  type: single
+  difficulty: 2
+  prompt: "`BasicPrinter` נאלצת לממש מתודות שאין לה צורך בהן. מה האבחנה והתיקון הנכונים?"
+  code: |
+    public interface IOfficeMachine
+    {
+        void Print(string document);
+        void Scan(string document);
+        void Fax(string document, string number);
+    }
+
+    public class BasicPrinter : IOfficeMachine
+    {
+        public void Print(string document) => Console.WriteLine($"Printing {document}");
+
+        public void Scan(string document) => throw new NotSupportedException();
+
+        public void Fax(string document, string number) => throw new NotSupportedException();
+    }
+  options:
+    - "אחריות יחידה (SRP): להעביר את `Print` למחלקה נפרדת בשם `PrintService`"
+    - "פתוח/סגור (OCP): להוסיף ל-`BasicPrinter` שדה `bool` שאומר אם יש לה סורק"
+    - "הפרדת ממשקים (ISP): לפצל לממשקים קטנים כמו `IPrinter`, `IScanner` ו-`IFax`, וכל מכונה תממש רק את מה שהיא יודעת לעשות"
+    - "היפוך תלויות (DIP): להפוך את `BasicPrinter` למחלקה מופשטת"
+  answer: 2
+  explanation: "עקרון הפרדת הממשקים (Interface Segregation) אומר שאין להכריח מחלקה לממש מתודות שאינה צריכה. ממשק «שמן» מוביל למימושים שזורקים `NotSupportedException`, מה שפוגע גם בעקרון ליסקוב. פיצול לממשקים קטנים פותר את שתי הבעיות."
+  optionExplanations:
+    "0": "הדפסה היא בדיוק מה ש-`BasicPrinter` אמורה לעשות. הבעיה היא המתודות שהיא לא יודעת לעשות."
+    "1": "דגל בוליאני לא מבטל את החובה לממש את המתודות, ורק מוסיף בדיקות `if`."
+    "3": "מחלקה מופשטת לא פותרת את הבעיה: עדיין כל מכונה תצטרך את כל המתודות."
+
+- id: cs.software-design.solid.006
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה של `ReportService` עומדת בעקרון היפוך התלויות (Dependency Inversion)?"
+  options:
+    - |
+      var service = new ReportService();
+      Console.WriteLine(service.TotalSales());
+
+      public class SqlSalesSource
+      {
+          public IReadOnlyList<decimal> GetSales() => new List<decimal> { 10m, 20m };
+      }
+
+      public class ReportService
+      {
+          private readonly SqlSalesSource _source = new SqlSalesSource();
+
+          public decimal TotalSales() => _source.GetSales().Sum();
+      }
+    - |
+      var service = new ReportService(new SqlSalesSource());
+      Console.WriteLine(service.TotalSales());
+
+      public interface ISalesSource
+      {
+          IReadOnlyList<decimal> GetSales();
+      }
+
+      public class SqlSalesSource : ISalesSource
+      {
+          public IReadOnlyList<decimal> GetSales() => new List<decimal> { 10m, 20m };
+      }
+
+      public class ReportService
+      {
+          private readonly ISalesSource _source;
+
+          public ReportService(ISalesSource source) => _source = source;
+
+          public decimal TotalSales() => _source.GetSales().Sum();
+      }
+  answer: 1
+  explanation: "לפי DIP, מודול עסקי תלוי בהפשטה (Abstraction) ולא במימוש טכני. בגרסה השנייה `ReportService` מכירה רק את `ISalesSource`, ולכן אפשר להעביר לה מקור מ-CSV, מ-API או מימוש מדומה לבדיקות בלי לשנות אותה."
+  optionExplanations:
+    "0": "השירות יוצר בעצמו `SqlSalesSource` ותלוי בו ישירות. כל החלפה של מקור הנתונים מחייבת לשנות את השירות, ואי אפשר לבדוק אותו בלי SQL."
+
+- id: cs.software-design.solid.007
+  type: hierarchy
+  difficulty: 2
+  prompt: "תכננו היררכיה שעומדת בעקרון ההחלפה של ליסקוב: ממי צריכה לרשת כל מחלקה?"
+  code: |
+    public abstract class Bird
+    {
+        public abstract string Name { get; }
+        public void Eat() => Console.WriteLine($"{Name} eats");
+    }
+
+    public abstract class FlyingBird : Bird
+    {
+        public void Fly() => Console.WriteLine($"{Name} flies");
+    }
+  targets:
+    - id: Bird
+      desc: ציפור כללית, בלי `Fly`
+    - id: FlyingBird
+      desc: ציפור שיודעת לעוף
+  items:
+    - label: Sparrow
+      answer: FlyingBird
+      why: "דרור עף, ולכן הוא יכול להחליף `FlyingBird` בכל מקום."
+    - label: Penguin
+      answer: Bird
+      why: "פינגווין לא עף. אם היה יורש מ-`FlyingBird`, המתודה `Fly` הייתה שקרית או זורקת חריגה, וזו הפרה של LSP."
+    - label: Eagle
+      answer: FlyingBird
+      why: "נשר עף, ומקיים את החוזה של `FlyingBird`."
+    - label: Ostrich
+      answer: Bird
+      why: "יען לא עף, ולכן הוא ציפור בלי יכולת `Fly`."
+    - label: Kiwi
+      answer: Bird
+      why: "קיווי הוא ציפור שלא עפה."
+  explanation: "לפי LSP, כל תת־מחלקה חייבת לקיים את החוזה של הבסיס. אם `Bird` הייתה כוללת `Fly`, פינגווין ויען היו נאלצים «לממש» משהו שהם לא יודעים לעשות. הפתרון הוא לשים את היכולת לעוף ברמה נפרדת בהיררכיה, כך שרק מי שבאמת עף יורש אותה."
+
+- id: cs.software-design.solid.008
+  type: truefalse
+  difficulty: 1
+  prompt: "עקרון פתוח/סגור (Open/Closed) אוסר לתקן באג בתוך מחלקה קיימת."
+  answer: false
+  explanation: "«סגור לשינוי» פירושו שהוספת התנהגות חדשה לא אמורה לחייב לשנות קוד שעובד, אלא להוסיף קוד חדש (למשל מחלקה חדשה שמממשת ממשק). תיקון באג הוא שינוי לגיטימי לגמרי."
+
+- id: cs.software-design.solid.009
+  type: truefalse
+  difficulty: 2
+  prompt: "לפי עקרון היפוך התלויות, גם המודול העסקי וגם המימוש הטכני (למשל גישה ל-SQL) תלויים באותה הפשטה (Abstraction)."
+  answer: true
+  explanation: "המודול העסקי משתמש בממשק, והמימוש הטכני מממש אותו. שניהם מצביעים אל ההפשטה, ולכן התלות «מתהפכת»: הקוד העסקי כבר לא תלוי בפרטים הטכניים, אלא הפרטים תלויים בחוזה שהקוד העסקי הגדיר."
+
+- id: cs.software-design.solid.010
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת הדוחות של מכון הכושר במחלקה המתאימה."
+  requirement: "מכון כושר שולח לכל מנוי דוח חודשי: ממוצע ביקורים בשבוע והרצף הארוך ביותר של ימי אימון. הדוח נשלח במייל כטבלת HTML, ואפשר גם להוריד אותו כקובץ CSV. לכל מחלקה צריכה להיות סיבה אחת בלבד להשתנות."
+  targets:
+    - id: Reports/AttendanceRepository.cs
+      desc: שליפת ביקורים ממסד הנתונים
+    - id: Reports/AttendanceCalculator.cs
+      desc: חישובים סטטיסטיים על ביקורים
+    - id: Reports/ReportFormatter.cs
+      desc: הפיכת תוצאת החישוב לטקסט בפורמט מסוים
+    - id: Reports/ReportEmailSender.cs
+      desc: שליחת הדוח במייל
+  items:
+    - label: "public IReadOnlyList<Visit> GetVisits(int memberId, DateOnly from, DateOnly to)"
+      answer: Reports/AttendanceRepository.cs
+      why: "שליפה מהמסד. תשתנה רק אם אופן האחסון משתנה."
+    - label: "public double AverageVisitsPerWeek(IReadOnlyList<Visit> visits)"
+      answer: Reports/AttendanceCalculator.cs
+      why: "חישוב על רשימת ביקורים שכבר נשלפה, בלי לדעת מאיפה היא הגיעה."
+    - label: "public int LongestStreakInDays(IReadOnlyList<Visit> visits)"
+      answer: Reports/AttendanceCalculator.cs
+      why: "גם זה חישוב סטטיסטי טהור."
+    - label: "public string ToHtmlTable(AttendanceSummary summary)"
+      answer: Reports/ReportFormatter.cs
+      why: "הופך תוצאה מוכנה לטקסט בפורמט HTML."
+    - label: "public string ToCsv(AttendanceSummary summary)"
+      answer: Reports/ReportFormatter.cs
+      why: "פורמט נוסף של אותה תוצאה. שינוי עיצוב לא נוגע בחישובים."
+    - label: "public void Send(string memberEmail, string htmlBody)"
+      answer: Reports/ReportEmailSender.cs
+      why: "שליחה מקבלת טקסט מוכן ולא יודעת איך הוא חושב או עוצב."
+  explanation: "כל מחלקה משתנה מסיבה אחת: מסד הנתונים, נוסחת החישוב, העיצוב או ערוץ השליחה. אילו כל המתודות היו במחלקת `MonthlyReport` אחת, כל שינוי קטן היה נוגע בכולן. זו אחריות יחידה (Single Responsibility)."
+
+- id: cs.software-design.solid.011
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת ניהול המסמכים בקובץ המתאים."
+  requirement: "מערכת מסמכים: מסך הארכיון רק מציג ומחפש מסמכים, ומסך העריכה גם משנה שם, שומר ומוחק. לפי עקרון הפרדת הממשקים, מסך הארכיון לא אמור להיות תלוי בפעולות שינוי."
+  targets:
+    - id: Interfaces/IDocumentReader.cs
+      desc: פעולות קריאה בלבד
+    - id: Interfaces/IDocumentWriter.cs
+      desc: פעולות שמשנות מסמכים
+    - id: Services/ArchiveViewer.cs
+      desc: מסך הארכיון, קורא בלבד
+    - id: Services/DocumentEditor.cs
+      desc: מסך עריכת מסמכים
+  items:
+    - label: "Document Load(Guid id)"
+      answer: Interfaces/IDocumentReader.cs
+      why: "חבר ממשק (בלי משנה גישה ובלי גוף) שרק קורא."
+    - label: "IReadOnlyList<Document> Search(string text)"
+      answer: Interfaces/IDocumentReader.cs
+      why: "חיפוש לא משנה דבר, ולכן הוא חלק מממשק הקריאה."
+    - label: "void Save(Document document)"
+      answer: Interfaces/IDocumentWriter.cs
+      why: "שמירה משנה את המאגר, ולכן היא בממשק הכתיבה."
+    - label: "void Delete(Guid id)"
+      answer: Interfaces/IDocumentWriter.cs
+      why: "מחיקה היא פעולת שינוי."
+    - label: "public string RenderPreview(Guid id)"
+      answer: Services/ArchiveViewer.cs
+      why: "תצוגה מקדימה צריכה רק לטעון מסמך, ולכן מתאימה למסך הארכיון שתלוי רק ב-`IDocumentReader`."
+    - label: "public void Rename(Guid id, string newTitle)"
+      answer: Services/DocumentEditor.cs
+      why: "שינוי שם דורש לטעון ולשמור, ולכן שייך לעורך שתלוי בשני הממשקים."
+  explanation: "הפרדת ממשקים (Interface Segregation) מאפשרת לכל לקוח להיות תלוי רק במה שהוא צריך. `ArchiveViewer` מקבלת רק `IDocumentReader`, ולכן אין לה בכלל גישה למחיקה, ושינוי בפעולות הכתיבה לא משפיע עליה."
+
+- id: cs.software-design.solid.012
+  type: single
+  difficulty: 3
+  prompt: "קוד קיים מפקיד לכל `Account` כל סכום חיובי ומצפה שזה יצליח. איזה עקרון `TeenAccount` מפרה?"
+  code: |
+    public class Account
+    {
+        public decimal Balance { get; protected set; }
+
+        public virtual void Deposit(decimal amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            Balance += amount;
+        }
+    }
+
+    public class TeenAccount : Account
+    {
+        public override void Deposit(decimal amount)
+        {
+            if (amount > 500)
+                throw new InvalidOperationException("Teen limit exceeded");
+            base.Deposit(amount);
+        }
+    }
+  options:
+    - "אחריות יחידה - Single Responsibility"
+    - "החלפת ליסקוב - Liskov Substitution"
+    - "הפרדת ממשקים - Interface Segregation"
+    - "היפוך תלויות - Dependency Inversion"
+  answer: 1
+  explanation: "תת־מחלקה אסור לה להחמיר תנאי מוקדם (Precondition) של הבסיס. `Account` מבטיחה שכל סכום חיובי יתקבל, ו-`TeenAccount` זורקת חריגה על 600, ולכן קוד שעבד עם `Account` נשבר כשמעבירים לו `TeenAccount`. תיקון: להכניס את מגבלת ההפקדה לחוזה של הבסיס (למשל מאפיין `MaxDeposit`), או לא להשתמש בירושה."
+  optionExplanations:
+    "0": "לכל מחלקה כאן יש אחריות אחת: ניהול יתרה."
+    "2": "אין ממשק שמכריח לממש מתודות מיותרות."
+    "3": "אין כאן תלות במימוש קונקרטי של שירות אחר. הבעיה היא בחוזה שבין הבסיס ליורשת."
+
+- id: cs.software-design.solid.013
+  type: single
+  difficulty: 1
+  prompt: "רוצים להוסיף שיטת משלוח חדשה ברחפן. מה הדרך שמתאימה לעקרון פתוח/סגור?"
+  code: |
+    public interface IShippingMethod
+    {
+        string Name { get; }
+        decimal Cost(decimal weightKg);
+    }
+
+    public class StandardShipping : IShippingMethod
+    {
+        public string Name => "Standard";
+        public decimal Cost(decimal weightKg) => 20m + weightKg * 2m;
+    }
+
+    public class ShippingCalculator
+    {
+        private readonly List<IShippingMethod> _methods;
+
+        public ShippingCalculator(List<IShippingMethod> methods) => _methods = methods;
+
+        public IShippingMethod Cheapest(decimal weightKg)
+        {
+            IShippingMethod best = _methods[0];
+            foreach (var method in _methods)
+                if (method.Cost(weightKg) < best.Cost(weightKg))
+                    best = method;
+            return best;
+        }
+    }
+  options:
+    - "להוסיף ל-`Cheapest` בדיקה `if (method.Name == \"Drone\")` עם חישוב מיוחד"
+    - "ליצור מחלקה חדשה `DroneShipping` שמממשת את `IShippingMethod` ולהוסיף אותה לרשימה, בלי לשנות את `ShippingCalculator`"
+    - "להוסיף לממשק `IShippingMethod` מתודה חדשה `DroneCost`"
+    - "לרשת מ-`StandardShipping` ולכתוב `override` ל-`Cost`"
+  answer: 1
+  explanation: "`ShippingCalculator` עובדת מול הממשק, ולכן היא פתוחה להרחבה: שיטת משלוח חדשה היא מחלקה חדשה, והקוד הקיים לא משתנה. זה בדיוק עקרון פתוח/סגור (Open/Closed)."
+  optionExplanations:
+    "0": "בדיקת שם בתוך המחשבון מחייבת לשנות אותו בכל שיטה חדשה, ובדיוק את זה OCP בא למנוע."
+    "2": "שינוי הממשק מכריח את כל המימושים הקיימים להשתנות, וכל אחד מהם יצטרך מתודה שלא קשורה אליו."
+    "3": "`Cost` לא מוגדרת `virtual`, ולכן אי אפשר לדרוס אותה. וגם רחפן אינו סוג של משלוח רגיל."
+
+- id: cs.software-design.solid.014
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של תהליך התשלום בקופה בקובץ המתאים."
+  requirement: "חנות מקוונת מחייבת כרטיס אשראי בסיום קנייה. הלוגיקה העסקית לא אמורה להכיר HTTP או ספק סליקה מסוים, כדי שאפשר יהיה להחליף ספק ולבדוק את הקופה בלי חיוב אמיתי."
+  targets:
+    - id: Application/IPaymentGateway.cs
+      desc: ההפשטה שהלוגיקה העסקית צריכה כדי לחייב כסף
+    - id: Application/CheckoutService.cs
+      desc: הלוגיקה של סיום קנייה
+    - id: Infrastructure/CreditCardGateway.cs
+      desc: מימוש מול ספק הסליקה דרך HTTP
+    - id: Api/CheckoutController.cs
+      desc: נקודת הכניסה של בקשות HTTP מהדפדפן
+  items:
+    - label: "PaymentResult Charge(string cardToken, decimal amount)"
+      answer: Application/IPaymentGateway.cs
+      why: "חבר ממשק בלי משנה גישה ובלי גוף. הממשק מוגדר ליד מי שמשתמש בו, בשכבה העסקית."
+    - label: "public CheckoutService(IPaymentGateway gateway, IOrderRepository orders)"
+      answer: Application/CheckoutService.cs
+      why: "השירות העסקי מקבל הפשטות בבנאי ולא מחלקות של תשתית."
+    - label: "public Receipt CompletePurchase(int cartId, string cardToken)"
+      answer: Application/CheckoutService.cs
+      why: "תהליך עסקי: חישוב הסכום, חיוב דרך הממשק ושמירת ההזמנה."
+    - label: "private HttpRequestMessage BuildChargeRequest(string cardToken, decimal amount)"
+      answer: Infrastructure/CreditCardGateway.cs
+      why: "בניית בקשת HTTP לספק היא פרט טכני שמוסתר מאחורי הממשק."
+    - label: "private static PaymentResult MapProviderResponse(string json)"
+      answer: Infrastructure/CreditCardGateway.cs
+      why: "תרגום תשובת ה-JSON של הספק לטיפוס שלנו שייך למימוש מול הספק."
+    - label: "[HttpPost] public IActionResult Pay(PayRequest request)"
+      answer: Api/CheckoutController.cs
+      why: "מקבל בקשת HTTP מהדפדפן ומעביר לשירות."
+  explanation: "היפוך תלויות (Dependency Inversion): השכבה העסקית מגדירה את `IPaymentGateway`, והתשתית מממשת אותו. כך החצים מצביעים פנימה, אל הלוגיקה, ואפשר להחליף ספק סליקה או להזריק מימוש מדומה בבדיקות בלי לגעת ב-`CheckoutService`."
+
+- id: cs.software-design.solid.015
+  type: cleaner
+  difficulty: 2
+  prompt: "בכל גרסה של המוצר מוסיפים פורמט ייצוא חדש לדוח. איזו גרסה עומדת בעקרון פתוח/סגור?"
+  options:
+    - |
+      IReportExporter exporter = new CsvExporter();
+      Console.WriteLine(exporter.Export(new[] { 3, 5 }));
+
+      public interface IReportExporter
+      {
+          string Export(int[] values);
+      }
+
+      public class CsvExporter : IReportExporter
+      {
+          public string Export(int[] values) => string.Join(",", values);
+      }
+
+      public class JsonExporter : IReportExporter
+      {
+          public string Export(int[] values) => "[" + string.Join(", ", values) + "]";
+      }
+    - |
+      var exporter = new ReportExporter();
+      Console.WriteLine(exporter.Export(new[] { 3, 5 }, "csv"));
+
+      public class ReportExporter
+      {
+          public string Export(int[] values, string format)
+          {
+              if (format == "csv")
+                  return string.Join(",", values);
+              else if (format == "json")
+                  return "[" + string.Join(", ", values) + "]";
+              else
+                  throw new ArgumentException($"Unknown format: {format}");
+          }
+      }
+  answer: 0
+  explanation: "כשפורמטים חדשים מתווספים כל הזמן, ממשק עם מחלקה לכל פורמט מאפשר להוסיף פורמט בקובץ חדש בלי לגעת בקוד שכבר נבדק. כל מחלקה גם קטנה וממוקדת, וקל לבדוק אותה לבד."
+  optionExplanations:
+    "1": "כל פורמט חדש מחייב לפתוח את `Export` ולהוסיף `else if`, והמתודה גדלה עם כל גרסה. זו הפרה של עקרון פתוח/סגור."
+
+- id: cs.software-design.solid.016
+  type: single
+  difficulty: 3
+  prompt: "בפתרון יש שלושה פרויקטים: `Shop.Application` (הלוגיקה העסקית), `Shop.Infrastructure` (גישה ל-SQL) ו-`Shop.Api`. לפי עקרון היפוך התלויות, באיזה פרויקט נכון להגדיר את הממשק `IOrderRepository` שבו משתמש `OrderService`?"
+  options:
+    - "בפרויקט `Shop.Infrastructure`, ליד המימוש מול SQL"
+    - "בפרויקט `Shop.Application`, ליד `OrderService` שמשתמש בו"
+    - "בפרויקט `Shop.Api`, כי שם מחברים את כל התלויות"
+    - "בכל פרויקט שצריך אותו, בעותק נפרד"
+  answer: 1
+  explanation: "ההפשטה שייכת למי שצריך אותה, כלומר לשכבה העסקית. `Shop.Infrastructure` מפנה ל-`Shop.Application` ומממש את הממשק, ולכן התלות מצביעה אל הלוגיקה העסקית ולא ממנה. אילו הממשק היה בתשתית, `Shop.Application` היה חייב להפנות לפרויקט התשתית, והתלות לא הייתה מתהפכת."
+  optionExplanations:
+    "0": "כך הלוגיקה העסקית חייבת להפנות לפרויקט התשתית, וזו בדיוק התלות שהעיקרון בא להפוך."
+    "2": "`Shop.Api` הוא המקום שבו רושמים את המימושים, אבל `Shop.Application` לא אמור להפנות אליו."
+    "3": "עותקים נפרדים הם ממשקים שונים מבחינת הקומפיילר, והמימוש לא יוכל להתאים לכולם."
