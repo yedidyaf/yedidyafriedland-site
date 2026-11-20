@@ -1,0 +1,493 @@
+- id: cs.clean-code.code-smells.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class ParkingLot
+    {
+        public decimal Fee(int minutes)
+        {
+            if (minutes <= 15)
+                return 0m;
+            return Math.Ceiling(minutes / 60m) * 12m;
+        }
+    }
+  options:
+    - "מספר קסם - Magic Number"
+    - "קינון עמוק - Deep Nesting"
+    - "מחלקת אל - God Class"
+    - "קוד מת - Dead Code"
+  answer: 0
+  explanation: "`15` ו-`12` מופיעים בלי שם, והקורא צריך לנחש שהם דקות החניה החינמיות והמחיר לשעה. קבועים עם שם, `FreeMinutes` ו-`HourlyRate`, מסבירים את הכוונה ומאפשרים לשנות תעריף במקום אחד."
+  optionExplanations:
+    "1": "יש `if` אחד, בלי קינון."
+    "2": "למחלקה יש מתודה אחת ואחריות אחת."
+    "3": "כל שורה בקוד יכולה לרוץ."
+
+- id: cs.clean-code.code-smells.002
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class ShippingService
+    {
+        public bool CanShip(Order order)
+        {
+            if (order != null)
+            {
+                if (order.IsPaid)
+                {
+                    if (order.Address != null)
+                    {
+                        if (!order.IsCancelled)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    class Order
+    {
+        public bool IsPaid { get; set; }
+        public string Address { get; set; }
+        public bool IsCancelled { get; set; }
+    }
+  options:
+    - "מתודה ארוכה - Long Method"
+    - "קינון עמוק - Deep Nesting"
+    - "קנאת תכונות - Feature Envy"
+    - "שכפול קוד - Duplicated Code"
+  answer: 1
+  explanation: "ארבע רמות של `if` מקוננים מאלצות את הקורא להחזיק את כל התנאים בראש בבת אחת. אפשר להחליף אותם בסעיפי שמירה (Guard Clauses) שיוצאים מוקדם, או כאן פשוט בביטוי אחד: `return order != null && order.IsPaid && order.Address != null && !order.IsCancelled;`."
+  optionExplanations:
+    "0": "המתודה לא ארוכה; היא נראית ארוכה בגלל הסוגריים של הקינון."
+    "2": "בדיקת מצב של הזמנה במחלקת משלוחים סבירה; הבעיה הבולטת היא המבנה."
+    "3": "כל תנאי בודק דבר אחר; אין חזרה."
+
+- id: cs.clean-code.code-smells.003
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Account
+      {
+          public decimal Balance { get; private set; } = 100m;
+
+          public void Withdraw(decimal amount)
+          {
+              if (amount > 0)
+              {
+                  if (amount <= Balance)
+                  {
+                      Balance -= amount;
+                  }
+                  else
+                  {
+                      throw new InvalidOperationException("Insufficient funds.");
+                  }
+              }
+              else
+              {
+                  throw new ArgumentOutOfRangeException(nameof(amount));
+              }
+          }
+      }
+    - |
+      class Account
+      {
+          public decimal Balance { get; private set; } = 100m;
+
+          public void Withdraw(decimal amount)
+          {
+              if (amount <= 0)
+                  throw new ArgumentOutOfRangeException(nameof(amount));
+              if (amount > Balance)
+                  throw new InvalidOperationException("Insufficient funds.");
+
+              Balance -= amount;
+          }
+      }
+  answer: 1
+  explanation: "סעיפי שמירה (Guard Clauses) מטפלים במקרים הלא תקינים בהתחלה ויוצאים מיד. מה שנשאר בסוף המתודה, בלי הזחה, הוא המסלול הרגיל: `Balance -= amount`. כל חריגה כתובה צמוד לתנאי שגורם לה."
+  optionExplanations:
+    "0": "הקינון מרחיק כל חריגה מהתנאי שלה, והפעולה העיקרית קבורה ברמת ההזחה העמוקה ביותר."
+
+- id: cs.clean-code.code-smells.004
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class ShopManager
+    {
+        public void AddProduct(string name, decimal price) { }
+        public void RegisterCustomer(string email) { }
+        public void ChargeCreditCard(string cardNumber, decimal amount) { }
+        public void SendNewsletter(string subject) { }
+        public void PrintMonthlyReport(int month) { }
+        public void BackupDatabase(string path) { }
+    }
+  options:
+    - "מתודה ארוכה - Long Method"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "מחלקת אל - God Class"
+    - "קנאת תכונות - Feature Envy"
+  answer: 2
+  explanation: "מחלקה אחת אחראית על קטלוג, לקוחות, תשלומים, דיוור, דוחות וגיבוי: מחלקת אל (God Class) שכל שינוי במערכת נוגע בה. מפצלים לפי אחריות (Extract Class): `ProductCatalog`, `CustomerRegistry`, `PaymentService`, `NewsletterService` וכן הלאה. גם השם `Manager` הוא סימן אזהרה."
+  optionExplanations:
+    "0": "כל המתודות כאן ריקות; הבעיה היא כמות האחריות של המחלקה, לא אורך של מתודה."
+    "1": "לכל מתודה יש פרמטר אחד או שניים."
+    "3": "אין כאן מתודה שעובדת בעיקר על נתונים של מחלקה אחרת."
+
+- id: cs.clean-code.code-smells.005
+  type: smell
+  difficulty: 3
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Shipment
+    {
+        private const double KilogramsPerPound = 0.4536;
+
+        public double WeightValue { get; set; }
+        public string WeightUnit { get; set; }
+
+        public double WeightInKilograms() =>
+            WeightUnit == "lb" ? WeightValue * KilogramsPerPound : WeightValue;
+    }
+  options:
+    - "מספר קסם - Magic Number"
+    - "מחלקת אל - God Class"
+    - "אובססיית טיפוסים פרימיטיביים - Primitive Obsession"
+    - "קוד מת - Dead Code"
+  answer: 2
+  explanation: "משקל מיוצג כ-`double` ועוד `string` ליחידה. כל מקום שמשתמש במשקל צריך לזכור לבדוק את היחידה, וכלום לא מונע יחידה כמו `\"kilo\"` או `\"LB\"`. טיפוס ערך (Value Object), למשל `record Weight` עם יחידה מסוג `enum`, מרכז את ההמרות ואת הבדיקות במקום אחד."
+  optionExplanations:
+    "0": "מקדם ההמרה מוגדר כקבוע עם שם."
+    "1": "המחלקה קטנה ועוסקת בנושא אחד."
+    "3": "כל החברים במחלקה בשימוש."
+
+- id: cs.clean-code.code-smells.006
+  type: smell
+  difficulty: 3
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class InvoicePrinter
+    {
+        public decimal Total(Invoice invoice)
+        {
+            decimal subtotal = invoice.UnitPrice * invoice.Quantity;
+            decimal discount = subtotal * invoice.DiscountRate;
+            return subtotal - discount;
+        }
+    }
+
+    class Invoice
+    {
+        public decimal UnitPrice { get; set; }
+        public int Quantity { get; set; }
+        public decimal DiscountRate { get; set; }
+    }
+  options:
+    - "מחלקת אל - God Class"
+    - "שכפול קוד - Duplicated Code"
+    - "קנאת תכונות - Feature Envy"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+  answer: 2
+  explanation: "המתודה `Total` משתמשת רק בנתונים של `Invoice` ולא בשום דבר של `InvoicePrinter`: היא «מקנאה» במחלקה אחרת (Feature Envy). מעבירים אותה למחלקה שהנתונים שלה (Move Method): מאפיין `invoice.Total`, וכך החשבונית אחראית על החישוב של עצמה."
+  optionExplanations:
+    "0": "המחלקה קטנה מאוד; הבעיה היא שהמתודה נמצאת במחלקה הלא נכונה."
+    "1": "אין קוד שחוזר על עצמו."
+    "3": "יש פרמטר אחד."
+
+- id: cs.clean-code.code-smells.007
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Counter
+    {
+        // the count
+        private int _count;
+
+        // increments the count by one
+        public void Increment()
+        {
+            _count++; // add 1 to _count
+        }
+    }
+  options:
+    - "הערה מיותרת - Redundant Comment"
+    - "קוד מת - Dead Code"
+    - "שם לא ברור - Unclear Name"
+    - "מתודה ארוכה - Long Method"
+  answer: 0
+  explanation: "כל הערה חוזרת על מה שהקוד כבר אומר. הערות כאלה רק מוסיפות רעש, ומתיישנות כשהקוד משתנה. הערה טובה מסבירה למה, לא מה; כאן השמות מספיקים, ואפשר למחוק את כל ההערות."
+  optionExplanations:
+    "1": "כל הקוד בשימוש; ההערות הן לא קוד שמושבת."
+    "2": "`Counter`, `_count` ו-`Increment` הם שמות ברורים, ובגלל זה ההערות מיותרות."
+    "3": "המתודה היא שורה אחת."
+
+- id: cs.clean-code.code-smells.008
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Greeter
+    {
+        public string Greet(string name)
+        {
+            string upperName = name.ToUpper();
+            return $"Hello, {name}";
+        }
+
+        private string FormatLegacyGreeting(string name) => "Hi " + name;
+    }
+  options:
+    - "שכפול קוד - Duplicated Code"
+    - "קוד מת - Dead Code"
+    - "שם לא ברור - Unclear Name"
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+  answer: 1
+  explanation: "המשתנה `upperName` מחושב ולא משמש, והמתודה הפרטית `FormatLegacyGreeting` לא נקראת מאף מקום. קוד מת (Dead Code) מבלבל את הקורא, שמנסה להבין למה הוא שם. מוחקים אותו; מערכת ניהול הגרסאות (git) שומרת את ההיסטוריה אם יצטרכו אותו."
+  optionExplanations:
+    "0": "`FormatLegacyGreeting` לא משכפלת לוגיקה שבשימוש; היא פשוט לא נקראת."
+    "2": "השמות ברורים; הבעיה שחלק מהקוד לא משמש לכלום."
+    "3": "`ToUpper` מחזירה מחרוזת חדשה ולא משנה את `name`, ולכן אין כאן תופעת לוואי."
+
+- id: cs.clean-code.code-smells.009
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class GradeReport
+    {
+        public void Print(string csvLine)
+        {
+            string[] parts = csvLine.Split(',');
+            string studentName = parts[0].Trim();
+            List<int> grades = new();
+            for (int i = 1; i < parts.Length; i++)
+                grades.Add(int.Parse(parts[i]));
+
+            if (grades.Count == 0)
+                throw new ArgumentException("No grades.", nameof(csvLine));
+
+            double average = grades.Average();
+            int best = grades.Max();
+            int worst = grades.Min();
+
+            Console.WriteLine($"Student: {studentName}");
+            Console.WriteLine($"Average: {average:F1}");
+            Console.WriteLine($"Best: {best}, Worst: {worst}");
+        }
+    }
+  options:
+    - "מחלקת אל - God Class"
+    - "קינון עמוק - Deep Nesting"
+    - "מתודה ארוכה - Long Method"
+    - "שכפול קוד - Duplicated Code"
+  answer: 2
+  explanation: "המתודה מפענחת שורה, בודקת תקינות, מחשבת סטטיסטיקה ומדפיסה: ארבעה שלבים, והשורות הריקות מסמנות בדיוק איפה הם נפרדים. כל שלב הוא מתודה שמחכה לחילוץ (Extract Method): `ParseGrades`, `EnsureHasGrades`, `PrintSummary`. אז `Print` תקרא כמו רשימת צעדים."
+  optionExplanations:
+    "0": "למחלקה יש מתודה אחת ונושא אחד; הבעיה היא שהמתודה עצמה עושה הרבה."
+    "1": "יש לכל היותר רמה אחת של הזחה."
+    "3": "אף קטע לא חוזר על עצמו."
+
+- id: cs.clean-code.code-smells.010
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class LoginGuard
+      {
+          private int _failedAttempts;
+
+          public bool IsLocked => _failedAttempts >= 3; // 3 = max failed attempts
+
+          public void RecordFailure() => _failedAttempts++;
+      }
+    - |
+      class LoginGuard
+      {
+          private const int MaxFailedAttempts = 3;
+          private int _failedAttempts;
+
+          public bool IsLocked => _failedAttempts >= MaxFailedAttempts;
+
+          public void RecordFailure() => _failedAttempts++;
+      }
+    - |
+      class LoginGuard
+      {
+          private int _failedAttempts;
+
+          public bool IsLocked => _failedAttempts >= 3;
+
+          public void RecordFailure() => _failedAttempts++;
+      }
+  answer: 1
+  explanation: "קבוע עם שם (`MaxFailedAttempts`) מסביר את המספר בכל מקום שמשתמשים בו, ושינוי המדיניות נעשה בשורה אחת. ב-C# קבועים נכתבים ב-PascalCase."
+  optionExplanations:
+    "0": "ההערה מסבירה את המספר רק בשורה הזו; בשימוש הבא ב-`3` ההסבר לא יהיה שם, וההערה עלולה להתיישן."
+    "2": "`3` הוא מספר קסם: הקורא צריך לנחש מה הוא מייצג."
+
+- id: cs.clean-code.code-smells.011
+  type: cleaner
+  difficulty: 3
+  prompt: במערכת של חנות מחברים סכומי כסף בכמה מטבעות, במקומות רבים בקוד. איזו גרסה נקייה יותר?
+  options:
+    - |
+      decimal priceAmount = 50m;
+      string priceCurrency = "ILS";
+      decimal taxAmount = 9m;
+      string taxCurrency = "ILS";
+      if (taxCurrency != priceCurrency)
+          throw new InvalidOperationException("Currency mismatch.");
+      Console.WriteLine($"{priceAmount + taxAmount} {priceCurrency}");
+    - |
+      var price = new Money(50m, "ILS");
+      var tax = new Money(9m, "ILS");
+      Console.WriteLine(price.Add(tax));
+
+      record Money(decimal Amount, string Currency)
+      {
+          public Money Add(Money other)
+          {
+              if (other.Currency != Currency)
+                  throw new InvalidOperationException("Currency mismatch.");
+              return this with { Amount = Amount + other.Amount };
+          }
+
+          public override string ToString() => $"{Amount} {Currency}";
+      }
+  answer: 1
+  explanation: "סכום ומטבע הם מושג אחד, כסף, ולכן מגיע להם טיפוס משלהם. `Money` מחזיק את שני הערכים יחד ומרכז את הכלל «אסור לחבר מטבעות שונים» במקום אחד. זה התיקון לאובססיית טיפוסים פרימיטיביים (Primitive Obsession)."
+  optionExplanations:
+    "0": "כל מקום שמחבר סכומים צריך לזכור את בדיקת המטבע; במקום אחד ישכחו, ויחברו שקלים עם דולרים."
+
+- id: cs.clean-code.code-smells.012
+  type: single
+  difficulty: 2
+  prompt: בכל פעם שמוסיפים צורה, צריך לשנות את המתודה הזו ועוד מתודות דומות (היקף, ציור). מה התיקון המתאים ביותר?
+  code: |
+    class AreaCalculator
+    {
+        public double Area(string shape, double size)
+        {
+            switch (shape)
+            {
+                case "circle": return Math.PI * size * size;
+                case "square": return size * size;
+                case "triangle": return Math.Sqrt(3) / 4 * size * size;
+                default: throw new ArgumentException("Unknown shape.");
+            }
+        }
+    }
+  options:
+    - "להחליף את ה-switch בשרשרת של if ו-else if"
+    - "להעביר את שמות הצורות לקבועים ולהשאיר את ה-switch"
+    - "להגדיר ממשק IShape עם מתודה Area, ומחלקה לכל צורה שמממשת אותה"
+    - "להוסיף הערה מעל כל case שמסבירה את הנוסחה"
+  answer: 2
+  explanation: "`switch` על סוג שחוזר בכמה מתודות הוא ריח מוכר (Switch Statements): כל צורה חדשה מחייבת לעבור על כל ה-switch-ים. עם פולימורפיזם (Polymorphism), כל צורה יודעת לחשב את השטח שלה, וצורה חדשה היא מחלקה חדשה בלי לגעת בקוד קיים."
+  optionExplanations:
+    "0": "if ו-else if הם אותו מבנה בתחביר אחר; הבעיה נשארת."
+    "1": "קבועים מונעים שגיאות כתיב, אבל עדיין צריך לעדכן כל switch בכל צורה חדשה."
+    "3": "הערות לא משנות את המבנה, וכל צורה חדשה עדיין מחייבת לשנות כמה מתודות."
+
+- id: cs.clean-code.code-smells.013
+  type: bug
+  difficulty: 2
+  prompt: תקופת הניסיון היא 14 ימים. באיזו שורה הבאג?
+  code: |
+    class Subscription
+    {
+        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= 14;
+
+        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, 30 - daysSinceSignup);
+    }
+  answer: 5
+  fixed: |
+    class Subscription
+    {
+        private const int TrialDays = 14;
+
+        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= TrialDays;
+
+        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, TrialDays - daysSinceSignup);
+    }
+  explanation: "`TrialDaysLeft` מחשבת לפי 30 ימים, ולכן אחרי 20 ימים הניסיון נגמר אבל המשתמש רואה שנשארו לו 10. התיקון המינימלי הוא להחליף את `30` ב-`14`; התיקון הנכון באמת הוא קבוע אחד `TrialDays`, כדי שמספרי קסם לא יוכלו להתרחק זה מזה."
+
+- id: cs.clean-code.code-smells.014
+  type: bug
+  difficulty: 3
+  prompt: "המתודה עברה רפקטורינג מקינון עמוק לסעיפי שמירה (Guard Clauses). היא אמורה לזרוק חריגה רק כשאין מספיק מלאי. באיזו שורה הבאג?"
+  code: |
+    class Inventory
+    {
+        private int _stock = 10;
+
+        public void Remove(int quantity)
+        {
+            if (quantity <= 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            if (quantity < _stock)
+                throw new InvalidOperationException("Not enough stock.");
+
+            _stock -= quantity;
+        }
+    }
+  answer: 9
+  fixed: |
+    class Inventory
+    {
+        private int _stock = 10;
+
+        public void Remove(int quantity)
+        {
+            if (quantity <= 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            if (quantity > _stock)
+                throw new InvalidOperationException("Not enough stock.");
+
+            _stock -= quantity;
+        }
+    }
+  explanation: "בגרסה המקוננת התנאי היה «אם `quantity <= _stock`, הורד מהמלאי». סעיף שמירה בודק את ההפך, ולכן צריך לשלול את התנאי: `quantity > _stock`. כאן נכתב `<`, והמתודה זורקת חריגה דווקא כשיש מספיק מלאי. בהיפוך תנאים לסעיפי שמירה, בדקו את מקרי הקצה."
+
+- id: cs.clean-code.code-smells.015
+  type: truefalse
+  difficulty: 1
+  prompt: "קוד שהוצא להערה (Commented-Out Code) כדאי להשאיר בקובץ, למקרה שנצטרך אותו שוב."
+  answer: false
+  explanation: "קוד בהערה הוא קוד מת: הקוראים לא יודעים אם הוא חשוב, אף אחד לא מעז למחוק אותו, והוא מתיישן מול הקוד החי. מערכת ניהול גרסאות (git) שומרת כל גרסה קודמת, ולכן אפשר למחוק בביטחון."
+
+- id: cs.clean-code.code-smells.016
+  type: single
+  difficulty: 2
+  prompt: איזו הערה בקוד שווה להשאיר?
+  code: |
+    class PaymentGateway
+    {
+        // Gateway class
+        private const int MaxDecimals = 2;
+
+        // Rounds the amount
+        public decimal Prepare(decimal amount)
+        {
+            // The bank API rejects amounts with sub-cent precision
+            return Math.Round(amount, MaxDecimals);
+        }
+    }
+  options:
+    - "// Gateway class"
+    - "// Rounds the amount"
+    - "// The bank API rejects amounts with sub-cent precision"
+  answer: 2
+  explanation: "הערה טובה מסבירה למה, מידע שאי אפשר לקרוא מהקוד: כאן, דרישה של מערכת חיצונית. בלעדיה, מישהו עלול «לפשט» ולמחוק את העיגול. שתי ההערות האחרות רק חוזרות על מה שהקוד כבר אומר."
+  optionExplanations:
+    "0": "שם המחלקה כבר אומר את זה; זו הערה מיותרת (Redundant Comment)."
+    "1": "`Math.Round` כבר אומר שמעגלים; ההערה לא מוסיפה למה."
