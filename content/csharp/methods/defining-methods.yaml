@@ -1,0 +1,345 @@
+- id: cs.methods.defining-methods.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Square(4) + Square(3));
+
+    static int Square(int n)
+    {
+        return n * n;
+    }
+  options: ["25", "169", "49", "7"]
+  answer: 0
+  explanation: "טיפוס ההחזרה (Return type) של `Square` הוא `int`, ולכן `Square(4) + Square(3)` הוא חיבור של שני מספרים: 16 + 9 = 25. אין כאן שרשור מחרוזות."
+  optionExplanations:
+    "1": "`169` היה מתקבל משרשור מחרוזות, אבל המתודה מחזירה `int` ולכן `+` הוא חיבור חשבוני."
+    "2": "`49` הוא `(4 + 3) * (4 + 3)`. כל קריאה מחושבת בנפרד ורק אחר כך התוצאות מחוברות."
+    "3": "`7` הוא סכום הארגומנטים עצמם, בלי להפעיל עליהם את המתודה."
+
+- id: cs.methods.defining-methods.002
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int baseValue = 1;
+    int AddBase(int x) => x + baseValue;
+    baseValue = 10;
+    Console.WriteLine(AddBase(5));
+  options: ["15", "6", "5", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מתודה מקומית (Local function) שאינה `static` לוכדת (Capture) את המשתנה `baseValue` עצמו, ולא עותק של הערך שלו ברגע ההגדרה. בזמן הקריאה הערך הוא כבר 10, ולכן מודפס 5 + 10 = 15."
+  optionExplanations:
+    "1": "`6` מניח שהמתודה שומרת את הערך 1 שהיה ברגע ההגדרה. היא קוראת את המשתנה בזמן הקריאה."
+    "2": "`5` מניח שהמתודה המקומית לא רואה את המשתנים שמסביבה, אבל מתודה מקומית רגילה רואה אותם."
+    "3": "מותר להגדיר מתודה מקומית באמצע הקוד ולהשתמש בה במשתנים שהוגדרו לפניה."
+
+- id: cs.methods.defining-methods.003
+  type: single
+  difficulty: 1
+  prompt: "מה המשמעות של המילה `void` בהגדרת המתודה `static void PrintTitle(string title)`?"
+  options:
+    - "המתודה לא מחזירה ערך לקורא"
+    - "המתודה לא מקבלת פרמטרים"
+    - "המתודה מחזירה `null`"
+    - "המתודה פרטית ואי אפשר לקרוא לה מבחוץ"
+  answer: 0
+  explanation: "`void` במקום טיפוס ההחזרה אומר שהמתודה מבצעת פעולה ולא מחזירה ערך. אי אפשר להציב את תוצאת הקריאה שלה במשתנה."
+  optionExplanations:
+    "1": "הפרמטרים נכתבים בסוגריים אחרי שם המתודה. כאן יש פרמטר אחד, `title`."
+    "2": "`null` הוא ערך. מתודת `void` לא מחזירה שום ערך, גם לא `null`."
+    "3": "הנגישות נקבעת במילים כמו `public` ו-`private`, לא ב-`void`."
+
+- id: cs.methods.defining-methods.004
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int total = Print(5);
+    Console.WriteLine(total);
+
+    static void Print(int n)
+    {
+        Console.WriteLine(n);
+    }
+  options: ["שגיאת קומפילציה", "5\n5", "5\n0", "5"]
+  answer: 0
+  explanation: "`Print` מוגדרת `void`, כלומר היא לא מחזירה ערך. לכן אי אפשר להציב את הקריאה שלה במשתנה מסוג `int`, והקומפיילר עוצר כבר בשורה הראשונה."
+  optionExplanations:
+    "1": "מתודת `void` לא מחזירה את הארגומנט שקיבלה. היא לא מחזירה כלום."
+    "2": "אין ערך ברירת מחדל שחוזר ממתודת `void`. הקוד לא מתקמפל בכלל."
+    "3": "לא יודפס כלום, כי תוכנית שלא מתקמפלת לא רצה."
+
+- id: cs.methods.defining-methods.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var a = new Counter();
+    var b = new Counter();
+    a.Increment();
+    b.Increment();
+    b.Increment();
+    Console.WriteLine($"{a.Count} {b.Count} {Counter.Total}");
+
+    class Counter
+    {
+        public static int Total;
+        public int Count;
+
+        public void Increment()
+        {
+            Count++;
+            Total++;
+        }
+    }
+  options: ["1 2 3", "1 2 2", "3 3 3", "1 2 1"]
+  answer: 0
+  explanation: "`Increment` היא מתודת מופע (Instance method): היא משנה את `Count` של האובייקט שעליו נקראה. `Total` הוא שדה `static`, אחד משותף לכל המחלקה, ולכן הוא סופר את כל שלוש הקריאות."
+  optionExplanations:
+    "1": "`Total` לא שייך לאובייקט מסוים. הוא משותף, ולכן הוא סופר גם את הקריאה על `a`."
+    "2": "`Count` הוא שדה מופע. לכל אובייקט יש עותק משלו, ולכן `a.Count` הוא 1 בלבד."
+    "3": "`Total` לא מתאפס בכל אובייקט חדש. יש ממנו עותק אחד בלבד."
+
+- id: cs.methods.defining-methods.006
+  type: single
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה הבעיה בקוד?
+  code: |
+    class Calculator
+    {
+        private int lastResult;
+
+        public static int Add(int a, int b)
+        {
+            lastResult = a + b;
+            return lastResult;
+        }
+    }
+  options:
+    - "מתודה `static` לא יכולה לגשת לשדה המופע `lastResult` בלי אובייקט, ולכן הקוד לא מתקמפל"
+    - "שדה `private` לא נגיש מתוך מתודה של אותה מחלקה"
+    - "מתודה `static` חייבת להיות מוגדרת `void`"
+    - "אין בעיה, הקוד מתקמפל ו-`Add` מחזירה את הסכום"
+  answer: 0
+  explanation: "מתודה סטטית (Static method) שייכת למחלקה ולא לאובייקט מסוים, ולכן אין לה `this`. השדה `lastResult` קיים רק בתוך אובייקט, אז הקומפיילר לא יודע של איזה אובייקט מדובר. הפתרון: להסיר את `static` מהמתודה, או להפוך את השדה ל-`static`."
+  optionExplanations:
+    "1": "`private` מגביל גישה מחוץ למחלקה בלבד. בתוך המחלקה כל המתודות רואות אותו."
+    "2": "מתודה סטטית יכולה להחזיר כל טיפוס, למשל `Math.Max` מחזירה מספר."
+    "3": "הקומפיילר מחזיר שגיאה כי למתודה סטטית אין אובייקט שממנו אפשר לקרוא שדה מופע."
+
+- id: cs.methods.defining-methods.007
+  type: truefalse
+  difficulty: 2
+  prompt: "מתודה מקומית (Local function) חייבת להיות מוגדרת לפני השורה הראשונה שקוראת לה."
+  answer: false
+  explanation: "מתודה מקומית מוכרת בכל הבלוק שבו היא מוגדרת, גם לפני שורת ההגדרה. לכן מקובל לכתוב את הקוד הראשי למעלה ואת המתודות המקומיות בסוף. זה שונה ממשתנה מקומי, שחייב להיות מוצהר לפני השימוש בו."
+
+- id: cs.methods.defining-methods.008
+  type: bug
+  difficulty: 1
+  prompt: "המתודה `Max` אמורה להחזיר את הגדול מבין שני המספרים, ולכן הקוד אמור להדפיס `9`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(Max(3, 9));
+
+    static int Max(int a, int b)
+    {
+        int result = a;
+        if (b > a)
+        {
+            result = b;
+        }
+        return a;
+    }
+  answer: 10
+  explanation: "המתודה מחשבת את התוצאה הנכונה ב-`result`, אבל מחזירה את `a`. מה שקובע את ערך הקריאה הוא רק מה שכתוב אחרי `return`, ולכן מודפס `3`. התיקון: `return result;`."
+  fixed: |
+    Console.WriteLine(Max(3, 9));
+
+    static int Max(int a, int b)
+    {
+        int result = a;
+        if (b > a)
+        {
+            result = b;
+        }
+        return result;
+    }
+
+- id: cs.methods.defining-methods.009
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להוסיף בונוס של 10 נקודות לציון ולהדפיס `80`. באיזו שורה הבאג?"
+  code: |
+    int score = 70;
+    AddBonus(score);
+    Console.WriteLine(score);
+
+    static int AddBonus(int value)
+    {
+        return value + 10;
+    }
+  answer: 2
+  explanation: "`AddBonus` לא משנה את `score`. היא מחשבת ערך חדש ומחזירה אותו. הקריאה בשורה 2 זורקת את הערך המוחזר, ולכן מודפס `70`. צריך להציב אותו: `score = AddBonus(score);`."
+  fixed: |
+    int score = 70;
+    score = AddBonus(score);
+    Console.WriteLine(score);
+
+    static int AddBonus(int value)
+    {
+        return value + 10;
+    }
+
+- id: cs.methods.defining-methods.010
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Check(5);
+    Check(-1);
+
+    static void Check(int n)
+    {
+        if (n < 0)
+        {
+            Console.WriteLine("invalid");
+            return;
+        }
+        Console.WriteLine(n * 2);
+    }
+  options: ["10\ninvalid", "10\ninvalid\n-2", "10\n-2", "invalid"]
+  answer: 0
+  explanation: "גם במתודת `void` אפשר לכתוב `return;` בלי ערך. הוא יוצא מהמתודה מיד, ולכן בקריאה עם `-1` השורה האחרונה לא רצה."
+  optionExplanations:
+    "1": "`return` מסיים את המתודה מיד. הקוד שאחריו לא מתבצע בקריאה הזו."
+    "2": "התנאי `n < 0` מתקיים עבור `-1`, ולכן מודפס `invalid` ולא החישוב."
+    "3": "הקריאה הראשונה, `Check(5)`, מדפיסה `10` לפני הקריאה השנייה."
+
+- id: cs.methods.defining-methods.011
+  type: output
+  difficulty: 3
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int factor = 3;
+
+    static int Scale(int x)
+    {
+        return x * factor;
+    }
+
+    Console.WriteLine(Scale(5));
+  options: ["שגיאת קומפילציה", "15", "0", "5"]
+  answer: 0
+  explanation: "מתודה מקומית שמוגדרת `static` אסורה בלכידה (Capture) של משתנים מהסביבה שלה. היא רואה רק את הפרמטרים והמשתנים שלה, ולכן השימוש ב-`factor` הוא שגיאת קומפילציה. בלי `static` הקוד היה מדפיס `15`."
+  optionExplanations:
+    "1": "`15` היה מודפס אילו `Scale` לא הייתה `static`. המילה `static` חוסמת גישה למשתנים שמחוץ למתודה."
+    "2": "אין ערך ברירת מחדל למשתנה שלא נגיש. הקומפיילר עוצר עם שגיאה."
+    "3": "`factor` לא מתעלם בשקט. השימוש בו הוא שגיאה."
+
+- id: cs.methods.defining-methods.012
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Tag("x") + Tag("y"));
+
+    static string Tag(string s)
+    {
+        Console.Write(s.ToUpper());
+        return s;
+    }
+  options: ["XYxy", "xyXY", "XxYy", "xy"]
+  answer: 0
+  explanation: "לפני ש-`Console.WriteLine` רץ, צריך לחשב את הארגומנט שלו. שתי הקריאות ל-`Tag` רצות משמאל לימין ומדפיסות `X` ואז `Y` (תופעת לוואי, Side effect). רק אחר כך מודפס הערך המשורשר שהן החזירו, `xy`."
+  optionExplanations:
+    "1": "הארגומנט של `WriteLine` מחושב לפני ההדפסה שלו, ולכן ההדפסות שבתוך `Tag` מגיעות קודם."
+    "2": "`Tag(\"y\")` נקראת רק אחרי ש-`Tag(\"x\")` הסתיימה, ו-`WriteLine` מדפיס רק בסוף."
+    "3": "`Console.Write` בתוך `Tag` מדפיס בפועל. ערך ההחזרה וההדפסה הם שני דברים נפרדים."
+
+- id: cs.methods.defining-methods.013
+  type: single
+  difficulty: 1
+  prompt: "איזו הגדרה תקינה למתודה שמקבלת שם ומחזירה מחרוזת ברכה?"
+  options:
+    - "`static string Greet(string name)`"
+    - "`static Greet(string name): string`"
+    - "`static string Greet(name)`"
+    - "`static void string Greet(string name)`"
+  answer: 0
+  explanation: "ב-C# כותבים קודם את טיפוס ההחזרה, אחריו את שם המתודה, ובסוגריים כל פרמטר עם הטיפוס שלו. זו חתימת המתודה (Method signature) יחד עם טיפוס ההחזרה."
+  optionExplanations:
+    "1": "טיפוס החזרה אחרי נקודתיים הוא תחביר של שפות אחרות. ב-C# הוא נכתב לפני השם."
+    "2": "כל פרמטר ב-C# חייב טיפוס מפורש, למשל `string name`."
+    "3": "למתודה יש טיפוס החזרה אחד בלבד. `void` ו-`string` לא יכולים להופיע יחד."
+
+- id: cs.methods.defining-methods.014
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      static bool IsPositive(int n) => n > 0;
+    - |
+      static bool IsPositive(int n)
+      {
+          if (n > 0)
+          {
+              return true;
+          }
+          else
+          {
+              return false;
+          }
+      }
+    - |
+      static bool IsPositive(int n)
+      {
+          bool result = false;
+          if (n > 0)
+              result = true;
+          return result;
+      }
+  answer: 0
+  explanation: "הביטוי `n > 0` כבר מחזיר `bool`, ולכן אפשר להחזיר אותו ישירות. מתודה של שורה אחת נכתבת יפה כגוף ביטוי (Expression-bodied member) עם `=>`."
+  optionExplanations:
+    "1": "`if` שמחזיר `true` או `false` רק משכפל את התנאי עצמו."
+    "2": "משתנה עזר ו-`if` מוסיפים שורות בלי להוסיף מידע."
+
+- id: cs.methods.defining-methods.015
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט במתודה `GetTotal`?
+  code: |
+    class Cart
+    {
+        private List<decimal> prices = new();
+
+        public decimal GetTotal()
+        {
+            decimal total = prices.Sum();
+            prices.Clear();
+            return total;
+        }
+    }
+  options:
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "דגל בוליאני - Flag Argument"
+    - "מספר קסם - Magic Number"
+  answer: 0
+  explanation: "שם שמתחיל ב-`Get` מבטיח שהמתודה רק מחזירה ערך. בפועל היא גם מרוקנת את העגלה, וקריאה שנייה תחזיר 0. התיקון: להפריד ל-`GetTotal` שרק מחשבת ול-`Clear` נפרדת שהקורא מפעיל במפורש."
+  optionExplanations:
+    "1": "למתודה אין פרמטרים בכלל."
+    "2": "אין פרמטר בוליאני שמשנה את התנהגות המתודה."
+    "3": "אין בקוד מספר בלי שם."
+
+- id: cs.methods.defining-methods.016
+  type: truefalse
+  difficulty: 3
+  prompt: "מתודה סטטית יכולה ליצור אובייקט של המחלקה שלה ולקרוא דרכו למתודת מופע של אותה מחלקה."
+  answer: true
+  explanation: "ההגבלה על מתודה סטטית היא שאין לה `this`, כלומר אין לה אובייקט נוכחי. אם היא יוצרת אובייקט, למשל `var c = new Calculator();`, היא יכולה לקרוא ל-`c.Reset()` כמו כל קוד אחר. כך בדיוק עובדת מתודת `Main` שיוצרת אובייקטים."

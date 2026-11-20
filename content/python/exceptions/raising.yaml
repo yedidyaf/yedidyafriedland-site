@@ -1,0 +1,303 @@
+- id: py.exceptions.raising.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def set_age(age):
+        if age < 0:
+            raise ValueError("negative age")
+        print("age set")
+
+    set_age(5)
+    set_age(-1)
+    print("end")
+  options: ["age set\nValueError", "age set\nnegative age\nend", "age set\nend", "ValueError"]
+  answer: 0
+  explanation: "`raise` זורק חריגה (Exception) ועוצר את הביצוע מיד. אף אחד לא תופס אותה, ולכן התוכנית נעצרת: `print(\"age set\")` בתוך הקריאה השנייה ו-`print(\"end\")` לא רצים."
+  optionExplanations:
+    "1": "`raise` לא מדפיס את ההודעה וממשיך. החריגה עוצרת את התוכנית כי אין `try` שתופס אותה."
+    "2": "אחרי `raise` הפונקציה לא ממשיכה, והחריגה עולה עד לתוכנית הראשית ועוצרת אותה."
+    "3": "הקריאה הראשונה, `set_age(5)`, רצה בהצלחה לפני שהחריגה נזרקת ומדפיסה `age set`."
+
+- id: py.exceptions.raising.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def withdraw(balance, amount):
+        if amount > balance:
+            raise ValueError(f"need {amount - balance} more")
+        return balance - amount
+
+    try:
+        print(withdraw(100, 30))
+        print(withdraw(50, 80))
+    except ValueError as e:
+        print("error:", e)
+  options: ["70\nerror: need 30 more", "70\nerror: ValueError", "error: need 30 more", "70\n-30"]
+  answer: 0
+  explanation: "הקריאה הראשונה מחזירה `70`. בשנייה הסכום גדול מהיתרה, ולכן נזרקת `ValueError` עם הודעה. `except` תופס אותה, ו-`print(e)` מדפיס את ההודעה שהועברה ל-`ValueError`."
+  optionExplanations:
+    "1": "הדפסת אובייקט חריגה מציגה את ההודעה שלו, לא את שם המחלקה."
+    "2": "החריגה נזרקת רק בקריאה השנייה. הקריאה הראשונה כבר הדפיסה `70`."
+    "3": "התנאי `amount > balance` מתקיים, ולכן `raise` רץ לפני שורת ה-`return`."
+
+- id: py.exceptions.raising.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def load():
+        try:
+            return int("x")
+        except ValueError:
+            print("logging")
+            raise
+
+    try:
+        load()
+    except ValueError:
+        print("handled")
+  options: ["logging\nhandled", "logging", "handled", "logging\nValueError"]
+  answer: 0
+  explanation: "`raise` בלי ארגומנט בתוך `except` זורק מחדש (Re-raise) את אותה חריגה שנתפסה. הפונקציה מדפיסה `logging`, והחריגה ממשיכה אל ה-`try` החיצוני שמדפיס `handled`. זו תבנית נפוצה: לרשום ביומן ולהעביר הלאה."
+  optionExplanations:
+    "1": "`raise` זורק את החריגה מחדש, ולכן היא מגיעה ל-`except` החיצוני."
+    "2": "הבלוק הפנימי רץ קודם ומדפיס `logging` לפני שהחריגה נזרקת מחדש."
+    "3": "החריגה שנזרקה מחדש נתפסת בחוץ, ולכן התוכנית לא נעצרת."
+
+- id: py.exceptions.raising.004
+  type: single
+  difficulty: 1
+  prompt: "מה עושה השורה `raise` בלי ארגומנט, כשהיא כתובה בתוך בלוק `except`?"
+  options:
+    - "זורקת מחדש את החריגה שנתפסה, עם ה-traceback המקורי"
+    - "זורקת חריגה חדשה מסוג `Exception` בלי הודעה"
+    - "יוצאת מהפונקציה ומחזירה `None`"
+    - "עוצרת את התוכנית כך שאי אפשר לתפוס את החריגה"
+  answer: 0
+  explanation: "`raise` לבד זורק מחדש (Re-raise) את החריגה שמטופלת כרגע, כמו שהיא, כולל המידע על המקום המקורי שבו נזרקה. משתמשים בזה כשרוצים לעשות משהו (למשל לרשום ביומן) בלי לבלוע את השגיאה."
+  optionExplanations:
+    "1": "לא נוצרת חריגה חדשה. נזרק אותו אובייקט חריגה שנתפס."
+    "2": "זה מה שקורה בלי `raise`, אם בלוק ה-`except` פשוט מסתיים בפונקציה."
+    "3": "החריגה שנזרקה מחדש היא חריגה רגילה, וקוד שקרא לפונקציה יכול לתפוס אותה."
+
+- id: py.exceptions.raising.005
+  type: truefalse
+  difficulty: 1
+  prompt: "אפשר לכתוב `raise ValueError` בלי סוגריים, ו-Python תיצור בעצמה מופע של `ValueError`."
+  answer: true
+  explanation: "כשכותבים `raise` עם מחלקת חריגה, Python יוצרת ממנה מופע (Instance) בלי ארגומנטים וזורקת אותו. עדיף בדרך כלל לכתוב `raise ValueError(\"...\")` עם הודעה שמסבירה מה השתבש."
+
+- id: py.exceptions.raising.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    try:
+        raise "file missing"
+    except Exception as e:
+        print(type(e).__name__)
+  options: ["TypeError", "file missing", "str", "Exception"]
+  answer: 0
+  explanation: "אפשר לזרוק רק אובייקט שיורש מ-`BaseException`. ניסיון לזרוק מחרוזת גורם ל-Python לזרוק במקומה `TypeError`, וזו החריגה שנתפסת ומודפסת."
+  optionExplanations:
+    "1": "מחרוזת היא לא חריגה ואי אפשר לזרוק אותה. ההודעה הזאת לא מגיעה לשום מקום."
+    "2": "המחרוזת לא נזרקת בכלל. מה שנזרק הוא `TypeError` שמתלוננת עליה."
+    "3": "`type(e).__name__` מחזיר את הסוג המדויק של החריגה, לא את מחלקת הבסיס שב-`except`."
+
+- id: py.exceptions.raising.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def read_port(text):
+        try:
+            return int(text)
+        except ValueError as e:
+            raise RuntimeError("bad port") from e
+
+    try:
+        read_port("abc")
+    except RuntimeError as e:
+        print(e)
+        print(type(e.__cause__).__name__)
+  options: ["bad port\nValueError", "bad port\nNoneType", "bad port\nRuntimeError", "ValueError"]
+  answer: 0
+  explanation: "`raise ... from e` משרשר חריגות (Exception Chaining): החריגה החדשה שומרת את המקורית במאפיין `__cause__`. כך הקוד הקורא מקבל שגיאה ברמה שמתאימה לו, `RuntimeError`, ועדיין אפשר לראות את הסיבה המקורית, `ValueError`."
+  optionExplanations:
+    "1": "`from e` הוא בדיוק מה שממלא את `__cause__`. בלי `from` היה מודפס `NoneType`."
+    "2": "`__cause__` מצביע על החריגה המקורית, לא על החריגה החדשה עצמה."
+    "3": "ה-`ValueError` נתפסה בתוך הפונקציה, ומה שיוצא ממנה הוא `RuntimeError` שנתפסת בחוץ."
+
+- id: py.exceptions.raising.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try:
+        try:
+            1 / 0
+        except ZeroDivisionError:
+            raise ValueError("bad")
+    except ValueError as e:
+        print(type(e.__context__).__name__)
+        print(e.__cause__)
+  options:
+    - "ZeroDivisionError\nNone"
+    - "NoneType\nNone"
+    - "ZeroDivisionError\ndivision by zero"
+    - "NoneType\ndivision by zero"
+  answer: 0
+  explanation: "כשזורקים חריגה בתוך `except`, Python משרשרת אותה אוטומטית (Implicit Chaining) לחריגה שטופלה, ושומרת אותה ב-`__context__`. `__cause__` מתמלא רק בשרשור מפורש עם `from`, ולכן הוא `None`."
+  optionExplanations:
+    "1": "גם בלי `from`, Python זוכרת את החריגה שטופלה בזמן שנזרקה החדשה, במאפיין `__context__`."
+    "2": "`__cause__` מתמלא רק כשכותבים `raise ... from ...`. כאן לא נכתב `from`."
+    "3": "השרשור האוטומטי ממלא את `__context__` ולא את `__cause__`."
+
+- id: py.exceptions.raising.009
+  type: single
+  difficulty: 2
+  prompt: "מה המטרה של `raise ValueError(\"missing key\") from None` בתוך בלוק `except`?"
+  options:
+    - "להסתיר את החריגה המקורית מה-traceback, כך שהמשתמש יראה רק את החדשה"
+    - "לזרוק את `ValueError` בלי הודעה"
+    - "לבטל את `ValueError` ולזרוק מחדש את החריגה המקורית"
+    - "לתפוס את החריגה החדשה כך שלא תעצור את התוכנית"
+  answer: 0
+  explanation: "`from None` מבטל את הצגת השרשור: ה-traceback לא יציג את החריגה המקורית ואת ההודעה \"During handling of the above exception...\". משתמשים בזה כשהחריגה המקורית היא פרט מימוש שלא עוזר לקורא."
+  optionExplanations:
+    "1": "ההודעה `\"missing key\"` נשארת. `from None` משפיע רק על השרשור לחריגה הקודמת."
+    "2": "נזרקת `ValueError`. `from` קובע רק מה תהיה הסיבה שלה, לא איזו חריגה נזרקת."
+    "3": "`from` לא תופס דבר. `ValueError` נזרקת וממשיכה לעלות כרגיל."
+
+- id: py.exceptions.raising.010
+  type: single
+  difficulty: 1
+  prompt: הפונקציה `square_root(x)` קיבלה מספר שלילי, שאין לו שורש ממשי. מהי הדרך המומלצת לדווח על כך?
+  options:
+    - "לזרוק `ValueError` עם הודעה שמסבירה מה לא תקין"
+    - "להחזיר `-1` כסימן לשגיאה"
+    - "להדפיס הודעת שגיאה ולהחזיר `None`"
+    - "לזרוק `Exception` כללית בלי הודעה"
+  answer: 0
+  explanation: "כשפונקציה לא יכולה לעשות את מה שהתבקשה, היא זורקת חריגה. `ValueError` היא החריגה המקובלת לערך מהטיפוס הנכון אבל לא תקין, וההודעה עוזרת להבין מה קרה. את החריגה אי אפשר לפספס בטעות, בניגוד לערך החזרה מיוחד."
+  optionExplanations:
+    "1": "הקוד הקורא עלול לשכוח לבדוק את `-1` ולהמשיך לחשב איתו כאילו היה תוצאה אמיתית."
+    "2": "הדפסה לא מאפשרת לקוד הקורא לטפל בשגיאה, ו-`None` עלול לגרום לשגיאה אחרת מאוחר יותר."
+    "3": "`Exception` כללית בלי הודעה לא אומרת מה השתבש, ומאלצת את הקורא לתפוס את כל החריגות."
+
+- id: py.exceptions.raising.011
+  type: truefalse
+  difficulty: 2
+  prompt: "בשורה `raise RuntimeError(\"failed\") from e`, החריגה `e` נשמרת במאפיין `__cause__` של ה-`RuntimeError` החדשה."
+  answer: true
+  explanation: "`from e` הוא שרשור מפורש (Explicit Chaining): Python מציבה את `e` ב-`__cause__` של החריגה החדשה, וה-traceback יציג את שתיהן עם ההודעה \"The above exception was the direct cause of the following exception\"."
+
+- id: py.exceptions.raising.012
+  type: bug
+  difficulty: 1
+  prompt: הפונקציה אמורה לזרוק `ValueError` כשהעוצמה מחוץ לטווח 0 עד 100. באיזו שורה הבאג?
+  code: |
+    def set_volume(percent):
+        if percent < 0 or percent > 100:
+            ValueError("volume must be 0-100")
+        return percent
+  answer: 3
+  explanation: "השורה יוצרת אובייקט `ValueError` אבל לא זורקת אותו: האובייקט נוצר ומיד נשכח, והפונקציה ממשיכה ומחזירה ערך לא תקין. בלי המילה `raise`, חריגה היא סתם אובייקט."
+  fixed: |
+    def set_volume(percent):
+        if percent < 0 or percent > 100:
+            raise ValueError("volume must be 0-100")
+        return percent
+
+- id: py.exceptions.raising.013
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להדפיס הודעה ביומן כשההמרה נכשלת, ואז להעביר את אותה שגיאה לקוד שקרא לה. באיזו שורה הבאג?
+  code: |
+    def load_config(text):
+        try:
+            return int(text)
+        except ValueError:
+            print("invalid config")
+            return None
+  answer: 6
+  explanation: "`return None` בולע את החריגה: הקוד הקורא מקבל `None` ולא יודע שהייתה שגיאה. כדי להעביר את אותה חריגה הלאה כותבים `raise` בלי ארגומנט."
+  fixed: |
+    def load_config(text):
+        try:
+            return int(text)
+        except ValueError:
+            print("invalid config")
+            raise
+
+- id: py.exceptions.raising.014
+  type: bug
+  difficulty: 3
+  prompt: הפונקציה אמורה לזרוק `ValueError` חדשה עם הודעה ברורה, משורשרת לחריגה המקורית. באיזו שורה הבאג?
+  code: |
+    def parse_price(text):
+        try:
+            return float(text)
+        except ValueError as err:
+            raise ValueError(f"bad price: {text}") from text
+  answer: 5
+  explanation: "אחרי `from` צריך לבוא אובייקט חריגה (או `None`). `text` היא מחרוזת, ולכן במקום ה-`ValueError` המבוקשת נזרקת `TypeError`. החריגה המקורית נשמרה ב-`err`, ואותה יש לשרשר."
+  fixed: |
+    def parse_price(text):
+        try:
+            return float(text)
+        except ValueError as err:
+            raise ValueError(f"bad price: {text}") from err
+
+- id: py.exceptions.raising.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def check(n):
+        try:
+            if n > 3:
+                raise OverflowError("big")
+            print("ok", n)
+        except OverflowError:
+            print("caught")
+            raise
+        finally:
+            print("cleanup")
+
+    check(1)
+    check(5)
+  options:
+    - "ok 1\ncleanup\ncaught\ncleanup\nOverflowError"
+    - "ok 1\ncleanup\ncaught\nOverflowError"
+    - "ok 1\ncleanup\ncaught\ncleanup"
+    - "ok 1\ncaught\ncleanup\nOverflowError"
+  answer: 0
+  explanation: "בקריאה הראשונה אין חריגה: מודפס `ok 1` ואז `finally`. בשנייה נזרקת `OverflowError`, `except` מדפיס `caught` וזורק אותה מחדש, ולפני שהיא יוצאת מהפונקציה `finally` רץ שוב. אף אחד לא תופס אותה בחוץ, ולכן התוכנית נעצרת."
+  optionExplanations:
+    "1": "`finally` רץ גם כשבלוק `except` זורק חריגה מחדש."
+    "2": "`raise` בתוך `except` זורק את החריגה מחדש, ואין `try` חיצוני שתופס אותה."
+    "3": "`finally` רץ גם בקריאה הראשונה, שבה לא הייתה חריגה, ולכן `cleanup` מודפס אחרי `ok 1`."
+
+- id: py.exceptions.raising.016
+  type: cleaner
+  difficulty: 2
+  prompt: שתי הגרסאות מתנהגות אותו דבר. איזו נקייה יותר?
+  options:
+    - |
+      def apply_discount(price, percent):
+          if not 0 <= percent <= 100:
+              raise ValueError(f"invalid percent: {percent}")
+          return price * (100 - percent) / 100
+    - |
+      def apply_discount(price, percent):
+          if 0 <= percent <= 100:
+              return price * (100 - percent) / 100
+          else:
+              raise ValueError(f"invalid percent: {percent}")
+  answer: 0
+  explanation: "בדיקת שמירה (Guard Clause) בודקת את הקלט בתחילת הפונקציה וזורקת חריגה מיד. אחריה נשאר רק המסלול התקין, בלי `else` ובלי הזחה נוספת, והקורא רואה מיד מה הפונקציה דורשת מהקלט."
+  optionExplanations:
+    "1": "הטיפול בשגיאה נדחק לסוף, והמסלול התקין עטוף בתנאי. כשמתווספות בדיקות, מבנה כזה מוביל לקינון עמוק."

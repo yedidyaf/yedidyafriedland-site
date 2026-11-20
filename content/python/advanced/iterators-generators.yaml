@@ -1,0 +1,318 @@
+- id: py.advanced.iterators-generators.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def count_up(n):
+        for i in range(n):
+            yield i * 10
+
+    gen = count_up(3)
+    print(next(gen))
+    print(next(gen))
+  options: ["0\n10", "10\n20", "0\n0", "[0, 10, 20]"]
+  answer: 0
+  explanation: "פונקציה עם `yield` היא גנרטור (Generator). כל קריאה ל-`next` ממשיכה את הריצה מהנקודה שבה הגנרטור עצר בפעם הקודמת, ומחזירה את הערך הבא: קודם `0`, אחר כך `10`."
+  optionExplanations:
+    "1": "`range(n)` מתחיל מ-0, ולכן הערך הראשון הוא `0 * 10`, כלומר `0`."
+    "2": "הגנרטור זוכר איפה עצר. הקריאה השנייה ל-`next` לא מתחילה את הפונקציה מחדש."
+    "3": "`next` מחזיר ערך אחד בכל פעם, ולא רשימה של כל הערכים."
+
+- id: py.advanced.iterators-generators.002
+  type: single
+  difficulty: 1
+  prompt: "מה מחזירה הקריאה `make()`?"
+  code: |
+    def make():
+        print("running")
+        yield 1
+  options:
+    - "אובייקט גנרטור, בלי להריץ עדיין אף שורה מגוף הפונקציה"
+    - "את המספר `1`, אחרי שהודפס `running`"
+    - "את הרשימה `[1]`, אחרי שהודפס `running`"
+    - "את `None`, כי בפונקציה אין `return`"
+  answer: 0
+  explanation: "קריאה לפונקציה שיש בה `yield` לא מריצה את הגוף שלה. היא רק יוצרת אובייקט גנרטור. הגוף מתחיל לרוץ (ו-`running` מודפס) רק בקריאה הראשונה ל-`next` או כשלולאה מבקשת את הערך הראשון."
+  optionExplanations:
+    "1": "כך מתנהגת פונקציה רגילה עם `return 1`. עם `yield` מתקבל גנרטור, והערך `1` יופק רק כשיבקשו אותו."
+    "2": "גנרטור לא בונה רשימה. כדי לקבל `[1]` צריך לכתוב במפורש `list(make())`."
+    "3": "המילה `yield` לבדה הופכת את הפונקציה לגנרטור, גם בלי `return`."
+
+- id: py.advanced.iterators-generators.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    gen = (x * x for x in range(3))
+    print(sum(gen))
+    print(sum(gen))
+  options: ["5\n0", "5\n5", "5\nStopIteration", "14\n0"]
+  answer: 0
+  explanation: "ביטוי גנרטור (Generator Expression) אפשר לעבור עליו פעם אחת בלבד. ה-`sum` הראשון צורך את כל הערכים (0+1+4=5), ואחרי זה הגנרטור נגמר (Exhausted). ה-`sum` השני מקבל רצף ריק ומחזיר `0`, בלי שגיאה."
+  optionExplanations:
+    "1": "גנרטור לא מתחיל מחדש. אחרי מעבר מלא אחד הוא ריק, בניגוד לרשימה."
+    "2": "`sum` עוצר בשקט כשהגנרטור נגמר. `StopIteration` נזרקת רק בקריאה ישירה ל-`next`."
+    "3": "`range(3)` הוא 0, 1, 2, ולכן הסכום הוא 0+1+4=5. הערך 14 היה מתקבל עם `range(4)`."
+
+- id: py.advanced.iterators-generators.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def two():
+        yield "a"
+        yield "b"
+
+    g = two()
+    for item in g:
+        print(item)
+    print(next(g))
+  options: ["a\nb\nStopIteration", "a\nb\na", "a\nb\nNone", "a\nb"]
+  answer: 0
+  explanation: "הלולאה צורכת את שני הערכים, והגנרטור נגמר. קריאה ל-`next` על גנרטור שנגמר זורקת `StopIteration`. בתוך `for` החריגה הזו נתפסת אוטומטית וכך הלולאה יודעת לעצור, אבל קריאה ישירה ל-`next` חושפת אותה."
+  optionExplanations:
+    "1": "גנרטור לא חוזר להתחלה. כדי להתחיל מחדש צריך ליצור גנרטור חדש: `two()`."
+    "2": "`next` על גנרטור שנגמר לא מחזיר `None`, אלא זורק `StopIteration`."
+    "3": "השורה האחרונה כן רצה, והיא זורקת חריגה במקום להדפיס."
+
+- id: py.advanced.iterators-generators.005
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    it = iter([1, 2])
+    print(next(it), next(it), next(it, "done"))
+  options: ["1 2 done", "1 2 None", "StopIteration", "1 1 done"]
+  answer: 0
+  explanation: "`iter` יוצר איטרטור (Iterator) על הרשימה. שתי הקריאות הראשונות מחזירות `1` ו-`2`. בקריאה השלישית האיטרטור כבר ריק, אבל הארגומנט השני של `next` הוא ערך ברירת מחדל שמוחזר במקום לזרוק `StopIteration`."
+  optionExplanations:
+    "1": "כשמעבירים ערך ברירת מחדל, `next` מחזיר אותו (`\"done\"`) ולא `None`."
+    "2": "`StopIteration` נזרקת רק כשאין ערך ברירת מחדל. כאן יש `\"done\"`."
+    "3": "כל קריאה ל-`next` מתקדמת באיטרטור, ולכן הקריאה השנייה מחזירה `2`."
+
+- id: py.advanced.iterators-generators.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def numbers():
+        for n in [1, 2, 3]:
+            print("produce", n)
+            yield n
+
+    for n in numbers():
+        print("use", n)
+        if n == 2:
+            break
+  options:
+    - "produce 1\nuse 1\nproduce 2\nuse 2"
+    - "produce 1\nproduce 2\nproduce 3\nuse 1\nuse 2"
+    - "produce 1\nuse 1\nproduce 2\nuse 2\nproduce 3"
+    - "produce 1\nproduce 2\nuse 1\nuse 2"
+  answer: 0
+  explanation: "זו הערכה עצלה (Lazy Evaluation): הגנרטור מייצר ערך רק כשהלולאה מבקשת אותו, ולכן ההדפסות מתחלפות - מייצרים אחד, משתמשים בו, מייצרים את הבא. אחרי `break` אף אחד לא מבקש ערך נוסף, ולכן `produce 3` לא מודפס בכלל."
+  optionExplanations:
+    "1": "כך היה קורה אם הגנרטור היה בונה קודם רשימה מלאה. גנרטור עובד ערך אחר ערך."
+    "2": "אחרי `break` הלולאה לא מבקשת עוד ערכים, ולכן הקוד שמייצר את 3 לא רץ."
+    "3": "הגנרטור לא מייצר ערכים מראש. ערך נוצר רק כשהלולאה מבקשת אותו."
+
+- id: py.advanced.iterators-generators.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def gen():
+        print("start")
+        yield 1
+        print("middle")
+        yield 2
+        print("end")
+
+    g = gen()
+    print("created")
+    print(next(g))
+    print(next(g))
+  options:
+    - "created\nstart\n1\nmiddle\n2"
+    - "start\ncreated\n1\nmiddle\n2"
+    - "created\nstart\n1\nmiddle\n2\nend"
+    - "created\n1\n2"
+  answer: 0
+  explanation: "יצירת הגנרטור לא מריצה את הגוף, ולכן `created` מודפס ראשון. כל `next` מריץ את הגוף עד ה-`yield` הבא ועוצר שם. אחרי ה-`next` השני הגנרטור עצור על `yield 2`, ולכן `end` לא מודפס: אף אחד לא ביקש ערך שלישי."
+  optionExplanations:
+    "1": "`gen()` רק יוצר את אובייקט הגנרטור. `start` מודפס רק בקריאה הראשונה ל-`next`."
+    "2": "`end` היה מודפס רק בקריאה שלישית ל-`next` (שגם הייתה זורקת `StopIteration`)."
+    "3": "ה-`print` שבתוך הגנרטור רצים, כל אחד כשהריצה מגיעה אליו."
+
+- id: py.advanced.iterators-generators.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    nums = [1, 2, 3]
+    it = iter(nums)
+    print(list(it), list(it))
+    print(list(nums), list(nums))
+  options:
+    - "[1, 2, 3] []\n[1, 2, 3] [1, 2, 3]"
+    - "[1, 2, 3] [1, 2, 3]\n[1, 2, 3] [1, 2, 3]"
+    - "[1, 2, 3] []\n[1, 2, 3] []"
+    - "[1, 2, 3] []\n[] []"
+  answer: 0
+  explanation: "רשימה היא אובייקט שאפשר לעבור עליו (Iterable): כל מעבר יוצר איטרטור חדש שמתחיל מההתחלה. איטרטור, לעומת זאת, זוכר את המיקום שלו ומתרוקן אחרי מעבר אחד. לכן `list(it)` השני ריק, אבל `list(nums)` מחזיר את כל האיברים בכל פעם."
+  optionExplanations:
+    "1": "האיטרטור `it` כבר הגיע לסוף ב-`list` הראשון, ולא חוזר להתחלה."
+    "2": "רשימה לא מתרוקנת כשעוברים עליה. רק האיטרטור מתרוקן."
+    "3": "המעבר על `it` לא משנה את הרשימה `nums` עצמה."
+
+- id: py.advanced.iterators-generators.009
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    gen = (n for n in range(10))
+    print(5 in gen)
+    print(next(gen))
+  options: ["True\n6", "True\n0", "True\n5", "True\nStopIteration"]
+  answer: 0
+  explanation: "הבדיקה `in` על גנרטור צורכת ערכים עד שהיא מוצאת התאמה: היא שולפת 0, 1, 2, 3, 4, 5 ועוצרת. הערכים האלה כבר נצרכו, ולכן `next` מחזיר את הערך הבא, `6`."
+  optionExplanations:
+    "1": "בניגוד לרשימה, בדיקת `in` על גנרטור לא משאירה אותו במקום. היא מתקדמת בו."
+    "2": "גם הערך `5` עצמו נצרך בזמן החיפוש."
+    "3": "`in` עוצר ברגע שנמצאה התאמה, ולכן הגנרטור לא נגמר: נשארו בו 6 עד 9."
+
+- id: py.advanced.iterators-generators.010
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להפיק את כל המספרים הזוגיים מ-0 ועד `limit` (לא כולל). באיזו שורה הבאג?
+  code: |
+    def evens(limit):
+        for n in range(limit):
+            if n % 2 == 0:
+                return n
+
+    print(list(evens(7)))
+  answer: 4
+  explanation: "`return` מסיים את הפונקציה כבר במספר הזוגי הראשון ומחזיר את `0` בלבד, ואז `list(0)` זורק `TypeError`. `yield` מחזיר ערך ומשהה את הפונקציה, כך שהלולאה ממשיכה בבקשה הבאה ומפיקה `[0, 2, 4, 6]`."
+  fixed: |
+    def evens(limit):
+        for n in range(limit):
+            if n % 2 == 0:
+                yield n
+
+    print(list(evens(7)))
+
+- id: py.advanced.iterators-generators.011
+  type: bug
+  difficulty: 3
+  prompt: "האיטרטור אמור לספור לאחור מ-`start` עד 1 כולל. למשל, `list(Countdown(3))` צריך להחזיר `[3, 2, 1]`. באיזו שורה הבאג?"
+  code: |
+    class Countdown:
+        def __init__(self, start):
+            self.current = start
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if self.current < 0:
+                raise StopIteration
+            value = self.current
+            self.current -= 1
+            return value
+  answer: 9
+  explanation: "פרוטוקול האיטרטור (Iterator Protocol): `__next__` מחזיר את הערך הבא, וזורק `StopIteration` כשאין עוד ערכים. התנאי `< 0` עוצר מאוחר מדי, ולכן גם `0` מוחזר: `[3, 2, 1, 0]`. התנאי הנכון הוא `<= 0`."
+  fixed: |
+    class Countdown:
+        def __init__(self, start):
+            self.current = start
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if self.current <= 0:
+                raise StopIteration
+            value = self.current
+            self.current -= 1
+            return value
+
+- id: py.advanced.iterators-generators.012
+  type: truefalse
+  difficulty: 1
+  prompt: "על אותו אובייקט גנרטור אפשר לעבור בלולאת `for` רק פעם אחת. לולאה שנייה על אותו אובייקט לא תקבל אף ערך."
+  answer: true
+  explanation: "גנרטור מייצר כל ערך פעם אחת ולא שומר אותו. אחרי שהגיע לסוף הוא נשאר ריק, ולולאה נוספת מסתיימת מיד בלי שגיאה. כדי לעבור שוב צריך לקרוא שוב לפונקציית הגנרטור, או לשמור את הערכים ברשימה."
+
+- id: py.advanced.iterators-generators.013
+  type: truefalse
+  difficulty: 2
+  prompt: "ברגע שהשורה `big = (x * 2 for x in range(10**9))` רצה, פייתון מחשבת מיליארד ערכים ושומרת אותם בזיכרון."
+  answer: false
+  explanation: "סוגריים עגולים יוצרים ביטוי גנרטור, שעובד בהערכה עצלה: שום ערך לא מחושב עד שמבקשים אותו, והשורה רצה מיד ותופסת זיכרון קטן. עם סוגריים מרובעים (List Comprehension) כל מיליארד הערכים היו מחושבים ונשמרים מיד."
+
+- id: py.advanced.iterators-generators.014
+  type: single
+  difficulty: 1
+  prompt: "צריך לעבור על קובץ לוג בגודל 10GB שורה אחר שורה ולספור שורות שגיאה. למה עדיף גנרטור שמפיק שורה אחת בכל פעם על פני פונקציה שמחזירה רשימה של כל השורות?"
+  options:
+    - "גנרטור מחזיק בזיכרון רק את השורה הנוכחית, ולא את כל הקובץ"
+    - "גנרטור מאפשר לגשת מהר לשורה לפי אינדקס, למשל `lines[5000]`"
+    - "גנרטור מאפשר לעבור על השורות כמה פעמים בלי לקרוא את הקובץ שוב"
+    - "גנרטור ממיין את השורות אוטומטית ולכן הספירה מהירה יותר"
+  answer: 0
+  explanation: "היתרון העיקרי של גנרטור הוא זיכרון: הוא מייצר ערך רק כשמבקשים אותו ושוכח אותו אחר כך. רשימה של 10GB שורות עלולה לא להיכנס בכלל לזיכרון. את המחיר משלמים בגמישות: אין גישה לפי אינדקס ואפשר לעבור רק פעם אחת."
+  optionExplanations:
+    "1": "לגנרטור אין גישה לפי אינדקס בכלל. זה יתרון של רשימה."
+    "2": "ההפך: גנרטור נגמר אחרי מעבר אחד. מעבר חוזר הוא יתרון של רשימה."
+    "3": "גנרטור לא ממיין דבר. הוא מפיק את הערכים בסדר שבו הקוד מייצר אותם."
+
+- id: py.advanced.iterators-generators.015
+  type: single
+  difficulty: 3
+  prompt: מה יקרה כשהשורה האחרונה תרוץ?
+  code: |
+    def naturals():
+        n = 1
+        while True:
+            yield n
+            n += 1
+
+    small = [x for x in naturals() if x < 4]
+  options:
+    - "התוכנית תיתקע: הלולאה תמשיך לבקש ערכים לנצח"
+    - "`small` יהיה `[1, 2, 3]`"
+    - "תיזרק `StopIteration` כש-`x` יגיע ל-4"
+    - "תיזרק `RecursionError` כי הגנרטור אינסופי"
+  answer: 0
+  explanation: "הגנרטור אינסופי, והתנאי `if x < 4` רק מסנן ערכים ולא עוצר את המעבר. ה-comprehension ממשיך לבקש ערכים 4, 5, 6... לנצח. כדי לעצור צריך לולאה עם `break`, או `itertools.takewhile(lambda x: x < 4, naturals())`."
+  optionExplanations:
+    "1": "התנאי ב-comprehension הוא סינון, לא תנאי עצירה. הוא לא אומר ללולאה להפסיק."
+    "2": "`StopIteration` נזרקת רק כשהגנרטור נגמר, וגנרטור עם `while True` לא נגמר לעולם."
+    "3": "אין כאן רקורסיה. הגנרטור רץ בלולאה, ולכן מגבלת העומק לא רלוונטית."
+
+- id: py.advanced.iterators-generators.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      def sum_of_squares(nums):
+          return sum(x * x for x in nums)
+    - |
+      def sum_of_squares(nums):
+          return sum([x * x for x in nums])
+    - |
+      def sum_of_squares(nums):
+          squares = []
+          for x in nums:
+              squares.append(x * x)
+          total = 0
+          for s in squares:
+              total += s
+          return total
+  answer: 0
+  explanation: "`sum` מקבל כל אובייקט שאפשר לעבור עליו, ולכן אפשר להעביר לו ביטוי גנרטור ישירות. כך הקוד קצר, וגם לא נבנית רשימת ביניים מיותרת: כל ריבוע מחושב, מתווסף לסכום ונשכח."
+  optionExplanations:
+    "1": "הסוגריים המרובעים בונים רשימה שלמה בזיכרון רק כדי לסכום אותה ולזרוק אותה."
+    "2": "שתי לולאות ורשימת עזר עושות ידנית את מה ש-`sum` עם ביטוי גנרטור עושה בשורה אחת."

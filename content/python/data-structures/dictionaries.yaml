@@ -1,0 +1,266 @@
+- id: py.data-structures.dictionaries.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    ages = {"dana": 30, "avi": 25}
+    ages["dana"] = 31
+    print(ages)
+  options:
+    - "{'dana': 31, 'avi': 25}"
+    - "{'dana': 30, 'avi': 25, 'dana': 31}"
+    - "{'dana': 30, 'avi': 25}"
+    - "{'avi': 25, 'dana': 31}"
+  answer: 0
+  explanation: "מילון (Dictionary) ממפה כל מפתח (Key) לערך (Value) אחד. השמה למפתח שכבר קיים מחליפה את הערך שלו, והמפתח נשאר באותו מקום בסדר המילון. השמה למפתח חדש הייתה מוסיפה אותו בסוף."
+  optionExplanations:
+    "1": "במילון אין מפתחות כפולים. השמה למפתח קיים מעדכנת אותו."
+    "2": "ההשמה כן מחליפה את הערך הקודם."
+    "3": "עדכון ערך לא מזיז את המפתח לסוף. הוא נשאר במקומו המקורי."
+
+- id: py.data-structures.dictionaries.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    prices = {"tea": 8, "cake": 15}
+    for x in prices:
+        print(x)
+  options:
+    - "tea\ncake"
+    - "8\n15"
+    - "('tea', 8)\n('cake', 15)"
+    - "tea 8\ncake 15"
+  answer: 0
+  explanation: "לולאת `for` ישירה על מילון עוברת על המפתחות בלבד, לפי סדר ההכנסה. כדי לעבור על הערכים משתמשים ב-`prices.values()`, וכדי לקבל מפתח וערך יחד משתמשים ב-`prices.items()`."
+  optionExplanations:
+    "1": "ערכים מתקבלים רק עם `values()`. מעבר רגיל על מילון נותן מפתחות."
+    "2": "זוגות של מפתח וערך מתקבלים רק עם `items()`."
+    "3": "`x` מקבל בכל סיבוב ערך אחד, את המפתח, ולא את המפתח והערך יחד."
+
+- id: py.data-structures.dictionaries.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    counts = {}
+    for ch in "banana":
+        counts[ch] = counts.get(ch, 0) + 1
+    print(counts)
+  options:
+    - "{'b': 1, 'a': 3, 'n': 2}"
+    - "{'a': 3, 'n': 2, 'b': 1}"
+    - "{'b': 1, 'a': 1, 'n': 1}"
+    - "KeyError"
+  answer: 0
+  explanation: "`get(key, default)` מחזירה את הערך אם המפתח קיים, ואחרת את ברירת המחדל, בלי לזרוק שגיאה. כך כל אות מתחילה מ-0 ועולה ב-1 בכל הופעה. המילון שומר על סדר ההכנסה, ולכן `b` ראשונה."
+  optionExplanations:
+    "1": "מילון לא ממיין לפי הערכים. הסדר הוא סדר ההכנסה הראשונה של כל מפתח."
+    "2": "`get` מחזירה את הספירה הנוכחית כשהמפתח קיים, ולכן הערך מצטבר ולא מתאפס."
+    "3": "`get` לא זורקת `KeyError` על מפתח חסר. היא מחזירה את ברירת המחדל, 0."
+
+- id: py.data-structures.dictionaries.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    user = {"name": "Noa", "age": 20, "city": "Haifa"}
+    del user["age"]
+    city = user.pop("city")
+    print(city, user)
+  options:
+    - "Haifa {'name': 'Noa'}"
+    - "Haifa {'name': 'Noa', 'city': 'Haifa'}"
+    - "{'city': 'Haifa'} {'name': 'Noa'}"
+    - "Haifa {'name': 'Noa', 'age': 20}"
+  answer: 0
+  explanation: "`del d[key]` מוחק מפתח ולא מחזיר דבר. `pop(key)` מוחקת את המפתח ומחזירה את הערך שלו. אחרי שתי הפעולות נשאר במילון רק `name`."
+  optionExplanations:
+    "1": "`pop` לא רק מחזירה את הערך, היא גם מוחקת את המפתח מהמילון."
+    "2": "`pop` מחזירה את הערך בלבד, לא זוג של מפתח וערך."
+    "3": "`del user[\"age\"]` מוחק את המפתח `age` לצמיתות."
+
+- id: py.data-structures.dictionaries.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    settings = {"theme": "dark", "size": 12}
+    settings.update({"size": 14, "lang": "he"})
+    print(settings)
+  options:
+    - "{'theme': 'dark', 'size': 14, 'lang': 'he'}"
+    - "{'theme': 'dark', 'size': 12, 'lang': 'he'}"
+    - "{'size': 14, 'lang': 'he'}"
+    - "{'theme': 'dark', 'size': 12, 'size': 14, 'lang': 'he'}"
+  answer: 0
+  explanation: "`update` ממזגת מילון אחר לתוך המילון הקיים: מפתח שקיים מקבל את הערך החדש, ומפתח חדש מתווסף בסוף. מפתחות שלא הופיעו במילון החדש, כמו `theme`, נשארים כמו שהם."
+  optionExplanations:
+    "1": "`update` כן דורסת ערכים של מפתחות קיימים."
+    "2": "`update` לא מחליפה את כל המילון. היא רק מוסיפה ומעדכנת."
+    "3": "במילון לא יכולים להיות שני מפתחות זהים."
+
+- id: py.data-structures.dictionaries.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    locations = {}
+    point = [3, 4]
+    locations[point] = "home"
+    print(locations)
+  options: ["TypeError", "{[3, 4]: 'home'}", "{(3, 4): 'home'}", "KeyError"]
+  answer: 0
+  explanation: "מפתח במילון חייב להיות ניתן לגיבוב (Hashable), ובפועל זה אומר אובייקט שאינו ניתן לשינוי: מספר, מחרוזת, או טאפל של ערכים כאלה. רשימה ניתנת לשינוי, ולכן היא לא יכולה להיות מפתח ונזרקת `TypeError: unhashable type: 'list'`. הפתרון כאן: `locations[(3, 4)] = \"home\"`."
+  optionExplanations:
+    "1": "רשימה לא יכולה לשמש מפתח, כי היא ניתנת לשינוי."
+    "2": "פייתון לא ממירה רשימה לטאפל באופן אוטומטי. צריך לעשות זאת במפורש."
+    "3": "`KeyError` נזרקת בקריאה של מפתח חסר. כאן הבעיה היא סוג המפתח, ולכן `TypeError`."
+
+- id: py.data-structures.dictionaries.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    grid = {}
+    grid[(0, 1)] = "A"
+    grid[0, 1] = "B"
+    print(len(grid), grid[(0, 1)])
+  options: ["1 B", "2 A", "2 B", "TypeError"]
+  answer: 0
+  explanation: "טאפל יכול לשמש מפתח, ו-`grid[0, 1]` הוא בדיוק `grid[(0, 1)]`: הפסיק יוצר טאפל גם בלי סוגריים. לכן השורה השלישית לא מוסיפה מפתח חדש, אלא מעדכנת את אותו מפתח, ובמילון יש איבר אחד."
+  optionExplanations:
+    "1": "`0, 1` ו-`(0, 1)` הם אותו טאפל, ולכן זה אותו מפתח."
+    "2": "אין שני מפתחות: השמה שנייה לאותו מפתח מעדכנת את הערך."
+    "3": "טאפל של מספרים אינו ניתן לשינוי, ולכן הוא מפתח חוקי לגמרי."
+
+- id: py.data-structures.dictionaries.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    scores = {"a": 50, "b": 80, "c": 40}
+    for name in scores:
+        if scores[name] < 60:
+            del scores[name]
+    print(scores)
+  options: ["RuntimeError", "{'b': 80}", "{'b': 80, 'c': 40}", "KeyError"]
+  answer: 0
+  explanation: "אסור לשנות את מספר המפתחות במילון בזמן שעוברים עליו. אחרי המחיקה של `a`, הסיבוב הבא של הלולאה זורק `RuntimeError: dictionary changed size during iteration`. הפתרון: לעבור על עותק של המפתחות, `for name in list(scores):`."
+  optionExplanations:
+    "1": "זו הכוונה של הקוד, אבל פייתון עוצרת אותו: אי אפשר למחוק מפתחות ממילון תוך כדי מעבר עליו."
+    "2": "בניגוד לרשימה, במילון זה לא \"דילוג\" על איבר. פייתון מזהה את השינוי וזורקת שגיאה."
+    "3": "המפתח `a` קיים בזמן המחיקה. השגיאה נובעת מהשינוי בגודל המילון בזמן הלולאה."
+
+- id: py.data-structures.dictionaries.009
+  type: single
+  difficulty: 1
+  prompt: איזה מהערכים הבאים **לא** יכול לשמש מפתח במילון?
+  options: ["`[1, 2]`", "`(1, 2)`", "`\"id\"`", "`42`"]
+  answer: 0
+  explanation: "מפתח חייב להיות ניתן לגיבוב (Hashable): מספרים, מחרוזות וטאפלים של ערכים כאלה מתאימים. רשימה ניתנת לשינוי, ולכן היא לא יכולה להיות מפתח. הערכים, לעומת זאת, יכולים להיות מכל טיפוס."
+  optionExplanations:
+    "1": "טאפל של מספרים אינו ניתן לשינוי, ולכן הוא מפתח חוקי."
+    "2": "מחרוזות הן המפתחות הנפוצים ביותר במילון."
+    "3": "מספרים שלמים הם מפתחות חוקיים."
+
+- id: py.data-structures.dictionaries.010
+  type: single
+  difficulty: 2
+  prompt: "נתון מילון `d` שאין בו את המפתח `\"k\"`. מה ההבדל בין `d[\"k\"]` לבין `d.get(\"k\")`?"
+  options:
+    - "`d[\"k\"]` זורק `KeyError`, ו-`d.get(\"k\")` מחזיר `None`"
+    - "שניהם מחזירים `None`"
+    - "שניהם זורקים `KeyError`"
+    - "`d[\"k\"]` מוסיף את המפתח עם הערך `None`, ו-`d.get(\"k\")` לא משנה את המילון"
+  answer: 0
+  explanation: "גישה בסוגריים מרובעים מניחה שהמפתח קיים, וזורקת `KeyError` אם לא. `get` מיועדת למקרים שבהם המפתח אולי חסר: היא מחזירה `None`, או ערך ברירת מחדל שמעבירים לה כארגומנט שני."
+  optionExplanations:
+    "1": "רק `get` מחזירה ערך כשהמפתח חסר. גישה ב-`[]` זורקת שגיאה."
+    "2": "`get` נועדה בדיוק כדי לא לזרוק שגיאה."
+    "3": "קריאה של `d[\"k\"]` לא מוסיפה מפתח. רק השמה, `d[\"k\"] = ...`, מוסיפה."
+
+- id: py.data-structures.dictionaries.011
+  type: single
+  difficulty: 2
+  prompt: "איזו פעולה מוחקת את המפתח `\"tmp\"` מהמילון `d` וגם מחזירה את הערך שהיה שמור בו?"
+  options: ["`d.pop(\"tmp\")`", "`del d[\"tmp\"]`", "`d.remove(\"tmp\")`", "`d.get(\"tmp\")`"]
+  answer: 0
+  explanation: "`pop(key)` מוחקת את המפתח ומחזירה את הערך שלו. `del` מוחקת בלי להחזיר דבר, ו-`get` רק קוראת את הערך בלי למחוק."
+  optionExplanations:
+    "1": "`del` היא פקודה ולא ביטוי, ולכן אי אפשר לקבל ממנה ערך."
+    "2": "למילון אין מתודה `remove`. היא קיימת ברשימות ובקבוצות."
+    "3": "`get` רק קוראת את הערך. המפתח נשאר במילון."
+
+- id: py.data-structures.dictionaries.012
+  type: truefalse
+  difficulty: 1
+  prompt: במילון אחד לא יכולים להיות שני מפתחות זהים.
+  answer: true
+  explanation: "כל מפתח מופיע פעם אחת בלבד. השמה נוספת לאותו מפתח מחליפה את הערך הקודם. ערכים, לעומת זאת, יכולים לחזור כמה פעמים."
+
+- id: py.data-structures.dictionaries.013
+  type: truefalse
+  difficulty: 2
+  prompt: "עבור `users = {\"u1\": \"Noa\"}`, הביטוי `\"Noa\" in users` מחזיר `True`."
+  answer: false
+  explanation: "האופרטור `in` על מילון בודק רק מפתחות, ולכן `\"Noa\" in users` הוא `False`. כדי לבדוק אם ערך קיים כותבים `\"Noa\" in users.values()`, אבל הבדיקה הזו איטית, כי היא עוברת על כל הערכים."
+
+- id: py.data-structures.dictionaries.014
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה לספור כמה פעמים כל מילה מופיעה ברשימה. באיזו שורה הבאג?
+  code: |
+    def count_words(words):
+        counts = {}
+        for w in words:
+            counts[w] += 1
+        return counts
+  answer: 4
+  explanation: "בפעם הראשונה שמילה מופיעה, היא עדיין לא מפתח במילון, ו-`counts[w] += 1` מנסה לקרוא ערך שלא קיים וזורק `KeyError`. צריך לקרוא עם ברירת מחדל: `counts[w] = counts.get(w, 0) + 1`."
+  fixed: |
+    def count_words(words):
+        counts = {}
+        for w in words:
+            counts[w] = counts.get(w, 0) + 1
+        return counts
+
+- id: py.data-structures.dictionaries.015
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להדפיס כל מוצר ואת המחיר שלו. באיזו שורה הבאג?
+  code: |
+    prices = {"tea": 8, "cake": 15}
+    for name, price in prices:
+        print(name, price)
+  answer: 2
+  explanation: "מעבר ישיר על מילון נותן רק מפתחות. כאן פייתון מנסה לפרק כל מפתח, למשל `\"tea\"`, לשני משתנים, ונכשלת עם `ValueError`. כדי לקבל זוגות של מפתח וערך משתמשים ב-`prices.items()`."
+  fixed: |
+    prices = {"tea": 8, "cake": 15}
+    for name, price in prices.items():
+        print(name, price)
+
+- id: py.data-structures.dictionaries.016
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה לקבץ מילים לפי האורך שלהן, למשל `{3: ['sun', 'sky'], 4: ['moon']}`. באיזו שורה הבאג?"
+  code: |
+    def group_by_length(words):
+        groups = {}
+        for w in words:
+            key = len(w)
+            if key not in groups:
+                groups[key] = []
+            groups[w].append(w)
+        return groups
+  answer: 7
+  explanation: "המפתח של הקבוצה הוא האורך, `key`, אבל שורה 7 ניגשת למילון עם המילה עצמה. המפתח `w` לא קיים, ולכן נזרקת `KeyError`. התיקון: `groups[key].append(w)`."
+  fixed: |
+    def group_by_length(words):
+        groups = {}
+        for w in words:
+            key = len(w)
+            if key not in groups:
+                groups[key] = []
+            groups[key].append(w)
+        return groups

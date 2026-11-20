@@ -1,0 +1,243 @@
+- id: cs.basics.value-types.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    bool isAdult = 20 >= 18;
+    Console.WriteLine(isAdult);
+  options: ["True", "true", "1", "20"]
+  answer: 0
+  explanation: "ביטוי השוואה מחזיר ערך מטיפוס `bool`. `Console.WriteLine` מדפיס `bool` כ-`True` או `False`, עם אות ראשונה גדולה, למרות שבקוד כותבים `true` ו-`false` באותיות קטנות."
+  optionExplanations:
+    "1": "בקוד כותבים `true`, אבל ההדפסה של `bool` ב-.NET היא `True` עם אות גדולה."
+    "2": "ב-C# `bool` אינו מספר. הוא לא מודפס כ-1, ואין בכלל המרה בינו לבין `int`."
+
+- id: cs.basics.value-types.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int x = int.MaxValue;
+    x = x + 1;
+    Console.WriteLine(x);
+  options: ["-2147483648", "2147483648", "OverflowException", "0"]
+  answer: 0
+  explanation: "`int` הוא 32 ביט עם טווח מ-2147483648- עד 2147483647. כברירת מחדל C# לא בודק גלישה (Overflow) בחשבון שלמים, ולכן הערך \"מסתובב\" לקצה השני של הטווח ומתקבל המספר השלילי הקטן ביותר."
+  optionExplanations:
+    "1": "2147483648 לא נכנס בטווח של `int`. כדי להחזיק אותו צריך `long`."
+    "2": "חריגה נזרקת רק בהקשר `checked`. כברירת מחדל הגלישה שקטה."
+
+- id: cs.basics.value-types.003
+  type: single
+  difficulty: 3
+  prompt: מה קורה בשורה השנייה?
+  code: |
+    int x = int.MaxValue;
+    int y = checked(x + 1);
+  options:
+    - "נזרקת `OverflowException` בזמן ריצה"
+    - "`y` מקבל את הערך `-2147483648`"
+    - "`y` מקבל את הערך `2147483648`"
+    - "שגיאת קומפילציה"
+  answer: 0
+  explanation: "`checked` מפעיל בדיקת גלישה: אם תוצאת החישוב יוצאת מטווח הטיפוס, נזרקת `OverflowException` במקום שהערך יסתובב בשקט. זה שימושי בחישובים שבהם גלישה שקטה היא באג, למשל סכומי כסף."
+  optionExplanations:
+    "1": "זו ההתנהגות בלי `checked` (או עם `unchecked`). `checked` בדיוק מונע את הסיבוב השקט."
+    "2": "`int` לא יכול להחזיק את 2147483648, לא משנה איך מחשבים."
+    "3": "`x` הוא משתנה ולא קבוע, ולכן הקומפיילר לא יודע מראש שתהיה גלישה. הבעיה מתגלה רק בריצה."
+
+- id: cs.basics.value-types.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    double a = 0.1 + 0.2;
+    Console.WriteLine(a == 0.3);
+    decimal b = 0.1m + 0.2m;
+    Console.WriteLine(b == 0.3m);
+  options: ["False\nTrue", "True\nTrue", "False\nFalse", "True\nFalse"]
+  answer: 0
+  explanation: "`double` שומר מספרים בבסיס 2, ולכן `0.1` ו-`0.2` נשמרים בקירוב והסכום יוצא `0.30000000000000004`, שאינו שווה ל-`0.3`. `decimal` שומר מספרים בבסיס 10, ולכן `0.1m + 0.2m` שווה בדיוק ל-`0.3m`."
+  optionExplanations:
+    "1": "ב-`double` יש שגיאת עיגול זעירה, ולכן השוואה מדויקת עם `==` נכשלת."
+    "2": "`decimal` מייצג שברים עשרוניים כמו 0.1 בדיוק, ולכן אצלו ההשוואה מצליחה."
+
+- id: cs.basics.value-types.005
+  type: single
+  difficulty: 1
+  prompt: איזה טיפוס הכי מתאים לשמירת סכומי כסף, כמו מחיר של מוצר?
+  options: ["`decimal`", "`double`", "`int`", "`float`"]
+  answer: 0
+  explanation: "`decimal` שומר מספרים עשרוניים בדיוק (בבסיס 10), ולכן אין בו שגיאות עיגול כמו `0.1 + 0.2` ב-`double`. זה הטיפוס המקובל לכסף ב-C#. ליטרל `decimal` נכתב עם הסיומת `m`, למשל `19.90m`."
+  optionExplanations:
+    "1": "`double` מהיר ומתאים לחישובים מדעיים, אבל שומר שברים עשרוניים בקירוב, וזה מצטבר לטעויות בסכומי כסף."
+    "2": "`int` לא שומר אגורות. אפשר לשמור סכום באגורות כ-`int`, אבל אז החלוקות והעיגולים הם באחריותכם."
+    "3": "`float` הוא בעל דיוק נמוך עוד יותר מ-`double`, בערך 7 ספרות משמעותיות."
+
+- id: cs.basics.value-types.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    char c = 'a';
+    c++;
+    Console.WriteLine(c);
+    Console.WriteLine(c + 1);
+  options: ["b\n99", "b\nc", "98\n99", "b\nb1"]
+  answer: 0
+  explanation: "`char` שומר תו לפי הקוד המספרי שלו. `c++` מגדיל את הקוד ב-1 ומשאיר את הטיפוס `char`, ולכן `c` הוא `'b'` (קוד 98). אבל `c + 1` הוא חיבור של `char` ו-`int`, שתוצאתו `int`, ולכן מודפס המספר 99 ולא תו."
+  optionExplanations:
+    "1": "`c + 1` מחזיר `int`, ולכן מודפס מספר. כדי לקבל `c` צריך `(char)(c + 1)`."
+    "2": "`c++` לא משנה את הטיפוס של `c`. הוא נשאר `char` ומודפס כתו."
+    "3": "`'b'` הוא `char` ולא `string`, ולכן `+ 1` הוא חשבון ולא שרשור."
+
+- id: cs.basics.value-types.007
+  type: truefalse
+  difficulty: 1
+  prompt: "`int` הוא טיפוס ערך (Value Type), ו-`string` הוא טיפוס הפניה (Reference Type)."
+  answer: true
+  explanation: "משתנה מטיפוס ערך (`int`, `double`, `bool`, `char`, `decimal` וכל `struct`) מחזיק את הנתון עצמו, והצבה מעתיקה אותו. משתנה מטיפוס הפניה (`string`, מערכים וכל `class`) מחזיק הפניה לאובייקט, והצבה מעתיקה רק את ההפניה. `string` מתנהג כמו ערך כי אי אפשר לשנות אותו, אבל הוא טיפוס הפניה."
+
+- id: cs.basics.value-types.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var s1 = new PointS { X = 1 };
+    var s2 = s1;
+    s2.X = 5;
+    var c1 = new PointC { X = 1 };
+    var c2 = c1;
+    c2.X = 5;
+    Console.WriteLine($"{s1.X} {c1.X}");
+
+    struct PointS { public int X; }
+    class PointC { public int X; }
+  options: ["1 5", "5 5", "1 1", "5 1"]
+  answer: 0
+  explanation: "`struct` הוא טיפוס ערך: `s2 = s1` יוצר עותק נפרד, ושינוי `s2` לא נוגע ב-`s1`. `class` הוא טיפוס הפניה: `c2 = c1` מעתיק רק את ההפניה, ושני המשתנים מצביעים על אותו אובייקט, ולכן שינוי דרך `c2` נראה גם דרך `c1`."
+  optionExplanations:
+    "1": "ב-`struct` ההצבה מעתיקה את כל הערך, ולכן `s1` לא מושפע."
+    "2": "ב-`class` שני המשתנים מפנים לאותו אובייקט, ולכן `c1.X` הוא 5."
+    "3": "זה בדיוק ההפך: העותק הוא של ה-`struct`, וההפניה המשותפת היא של ה-`class`."
+
+- id: cs.basics.value-types.009
+  type: single
+  difficulty: 2
+  prompt: "מה קורה בשורה `int population = 3_000_000_000;`?"
+  options:
+    - "שגיאת קומפילציה"
+    - "`population` מקבל ערך שלילי בגלל גלישה"
+    - "נזרקת `OverflowException` בזמן ריצה"
+    - "`population` מקבל את הערך המקסימלי של `int`"
+  answer: 0
+  explanation: "הערך המקסימלי של `int` הוא 2,147,483,647. הליטרל 3,000,000,000 גדול ממנו, ולכן הוא לא מטיפוס `int`, ואין המרה מרומזת ממנו ל-`int`. הקומפיילר מזהה את זה מראש. למספרים בסדר גודל כזה משתמשים ב-`long`. הקווים התחתונים בליטרל הם רק מפרידים לקריאות."
+  optionExplanations:
+    "1": "גלישה שקטה קורית בחישוב בזמן ריצה. כאן מדובר בליטרל קבוע, והקומפיילר יודע מראש שהוא לא נכנס."
+    "2": "הבעיה מתגלה כבר בקומפילציה, ולכן הקוד לא מגיע לריצה."
+    "3": "C# לא \"חותך\" ערכים אוטומטית לגבול הטווח."
+
+- id: cs.basics.value-types.010
+  type: bug
+  difficulty: 3
+  prompt: הקוד אמור להדפיס את הנפח הכולל בבתים, `3000000000`. באיזו שורה הבאג?
+  code: |
+    int files = 1_000_000;
+    int bytesPerFile = 3_000;
+    long totalBytes = files * bytesPerFile;
+    Console.WriteLine(totalBytes);
+  answer: 3
+  explanation: "הטיפוס של תוצאת הכפל נקבע לפי האופרנדים ולא לפי המשתנה שמקבל אותה. `files * bytesPerFile` הוא כפל של שני `int`, ולכן הוא מחושב ב-`int`, גולש ומחזיר מספר שלילי. רק אחר כך הערך השגוי מורחב ל-`long`. צריך להמיר אופרנד אחד ל-`long` לפני הכפל."
+  fixed: |
+    int files = 1_000_000;
+    int bytesPerFile = 3_000;
+    long totalBytes = (long)files * bytesPerFile;
+    Console.WriteLine(totalBytes);
+
+- id: cs.basics.value-types.011
+  type: bug
+  difficulty: 2
+  prompt: הקוד אמור לספור עד 300 ולהדפיס `300`. באיזו שורה הבאג?
+  code: |
+    byte count = 0;
+    for (int i = 0; i < 300; i++)
+    {
+        count++;
+    }
+    Console.WriteLine(count);
+  answer: 1
+  explanation: "`byte` מחזיק ערכים מ-0 עד 255 בלבד. אחרי 255 הוא גולש בשקט חזרה ל-0, ולכן בסוף מודפס `44` (300 פחות 256). צריך לבחור טיפוס שהטווח שלו מספיק, כמו `int`."
+  fixed: |
+    int count = 0;
+    for (int i = 0; i < 300; i++)
+    {
+        count++;
+    }
+    Console.WriteLine(count);
+
+- id: cs.basics.value-types.012
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    bool isReady = 1;
+    if (isReady) Console.WriteLine("Ready");
+  options: ["Ready", "True", "לא יודפס כלום", "שגיאת קומפילציה"]
+  answer: 3
+  explanation: "ב-C# `bool` הוא טיפוס נפרד לגמרי ממספרים: אין המרה בין `int` ל-`bool`, לא מרומזת ולא מפורשת. לכן `bool isReady = 1;` היא שגיאת קומפילציה. בשפות כמו C ו-Python 1 נחשב \"אמת\", אבל לא ב-C#. כותבים `true` או `false`."
+  optionExplanations:
+    "0": "זה היה קורה ב-C או ב-Python, שבהן 1 נחשב אמת. ב-C# `bool` מקבל רק `true` או `false`."
+
+- id: cs.basics.value-types.013
+  type: single
+  difficulty: 2
+  prompt: "בהינתן `int zero = 0;`, מה קורה בחישוב `5 / zero` ומה קורה בחישוב `5.0 / zero`?"
+  options:
+    - "`5 / zero` זורק `DivideByZeroException`, ו-`5.0 / zero` מחזיר אינסוף (`Infinity`)"
+    - "שני החישובים זורקים `DivideByZeroException`"
+    - "שני החישובים מחזירים אינסוף (`Infinity`)"
+    - "`5 / zero` מחזיר 0, ו-`5.0 / zero` מחזיר אינסוף (`Infinity`)"
+  answer: 0
+  explanation: "חלוקת שלמים באפס אין לה ערך מתאים, ולכן נזרקת `DivideByZeroException`. ב-`5.0 / zero` אחד האופרנדים `double`, והחישוב נעשה לפי תקן הנקודה הצפה (IEEE 754), שבו לחלוקה באפס יש תוצאה מוגדרת: אינסוף חיובי. לכן ב-`double` לא נזרקת חריגה."
+  optionExplanations:
+    "1": "ב-`double` חלוקה באפס לא זורקת. התוצאה היא `double.PositiveInfinity`."
+    "2": "ל-`int` אין ערך שמייצג אינסוף, ולכן חלוקת שלמים באפס זורקת חריגה."
+    "3": "C# לא מחזיר 0 בשקט בחלוקה באפס. זה היה מסתיר באג."
+
+- id: cs.basics.value-types.014
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    decimal price = 19.90;
+    Console.WriteLine(price);
+  options: ["19.90", "19.9", "20", "שגיאת קומפילציה"]
+  answer: 3
+  explanation: "ליטרל עשרוני בלי סיומת, כמו `19.90`, הוא `double`. אין המרה מרומזת מ-`double` ל-`decimal`, כי היא עלולה לאבד מידע, ולכן זו שגיאת קומפילציה. ליטרל `decimal` נכתב עם הסיומת `m`: `19.90m`."
+  optionExplanations:
+    "0": "עם `19.90m` זה אכן היה הפלט, כי `decimal` שומר את האפס שבסוף. בלי הסיומת `m` הקוד לא מתקמפל."
+    "1": "`19.9` הוא איך ש-`double` היה מודפס, אבל אי אפשר להציב `double` ל-`decimal` בלי המרה מפורשת."
+
+- id: cs.basics.value-types.015
+  type: truefalse
+  difficulty: 3
+  prompt: "`long` ו-`double` תופסים שניהם 64 ביט, ולכן כל ערך של `long` אפשר לייצג בדיוק ב-`double`."
+  answer: false
+  explanation: "`double` מקדיש חלק מ-64 הביטים למעריך (Exponent), ולכן נשארים לו רק 53 ביט של דיוק. מספרים שלמים גדולים מ-2 בחזקת 53 (בערך 9 ביליארד) לא תמיד ניתנים לייצוג מדויק ב-`double` ומעוגלים. גודל זהה בזיכרון לא אומר דיוק זהה."
+
+- id: cs.basics.value-types.016
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(sizeof(int));
+    Console.WriteLine(sizeof(long));
+  options: ["4\n8", "32\n64", "4\n4", "2\n4"]
+  answer: 0
+  explanation: "`sizeof` מחזיר את הגודל בבתים (Bytes). `int` תופס 4 בתים (32 ביט) ו-`long` תופס 8 בתים (64 ביט). ב-C# הגדלים האלה קבועים בכל מחשב ובכל מערכת הפעלה, בניגוד ל-C."
+  optionExplanations:
+    "1": "32 ו-64 הם הגדלים בביטים. `sizeof` מחזיר בתים, וכל בית הוא 8 ביט."
+    "2": "`long` גדול פי שניים מ-`int`: 8 בתים לעומת 4."
+    "3": "2 בתים הוא הגודל של `short`, לא של `int`."

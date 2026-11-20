@@ -1,0 +1,259 @@
+- id: py.data-structures.sets.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    nums = [3, 1, 3, 2, 1]
+    unique = set(nums)
+    print(len(unique))
+  options: ["3", "5", "2", "1"]
+  answer: 0
+  explanation: "קבוצה (Set) מחזיקה כל ערך פעם אחת בלבד. המרת רשימה לקבוצה מסירה כפילויות, ונשארים הערכים 1, 2 ו-3."
+  optionExplanations:
+    "1": "5 הוא אורך הרשימה המקורית. הקבוצה לא שומרת כפילויות."
+    "2": "2 הוא מספר הערכים שמופיעים יותר מפעם אחת. הקבוצה שומרת גם ערכים שמופיעים פעם אחת."
+
+- id: py.data-structures.sets.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    a = {}
+    b = set()
+    print(type(a).__name__, type(b).__name__)
+  options: ["dict set", "set set", "dict dict", "set dict"]
+  answer: 0
+  explanation: "סוגריים מסולסלים ריקים, `{}`, יוצרים מילון ריק, לא קבוצה. זה מסיבות היסטוריות: מילונים היו בשפה לפני קבוצות. קבוצה ריקה יוצרים רק עם `set()`."
+  optionExplanations:
+    "1": "זו הטעות הנפוצה. `{}` הוא מילון ריק."
+    "2": "`set()` יוצרת קבוצה. רק הכתיב `{}` שמור למילון."
+
+- id: py.data-structures.sets.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    a = {1, 2, 3}
+    b = {2, 3, 4}
+    print(sorted(a & b), sorted(a | b))
+  options:
+    - "[2, 3] [1, 2, 3, 4]"
+    - "[1, 2, 3, 4] [2, 3]"
+    - "[2, 3] [1, 2, 3, 2, 3, 4]"
+    - "[1, 4] [1, 2, 3, 4]"
+  answer: 0
+  explanation: "`&` הוא חיתוך (Intersection): האיברים שנמצאים בשתי הקבוצות. `|` הוא איחוד (Union): כל האיברים שנמצאים לפחות באחת מהן, בלי כפילויות. `sorted` מחזירה רשימה ממוינת, כדי שהפלט יהיה בסדר קבוע."
+  optionExplanations:
+    "1": "הפוך: `&` הוא חיתוך ו-`|` הוא איחוד."
+    "2": "איחוד הוא קבוצה, ולכן 2 ו-3 לא מופיעים פעמיים."
+    "3": "`[1, 4]` הוא ההפרש הסימטרי, `a ^ b`: האיברים שנמצאים רק באחת מהקבוצות."
+
+- id: py.data-structures.sets.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    a = {1, 2, 3}
+    b = {2, 3, 4}
+    print(sorted(a - b), sorted(b - a))
+  options: ["[1] [4]", "[1, 4] [1, 4]", "[1] [1]", "[4] [1]"]
+  answer: 0
+  explanation: "הפרש (Difference) `a - b` מחזיר את האיברים של `a` שאינם ב-`b`. הסדר חשוב: `b - a` הוא האיברים של `b` שאינם ב-`a`. בניגוד לאיחוד ולחיתוך, הפרש אינו סימטרי."
+  optionExplanations:
+    "1": "זה ההפרש הסימטרי, `a ^ b`. הפרש רגיל לוקח רק את האיברים של הקבוצה השמאלית."
+    "2": "`b - a` מתחיל מ-`b`, ולכן התוצאה היא 4 ולא 1."
+    "3": "`a - b` שומר איברים מ-`a`. 4 בכלל לא נמצא ב-`a`."
+
+- id: py.data-structures.sets.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = {10, 20, 30}
+    print(s[0])
+  options: ["TypeError", "10", "IndexError", "KeyError"]
+  answer: 0
+  explanation: "לקבוצה אין סדר מוגדר ואין אינדקסים, ולכן היא לא תומכת בגישה עם `[]` ונזרקת `TypeError: 'set' object is not subscriptable`. עם קבוצה בודקים שייכות (`in`) או עוברים על כל האיברים בלולאה. אם צריך מיקום, משתמשים ברשימה."
+  optionExplanations:
+    "1": "לקבוצה אין \"איבר ראשון\". היא לא תומכת בגישה לפי אינדקס בכלל."
+    "2": "`IndexError` נזרקת כשאינדקס חורג מגבולות של רצף. קבוצה לא תומכת באינדקסים מלכתחילה."
+    "3": "קבוצה היא לא מילון, ו-`[]` לא מחפש בה מפתח."
+
+- id: py.data-structures.sets.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    pairs = set()
+    pairs.add((1, 2))
+    print(len(pairs))
+    pairs.add([3, 4])
+    print(len(pairs))
+  options: ["1\nTypeError", "1\n2", "TypeError", "1\n3"]
+  answer: 0
+  explanation: "איברי קבוצה חייבים להיות ניתנים לגיבוב (Hashable), כמו מפתחות במילון. טאפל של מספרים מתאים, ולכן ההוספה הראשונה מצליחה ומודפס 1. רשימה ניתנת לשינוי, ולכן הוספתה זורקת `TypeError: unhashable type: 'list'`."
+  optionExplanations:
+    "1": "רשימה לא יכולה להיות איבר בקבוצה, כי היא ניתנת לשינוי."
+    "2": "הטאפל `(1, 2)` הוא איבר חוקי, וההדפסה הראשונה מתבצעת לפני השגיאה."
+    "3": "`add` מוסיפה איבר אחד, לא מפרקת את האוסף לאיברים. לפירוק משתמשים ב-`update`, ושם 3 ו-4 היו נוספים בנפרד."
+
+- id: py.data-structures.sets.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = {1, 2}
+    s.discard(5)
+    print(len(s))
+    s.remove(5)
+    print(len(s))
+  options: ["2\nKeyError", "2\n2", "KeyError", "2\nValueError"]
+  answer: 0
+  explanation: "שתי המתודות מוחקות איבר מהקבוצה. ההבדל הוא באיבר שלא קיים: `discard` לא עושה כלום, ואילו `remove` זורקת `KeyError`. משתמשים ב-`discard` כשזה בסדר שהאיבר חסר, וב-`remove` כשחסרונו הוא באג."
+  optionExplanations:
+    "1": "`remove` לא שקטה כמו `discard`. על איבר חסר היא זורקת שגיאה."
+    "2": "`discard` לא זורקת שגיאה, ולכן ההדפסה הראשונה מתבצעת."
+    "3": "ברשימה `remove` זורקת `ValueError`, אבל בקבוצה השגיאה היא `KeyError`."
+
+- id: py.data-structures.sets.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    seen = set()
+    result = []
+    for x in [3, 1, 3, 2, 1]:
+        if x not in seen:
+            seen.add(x)
+            result.append(x)
+    print(result)
+  options: ["[3, 1, 2]", "[1, 2, 3]", "[3, 1, 3, 2, 1]", "[2]"]
+  answer: 0
+  explanation: "זו התבנית להסרת כפילויות תוך שמירה על הסדר המקורי: הקבוצה `seen` עונה מהר על השאלה \"כבר ראינו?\", והרשימה `result` שומרת את הסדר. `list(set(...))` היה מסיר כפילויות, אבל בלי להבטיח את הסדר המקורי."
+  optionExplanations:
+    "1": "שום דבר כאן לא ממיין. האיברים נוספים ל-`result` לפי סדר ההופעה הראשונה שלהם."
+    "2": "התנאי `x not in seen` מונע הוספה של ערך שכבר נראה."
+    "3": "הקוד שומר את ההופעה הראשונה של כל ערך, לא רק ערכים שמופיעים פעם אחת."
+
+- id: py.data-structures.sets.009
+  type: single
+  difficulty: 1
+  prompt: "נתונות שתי קבוצות, `a` ו-`b`. איזה ביטוי מחזיר את האיברים שנמצאים **בשתיהן**?"
+  options: ["`a & b`", "`a | b`", "`a - b`", "`a + b`"]
+  answer: 0
+  explanation: "`&` הוא חיתוך (Intersection), וזהה ל-`a.intersection(b)`. `|` הוא איחוד ו-`-` הוא הפרש."
+  optionExplanations:
+    "1": "`|` הוא איחוד: כל האיברים שנמצאים לפחות באחת הקבוצות."
+    "2": "`-` הוא הפרש: האיברים של `a` שאינם ב-`b`."
+    "3": "קבוצות לא תומכות ב-`+`, והביטוי זורק `TypeError`."
+
+- id: py.data-structures.sets.010
+  type: single
+  difficulty: 2
+  prompt: "למה בדיקת שייכות, `x in s`, על קבוצה גדולה מהירה בהרבה מאשר על רשימה באותו גודל?"
+  options:
+    - "קבוצה בנויה כטבלת גיבוב (Hash Table) ומוצאת איבר לפי הגיבוב שלו, בלי לעבור על כל האיברים"
+    - "קבוצה שומרת את האיברים ממוינים ומחפשת בהם חיפוש בינארי"
+    - "קבוצה תמיד קטנה יותר מהרשימה, כי אין בה כפילויות"
+    - "פייתון שומרת בזיכרון את התוצאה של הבדיקה האחרונה על כל קבוצה"
+  answer: 0
+  explanation: "בקבוצה, ערך הגיבוב של האיבר מוביל ישירות למקום שבו הוא אמור להיות, ולכן הבדיקה לוקחת בממוצע זמן קבוע, O(1). ברשימה `in` משווה איבר אחרי איבר, וזמן הבדיקה גדל עם אורך הרשימה, O(n)."
+  optionExplanations:
+    "1": "קבוצה לא ממוינת. וגם חיפוש בינארי, O(log n), איטי יותר מגיבוב."
+    "2": "גם אם אין כפילויות כלל, ההבדל בזמן נשאר. הוא נובע ממבנה הנתונים, לא מהגודל."
+    "3": "אין מטמון כזה. המהירות נובעת מטבלת הגיבוב."
+
+- id: py.data-structures.sets.011
+  type: single
+  difficulty: 2
+  prompt: באיזה מהמקרים הבאים קבוצה היא מבנה הנתונים המתאים ביותר?
+  options:
+    - "שמירת שמות המשתמשים שכבר נרשמו, כדי לבדוק במהירות אם שם חדש תפוס"
+    - "שמירת תור של לקוחות לפי סדר ההגעה שלהם"
+    - "שמירת ציון לכל תלמיד, כדי למצוא את הציון לפי שם התלמיד"
+    - "שמירת רשימת קניות שבה מוצר יכול להופיע כמה פעמים"
+  answer: 0
+  explanation: "קבוצה מתאימה כשחשוב רק אם ערך קיים או לא: היא מונעת כפילויות ובודקת שייכות מהר. כשהסדר חשוב בוחרים רשימה, וכשכל ערך צריך מידע נלווה בוחרים מילון."
+  optionExplanations:
+    "1": "קבוצה לא שומרת סדר, ולכן אי אפשר לדעת ממנה מי הגיע ראשון. כאן מתאימה רשימה."
+    "2": "כל שם צריך ציון משויך. זה מיפוי ממפתח לערך, כלומר מילון."
+    "3": "קבוצה תאחד את כל ההופעות של אותו מוצר. כשכפילויות חשובות, משתמשים ברשימה."
+
+- id: py.data-structures.sets.012
+  type: truefalse
+  difficulty: 1
+  prompt: "הביטוי `{1, 2, 3} == {3, 2, 1}` מחזיר `True`."
+  answer: true
+  explanation: "שתי קבוצות שוות אם יש בהן אותם איברים, בלי קשר לסדר שבו נכתבו. לקבוצה אין סדר, ולכן הסדר לא משתתף בהשוואה. לעומת זאת, `[1, 2, 3] == [3, 2, 1]` הוא `False`."
+
+- id: py.data-structures.sets.013
+  type: truefalse
+  difficulty: 2
+  prompt: קבוצה שומרת את האיברים שלה לפי סדר ההכנסה, בדיוק כמו מילון.
+  answer: false
+  explanation: "מילון שומר על סדר ההכנסה, אבל קבוצה לא מבטיחה שום סדר. סדר המעבר על קבוצה תלוי בערכי הגיבוב ועלול להיות שונה בין הרצות. כשצריך סדר קבוע, ממיינים עם `sorted(s)`."
+
+- id: py.data-structures.sets.014
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להדפיס את התלמידים שרשומים לשני הקורסים גם יחד. באיזו שורה הבאג?
+  code: |
+    python_course = {"Dana", "Avi", "Noa"}
+    java_course = {"Avi", "Noa", "Tal"}
+    both = python_course | java_course
+    print(sorted(both))
+  answer: 3
+  explanation: "`|` הוא איחוד ומחזיר את כל התלמידים מאחד הקורסים לפחות. \"בשני הקורסים גם יחד\" הוא חיתוך, `&`, שמחזיר רק את `Avi` ו-`Noa`."
+  fixed: |
+    python_course = {"Dana", "Avi", "Noa"}
+    java_course = {"Avi", "Noa", "Tal"}
+    both = python_course & java_course
+    print(sorted(both))
+
+- id: py.data-structures.sets.015
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להחזיר קבוצה של המילים השונות בטקסט. באיזו שורה הבאג?
+  code: |
+    def unique_words(text):
+        seen = {}
+        for word in text.split():
+            seen.add(word)
+        return seen
+  answer: 2
+  explanation: "`{}` יוצר מילון ריק, לא קבוצה. למילון אין מתודה `add`, ולכן שורה 4 זורקת `AttributeError`, אבל הטעות האמיתית היא ביצירה. קבוצה ריקה יוצרים עם `set()`."
+  fixed: |
+    def unique_words(text):
+        seen = set()
+        for word in text.split():
+            seen.add(word)
+        return seen
+
+- id: py.data-structures.sets.016
+  type: cleaner
+  difficulty: 3
+  prompt: "שלוש פונקציות בודקות אם ברשימה של מחרוזות יש ערך שמופיע יותר מפעם אחת. איזו נקייה יותר?"
+  options:
+    - |
+      def has_duplicates(items):
+          return len(set(items)) != len(items)
+    - |
+      def has_duplicates(items):
+          for i in range(len(items)):
+              for j in range(i + 1, len(items)):
+                  if items[i] == items[j]:
+                      return True
+          return False
+    - |
+      def has_duplicates(items):
+          seen = []
+          for item in items:
+              if item in seen:
+                  return True
+              seen.append(item)
+          return False
+  answer: 0
+  explanation: "קבוצה מסירה כפילויות, ולכן אם הגודל שלה קטן מאורך הרשימה, יש כפילות. שורה אחת שמבטאת את הרעיון ישירות, ורצה בזמן ליניארי. היא דורשת איברים שניתנים לגיבוב (Hashable), כמו מחרוזות ומספרים."
+  optionExplanations:
+    "1": "לולאה כפולה עם אינדקסים ארוכה וקשה לקריאה, ומשווה כל זוג, כך שזמן הריצה ריבועי."
+    "2": "הרעיון נכון, אבל `seen` היא רשימה, ו-`in` על רשימה עובר על כל איבריה. עם `set` הקוד היה מהיר, ועם `len(set(...))` גם קצר."

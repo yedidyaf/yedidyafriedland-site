@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import SettingsApp from '../../components/SettingsApp';
+---
+<Base title="הגדרות וגיבוי - Settings" description="ערכת נושא, גיבוי ושחזור של ההתקדמות, ומחיקת הנתונים מהדפדפן." noindex>
+  <div class="container">
+    <h1 style="margin-top:24px">הגדרות וגיבוי - Settings</h1>
+    <SettingsApp client:only="preact" />
+  </div>
+</Base>

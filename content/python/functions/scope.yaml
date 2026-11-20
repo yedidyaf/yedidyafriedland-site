@@ -1,0 +1,313 @@
+- id: py.functions.scope.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    x = 10
+
+    def show():
+        x = 5
+        print(x)
+
+    show()
+    print(x)
+  options:
+    - "5\n10"
+    - "5\n5"
+    - "10\n10"
+    - "10\n5"
+  answer: 0
+  explanation: "השמה בתוך פונקציה יוצרת משתנה מקומי (Local Variable) חדש, שקיים רק בזמן הקריאה. ה-`x` שבתוך `show` הוא משתנה אחר לגמרי מה-`x` הגלובלי (Global Variable), ולכן ה-`x` הגלובלי נשאר 10."
+  optionExplanations:
+    "1": "ההשמה `x = 5` לא משנה את המשתנה הגלובלי. היא יוצרת משתנה מקומי באותו שם."
+    "2": "בתוך הפונקציה המשתנה המקומי מסתיר את הגלובלי, ולכן שם מודפס 5."
+    "3": "סדר ההדפסות הפוך: קודם מודפס ה-`x` המקומי מתוך `show`, ורק אחר כך הגלובלי."
+
+- id: py.functions.scope.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def make():
+        secret = 42
+
+    make()
+    print(secret)
+  options: ["NameError", "42", "None", "UnboundLocalError"]
+  answer: 0
+  explanation: "`secret` הוא משתנה מקומי של `make`. הוא נוצר בתחילת הקריאה ונעלם כשהיא מסתיימת. מחוץ לפונקציה השם לא קיים בטווח ההכרה (Scope), ולכן נזרק `NameError`. כדי להוציא ערך מפונקציה משתמשים ב-`return`."
+  optionExplanations:
+    "1": "משתנים מקומיים לא נשארים זמינים אחרי שהפונקציה הסתיימה."
+    "2": "פייתון לא מחזירה `None` עבור שם שלא קיים. היא זורקת שגיאה."
+    "3": "`UnboundLocalError` נזרק כשקוראים משתנה מקומי בתוך פונקציה לפני שהוא קיבל ערך. כאן הקריאה היא ברמת המודול."
+
+- id: py.functions.scope.003
+  type: single
+  difficulty: 1
+  prompt: "לפי כלל LEGB, באיזה סדר פייתון מחפשת שם של משתנה?"
+  options:
+    - "מקומי, פונקציה עוטפת, גלובלי, מובנה"
+    - "גלובלי, מקומי, פונקציה עוטפת, מובנה"
+    - "מובנה, גלובלי, פונקציה עוטפת, מקומי"
+    - "מקומי, גלובלי, פונקציה עוטפת, מובנה"
+  answer: 0
+  explanation: "LEGB הם ראשי התיבות של Local, Enclosing, Global, Built-in. פייתון מתחילה בטווח הקרוב ביותר, הפונקציה הנוכחית, וממשיכה החוצה: הפונקציה העוטפת, המודול, ולבסוף השמות המובנים כמו `len` ו-`print`. השם הראשון שנמצא הוא זה שמשמש."
+  optionExplanations:
+    "1": "החיפוש מתחיל תמיד מהטווח הפנימי ביותר, ולכן משתנה מקומי מסתיר משתנה גלובלי באותו שם."
+    "2": "זה הסדר ההפוך. אילו זה היה הסדר, לא היה אפשר להסתיר שם מובנה במשתנה מקומי."
+    "3": "הפונקציה העוטפת קרובה יותר מהמודול, ולכן היא נבדקת לפני הטווח הגלובלי."
+
+- id: py.functions.scope.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    count = 0
+
+    def increment():
+        count += 1
+
+    increment()
+    print(count)
+  options: ["UnboundLocalError", "1", "0", "NameError"]
+  answer: 0
+  explanation: "`count += 1` היא השמה, ולכן פייתון מחליטה ש-`count` הוא משתנה מקומי בכל הפונקציה. כדי לחשב `count + 1` צריך לקרוא את המשתנה המקומי, אבל הוא עוד לא קיבל ערך, ולכן נזרק `UnboundLocalError`. כדי לשנות את המשתנה הגלובלי צריך `global count`."
+  optionExplanations:
+    "1": "בלי `global`, השמה בתוך פונקציה לא יכולה לשנות משתנה גלובלי."
+    "2": "הקוד לא מגיע להדפסה, כי הקריאה ל-`increment` נכשלת."
+    "3": "השם `count` כן מוכר, כמשתנה מקומי שעוד לא קיבל ערך. לכן השגיאה היא `UnboundLocalError`, ולא `NameError`."
+
+- id: py.functions.scope.005
+  type: single
+  difficulty: 1
+  prompt: "איזו שורה צריך להוסיף בתחילת `increment` כדי שהיא תגדיל את המשתנה הגלובלי `count`?"
+  code: |
+    count = 0
+
+    def increment():
+        count += 1
+  options: ["`global count`", "`nonlocal count`", "`count = count`", "`return count`"]
+  answer: 0
+  explanation: "ההצהרה `global count` אומרת לפייתון שהשם `count` בפונקציה הזאת מפנה למשתנה של המודול. כך ההשמה משנה את המשתנה הגלובלי ולא יוצרת משתנה מקומי."
+  optionExplanations:
+    "1": "`nonlocal` מתייחס למשתנה של פונקציה עוטפת. כאן אין פונקציה עוטפת, ולכן זו `SyntaxError`."
+    "2": "זו השמה, ולכן גם היא הופכת את `count` למקומי, ונזרק `UnboundLocalError` כבר בשורה הזאת."
+    "3": "`return count` קורא את `count` המקומי לפני שקיבל ערך, ולכן נזרק `UnboundLocalError`. וגם אילו לא, הפונקציה הייתה מסתיימת לפני ההגדלה."
+
+- id: py.functions.scope.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    rate = 3
+
+    def price(n):
+        return n * rate
+
+    rate = 5
+    print(price(2))
+  options: ["10", "6", "NameError", "UnboundLocalError"]
+  answer: 0
+  explanation: "מותר לקרוא משתנה גלובלי בתוך פונקציה בלי `global`, כל עוד לא מבצעים אליו השמה. הערך נקרא בזמן הקריאה לפונקציה ולא בזמן ההגדרה שלה, ובזמן הקריאה `rate` כבר 5."
+  optionExplanations:
+    "1": "הפונקציה לא שומרת את הערך של `rate` מרגע ההגדרה. היא מחפשת את השם רק כשהיא רצה."
+    "2": "`rate` נמצא בטווח הגלובלי, ופייתון מגיעה אליו בחיפוש לפי LEGB."
+    "3": "אין השמה ל-`rate` בתוך הפונקציה, ולכן הוא לא נחשב מקומי."
+
+- id: py.functions.scope.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def outer():
+        x = "outer"
+        def inner():
+            x = "inner"
+        inner()
+        print(x)
+
+    outer()
+  options: ["outer", "inner", "NameError", "outer\ninner"]
+  answer: 0
+  explanation: "ההשמה בתוך `inner` יוצרת משתנה מקומי חדש של `inner`, שמסתיר את ה-`x` של `outer` ולא משנה אותו. `print` נמצא ב-`outer`, ולכן מודפס ה-`x` שלה. כדי לשנות את המשתנה של הפונקציה העוטפת צריך `nonlocal x`."
+  optionExplanations:
+    "1": "השמה בפונקציה פנימית לא משנה את המשתנה של הפונקציה העוטפת, אלא אם מצהירים `nonlocal`."
+    "2": "`x` מוגדר ב-`outer` לפני ההדפסה, ולכן אין שגיאה."
+    "3": "`inner` לא מדפיסה דבר. יש רק `print` אחד."
+
+- id: py.functions.scope.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def counter():
+        count = 0
+        def step():
+            nonlocal count
+            count += 1
+            return count
+        step()
+        return step()
+
+    print(counter())
+  options: ["2", "1", "0", "UnboundLocalError"]
+  answer: 0
+  explanation: "`nonlocal count` מקשר את `count` שבתוך `step` למשתנה של הפונקציה העוטפת (Enclosing Function), `counter`. כל קריאה ל-`step` מגדילה את אותו משתנה: הקריאה הראשונה מעלה אותו ל-1, והשנייה ל-2 ומחזירה אותו."
+  optionExplanations:
+    "1": "שתי הקריאות ל-`step` משנות את אותו משתנה, ולכן השינוי מצטבר."
+    "2": "`nonlocal` מאפשר לשנות את המשתנה של `counter`, ולכן הוא לא נשאר 0."
+    "3": "בזכות `nonlocal`, ההשמה לא יוצרת משתנה מקומי חדש, ולכן אין `UnboundLocalError`."
+
+- id: py.functions.scope.009
+  type: truefalse
+  difficulty: 1
+  prompt: "ההצהרה `global` מאפשרת לפונקציה פנימית לשנות משתנה מקומי של הפונקציה שעוטפת אותה."
+  answer: false
+  explanation: "`global` מפנה תמיד למשתנה ברמת המודול. כדי לשנות משתנה של פונקציה עוטפת משתמשים ב-`nonlocal`. אם אין משתנה גלובלי בשם הזה, השמה עם `global` תיצור משתנה גלובלי חדש, והמשתנה של הפונקציה העוטפת לא ישתנה."
+
+- id: py.functions.scope.010
+  type: truefalse
+  difficulty: 2
+  prompt: "משתנה שנוצר בתוך לולאת `for` בגוף של פונקציה זמין גם אחרי הלולאה, באותה פונקציה."
+  answer: true
+  explanation: "בפייתון רק פונקציות, מחלקות, מודולים ו-comprehensions יוצרים טווח הכרה משלהם. בלוקים כמו `for`, `while` ו-`if` לא יוצרים טווח משלהם, ולכן משתנה שנוצר בלולאה, כולל משתנה הלולאה עצמו, נשאר זמין עד סוף הפונקציה. זה שונה משפות כמו C# ו-Java."
+
+- id: py.functions.scope.011
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    x = "global"
+
+    def outer():
+        x = "enclosing"
+        def inner():
+            print(x)
+        return inner
+
+    f = outer()
+    x = "changed"
+    f()
+  options: ["enclosing", "global", "changed", "NameError"]
+  answer: 0
+  explanation: "`inner` לא מגדירה `x`, ולכן פייתון מחפשת לפי LEGB: אין `x` מקומי, ובפונקציה העוטפת יש `x = \"enclosing\"`. החיפוש נעצר שם ולא מגיע לטווח הגלובלי. `inner` זוכרת את המשתנה של `outer` גם אחרי ש-`outer` הסתיימה. פונקציה כזו נקראת סגור (Closure)."
+  optionExplanations:
+    "1": "הטווח של הפונקציה העוטפת (E) נבדק לפני הטווח הגלובלי (G)."
+    "2": "השינוי של `x` הגלובלי לא משפיע, כי `inner` מוצאת את `x` כבר בפונקציה העוטפת."
+    "3": "`inner` שומרת גישה למשתנים של `outer` גם אחרי ש-`outer` החזירה אותה."
+
+- id: py.functions.scope.012
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור ליצור מונה ולהדפיס `1`. בפועל נזרקת שגיאה. באיזו שורה הבאג?"
+  code: |
+    def make_counter():
+        count = 0
+        def increment():
+            global count
+            count += 1
+            return count
+        return increment
+
+    c = make_counter()
+    print(c())
+  answer: 4
+  explanation: "`global count` מפנה ל-`count` ברמת המודול, אבל אין משתנה כזה. ה-`count` הוא משתנה של הפונקציה העוטפת `make_counter`. לכן `count += 1` זורק `NameError`. כדי לשנות משתנה של פונקציה עוטפת צריך `nonlocal count`."
+  fixed: |
+    def make_counter():
+        count = 0
+        def increment():
+            nonlocal count
+            count += 1
+            return count
+        return increment
+
+    c = make_counter()
+    print(c())
+
+- id: py.functions.scope.013
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה לרוקן את הרשימה הגלובלית `history`, כך שיודפס `[]`. באיזו שורה הבאג?"
+  code: |
+    history = [1, 2, 3]
+
+    def clear_history():
+        history = []
+
+    clear_history()
+    print(history)
+  answer: 4
+  explanation: "`history = []` היא השמה, ולכן היא יוצרת משתנה מקומי חדש שנעלם בסוף הפונקציה, והרשימה הגלובלית לא משתנה. הפתרון: `history.clear()`, שמשנה את אובייקט הרשימה עצמו. לשנות אובייקט דרך שם גלובלי מותר בלי `global`; רק השמה מחדש לשם דורשת `global`."
+  fixed: |
+    history = [1, 2, 3]
+
+    def clear_history():
+        history.clear()
+
+    clear_history()
+    print(history)
+
+- id: py.functions.scope.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    data = [1, 2]
+
+    def add():
+        data.append(3)
+
+    def reset():
+        data = []
+
+    add()
+    reset()
+    print(data)
+  options: ["[1, 2, 3]", "[]", "[1, 2]", "UnboundLocalError"]
+  answer: 0
+  explanation: "ב-`add` אין השמה ל-`data`, ולכן השם מפנה לרשימה הגלובלית, ו-`append` משנה אותה. ב-`reset` יש השמה, ולכן `data` שם הוא משתנה מקומי חדש, והרשימה הגלובלית לא נפגעת. ההבדל הוא בין שינוי אובייקט (Mutation) להצמדת השם לאובייקט אחר (Rebinding)."
+  optionExplanations:
+    "1": "`reset` יוצרת משתנה מקומי בשם `data`, ולא משנה את המשתנה הגלובלי."
+    "2": "`append` לא דורש `global`, כי הוא משנה את הרשימה עצמה ולא מבצע השמה לשם."
+    "3": "ב-`reset` לא קוראים את `data` לפני ההשמה, ולכן אין `UnboundLocalError`."
+
+- id: py.functions.scope.015
+  type: single
+  difficulty: 3
+  prompt: "מתי פייתון קובעת שהשם `total` הוא משתנה מקומי בפונקציה?"
+  options:
+    - "כשיש השמה ל-`total` בגוף הפונקציה, ואז הוא מקומי בכל הפונקציה, גם בשורות שלפני ההשמה"
+    - "רק אחרי ששורת ההשמה ל-`total` מתבצעת, ולפני כן השם מפנה למשתנה הגלובלי"
+    - "רק אם אין משתנה גלובלי בשם `total`"
+    - "רק אם `total` הוא פרמטר של הפונקציה"
+  answer: 0
+  explanation: "ההחלטה מתקבלת כשפייתון מהדרת את הפונקציה, עוד לפני שהיא רצה: כל שם שיש אליו השמה בגוף הפונקציה (בלי `global` או `nonlocal`) הוא מקומי בכל הפונקציה. לכן קריאה של השם לפני ההשמה זורקת `UnboundLocalError` ולא קוראת את המשתנה הגלובלי."
+  optionExplanations:
+    "1": "זו טעות נפוצה. אילו זה היה נכון, `count += 1` היה קורא את הגלובלי ולא זורק `UnboundLocalError`."
+    "2": "משתנה גלובלי באותו שם לא משנה את ההחלטה. ההשמה בפונקציה היא שקובעת."
+    "3": "פרמטרים הם אכן מקומיים, אבל גם כל שם שיש אליו השמה בגוף הפונקציה."
+
+- id: py.functions.scope.016
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    last_result = None
+
+    def add(a, b):
+        global last_result
+        result = a + b
+        last_result = result
+        return result
+  options:
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+    - "קוד מת - Dead Code"
+    - "מתודה ארוכה - Long Method"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+  answer: 0
+  explanation: "השם `add` מבטיח רק חישוב, אבל הפונקציה גם משנה משתנה גלובלי. מי שקורא לה לא מצפה לזה, וקוד אחר שתלוי ב-`last_result` משתנה בלי שום סימן במקום הקריאה. עדיף פונקציה שרק מחזירה ערך, ואם צריך לשמור אותו, הקורא ישמור במפורש."
+  optionExplanations:
+    "1": "כל השורות מתבצעות ומשפיעות. הבעיה היא לא קוד שלא רץ, אלא מה שהקוד עושה בלי להודיע."
+    "2": "הפונקציה קצרה מאוד. הבעיה היא השינוי הנסתר של מצב גלובלי."
+    "3": "שני פרמטרים הם כמות טבעית לחיבור."

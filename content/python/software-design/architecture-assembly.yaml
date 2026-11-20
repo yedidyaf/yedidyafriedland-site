@@ -1,0 +1,549 @@
+- id: py.software-design.architecture-assembly.001
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה בקובץ שאליו היא שייכת.
+  requirement: "מערכת השאלת ספרים לספרייה: חבר ספרייה שואל ספר לפי ISBN, המערכת בודקת שהספר זמין, שומרת את ההשאלה במסד הנתונים ומציגה אישור למשתמש."
+  targets:
+    - id: models.py
+      desc: מחלקות הנתונים
+    - id: repository.py
+      desc: גישה למסד הנתונים
+    - id: service.py
+      desc: לוגיקה עסקית
+    - id: cli.py
+      desc: ממשק משתמש בשורת הפקודה
+  items:
+    - label: "class Book: def __init__(self, isbn: str, title: str, available: bool)"
+      answer: models.py
+      why: מחלקת נתונים בלי לוגיקה ובלי גישה למסד, ולכן היא בשכבת המודלים.
+    - label: "def find_book(isbn: str) -> Book | None"
+      answer: repository.py
+      why: שליפה ממסד הנתונים שייכת לשכבת הגישה לנתונים.
+    - label: "def save_loan(loan: Loan) -> None"
+      answer: repository.py
+      why: שמירה במסד היא אחריות ה-Repository.
+    - label: "def borrow_book(member_id: int, isbn: str) -> Loan"
+      answer: service.py
+      why: בדיקת זמינות ויצירת השאלה הן הכלל העסקי. השירות משתמש ב-Repository ולא ניגש למסד ישירות.
+    - label: "def print_confirmation(loan: Loan) -> None"
+      answer: cli.py
+      why: הצגה למשתמש שייכת לשכבת הממשק בלבד.
+  explanation: "כל שכבה אחראית על דבר אחד: מודלים מחזיקים נתונים, Repository מדבר עם המסד, Service מחליט לפי הכללים העסקיים, ו-CLI מדבר עם המשתמש. התלות זורמת בכיוון אחד: CLI ← Service ← Repository ← Models."
+
+- id: py.software-design.architecture-assembly.002
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל חתימה של מערכת החניון בקובץ שאליו היא שייכת.
+  requirement: "מערכת לחניון: ביציאה מקלידים את מספר הרכב, המערכת שולפת את זמן הכניסה, מחשבת 12 שקלים לכל שעה שהתחילה, שומרת את זמן היציאה ומציגה לנהג את הסכום."
+  targets:
+    - id: models.py
+      desc: מחלקות הנתונים
+    - id: parking_repository.py
+      desc: שמירה ושליפה של חניות במסד
+    - id: billing.py
+      desc: חישוב התשלום
+    - id: kiosk.py
+      desc: "המסך בעמדת היציאה: קלט והצגה"
+  items:
+    - label: "class ParkingSession: def __init__(self, plate: str, entered_at: datetime)"
+      answer: models.py
+      why: "מחלקת נתונים בלבד."
+    - label: "def find_active_session(plate: str) -> ParkingSession | None"
+      answer: parking_repository.py
+      why: "שליפה מהמסד של חניה שעדיין פתוחה."
+    - label: "def save_exit_time(plate: str, exited_at: datetime) -> None"
+      answer: parking_repository.py
+      why: "כתיבה למסד, בלי שום החלטה."
+    - label: "def parking_fee(entered_at: datetime, exited_at: datetime) -> int"
+      answer: billing.py
+      why: "הכלל של 12 שקלים לכל שעה שהתחילה. חישוב טהור על שני זמנים."
+    - label: "def ask_plate_number() -> str"
+      answer: kiosk.py
+      why: "קלט מהנהג."
+    - label: "def show_fee(plate: str, fee: int) -> None"
+      answer: kiosk.py
+      why: "הצגה לנהג."
+  explanation: "המחיר נקבע ב-`billing.py` בלבד, ולכן שינוי תעריף לא נוגע במסד או במסך. `parking_fee` מקבלת זמנים ולא מספר רכב, ולכן אפשר לבדוק אותה בלי מסד בכלל."
+
+- id: py.software-design.architecture-assembly.003
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת זימון התורים לפי תבנית MVC.
+  requirement: "אתר של מרפאה מציג למטופל את התורים הפנויים של רופא ביום מסוים. המטופל בוחר תור, המערכת מוודאת שהתור עדיין פנוי, קובעת אותו ומציגה דף אישור."
+  targets:
+    - id: models/appointment.py
+      desc: "המודל (Model): נתוני התורים, שליפתם וכללי הזמינות"
+    - id: views/appointment_views.py
+      desc: "התצוגה (View): בניית דפי HTML בלבד"
+    - id: controllers/appointment_controller.py
+      desc: "הבקר (Controller): מקבל בקשה, מפעיל את המודל ובוחר תצוגה"
+  items:
+    - label: "class Appointment: def __init__(self, doctor_id: int, starts_at: datetime, patient_id: int | None = None)"
+      answer: models/appointment.py
+      why: "הנתונים של תור."
+    - label: "Appointment.is_free(self) -> bool"
+      answer: models/appointment.py
+      why: "כלל הזמינות שייך למודל."
+    - label: "def free_slots(doctor_id: int, day: date) -> list[Appointment]"
+      answer: models/appointment.py
+      why: "שליפה של תורים לפי כלל הזמינות. ב-MVC המודל אחראי גם על הנתונים וגם על הכללים."
+    - label: "def render_slots_page(doctor_name: str, slots: list[Appointment]) -> str"
+      answer: views/appointment_views.py
+      why: "בונה HTML מנתונים מוכנים, בלי לשלוף ובלי להחליט."
+    - label: "def render_confirmation(appointment: Appointment) -> str"
+      answer: views/appointment_views.py
+      why: "דף אישור הוא תצוגה."
+    - label: "def handle_slots_request(request: Request) -> Response"
+      answer: controllers/appointment_controller.py
+      why: "קורא את הרופא והיום מהבקשה, מבקש מהמודל את התורים ומעביר אותם לתצוגה."
+    - label: "def handle_book_request(request: Request) -> Response"
+      answer: controllers/appointment_controller.py
+      why: "מתאם את קביעת התור ובוחר אם להציג אישור."
+  explanation: "ב-MVC המודל יודע מה נכון, התצוגה יודעת איך זה נראה, והבקר מקשר ביניהם. רק הבקר מכיר `Request` ו-`Response`. התצוגה מקבלת נתונים מוכנים ומחזירה `str`, ולא ניגשת למודל בעצמה."
+
+- id: py.software-design.architecture-assembly.004
+  type: architecture
+  difficulty: 1
+  prompt: "באפליקציית הצ'אט כל תכונה היא חבילה (Package) נפרדת. שבצו כל חתימה בחבילה שאליה היא שייכת."
+  requirement: "אפליקציית צ'אט: משתמשים נרשמים ומתחברים, יוצרים חדרים ומצטרפים אליהם, ושולחים הודעות לחדר. הקוד מאורגן לפי תכונות (Feature Modules) ולא לפי שכבות."
+  targets:
+    - id: accounts/
+      desc: הרשמה, התחברות ופרופיל משתמש
+    - id: rooms/
+      desc: יצירת חדרים וחברות בהם
+    - id: messaging/
+      desc: שליחה וקריאה של הודעות
+    - id: shared/
+      desc: כלים כלליים שלא שייכים לאף תכונה
+  items:
+    - label: "def register(username: str, password: str) -> User"
+      answer: accounts/
+    - label: "def login(username: str, password: str) -> Session"
+      answer: accounts/
+    - label: "def create_room(owner: User, name: str) -> Room"
+      answer: rooms/
+    - label: "def join_room(user: User, room_id: int) -> None"
+      answer: rooms/
+    - label: "def send_message(sender: User, room_id: int, text: str) -> Message"
+      answer: messaging/
+      why: "גם אם היא בודקת שהשולח חבר בחדר, האחריות שלה היא הודעות. את הבדיקה היא מבקשת מ-`rooms`."
+    - label: "def recent_messages(room_id: int, limit: int = 50) -> list[Message]"
+      answer: messaging/
+    - label: "def utc_now() -> datetime"
+      answer: shared/
+      why: "פונקציה כללית שכל התכונות משתמשות בה, בלי שום ידע על צ'אט."
+  explanation: "בחלוקה לפי תכונות כל מה שקשור לחדרים נמצא במקום אחד, ומי שעובד על הודעות לא צריך לפתוח קבצים בכל השכבות. `shared` מכיל רק כלים כלליים. אם הוא מתחיל להכיר `User` או `Room`, הוא הופך לערימת קוד בלי בעלים."
+
+- id: py.software-design.architecture-assembly.005
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של שירות ההעברות הבנקאיות בארכיטקטורת יציאות ומתאמים (Ports and Adapters).
+  requirement: "בנק מאפשר העברת כסף בין חשבונות, ואסור שהיתרה תרד מתחת למסגרת האשראי. הליבה צריכה לעבוד בלי לדעת אם החשבונות נשמרים ב-PostgreSQL או בזיכרון, ואם הבקשה הגיעה מ-HTTP או משורת הפקודה."
+  targets:
+    - id: domain/account.py
+      desc: ישות החשבון וכללי היתרה
+    - id: domain/ports.py
+      desc: "ממשקים (Protocols) שהליבה מגדירה ומצפה להם"
+    - id: application/transfer.py
+      desc: "תרחיש השימוש (Use Case): העברת כסף"
+    - id: adapters/postgres_accounts.py
+      desc: מימוש של יציאת החשבונות מול PostgreSQL
+    - id: adapters/http_api.py
+      desc: "מתאם נכנס: נקודות קצה של HTTP"
+  items:
+    - label: "Account.withdraw(self, amount: Decimal) -> None"
+      answer: domain/account.py
+      why: "כלל מסגרת האשראי שייך לישות עצמה."
+    - label: "class InsufficientFunds(Exception)"
+      answer: domain/account.py
+      why: "החריגה ש-`withdraw` זורקת היא חלק מהכלל של התחום, ולא תלויה ב-HTTP או במסד."
+    - label: "class AccountRepository(Protocol): def get(self, account_id: str) -> Account"
+      answer: domain/ports.py
+      why: "יציאה (Port): הליבה מגדירה מה היא צריכה, והמתאמים מממשים."
+    - label: "def transfer(repo: AccountRepository, source_id: str, target_id: str, amount: Decimal) -> None"
+      answer: application/transfer.py
+      why: "מתאם את התרחיש: טוען שני חשבונות, מושך, מפקיד ושומר. הוא מכיר רק את ה-Port."
+    - label: "class PostgresAccountRepository: def __init__(self, conn: psycopg.Connection)"
+      answer: adapters/postgres_accounts.py
+      why: "רק המתאם הזה מכיר את PostgreSQL."
+    - label: "def post_transfer(request: Request) -> Response"
+      answer: adapters/http_api.py
+      why: "מתרגם בקשת HTTP לקריאה ל-`transfer`, וחריגה של `InsufficientFunds` לקוד 422."
+  explanation: "בארכיטקטורה משושה (Hexagonal) התלויות מצביעות פנימה: המתאמים תלויים בליבה, והליבה לא מכירה אף מתאם. ה-Port מוגדר בתוך הליבה, ולכן מעבר מ-PostgreSQL למסד אחר הוא מתאם חדש בלבד."
+
+- id: py.software-design.architecture-assembly.006
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת המשלוחים, שבה המודולים מתקשרים דרך אירועים (Events).
+  requirement: "כשמסעדה מסמנת שמנה מוכנה, צריך לשבץ שליח פנוי ולשלוח ללקוח SMS. מודול ההזמנות לא מייבא את מודול השליחים ולא את מודול ההודעות."
+  targets:
+    - id: events.py
+      desc: "מנגנון פרסום והרשמה לאירועים (Publish/Subscribe)"
+    - id: orders.py
+      desc: מצב ההזמנה ופרסום אירועים עליה
+    - id: couriers.py
+      desc: ניהול שליחים ושיבוצם
+    - id: notifications.py
+      desc: שליחת הודעות ללקוחות
+    - id: main.py
+      desc: הפעלת האפליקציה ורישום המאזינים לאירועים
+  items:
+    - label: "def subscribe(event_type: str, handler: Callable[[dict], None]) -> None"
+      answer: events.py
+      why: "חלק מהמנגנון הכללי, בלי ידע על הזמנות."
+    - label: "def publish(event_type: str, payload: dict) -> None"
+      answer: events.py
+      why: "קוראת לכל המאזינים של האירוע."
+    - label: "def mark_ready(order_id: int) -> None"
+      answer: orders.py
+      why: "מעדכנת את מצב ההזמנה ומפרסמת `order_ready`, בלי לדעת מי מאזין."
+    - label: "def on_order_ready_assign_courier(payload: dict) -> None"
+      answer: couriers.py
+      why: "מאזין ששייך לתחום של השליחים."
+    - label: "def on_order_ready_send_sms(payload: dict) -> None"
+      answer: notifications.py
+      why: "מאזין ששייך לתחום של ההודעות."
+    - label: "def register_handlers() -> None"
+      answer: main.py
+      why: "המקום שמחבר אירועים למאזינים. כך אף מודול תחום לא צריך להכיר מודול אחר."
+  explanation: "האירוע מנתק את התלות: `orders.py` מכיר רק את `events.py`. כדי להוסיף תגובה חדשה ל-`order_ready` כותבים מאזין ורושמים אותו ב-`main.py`, ו-`orders.py` לא משתנה."
+
+- id: py.software-design.architecture-assembly.007
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של הקופה בחנות האינטרנט בקובץ המתאים.
+  requirement: "בקופה הלקוח מזין מיקוד למשלוח וקוד קופון. בודקים שהמיקוד בן 7 ספרות ושהקופון בפורמט הנכון, מחשבים את הסכום לתשלום אחרי הנחת הקופון, ומציגים אותו."
+  targets:
+    - id: validation.py
+      desc: "בדיקות פורמט של קלט: מחזירות True או False ולא ניגשות לנתונים"
+    - id: utils/money.py
+      desc: פונקציות כלליות לחישובי כסף, בלי ידע על החנות
+    - id: checkout_service.py
+      desc: חישוב ההזמנה לפי כללי החנות
+    - id: checkout_page.py
+      desc: "טופס הקופה: קלט והצגה"
+  items:
+    - label: "def is_valid_zip(zip_code: str) -> bool"
+      answer: validation.py
+      why: "בדיקת פורמט של מחרוזת."
+    - label: "def is_valid_coupon_format(code: str) -> bool"
+      answer: validation.py
+      why: "בודקת רק את צורת הקוד, לא אם הקופון קיים או בתוקף."
+    - label: "def round_money(amount: Decimal) -> Decimal"
+      answer: utils/money.py
+      why: "עיגול לשתי ספרות מתאים לכל מערכת שעובדת עם כסף."
+    - label: "def percent_of(amount: Decimal, percent: int) -> Decimal"
+      answer: utils/money.py
+      why: "חשבון כללי, בלי שום כלל של החנות."
+    - label: "def apply_coupon(subtotal: Decimal, coupon_code: str) -> Decimal"
+      answer: checkout_service.py
+      why: "בודקת אם הקופון קיים ובתוקף ומחילה את ההנחה שלו. זה כלל של החנות."
+    - label: "def order_total(cart: Cart, coupon_code: str | None) -> Decimal"
+      answer: checkout_service.py
+      why: "מחשבת את הסכום לתשלום בעזרת `apply_coupon` ו-`round_money`."
+    - label: "def show_total(total: Decimal) -> None"
+      answer: checkout_page.py
+      why: "הצגה ללקוח."
+  explanation: "`validation` בודק צורה, `utils` מכיל כלים כלליים שאפשר להעתיק לכל פרויקט, והשירות מחזיק את כללי החנות. המבחן ל-utils: אם הפונקציה מכירה מושג של החנות, כמו קופון או עגלה, היא לא שייכת לשם."
+
+- id: py.software-design.architecture-assembly.008
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל חתימה של מנהל המשימות בקובץ המתאים, כולל קובץ הבדיקות.
+  requirement: "מנהל משימות לצוות: לכל משימה יש תאריך יעד, ומשימה שתאריך היעד שלה עבר מסומנת כמאחרת. הבדיקות רצות עם pytest ובלי מסד נתונים אמיתי."
+  targets:
+    - id: tasks.py
+      desc: מחלקת המשימה והכללים שלה
+    - id: sql_task_repository.py
+      desc: שמירה ושליפה של משימות במסד הנתונים
+    - id: in_memory_task_repository.py
+      desc: מאגר בזיכרון עם אותן מתודות, לבדיקות
+    - id: test_tasks.py
+      desc: בדיקות pytest
+  items:
+    - label: "class Task: def __init__(self, title: str, due: date, assignee: str | None = None)"
+      answer: tasks.py
+    - label: "Task.is_overdue(self, today: date) -> bool"
+      answer: tasks.py
+      why: "הכלל של משימה מאחרת. היא מקבלת את התאריך מבחוץ, ולכן קל לבדוק אותה."
+    - label: "SqlTaskRepository.save(self, task: Task) -> None"
+      answer: sql_task_repository.py
+    - label: "InMemoryTaskRepository.save(self, task: Task) -> None"
+      answer: in_memory_task_repository.py
+      why: "אותה חתימה כמו של המאגר האמיתי, אבל שומרת ברשימה."
+    - label: "def test_task_is_overdue_after_due_date() -> None"
+      answer: test_tasks.py
+    - label: "def test_saved_task_can_be_found() -> None"
+      answer: test_tasks.py
+      why: "בדיקה שמשתמשת במאגר בזיכרון."
+  explanation: "קבצי בדיקה מתחילים ב-`test_` כדי ש-pytest ימצא אותם, ופונקציות הבדיקה מתחילות ב-`test_` מאותה סיבה. המאגר בזיכרון הוא קוד רגיל בקובץ משלו, כי גם בדיקות אחרות וגם הדגמות יכולות להשתמש בו."
+
+- id: py.software-design.architecture-assembly.009
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת המלאי למחסן בקובץ הנכון.
+  requirement: "API למחסן: עובד שולח בקשת HTTP לקליטת סחורה עם קוד מוצר (SKU) וכמות. המערכת מוודאת שהמוצר קיים, מעדכנת את הכמות, ואם היא עדיין מתחת לסף המינימום, מפרסמת אירוע של הזמנה מחדש מהספק."
+  targets:
+    - id: api/routes.py
+      desc: "נקודות קצה של HTTP: קבלת הבקשה ובניית התשובה"
+    - id: api/schemas.py
+      desc: "מבני הבקשה והתשובה (DTO) ובדיקת השדות שלהם"
+    - id: inventory/service.py
+      desc: כללי המלאי
+    - id: inventory/repository.py
+      desc: גישה למסד הנתונים
+    - id: inventory/events.py
+      desc: מחלקות האירועים שהמלאי מפרסם
+  items:
+    - label: "class ReceiveStockRequest: sku: str; quantity: int"
+      answer: api/schemas.py
+      why: "המבנה של גוף הבקשה. הוא שייך ל-API, כי הוא משתנה כשהחוזה עם הלקוח משתנה."
+    - label: "def receive_stock_endpoint(request: Request) -> JSONResponse"
+      answer: api/routes.py
+      why: "רק כאן מכירים `Request` ו-`JSONResponse`."
+    - label: "def receive_stock(sku: str, quantity: int) -> int"
+      answer: inventory/service.py
+      why: "התהליך: בדיקה שהמוצר קיים, עדכון, ובדיקת סף. היא מחזירה את הכמות החדשה."
+    - label: "def needs_reorder(quantity: int, minimum: int) -> bool"
+      answer: inventory/service.py
+      why: "כלל הסף."
+    - label: "def get_quantity(sku: str) -> int | None"
+      answer: inventory/repository.py
+      why: "שליפה מהמסד. `None` אומר שהמוצר לא קיים."
+    - label: "def set_quantity(sku: str, quantity: int) -> None"
+      answer: inventory/repository.py
+      why: "כתיבה למסד, בלי חישוב."
+    - label: "class ReorderNeeded: sku: str; missing: int"
+      answer: inventory/events.py
+      why: "האירוע שהשירות מפרסם. מודול הרכש יכול להאזין לו בלי שהמלאי יכיר אותו."
+  explanation: "חבילת `api` מתרגמת בין HTTP לבין הליבה, וחבילת `inventory` לא יודעת שיש HTTP בכלל. `ReceiveStockRequest` שייך ל-API ולא לליבה, כי השירות מקבל ערכים פשוטים. כך אפשר להפעיל אותו גם מסורק ברקודים או מסקריפט לילי."
+
+- id: py.software-design.architecture-assembly.010
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל חתימה של סקריפט סיכום הריצות בקובץ המתאים.
+  requirement: "סקריפט קורא יומן ריצות מקובץ CSV, מחשב את המרחק הכולל של השבוע ואת הקצב הממוצע, ומדפיס סיכום שבועי."
+  targets:
+    - id: csv_loader.py
+      desc: קריאת הקובץ
+    - id: stats.py
+      desc: חישובים
+    - id: summary.py
+      desc: עיצוב טקסט הסיכום
+    - id: main.py
+      desc: נקודת הכניסה שמחברת הכול
+  items:
+    - label: "def read_runs(path: Path) -> list[Run]"
+      answer: csv_loader.py
+    - label: "def weekly_distance(runs: list[Run]) -> float"
+      answer: stats.py
+    - label: "def average_pace(runs: list[Run]) -> float"
+      answer: stats.py
+      why: "חישוב דקות לקילומטר, בלי קבצים ובלי הדפסה."
+    - label: "def format_weekly_summary(distance_km: float, pace: float) -> str"
+      answer: summary.py
+      why: "מחזירה מחרוזת ולא מדפיסה, ולכן אפשר להשתמש בה גם באימייל."
+    - label: "def main() -> None"
+      answer: main.py
+      why: "קוראת, מחשבת, מעצבת ומדפיסה, בסדר הזה."
+  explanation: "גם סקריפט קטן מרוויח מחלוקה: קריאה, חישוב ועיצוב הם שלוש סיבות שונות להשתנות. `main` רק מחבר ביניהם, ולכן אפשר להחליף את CSV ב-JSON בלי לגעת בחישובים."
+
+- id: py.software-design.architecture-assembly.011
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של מערכת התראות מזג האוויר בקובץ המתאים.
+  requirement: "כל שעה המערכת בודקת את התחזית לכל עיר שיש לה מנויים, ואם צפוי חום מעל הסף שכל מנוי הגדיר, היא שולחת לו התראה. רוצים להחליף ספק תחזית או ערוץ שליחה בלי לגעת בליבה."
+  targets:
+    - id: core/rules.py
+      desc: "כללים טהורים: מתי מגיעה התראה"
+    - id: core/ports.py
+      desc: "הממשקים שהליבה צריכה: ספק תחזית ושולח התראות"
+    - id: core/check_alerts.py
+      desc: "תרחיש השימוש: בדיקה ושליחה"
+    - id: adapters/forecast_api.py
+      desc: מימוש ספק התחזית מול שירות חיצוני
+    - id: adapters/telegram_sender.py
+      desc: מימוש שליחת התראות בטלגרם
+    - id: tests/test_rules.py
+      desc: בדיקות יחידה לכללים
+  items:
+    - label: "def should_alert(max_temp: float, threshold: float) -> bool"
+      answer: core/rules.py
+      why: "פונקציה טהורה, בלי רשת ובלי זמן."
+    - label: "class ForecastProvider(Protocol): def max_temp_tomorrow(self, city: str) -> float"
+      answer: core/ports.py
+    - label: "class AlertSender(Protocol): def send(self, subscriber_id: int, text: str) -> None"
+      answer: core/ports.py
+    - label: "def run_hourly_check(forecasts: ForecastProvider, sender: AlertSender, subscriptions: list[Subscription]) -> int"
+      answer: core/check_alerts.py
+      why: "מתאמת את הבדיקה דרך הממשקים בלבד, ומחזירה כמה התראות נשלחו."
+    - label: "class ForecastApiClient: def __init__(self, api_key: str, base_url: str)"
+      answer: adapters/forecast_api.py
+    - label: "class TelegramAlertSender: def __init__(self, bot_token: str)"
+      answer: adapters/telegram_sender.py
+    - label: "def test_no_alert_when_temp_equals_threshold() -> None"
+      answer: tests/test_rules.py
+      why: "בודקת את מקרה הגבול של `should_alert`."
+  explanation: "הליבה (`core`) מגדירה את הממשקים, והמתאמים (`adapters`) מממשים אותם. מעבר מטלגרם ל-SMS הוא קובץ חדש ב-`adapters`. הכללים הטהורים מופרדים מתרחיש השימוש, ולכן אפשר לבדוק אותם בשורה אחת."
+
+- id: py.software-design.architecture-assembly.012
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת מכון הכושר בחבילה ובקובץ שאליהם היא שייכת.
+  requirement: "מכון כושר: מנויים יכולים להקפיא מנוי, נרשמים לחוגים כשיש מקום, ומקבלים חשבונית חודשית. הקוד מאורגן בחבילה לכל תכונה."
+  targets:
+    - id: memberships/service.py
+      desc: "כללי המנוי: הצטרפות, הקפאה וחידוש"
+    - id: classes/service.py
+      desc: "חוגים: מערכת שעות והרשמה לחוג"
+    - id: billing/invoices.py
+      desc: חיוב והפקת חשבוניות
+    - id: billing/repository.py
+      desc: שמירה ושליפה של חשבוניות במסד
+    - id: shared/dates.py
+      desc: פונקציות תאריך כלליות
+  items:
+    - label: "def freeze_membership(member_id: int, weeks: int) -> None"
+      answer: memberships/service.py
+    - label: "def enroll(member_id: int, class_id: int) -> None"
+      answer: classes/service.py
+    - label: "def is_class_full(gym_class: GymClass) -> bool"
+      answer: classes/service.py
+      why: "כלל ההרשמה לחוג שייך לתכונת החוגים."
+    - label: "def weekly_schedule(week_start: date) -> list[GymClass]"
+      answer: classes/service.py
+    - label: "def create_monthly_invoice(member_id: int, month: date) -> Invoice"
+      answer: billing/invoices.py
+    - label: "def save_invoice(invoice: Invoice) -> None"
+      answer: billing/repository.py
+      why: "בתוך חבילת התכונה עדיין מפרידים בין לוגיקה לגישה לנתונים."
+    - label: "def add_months(day: date, months: int) -> date"
+      answer: shared/dates.py
+      why: "חשבון תאריכים כללי. גם חידוש מנוי וגם חשבוניות משתמשים בו."
+  explanation: "החלוקה הראשית היא לפי תכונה, ובתוך תכונה גדולה כמו חיוב יש גם הפרדה לשכבות. `shared` מכיל רק את מה שלא שייך לאף תכונה."
+
+- id: py.software-design.architecture-assembly.013
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת ההזמנות במלון בקובץ המתאים.
+  requirement: "מלון מקבל הזמנת חדר לתאריכים מסוימים. בודקים שתאריך היציאה מאוחר מתאריך הכניסה, מחפשים חדר פנוי מהסוג המבוקש, שומרים את ההזמנה ושולחים ללקוח אימייל אישור."
+  targets:
+    - id: booking/validation.py
+      desc: בדיקת תקינות של בקשת ההזמנה, בלי גישה לנתונים
+    - id: booking/service.py
+      desc: כללי ההזמנה
+    - id: booking/repository.py
+      desc: שליפה ושמירה של חדרים והזמנות
+    - id: notifications/email.py
+      desc: שליחת אימיילים ללקוחות
+  items:
+    - label: "def validate_dates(check_in: date, check_out: date) -> list[str]"
+      answer: booking/validation.py
+      why: "מחזירה רשימת הודעות שגיאה, בלי לשאול את המסד."
+    - label: "def rooms_of_type(room_type: str) -> list[Room]"
+      answer: booking/repository.py
+      why: "שאילתה פשוטה."
+    - label: "def bookings_between(room_type: str, start: date, end: date) -> list[Booking]"
+      answer: booking/repository.py
+      why: "שליפת ההזמנות הקיימות בטווח."
+    - label: "def pick_free_room(rooms: list[Room], bookings: list[Booking]) -> Room | None"
+      answer: booking/service.py
+      why: "ההחלטה איזה חדר פנוי היא לוגיקה. הפונקציה מקבלת רשימות ולא ניגשת למסד."
+    - label: "def book_room(guest: Guest, room_type: str, check_in: date, check_out: date) -> Booking"
+      answer: booking/service.py
+      why: "מתאמת את כל התהליך."
+    - label: "def save_booking(booking: Booking) -> None"
+      answer: booking/repository.py
+    - label: "def send_booking_confirmation(guest_email: str, booking: Booking) -> None"
+      answer: notifications/email.py
+      why: "שליחת אימייל היא ערוץ תקשורת, לא כלל של הזמנות."
+  explanation: "ה-Repository מביא נתונים גולמיים, והשירות מחליט מה פנוי. כך הכלל נשאר בפייתון וקל לבדוק אותו. `notifications` היא חבילה נפרדת, כי גם מערכות אחרות במלון ישלחו אימיילים."
+
+- id: py.software-design.architecture-assembly.014
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת הערכת המחיר לנסיעות שיתופיות בקובץ המתאים.
+  requirement: "אפליקציית נסיעות מעריכה מחיר לפני ההזמנה. בשעות רגילות המחיר תלוי במרחק ובזמן, וכשיש יותר בקשות מנהגים מכפילים אותו בגורם עומס. רוצים לבדוק כל שיטת תמחור לבד."
+  targets:
+    - id: pricing/base.py
+      desc: ההפשטה של שיטת תמחור
+    - id: pricing/standard.py
+      desc: תמחור רגיל
+    - id: pricing/surge.py
+      desc: תמחור בשעות עומס
+    - id: pricing/factory.py
+      desc: בחירת שיטת התמחור לפי מצב השוק
+    - id: trips.py
+      desc: הערכת המחיר של נסיעה
+    - id: tests/test_pricing.py
+      desc: בדיקות לשיטות התמחור
+  items:
+    - label: "class PricingStrategy(ABC): def price(self, km: float, minutes: float) -> Decimal"
+      answer: pricing/base.py
+    - label: "class StandardPricing(PricingStrategy)"
+      answer: pricing/standard.py
+    - label: "class SurgePricing(PricingStrategy): def __init__(self, base: PricingStrategy, multiplier: Decimal)"
+      answer: pricing/surge.py
+      why: "עוטף שיטה אחרת ומכפיל את התוצאה שלה."
+    - label: "def choose_strategy(active_drivers: int, open_requests: int) -> PricingStrategy"
+      answer: pricing/factory.py
+      why: "המקום היחיד שמחליט מתי יש עומס."
+    - label: "def estimate_trip(origin: Point, dest: Point, strategy: PricingStrategy) -> Decimal"
+      answer: trips.py
+      why: "מחשבת מרחק וזמן ומפעילה את השיטה שקיבלה."
+    - label: "def test_surge_doubles_standard_price() -> None"
+      answer: tests/test_pricing.py
+  explanation: "כל שיטת תמחור היא אסטרטגיה בקובץ משלה, המפעל בוחר ביניהן, ו-`trips.py` לא יודע איזו שיטה קיבל. בדיקה של `SurgePricing` לא צריכה מפה, נהגים או זמן אמיתי."
+
+- id: py.software-design.architecture-assembly.015
+  type: single
+  difficulty: 1
+  prompt: "במערכת המשלוחים מודולים מאזינים לאירוע `order_ready`. רוצים לשלוח ללקוח גם אימייל כשהמנה מוכנה. מה השינוי הנכון?"
+  code: |
+    # main.py
+    from events import subscribe
+    from couriers import on_order_ready_assign_courier
+    from notifications import on_order_ready_send_sms
+
+    def register_handlers() -> None:
+        subscribe("order_ready", on_order_ready_assign_courier)
+        subscribe("order_ready", on_order_ready_send_sms)
+  options:
+    - "להוסיף ל-`notifications.py` פונקציה `on_order_ready_send_email(payload: dict) -> None`, ולרשום אותה ב-`register_handlers`"
+    - "להוסיף ל-`mark_ready` ב-`orders.py` קריאה ישירה לפונקציה ששולחת אימייל"
+    - "לשנות את `on_order_ready_assign_courier` כך שתשלח גם אימייל"
+    - "לפרסם מ-`orders.py` אירוע נוסף בשם `order_ready_email`, בנוסף ל-`order_ready`"
+  answer: 0
+  explanation: "האירוע `order_ready` כבר קיים, וכל תגובה חדשה היא עוד מאזין. האימייל שייך למודול ההודעות, והרישום נעשה במקום שמחבר את המערכת. `orders.py` לא משתנה בכלל."
+  optionExplanations:
+    "1": "זה מחזיר את התלות שהאירועים נועדו לבטל: ההזמנות יכירו את ערוץ ההודעות."
+    "2": "שיבוץ שליח ושליחת אימייל הן אחריויות שונות, ואימייל לא שייך למודול השליחים."
+    "3": "אירוע מתאר מה קרה, לא מי צריך להגיב. אירוע לכל ערוץ מחייב לשנות את `orders.py` בכל פעם."
+
+- id: py.software-design.architecture-assembly.016
+  type: single
+  difficulty: 2
+  prompt: "בארכיטקטורת יציאות ומתאמים (Ports and Adapters), איזה import שובר את כלל התלות?"
+  code: |
+    # domain/ports.py
+    from typing import Protocol
+    from domain.account import Account
+
+    # application/transfer.py
+    from domain.ports import AccountRepository
+    from adapters.postgres_accounts import PostgresAccountRepository
+
+    # adapters/postgres_accounts.py
+    import psycopg
+    from domain.account import Account
+  options:
+    - "`from domain.account import Account` ב-`domain/ports.py`"
+    - "`from domain.ports import AccountRepository` ב-`application/transfer.py`"
+    - "`from adapters.postgres_accounts import PostgresAccountRepository` ב-`application/transfer.py`"
+    - "`import psycopg` ב-`adapters/postgres_accounts.py`"
+  answer: 2
+  explanation: "תרחיש השימוש חלק מהליבה, והוא מייבא מתאם מסוים. עכשיו הליבה תלויה ב-PostgreSQL, ואי אפשר להריץ אותה עם מאגר בזיכרון. הליבה צריכה להכיר רק את `AccountRepository`, והמימוש מגיע מבחוץ."
+  optionExplanations:
+    "0": "שני הקבצים בתוך התחום, וה-Port צריך את `Account` כדי להגדיר את החתימה שלו."
+    "1": "הליבה תלויה ב-Port שהיא עצמה מגדירה. זה הכיוון הנכון."
+    "3": "מתאם הוא בדיוק המקום שבו מותר להכיר ספרייה חיצונית."

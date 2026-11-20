@@ -1,0 +1,104 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import SampleQuestion from '../../../../components/SampleQuestion';
+import { getContent } from '../../../../lib/content';
+import { clientQuestion } from '../../../../lib/build-data';
+import { href } from '../../../../lib/url';
+import { bilingual } from '../../../../lib/text';
+import { QUESTION_TYPE_LABELS, type QuestionType } from '../../../../lib/schema';
+import { SITE } from '../../../../site';
+
+export function getStaticPaths() {
+  return getContent().flatMap((l) =>
+    l.chapters.flatMap((c) => c.topics.map((t) => ({ params: { lang: l.id, chapter: c.id, topic: t.id } }))),
+  );
+}
+const lang = getContent().find((l) => l.id === Astro.params.lang)!;
+const chapter = lang.chapters.find((c) => c.id === Astro.params.chapter)!;
+const idx = chapter.topics.findIndex((t) => t.id === Astro.params.topic);
+const topic = chapter.topics[idx];
+const prev = chapter.topics[idx - 1];
+const next = chapter.topics[idx + 1];
+
+// three sample questions of different types, for learners and for search engines
+const seen = new Set<QuestionType>();
+const samples = [];
+for (const q of topic.questions) {
+  if (samples.length >= 3) break;
+  if (seen.has(q.type)) continue;
+  seen.add(q.type);
+  samples.push(await clientQuestion(q, chapter.id, topic.id, lang.highlight));
+}
+const typeCounts = Object.entries(
+  topic.questions.reduce<Record<string, number>>((m, q) => ((m[q.type] = (m[q.type] ?? 0) + 1), m), {}),
+).sort((a, b) => b[1] - a[1]);
+const title = `${bilingual(topic.title_he, topic.title_en)} ב${lang.title_he} - שאלות ותרגול`;
+const startUrl = (count: number, feedback = 'instant') =>
+  href(`/exam/?lang=${lang.id}&mode=topic&chapter=${chapter.id}&topic=${topic.id}&count=${count}&feedback=${feedback}`);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: `${topic.title_he} - ${topic.title_en} (${lang.title_en})`,
+    about: { '@type': 'Thing', name: `${lang.title_en} ${topic.title_en}` },
+    educationalLevel: 'beginner to intermediate',
+    inLanguage: 'he',
+    description: topic.summary_he,
+    author: { '@type': 'Person', name: SITE.name_en },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: lang.title_en, item: new URL(href(`/${lang.id}/`), Astro.site).toString() },
+      { '@type': 'ListItem', position: 2, name: chapter.title_en, item: new URL(href(`/${lang.id}/${chapter.id}/`), Astro.site).toString() },
+      { '@type': 'ListItem', position: 3, name: topic.title_en },
+    ],
+  },
+];
+---
+<Base title={title} description={`${topic.summary_he} ${topic.questions.length} שאלות עם הסבר מלא.`} jsonLd={jsonLd}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="פירורי לחם">
+      <a href={href('/')}>בית</a> / <a href={href(`/${lang.id}/`)}>{lang.title_he}</a> /
+      <a href={href(`/${lang.id}/${chapter.id}/`)}>{chapter.title_he}</a> / <span>{topic.title_he}</span>
+    </nav>
+    <h1>{bilingual(topic.title_he, topic.title_en)}</h1>
+    <p class="lead">{topic.summary_he}</p>
+    <p class="muted">
+      {topic.questions.length} שאלות:
+      {typeCounts.map(([t, n], i) => <span>{i ? ', ' : ' '}{n} {QUESTION_TYPE_LABELS[t as QuestionType].he}</span>)}.
+      <span class="badge none" data-topic={`${lang.id}/${chapter.id}/${topic.id}`} style="margin-inline-start:8px">לא התחלתם</span>
+    </p>
+    <div class="row-actions" style="margin:16px 0 28px">
+      <a class="btn lg" href={startUrl(10)}>תרגול: 10 שאלות</a>
+      <a class="btn secondary" href={startUrl(topic.questions.length)}>כל {topic.questions.length} השאלות</a>
+      <a class="btn ghost" href={startUrl(10, 'end')}>מבחן עם הסברים בסוף</a>
+    </div>
+
+    <h2>שאלות לדוגמה</h2>
+    <p class="muted">כך נראות השאלות בנושא. ענו, וההסבר יופיע מיד. התשובות כאן לא נספרות בהתקדמות.</p>
+    <div class="stack">
+      {samples.map((q, i) => (
+        <SampleQuestion client:visible q={q} number={i + 1} />
+      ))}
+    </div>
+
+    <nav class="row-actions" style="justify-content:space-between;margin-top:32px" aria-label="נושאים סמוכים">
+      {prev ? <a href={href(`/${lang.id}/${chapter.id}/${prev.id}/`)}>→ {bilingual(prev.title_he, prev.title_en)}</a> : <span />}
+      {next ? <a href={href(`/${lang.id}/${chapter.id}/${next.id}/`)}>{bilingual(next.title_he, next.title_en)} ←</a> : <a href={href(`/${lang.id}/${chapter.id}/`)}>חזרה לפרק</a>}
+    </nav>
+  </div>
+</Base>
+<script>
+  import { load } from '../../../../lib/storage';
+  import { level, mastery, LEVEL_LABEL } from '../../../../lib/scoring';
+  const s = load();
+  document.querySelectorAll<HTMLElement>('[data-topic]').forEach((el) => {
+    const r = s.topics[el.dataset.topic!];
+    const lv = level(r);
+    const m = mastery(r ?? []);
+    el.className = `badge ${lv}`;
+    el.textContent = LEVEL_LABEL[lv] + (m !== null ? ` ${m}%` : '');
+  });
+</script>

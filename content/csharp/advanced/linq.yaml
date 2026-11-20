@@ -1,0 +1,279 @@
+- id: cs.advanced.linq.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var nums = new[] { 1, 2, 3, 4, 5 };
+    var result = nums.Where(n => n % 2 == 1).Select(n => n * 10);
+    Console.WriteLine(string.Join(",", result));
+  options: ["10,30,50", "20,40", "10,20,30,40,50", "1,3,5"]
+  answer: 0
+  explanation: "`Where` מסנן (Filter) ומשאיר רק את האיברים שהתנאי מחזיר עבורם `true`: 1, 3 ו-5. `Select` ממיר (Projection) כל איבר שנשאר לערך חדש: כפול 10."
+  optionExplanations:
+    "1": "התנאי `n % 2 == 1` נכון למספרים האי־זוגיים, לא לזוגיים."
+    "2": "`Where` רץ לפני `Select`, ולכן רק המספרים האי־זוגיים מוכפלים."
+    "3": "`Select` לא נעלם: כל איבר שעבר את הסינון מוכפל ב-10."
+
+- id: cs.advanced.linq.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var nums = new[] { 1, 2, 3, 4 };
+    var a = nums.Select(n => n + 1).Where(n => n % 2 == 0);
+    var b = nums.Where(n => n % 2 == 0).Select(n => n + 1);
+    Console.WriteLine(string.Join(" ", a));
+    Console.WriteLine(string.Join(" ", b));
+  options: ["2 4\n3 5", "3 5\n3 5", "2 4\n2 4", "3 5\n2 4"]
+  answer: 0
+  explanation: "כל אופרטור פועל על התוצאה של הקודם, ולכן הסדר משנה. ב-`a` קודם מוסיפים 1 (2, 3, 4, 5) ואז מסננים זוגיים: 2 4. ב-`b` קודם מסננים זוגיים (2, 4) ואז מוסיפים 1: 3 5."
+  optionExplanations:
+    "1": "ב-`a` הסינון רץ על הערכים אחרי ההוספה, ולכן נשארים 2 ו-4."
+    "2": "ב-`b` ההוספה רצה אחרי הסינון, ולכן 2 ו-4 הופכים ל-3 ו-5."
+    "3": "זה הפוך: `a` מוסיף קודם ומסנן אחר כך, ו-`b` מסנן קודם."
+
+- id: cs.advanced.linq.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var words = new List<string> { "pear", "fig", "apple", "kiwi" };
+    var sorted = words.OrderBy(w => w.Length).ThenBy(w => w);
+    Console.WriteLine(string.Join(",", sorted));
+  options: ["fig,kiwi,pear,apple", "fig,pear,kiwi,apple", "apple,fig,kiwi,pear", "apple,pear,kiwi,fig"]
+  answer: 0
+  explanation: "`OrderBy` ממיין לפי אורך: `fig` (3), אחריה שתי מילים באורך 4, ובסוף `apple` (5). `ThenBy` קובע את הסדר בתוך קבוצת השוויון לפי סדר אלפביתי, ולכן `kiwi` לפני `pear`."
+  optionExplanations:
+    "1": "זה היה הסדר בלי `ThenBy`, לפי הסדר המקורי. `ThenBy(w => w)` שם את `kiwi` לפני `pear`."
+    "2": "זה מיון אלפביתי בלבד. המפתח הראשי הוא האורך, והאלפבית רק שובר שוויון."
+    "3": "זה מיון יורד לפי אורך. `OrderBy` ממיין בסדר עולה."
+
+- id: cs.advanced.linq.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var people = new List<Person>
+    {
+        new("Noa", 30), new("Ben", 25), new("Dana", 30), new("Avi", 25)
+    };
+    var names = people.OrderBy(p => p.Age).Select(p => p.Name);
+    Console.WriteLine(string.Join(" ", names));
+
+    record Person(string Name, int Age);
+  options: ["Ben Avi Noa Dana", "Avi Ben Dana Noa", "Noa Dana Ben Avi", "Avi Ben Noa Dana"]
+  answer: 0
+  explanation: "`OrderBy` הוא מיון יציב (Stable Sort): איברים עם אותו מפתח שומרים על הסדר המקורי שלהם. בני 25 הם `Ben` ואז `Avi`, ובני 30 הם `Noa` ואז `Dana`. השמות עצמם לא משתתפים במיון, ולכן אין כאן סדר אלפביתי."
+  optionExplanations:
+    "1": "זה מניח שוויון נשבר לפי שם, אבל המיון הוא רק לפי `Age`. בשביל זה צריך `ThenBy(p => p.Name)`."
+    "2": "`OrderBy` ממיין בסדר עולה, ולכן בני 25 קודמים לבני 30."
+    "3": "בתוך אותו גיל נשמר הסדר המקורי: `Ben` הופיע לפני `Avi` ברשימה."
+
+- id: cs.advanced.linq.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var nums = new List<int> { 5, 8, 12 };
+    Console.WriteLine(nums.FirstOrDefault(n => n > 20));
+    Console.WriteLine(nums.First(n => n > 6));
+    try
+    {
+        Console.WriteLine(nums.First(n => n > 20));
+    }
+    catch (InvalidOperationException)
+    {
+        Console.WriteLine("error");
+    }
+  options: ["0\n8\nerror", "null\n8\nerror", "0\n8\n0", "0\n12\nerror"]
+  answer: 0
+  explanation: "`First` מחזיר את האיבר הראשון שעומד בתנאי, וזורק `InvalidOperationException` כשאין כזה. `FirstOrDefault` מחזיר במקרה כזה את ערך ברירת המחדל של הטיפוס, וב-`int` זה `0`. האיבר הראשון שגדול מ-6 הוא 8."
+  optionExplanations:
+    "1": "`int` הוא טיפוס ערך ולא יכול להיות `null`. ברירת המחדל שלו היא `0`."
+    "2": "רק `FirstOrDefault` מחזיר ברירת מחדל. `First` בלי התאמה זורק חריגה."
+    "3": "`First` עוצר באיבר הראשון שמתאים, ו-8 מופיע לפני 12."
+
+- id: cs.advanced.linq.006
+  type: truefalse
+  difficulty: 1
+  prompt: "`FirstOrDefault()` על `List<string>` ריקה מחזיר מחרוזת ריקה `\"\"`."
+  answer: false
+  explanation: "`FirstOrDefault` מחזיר את ערך ברירת המחדל של הטיפוס. `string` הוא טיפוס הפניה, ולכן ברירת המחדל שלו היא `null` ולא `\"\"`. מי שרוצה ערך אחר יכול לכתוב `FirstOrDefault(\"\")` או להשתמש ב-`??`."
+
+- id: cs.advanced.linq.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var nums = new List<int> { 1, 2, 3 };
+    var big = nums.Where(n => n > 1);
+    nums.Add(4);
+    Console.WriteLine(big.Count());
+    nums.Add(5);
+    Console.WriteLine(big.Count());
+  options: ["3\n4", "2\n2", "3\n3", "2\n3"]
+  answer: 0
+  explanation: "זו הערכה דחויה (Deferred Execution): `big` הוא לא רשימת תוצאות אלא תיאור של שאילתה. היא רצה מחדש על `nums` בכל פעם שעוברים עליה, כאן בכל קריאה ל-`Count()`. לכן היא רואה את 4 בקריאה הראשונה, ואת 4 ו-5 בשנייה."
+  optionExplanations:
+    "1": "התוצאה 2 ו-2 מניחה ש-`Where` חישב את התוצאה מיד בשורה 2. הוא רק בונה שאילתה."
+    "2": "השאילתה מחושבת מחדש בכל `Count()`, ולכן היא רואה גם את 5."
+    "3": "גם החישוב הראשון קורה רק בשורה 4, אחרי שכבר נוספה 4."
+
+- id: cs.advanced.linq.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int calls = 0;
+    var query = new[] { 1, 2, 3 }.Select(n => { calls++; return n * 2; });
+    Console.WriteLine(calls);
+    int sum = query.Sum();
+    int max = query.Max();
+    Console.WriteLine(calls);
+  options: ["0\n6", "3\n3", "0\n3", "3\n6"]
+  answer: 0
+  explanation: "`Select` לא מפעיל את הלמבדא כשבונים את השאילתה, ולכן בהדפסה הראשונה `calls` הוא 0. `Sum` עובר על השאילתה ומפעיל את הלמבדא 3 פעמים, ו-`Max` עובר עליה שוב מההתחלה ומפעיל אותה עוד 3 פעמים. כדי לחשב פעם אחת בלבד שומרים את התוצאה עם `ToList()`."
+  optionExplanations:
+    "1": "השאילתה לא רצה בשורה 2, ובנוסף היא רצה פעמיים ולא פעם אחת."
+    "2": "כל פעולה שעוברת על שאילתה דחויה מריצה אותה מחדש, כולל הלמבדא שבה."
+    "3": "בשורה 2 עדיין לא רץ כלום: `Select` רק בונה את השאילתה."
+
+- id: cs.advanced.linq.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var words = new[] { "bob", "anna", "ben", "amy", "carl" };
+    var groups = words.GroupBy(w => w[0]);
+    foreach (var g in groups)
+        Console.WriteLine($"{g.Key}: {g.Count()}");
+  options:
+    - "b: 2\na: 2\nc: 1"
+    - "a: 2\nb: 2\nc: 1"
+    - "b: 1\na: 1\nb: 1\na: 1\nc: 1"
+    - "b: 3\na: 2"
+  answer: 0
+  explanation: "`GroupBy` אוסף את כל האיברים עם אותו מפתח לקבוצה אחת, גם אם הם לא צמודים. הקבוצות מופיעות לפי סדר ההופעה הראשונה של כל מפתח: `b` (מ-`bob`), אחריה `a`, ובסוף `c`. כל קבוצה היא `IGrouping` עם `Key` ועם האיברים שלה."
+  optionExplanations:
+    "1": "`GroupBy` לא ממיין את המפתחות. הסדר הוא סדר ההופעה הראשונה במקור."
+    "2": "`GroupBy` מאחד את כל האיברים עם אותו מפתח, לא רק איברים צמודים."
+    "3": "המפתח הוא האות הראשונה, ו-`carl` מתחילה ב-`c`, ולכן יש לו קבוצה משלו."
+
+- id: cs.advanced.linq.010
+  type: single
+  difficulty: 2
+  prompt: "איזה ביטוי מחזיר את סכום ההזמנות של כל קטגוריה?"
+  code: |
+    var orders = new List<Order>
+    {
+        new("books", 40), new("toys", 15), new("books", 25)
+    };
+
+    record Order(string Category, int Amount);
+  options:
+    - "`orders.GroupBy(o => o.Category).Select(g => (g.Key, g.Sum(o => o.Amount)))`"
+    - "`orders.GroupBy(o => o.Amount).Select(g => (g.Key, g.Count()))`"
+    - "`orders.OrderBy(o => o.Category).Sum(o => o.Amount)`"
+    - "`orders.Select(o => o.Category).Distinct().Count()`"
+  answer: 0
+  explanation: "מקבצים לפי `Category`, וכל קבוצה מכילה את ההזמנות שלה, ולכן `g.Sum(o => o.Amount)` מסכם בתוך הקבוצה: `books` עם 65 ו-`toys` עם 15. זו התבנית הקבועה של \"סיכום לפי מפתח\": `GroupBy` ואחריו `Select` עם פעולת צבירה (Aggregation)."
+  optionExplanations:
+    "1": "זה מקבץ לפי הסכום ולא לפי הקטגוריה, וסופר הזמנות במקום לסכם."
+    "2": "מיון לא מקבץ. `Sum` על כל הרשימה מחזיר מספר אחד: 80."
+    "3": "זה סופר כמה קטגוריות שונות יש, ולא מסכם סכומים."
+
+- id: cs.advanced.linq.011
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את הקריאה השלילית הראשונה, או `none` אם אין כזו. כאן הוא קורס. באיזו שורה הבאג?"
+  code: |
+    var readings = new List<int> { 3, 7, 1 };
+    int firstNegative = readings.First(r => r < 0);
+    Console.WriteLine(firstNegative == 0 ? "none" : firstNegative.ToString());
+  answer: 2
+  explanation: "`First` זורק `InvalidOperationException` כשאף איבר לא עומד בתנאי. כשהיעדר התאמה הוא מצב תקין, משתמשים ב-`FirstOrDefault`, שמחזיר `0` ל-`int`. כאן `0` לא יכול להיות קריאה שלילית, ולכן הבדיקה בשורה 3 נכונה."
+  fixed: |
+    var readings = new List<int> { 3, 7, 1 };
+    int firstNegative = readings.FirstOrDefault(r => r < 0);
+    Console.WriteLine(firstNegative == 0 ? "none" : firstNegative.ToString());
+
+- id: cs.advanced.linq.012
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור למחוק מהרשימה את כל המחרוזות הריקות ולהדפיס 2, אבל הוא זורק `InvalidOperationException`. באיזו שורה הבאג?"
+  code: |
+    var names = new List<string> { "dan", "", "noa", "" };
+    foreach (var name in names.Where(n => n == ""))
+        names.Remove(name);
+    Console.WriteLine(names.Count);
+  answer: 2
+  explanation: "בגלל ההערכה הדחויה, `Where` לא יוצר רשימה חדשה. הוא עובר על `names` עצמה תוך כדי הלולאה. מחיקה מהרשימה בזמן מעבר עליה זורקת `InvalidOperationException`. `ToList()` מחשב את התוצאה מראש לרשימה נפרדת, וכך אפשר למחוק מהמקור בבטחה."
+  fixed: |
+    var names = new List<string> { "dan", "", "noa", "" };
+    foreach (var name in names.Where(n => n == "").ToList())
+        names.Remove(name);
+    Console.WriteLine(names.Count);
+
+- id: cs.advanced.linq.013
+  type: single
+  difficulty: 1
+  prompt: "מה המשמעות של הערכה דחויה (Deferred Execution) ב-LINQ?"
+  options:
+    - "השאילתה רצה רק כשעוברים על התוצאה, למשל ב-`foreach` או ב-`ToList()`, ולא בשורה שבה היא נכתבה"
+    - "השאילתה רצה ברקע על תהליכון (Thread) אחר"
+    - "השאילתה רצה מיד, אבל התוצאה נשמרת בזיכרון מטמון לפעם הבאה"
+    - "השאילתה רצה רק אם יש באוסף יותר מאלף איברים"
+  answer: 0
+  explanation: "אופרטורים כמו `Where`, `Select` ו-`OrderBy` מחזירים תיאור של שאילתה ולא תוצאה. הם רצים רק כשמישהו עובר על התוצאה, ורצים מחדש בכל מעבר. פעולות כמו `ToList()`, `Count()` ו-`First()` מריצות את השאילתה מיד."
+  optionExplanations:
+    "1": "LINQ to Objects רץ על אותו תהליכון, ברגע שעוברים על התוצאה."
+    "2": "אין זיכרון מטמון: כל מעבר מריץ את השאילתה מחדש. כדי לשמור תוצאה קוראים ל-`ToList()`."
+    "3": "גודל האוסף לא משנה דבר. ההתנהגות זהה לכל אוסף."
+
+- id: cs.advanced.linq.014
+  type: truefalse
+  difficulty: 1
+  prompt: "`list.OrderBy(x => x)` ממיין את הרשימה `list` עצמה."
+  answer: false
+  explanation: "אופרטורי LINQ לא משנים את המקור. `OrderBy` מחזיר רצף חדש וממוין, והרשימה המקורית נשארת בסדר שלה. כדי למיין את הרשימה עצמה משתמשים ב-`list.Sort()`."
+
+- id: cs.advanced.linq.015
+  type: cleaner
+  difficulty: 1
+  prompt: שני הקטעים מדפיסים `95,88,72`. איזה מהם נקי יותר?
+  options:
+    - |
+      var scores = new List<int> { 72, 95, 58, 88 };
+      var passed = scores.Where(s => s >= 60).OrderByDescending(s => s);
+      Console.WriteLine(string.Join(",", passed));
+    - |
+      var scores = new List<int> { 72, 95, 58, 88 };
+      var passed = new List<int>();
+      foreach (int s in scores)
+      {
+          if (s >= 60)
+              passed.Add(s);
+      }
+      passed.Sort();
+      passed.Reverse();
+      Console.WriteLine(string.Join(",", passed));
+  answer: 0
+  explanation: "שאילתת LINQ מתארת מה רוצים ולא איך לעשות זאת: מסננים את מי שעבר וממיינים בסדר יורד. אין רשימת עזר, אין לולאה ידנית ואין צורך להפוך את המיון."
+  optionExplanations:
+    "1": "הקוד נכון, אבל ארוך ובנוי מצעדים טכניים (רשימת עזר, `Sort` ואז `Reverse`) שמסתירים את הכוונה הפשוטה."
+
+- id: cs.advanced.linq.016
+  type: single
+  difficulty: 2
+  prompt: "איזה ביטוי בודק בצורה הנכונה והיעילה ביותר אם יש הזמנה עם `Total` גדול מ-1000?"
+  options:
+    - "`orders.Any(o => o.Total > 1000)`"
+    - "`orders.Where(o => o.Total > 1000).Count() > 0`"
+    - "`orders.Select(o => o.Total > 1000).Any()`"
+    - "`orders.First(o => o.Total > 1000) != null`"
+  answer: 0
+  explanation: "`Any` עם תנאי עוצר באיבר הראשון שמתאים ומחזיר `bool`, וזה בדיוק מה שנשאל. `Count() > 0` עובר על כל ההתאמות רק כדי לדעת אם יש לפחות אחת."
+  optionExplanations:
+    "1": "הביטוי נכון, אבל סופר את כל ההתאמות במקום לעצור בראשונה."
+    "2": "`Select` מחזיר רצף של `bool` לכל הזמנה, ו-`Any()` בלי תנאי בודק רק שהרצף לא ריק. התוצאה `true` לכל רשימה לא ריקה."
+    "3": "`First` זורק חריגה כשאין התאמה, ולכן הביטוי לא יחזיר `false` אף פעם."

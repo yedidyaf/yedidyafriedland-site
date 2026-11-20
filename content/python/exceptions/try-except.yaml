@@ -1,0 +1,309 @@
+- id: py.exceptions.try-except.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    try:
+        print("A")
+        x = int("abc")
+        print("B")
+    except ValueError:
+        print("C")
+    print("D")
+  options: ["A\nC\nD", "A\nB\nC\nD", "C\nD", "A\nValueError"]
+  answer: 0
+  explanation: "ברגע שנזרקת חריגה (Exception) בתוך `try`, שאר השורות בבלוק מדולגות והביצוע עובר ל-`except` המתאים. אחרי הטיפול התוכנית ממשיכה כרגיל מהשורה שאחרי כל המבנה, ולכן `D` מודפס."
+  optionExplanations:
+    "1": "`B` לא מודפס, כי השורה `int(\"abc\")` זורקת `ValueError` והביצוע קופץ מיד ל-`except`."
+    "2": "`A` מודפס לפני השורה שזורקת. מה שכבר רץ לפני החריגה לא מתבטל."
+    "3": "החריגה נתפסה על ידי `except ValueError`, ולכן התוכנית לא נעצרת וממשיכה להדפיס."
+
+- id: py.exceptions.try-except.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    try:
+        nums = [1, 2, 3]
+        print(nums[5])
+    except KeyError:
+        print("key")
+    except IndexError:
+        print("index")
+    except Exception:
+        print("general")
+  options: ["index", "index\ngeneral", "general", "key"]
+  answer: 0
+  explanation: "כשיש כמה בלוקי `except`, Python בודקת אותם לפי הסדר ומריצה רק את הראשון שמתאים לסוג החריגה. גישה לאינדקס שלא קיים ברשימה זורקת `IndexError`, ולכן מודפס `index` בלבד, אף ש-`Exception` היה מתאים גם הוא."
+  optionExplanations:
+    "1": "רק בלוק `except` אחד רץ. אחרי שנמצא בלוק מתאים, שאר הבלוקים מדולגים."
+    "2": "`Exception` אכן תופס גם `IndexError`, אבל הבלוק של `IndexError` מופיע קודם ולכן הוא שנבחר."
+    "3": "`KeyError` נזרקת בגישה למפתח חסר במילון. ברשימה נזרקת `IndexError`."
+
+- id: py.exceptions.try-except.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def parse(text):
+        try:
+            n = int(text)
+        except ValueError:
+            print("bad")
+        else:
+            print("ok", n)
+
+    parse("7")
+    parse("x")
+  options: ["ok 7\nbad", "ok 7", "ok 7\nValueError", "bad\nok 7"]
+  answer: 0
+  explanation: "בלוק `else` רץ רק כש-`try` הגיע לסופו בלי חריגה. בקריאה הראשונה ההמרה מצליחה ולכן `else` רץ. בקריאה השנייה נזרקת `ValueError`, בלוק `except` רץ ו-`else` מדולג."
+  optionExplanations:
+    "1": "גם הקריאה `parse(\"x\")` מדפיסה משהו: ההמרה נכשלת ובלוק `except` מדפיס `bad`."
+    "2": "החריגה נתפסת בתוך הפונקציה, ולכן היא לא מגיעה לתוכנית הראשית."
+    "3": "הקריאות רצות לפי הסדר שבו הן כתובות. `parse(\"7\")` רצה ראשונה."
+
+- id: py.exceptions.try-except.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def get_status():
+        try:
+            return "try"
+        finally:
+            print("finally")
+
+    print(get_status())
+  options: ["finally\ntry", "try\nfinally", "try", "finally"]
+  answer: 0
+  explanation: "בלוק `finally` רץ תמיד לפני שהפונקציה באמת יוצאת, גם כש-`try` מסתיים ב-`return`. הערך `\"try\"` נשמר בצד, `finally` מדפיס, ורק אז הפונקציה מחזירה את הערך ו-`print` שבחוץ מדפיס אותו."
+  optionExplanations:
+    "1": "`print` החיצוני מקבל את הערך רק אחרי שהפונקציה סיימה, כלומר אחרי ש-`finally` כבר רץ."
+    "2": "`return` לא מדלג על `finally`. הבלוק רץ בכל דרך יציאה מ-`try`."
+    "3": "`finally` לא מבטל את ה-`return`. הערך `\"try\"` עדיין מוחזר ומודפס."
+
+- id: py.exceptions.try-except.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try:
+        print("1")
+        raise KeyError("k")
+    except ValueError:
+        print("2")
+    finally:
+        print("3")
+    print("4")
+  options: ["1\n3\nKeyError", "1\n2\n3\n4", "1\n3\n4", "1\nKeyError"]
+  answer: 0
+  explanation: "אין `except` שמתאים ל-`KeyError`, ולכן החריגה לא נתפסת. לפני שהיא ממשיכה לעלות (Propagation), `finally` רץ ומדפיס `3`. אחר כך התוכנית נעצרת עם `KeyError`, ו-`4` לא מודפס."
+  optionExplanations:
+    "1": "`except ValueError` לא תופס `KeyError`. בלוק `except` רץ רק כשסוג החריגה מתאים."
+    "2": "`finally` לא תופס את החריגה. הוא רק רץ בדרך החוצה, והחריגה ממשיכה ועוצרת את התוכנית."
+    "3": "`finally` רץ גם כשהחריגה לא נתפסה, ולכן `3` מודפס לפני שהתוכנית נעצרת."
+
+- id: py.exceptions.try-except.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for value in ["4", "0", "a"]:
+        try:
+            result = 8 // int(value)
+        except ZeroDivisionError:
+            print("zero")
+        except ValueError:
+            print("nan")
+        else:
+            print(result)
+        finally:
+            print("-")
+  options:
+    - "2\n-\nzero\n-\nnan\n-"
+    - "2\nzero\nnan\n-"
+    - "2\n-\nzero\n-\nnan"
+    - "2\n-\nzero\nnan\n-"
+  answer: 0
+  explanation: "בכל סיבוב רץ המבנה כולו מחדש. סדר הביצוע: `try`, ואז `except` המתאים או `else` אם לא הייתה חריגה, ובסוף תמיד `finally`. לכן אחרי כל אחד משלושת הערכים מודפס `-`."
+  optionExplanations:
+    "1": "`finally` שייך לכל סיבוב של הלולאה, לא לסוף הלולאה כולה."
+    "2": "`finally` רץ גם בסיבוב האחרון, שבו נזרקה `ValueError` ונתפסה."
+    "3": "גם כשנתפסת `ZeroDivisionError`, `finally` רץ אחרי בלוק ה-`except`."
+
+- id: py.exceptions.try-except.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    prices = {"apple": 5}
+    try:
+        print(prices["pear"])
+    except KeyError as e:
+        print("missing", e)
+  options: ["missing 'pear'", "missing pear", "missing KeyError", "KeyError"]
+  answer: 0
+  explanation: "`as e` שומר את אובייקט החריגה במשתנה. הדפסה של `KeyError` מציגה את המפתח החסר כפי שהוא נראה בקוד, כלומר עם גרשיים: `'pear'`."
+  optionExplanations:
+    "1": "ב-`KeyError` ההודעה היא הייצוג של המפתח (`repr`), ולכן מחרוזת מודפסת עם גרשיים."
+    "2": "הדפסת החריגה מציגה את ההודעה שלה, לא את שם המחלקה."
+    "3": "החריגה נתפסה על ידי `except KeyError`, ולכן התוכנית לא נעצרת."
+
+- id: py.exceptions.try-except.008
+  type: single
+  difficulty: 2
+  prompt: איזו שורת `except` תופסת גם `ValueError` וגם `TypeError` באותו בלוק?
+  options:
+    - "`except (ValueError, TypeError):`"
+    - "`except ValueError or TypeError:`"
+    - "`except ValueError and TypeError:`"
+    - "`except [ValueError, TypeError]:`"
+  answer: 0
+  explanation: "כדי לתפוס כמה סוגים באותו בלוק כותבים אותם כ-tuple בתוך סוגריים. Python בודקת אם החריגה מתאימה לאחד מהסוגים שב-tuple."
+  optionExplanations:
+    "1": "`ValueError or TypeError` הוא ביטוי שמחושב ל-`ValueError` בלבד, ולכן `TypeError` לא תיתפס."
+    "2": "`ValueError and TypeError` מחושב ל-`TypeError` בלבד, ולכן `ValueError` לא תיתפס."
+    "3": "`except` מקבל מחלקה או tuple של מחלקות, לא רשימה. כשתיזרק חריגה תתקבל `TypeError`."
+
+- id: py.exceptions.try-except.009
+  type: single
+  difficulty: 1
+  prompt: מתי רץ בלוק `else` שמופיע אחרי בלוקי ה-`except`?
+  options:
+    - "רק כשבלוק `try` הגיע לסופו בלי שנזרקה בו חריגה"
+    - "רק כשנזרקה חריגה שאף `except` לא תפס"
+    - "תמיד, אחרי שבלוקי ה-`except` סיימו"
+    - "רק כשאחד מבלוקי ה-`except` רץ"
+  answer: 0
+  explanation: "`else` הוא המקום לקוד שצריך לרוץ רק אם `try` הצליח. כך ה-`try` נשאר קצר ומכיל רק את השורות שעלולות לזרוק את החריגה שמטפלים בה."
+  optionExplanations:
+    "1": "חריגה שלא נתפסה ממשיכה לעלות, ו-`else` לא רץ."
+    "2": "הבלוק שרץ תמיד הוא `finally`, לא `else`."
+    "3": "זה הפוך: אם `except` רץ, סימן שהייתה חריגה, ואז `else` מדולג."
+
+- id: py.exceptions.try-except.010
+  type: single
+  difficulty: 1
+  prompt: "מה הבעיה בבלוק `except:` בלי סוג חריגה?"
+  options:
+    - "הוא תופס כל חריגה, גם שגיאות תכנות ו-`KeyboardInterrupt`, ומסתיר באגים"
+    - "הוא שגיאת תחביר (SyntaxError) ב-Python 3"
+    - "הוא תופס רק חריגות מסוג `Exception` ולא אחרות"
+    - "הוא מונע מבלוק `finally` לרוץ"
+  answer: 0
+  explanation: "`except:` ריק תופס כל חריגה, כולל `NameError` שנובעת משגיאת הקלדה ואפילו `KeyboardInterrupt` כשהמשתמש לוחץ Ctrl+C. כך באגים נבלעים בשקט. תופסים רק את החריגות שיודעים לטפל בהן."
+  optionExplanations:
+    "1": "זה תחביר חוקי לגמרי. הבעיה היא בהתנהגות, לא בתחביר."
+    "2": "זה הפוך: `except:` ריק תופס הכול, גם חריגות שלא יורשות מ-`Exception`."
+    "3": "`finally` רץ תמיד, לא משנה איזה `except` כתוב."
+
+- id: py.exceptions.try-except.011
+  type: bug
+  difficulty: 1
+  prompt: הפונקציה אמורה להחזיר את תוצאת החילוק, או `None` כשמחלקים באפס. באיזו שורה הבאג?
+  code: |
+    def safe_divide(a, b):
+        try:
+            return a / b
+        except ValueError:
+            return None
+  answer: 4
+  explanation: "חילוק באפס זורק `ZeroDivisionError`, לא `ValueError`. בלוק `except` שתופס סוג אחר לא יתפוס אותה, והחריגה תעצור את התוכנית."
+  fixed: |
+    def safe_divide(a, b):
+        try:
+            return a / b
+        except ZeroDivisionError:
+            return None
+
+- id: py.exceptions.try-except.012
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להדפיס `finished` בכל מקרה, גם כשהסכום הצליח וגם כשנכשל. באיזו שורה הבאג?
+  code: |
+    def total(items):
+        try:
+            result = sum(items)
+        except TypeError:
+            print("bad items")
+            result = 0
+        else:
+            print("finished")
+        return result
+  answer: 7
+  explanation: "`else` רץ רק כשלא הייתה חריגה, ולכן כש-`sum` נכשל `finished` לא מודפס. קוד שחייב לרוץ בכל מקרה שייך לבלוק `finally`."
+  fixed: |
+    def total(items):
+        try:
+            result = sum(items)
+        except TypeError:
+            print("bad items")
+            result = 0
+        finally:
+            print("finished")
+        return result
+
+- id: py.exceptions.try-except.013
+  type: bug
+  difficulty: 3
+  prompt: הפונקציה אמורה להחזיר את החריגה האחרונה שנזרקה בהמרת המחרוזות, או `None` אם כל ההמרות הצליחו. באיזו שורה הבאג?
+  code: |
+    def last_error(texts):
+        error = None
+        for t in texts:
+            try:
+                int(t)
+            except ValueError as e:
+                error = e
+        return e
+  answer: 8
+  explanation: "המשתנה שאחרי `as` קיים רק בתוך בלוק ה-`except`. בסוף הבלוק Python מוחקת אותו, ולכן `return e` זורק `UnboundLocalError` בכל מקרה. בדיוק בשביל זה הקוד שומר את החריגה ב-`error`, ויש להחזיר אותו."
+  fixed: |
+    def last_error(texts):
+        error = None
+        for t in texts:
+            try:
+                int(t)
+            except ValueError as e:
+                error = e
+        return error
+
+- id: py.exceptions.try-except.014
+  type: truefalse
+  difficulty: 1
+  prompt: "בלוק `finally` רץ גם כשנזרקה חריגה שאף `except` לא תפס."
+  answer: true
+  explanation: "`finally` רץ בכל דרך יציאה מ-`try`: סיום רגיל, `return`, חריגה שנתפסה או חריגה שלא נתפסה. לכן שם שמים קוד ניקוי, כמו סגירת חיבור. אחרי `finally` החריגה שלא נתפסה ממשיכה לעלות."
+
+- id: py.exceptions.try-except.015
+  type: truefalse
+  difficulty: 2
+  prompt: "`except Exception:` תופס גם `KeyboardInterrupt`, החריגה שנזרקת כשלוחצים Ctrl+C."
+  answer: false
+  explanation: "`KeyboardInterrupt` יורשת ישירות מ-`BaseException` ולא מ-`Exception`, בדיוק כדי ש-`except Exception:` לא ימנע מהמשתמש לעצור את התוכנית. `except:` ריק או `except BaseException:` כן תופסים אותה."
+
+- id: py.exceptions.try-except.016
+  type: cleaner
+  difficulty: 2
+  prompt: שתי הגרסאות מתנהגות אותו דבר. איזו נקייה יותר?
+  options:
+    - |
+      def line_total(prices, item, quantity):
+          try:
+              price = prices[item]
+          except KeyError:
+              return 0
+          return price * quantity
+    - |
+      def line_total(prices, item, quantity):
+          try:
+              price = prices[item]
+              total = price * quantity
+              return total
+          except KeyError:
+              return 0
+  answer: 0
+  explanation: "בלוק `try` צריך לעטוף רק את השורה שעלולה לזרוק את החריגה שמטפלים בה, כאן הגישה למילון. כך ברור לקורא מאיפה מגיעה `KeyError`, ושינוי עתידי בחישוב לא יסתיר בטעות `KeyError` אחרת."
+  optionExplanations:
+    "1": "בלוק `try` רחב מדי: הוא עוטף גם את החישוב, ולא ברור איזו שורה אמורה לזרוק `KeyError`."

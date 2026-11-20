@@ -1,0 +1,403 @@
+- id: cs.clean-code.small-methods.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class UserService
+    {
+        public void CreateUser(string firstName, string lastName, string email, string phone,
+            string street, string city, string zipCode, DateTime birthDate)
+        {
+            Console.WriteLine($"Creating {firstName} {lastName}");
+        }
+    }
+  options:
+    - "מחלקת אל - God Class"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "מספר קסם - Magic Number"
+    - "שכפול קוד - Duplicated Code"
+  answer: 1
+  explanation: "שמונה פרמטרים, שבעה מהם מחרוזות, קשה לזכור לפי הסדר וקל להחליף ביניהם בלי שהקומפיילר ישים לב. מקבצים ערכים שבאים יחד לאובייקט פרמטר (Parameter Object), למשל `Address` עם `Street`, `City` ו-`ZipCode`."
+  optionExplanations:
+    "0": "במחלקה יש מתודה אחת; הבעיה היא בחתימה שלה, לא בכמות האחריות של המחלקה."
+    "2": "אין בקוד מספרים מילוליים."
+    "3": "אין כאן קוד שחוזר על עצמו."
+
+- id: cs.clean-code.small-methods.002
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class LoginService
+    {
+        private readonly Dictionary<string, string> _passwordHashes = new();
+        public string CurrentUser { get; private set; }
+
+        public bool CheckPassword(string userName, string passwordHash)
+        {
+            bool isValid = _passwordHashes.TryGetValue(userName, out string stored)
+                && stored == passwordHash;
+            if (isValid)
+                CurrentUser = userName;
+            return isValid;
+        }
+    }
+  options:
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "שכפול קוד - Duplicated Code"
+    - "תופעת לוואי נסתרת - Hidden Side Effect"
+    - "קינון עמוק - Deep Nesting"
+  answer: 2
+  explanation: "השם `CheckPassword` מבטיח בדיקה בלבד, אבל המתודה גם מחברת את המשתמש (משנה את `CurrentUser`). מי שיקרא לה רק כדי לבדוק סיסמה יחבר משתמש בלי כוונה. הפרידו בין שאילתה לפקודה (Command-Query Separation): `CheckPassword` שרק מחזירה תשובה, ו-`LogIn` שמשנה מצב."
+  optionExplanations:
+    "0": "שני פרמטרים הם מספר קטן וסביר."
+    "1": "אין קוד שחוזר על עצמו."
+    "3": "יש רק `if` אחד, בלי קינון."
+
+- id: cs.clean-code.small-methods.003
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    new ReportService().Export("Sales", true);
+
+    class ReportService
+    {
+        public void Export(string report, bool asPdf)
+        {
+            if (asPdf)
+                Console.WriteLine($"PDF: {report}");
+            else
+                Console.WriteLine($"CSV: {report}");
+        }
+    }
+  options:
+    - "דגל בוליאני - Flag Argument"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+    - "קוד מת - Dead Code"
+    - "מחלקת אל - God Class"
+  answer: 0
+  explanation: "פרמטר `bool` שבוחר בין שתי התנהגויות אומר שהמתודה עושה שני דברים. בקריאה `Export(\"Sales\", true)` אי אפשר לדעת מה `true` אומר. עדיף שתי מתודות עם שמות ברורים: `ExportAsPdf` ו-`ExportAsCsv`."
+  optionExplanations:
+    "1": "שני פרמטרים הם לא רשימה ארוכה; הבעיה היא התפקיד של הפרמטר הבוליאני."
+    "2": "שני הענפים נגישים, תלוי בערך של הדגל."
+    "3": "למחלקה יש מתודה אחת ואחריות אחת: ייצוא."
+
+- id: cs.clean-code.small-methods.004
+  type: single
+  difficulty: 2
+  prompt: "איזו שורה במתודה `Checkout` שוברת את רמת ההפשטה האחידה (Single Level of Abstraction)?"
+  code: |
+    class CheckoutService
+    {
+        public void Checkout(List<decimal> prices)
+        {
+            EnsureNotEmpty(prices);
+            decimal total = CalculateTotal(prices);
+            File.AppendAllText("orders.log", $"{DateTime.Now:O};{total}\n");
+            SendConfirmation(total);
+        }
+
+        private static void EnsureNotEmpty(List<decimal> prices) { }
+        private static decimal CalculateTotal(List<decimal> prices) => prices.Sum();
+        private static void SendConfirmation(decimal total) { }
+    }
+  options:
+    - "EnsureNotEmpty(prices);"
+    - "decimal total = CalculateTotal(prices);"
+    - "File.AppendAllText(\"orders.log\", ...);"
+    - "SendConfirmation(total);"
+  answer: 2
+  explanation: "שאר השורות הן צעדים עם שם שאומרים מה קורה. השורה של `File.AppendAllText` צוללת לפרטים: שם קובץ, פורמט תאריך ומפריד. חלצו אותה למתודה `LogOrder(total)`, וכך `Checkout` תיקרא כמו רשימת צעדים ברמה אחת."
+  optionExplanations:
+    "0": "זו קריאה לצעד עם שם ברור, באותה רמה כמו שאר הצעדים."
+    "1": "החישוב מוסתר מאחורי שם ברור; זה בדיוק הסגנון הרצוי."
+    "3": "זו קריאה לצעד עם שם ברור, באותה רמה כמו שאר הצעדים."
+
+- id: cs.clean-code.small-methods.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var session = new Session(new DateTime(2024, 1, 1, 10, 0, 0));
+    var now = new DateTime(2024, 1, 1, 11, 0, 0);
+    Console.WriteLine(session.IsExpired(now));
+    Console.WriteLine(session.IsExpired(now));
+
+    class Session
+    {
+        private DateTime _lastAccess;
+
+        public Session(DateTime lastAccess) => _lastAccess = lastAccess;
+
+        public bool IsExpired(DateTime now)
+        {
+            bool expired = now - _lastAccess > TimeSpan.FromMinutes(30);
+            _lastAccess = now;
+            return expired;
+        }
+    }
+  options:
+    - "True\nTrue"
+    - "True\nFalse"
+    - "False\nFalse"
+    - "False\nTrue"
+  answer: 1
+  explanation: "בקריאה הראשונה עברו 60 דקות, ולכן `True`. אבל `IsExpired` גם מעדכנת את `_lastAccess` ל-11:00, ולכן בקריאה השנייה עברו 0 דקות ומודפס `False`. מתודה ששמה שאלה לא צריכה לשנות מצב (תופעת לוואי נסתרת); את העדכון כדאי להעביר למתודה נפרדת כמו `Touch(now)`."
+  optionExplanations:
+    "0": "זו התשובה הצפויה משאילתה טהורה, אבל `IsExpired` משנה את `_lastAccess` בכל קריאה."
+    "2": "בקריאה הראשונה ההפרש הוא שעה, יותר מ-30 דקות."
+
+- id: cs.clean-code.small-methods.006
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס `Dana Levi`. באיזו שורה הבאג?"
+  code: |
+    string firstName = "Dana";
+    string lastName = "Levi";
+    Console.WriteLine(FullName(lastName, firstName));
+
+    static string FullName(string firstName, string lastName) => $"{firstName} {lastName}";
+  answer: 3
+  fixed: |
+    string firstName = "Dana";
+    string lastName = "Levi";
+    Console.WriteLine(FullName(firstName, lastName));
+
+    static string FullName(string firstName, string lastName) => $"{firstName} {lastName}";
+  explanation: "הארגומנטים הועברו בסדר הפוך, ומודפס `Levi Dana`. כשכמה פרמטרים הם מאותו טיפוס, הקומפיילר לא יתפוס החלפה. ככל שיש פחות פרמטרים קל יותר להימנע מזה, וארגומנטים לפי שם (`FullName(firstName: ..., lastName: ...)`) עוזרים כשאין ברירה."
+
+- id: cs.clean-code.small-methods.007
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `1,2,3` ואחר כך את הרשימה המקורית `3,1,2`, בלי לשנות אותה. באיזו שורה הבאג?"
+  code: |
+    List<int> arrivalOrder = new() { 3, 1, 2 };
+    List<int> sorted = SortedCopy(arrivalOrder);
+    Console.WriteLine(string.Join(",", sorted));
+    Console.WriteLine(string.Join(",", arrivalOrder));
+
+    static List<int> SortedCopy(List<int> numbers)
+    {
+        List<int> copy = numbers;
+        copy.Sort();
+        return copy;
+    }
+  answer: 8
+  fixed: |
+    List<int> arrivalOrder = new() { 3, 1, 2 };
+    List<int> sorted = SortedCopy(arrivalOrder);
+    Console.WriteLine(string.Join(",", sorted));
+    Console.WriteLine(string.Join(",", arrivalOrder));
+
+    static List<int> SortedCopy(List<int> numbers)
+    {
+        List<int> copy = new(numbers);
+        copy.Sort();
+        return copy;
+    }
+  explanation: "`List<int>` הוא טיפוס הפניה, ולכן `copy = numbers` לא מעתיק את הרשימה אלא מצביע לאותה רשימה. `Sort` ממיינת את הרשימה של הקורא, ומודפס `1,2,3` פעמיים. זו תופעת לוואי מפתיעה שסותרת את השם `SortedCopy`; `new(numbers)` יוצר העתק אמיתי."
+
+- id: cs.clean-code.small-methods.008
+  type: single
+  difficulty: 1
+  prompt: "מתודה נקראת `ValidateAndSaveOrder`. מה המילה `And` בשם מרמזת?"
+  options:
+    - "שהמתודה חייבת להחזיר bool"
+    - "שהשם מצוין ואין מה לשפר, כי הוא מתאר את כל מה שהמתודה עושה"
+    - "שהמתודה עושה יותר מדבר אחד, וכדאי לשקול לפצל אותה ל-ValidateOrder ול-SaveOrder"
+    - "שהמתודה צריכה להיות static"
+  answer: 2
+  explanation: "מתודה צריכה לעשות דבר אחד. `And` בשם הוא סימן מובהק לשתי אחריויות. כשהן מופרדות, אפשר לבדוק תקינות בלי לשמור, לבדוק כל חלק לחוד, ולשנות אחד בלי לגעת בשני."
+  optionExplanations:
+    "0": "השם לא אומר דבר על טיפוס ההחזרה."
+    "1": "שם כן הוא דבר טוב, אבל כאן הוא חושף שהמתודה עושה שני דברים; השם מדויק, העיצוב לא."
+    "3": "השם לא קשור לשאלה אם המתודה סטטית."
+
+- id: cs.clean-code.small-methods.009
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class TicketPricing
+      {
+          public decimal Price(int age, bool isStudent, decimal basePrice)
+          {
+              if (age < 12 || age >= 67 || (isStudent && age < 27))
+                  return basePrice / 2;
+              return basePrice;
+          }
+      }
+    - |
+      class TicketPricing
+      {
+          public decimal Price(int age, bool isStudent, decimal basePrice)
+          {
+              // children, seniors and young students pay half price
+              if (age < 12 || age >= 67 || (isStudent && age < 27))
+                  return basePrice / 2;
+              return basePrice;
+          }
+      }
+    - |
+      class TicketPricing
+      {
+          public decimal Price(int age, bool isStudent, decimal basePrice)
+          {
+              if (IsEligibleForDiscount(age, isStudent))
+                  return basePrice / 2;
+              return basePrice;
+          }
+
+          private static bool IsEligibleForDiscount(int age, bool isStudent) =>
+              age < 12 || age >= 67 || (isStudent && age < 27);
+      }
+  answer: 2
+  explanation: "חילוץ תנאי מורכב למתודה עם שם (Decompose Conditional) הופך את `Price` לקריאה כמו משפט: «אם זכאי להנחה, חצי מחיר». הפרטים של מי זכאי נמצאים במקום אחד עם שם, ואפשר לבדוק ולשנות אותם לחוד."
+  optionExplanations:
+    "0": "הקורא צריך לפענח שלושה תנאים כדי להבין מה הם אומרים יחד."
+    "1": "הערה מסבירה את התנאי, אבל שם של מתודה עושה את זה בלי שתהיה סכנה שההערה תתיישן."
+
+- id: cs.clean-code.small-methods.010
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      var calculator = new PriceCalculator();
+      calculator.Calculate(5m, 3);
+      Console.WriteLine(calculator.Result);
+
+      class PriceCalculator
+      {
+          public decimal Result { get; private set; }
+
+          public void Calculate(decimal unitPrice, int quantity) => Result = unitPrice * quantity;
+      }
+    - |
+      var calculator = new PriceCalculator();
+      Console.WriteLine(calculator.Calculate(5m, 3));
+
+      class PriceCalculator
+      {
+          public decimal Calculate(decimal unitPrice, int quantity) => unitPrice * quantity;
+      }
+  answer: 1
+  explanation: "מתודה שמחשבת ערך צריכה להחזיר אותו. כשהתוצאה נשמרת במאפיין, נוצר צימוד בזמן (Temporal Coupling): חייבים לקרוא ל-`Calculate` לפני שקוראים את `Result`, ו-`Result` נשאר עם ערך ישן עד הקריאה הבאה."
+  optionExplanations:
+    "0": "המצב הנסתר ב-`Result` מאלץ סדר קריאות מסוים, ושום דבר בחתימה לא מגלה את זה."
+
+- id: cs.clean-code.small-methods.011
+  type: cleaner
+  difficulty: 3
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      Console.WriteLine(Bmi(80, 2));
+
+      static double Bmi(double weightKilograms, double heightMeters) =>
+          Divide(weightKilograms, Square(heightMeters));
+      static double Square(double x) => x * x;
+      static double Divide(double a, double b) => a / b;
+    - |
+      Console.WriteLine(Bmi(80, 2));
+
+      static double Bmi(double weightKilograms, double heightMeters) =>
+          weightKilograms / (heightMeters * heightMeters);
+    - |
+      Console.WriteLine(80 / (2.0 * 2.0));
+  answer: 1
+  explanation: "מתודה קטנה עם שם שמסביר את הנוסחה (`Bmi`) היא האיזון הנכון. «מתודות קטנות» לא אומר לפרק כל אופרטור למתודה: חילוץ כדאי כשהשם מוסיף משמעות שלא רואים בקוד עצמו."
+  optionExplanations:
+    "0": "`Divide` ו-`Square` לא מוסיפות מידע על `/` ו-`*`; הן רק מאלצות את הקורא לקפוץ בין מתודות."
+    "2": "בלי מתודה עם שם, הקורא צריך לנחש מה החישוב, והמספרים `80` ו-`2.0` הם מספרי קסם."
+
+- id: cs.clean-code.small-methods.012
+  type: truefalse
+  difficulty: 1
+  prompt: מתודה של שלוש שורות בהכרח עושה דבר אחד בלבד.
+  answer: false
+  explanation: "אורך הוא רק סימן. מתודה `IsValid` של שלוש שורות יכולה גם לבדוק תקינות וגם לכתוב ללוג או לשנות שדה. השאלה היא אם אפשר לתאר את מה שהיא עושה במשפט אחד בלי «וגם», ואם כל השורות באותה רמת הפשטה."
+
+- id: cs.clean-code.small-methods.013
+  type: single
+  difficulty: 2
+  prompt: מתודה צריכה לחשב את עלות המשלוח לפי משקל החבילה וקוד מדינת היעד. איזו חתימה הכי נקייה?
+  options:
+    - "void CalculateShippingCost(double weightKg, string countryCode, out decimal cost, out bool success)"
+    - "decimal Calculate(double w, string c, bool express, bool insured, bool weekend)"
+    - "decimal CalculateShippingCost(double weightKg, string countryCode)"
+    - "void CalculateShippingCost(double weightKg, string countryCode), ששומרת את התוצאה בשדה LastCost"
+  answer: 2
+  explanation: "החתימה הטובה מקבלת בדיוק את מה שהחישוב צריך, עם שמות ברורים ויחידות, ומחזירה את התוצאה. אין פרמטרי `out`, אין דגלים בוליאניים ואין מצב נסתר."
+  optionExplanations:
+    "0": "פרמטרי `out` מסרבלים את הקריאה; אם החישוב נכשל, עדיף לזרוק חריגה."
+    "1": "שמות של אות אחת ושלושה דגלים בוליאניים הופכים כל קריאה לבלתי קריאה."
+    "3": "שמירת התוצאה בשדה יוצרת תופעת לוואי וצימוד בזמן: צריך לזכור לקרוא את `LastCost` מיד אחרי הקריאה."
+
+- id: cs.clean-code.small-methods.014
+  type: single
+  difficulty: 2
+  prompt: מתודה צריכה להחזיר את הציון הנמוך, את הגבוה ואת הממוצע של מערך ציונים. איזו חתימה הכי נקייה?
+  options:
+    - "ScoreSummary Summarize(int[] scores), כאשר ScoreSummary הוא record עם Min, Max ו-Average"
+    - "void Summarize(int[] scores, out int min, out int max, out double average)"
+    - "void Summarize(int[] scores), שמעדכנת את המאפיינים Min, Max ו-Average של המחלקה"
+    - "object[] Summarize(int[] scores), שמחזירה מערך של שלושה ערכים"
+  answer: 0
+  explanation: "כשמתודה מחזירה כמה ערכים שקשורים זה לזה, הם יחד מושג אחד שראוי לטיפוס משלו. `record` קטן נותן שמות לכל ערך, בדיקת טיפוסים של הקומפיילר, וחתימה שאומרת בדיוק מה חוזר."
+  optionExplanations:
+    "1": "שלושה פרמטרי `out` מסרבלים את הקריאה ומחייבים להצהיר על משתנים מראש."
+    "2": "עדכון מאפיינים הוא תופעת לוואי; המתודה לא מחזירה כלום, והתוצאה תלויה בסדר הקריאות."
+    "3": "`object[]` מאבד את הטיפוסים ואת השמות; הקורא צריך לזכור שאינדקס 2 הוא הממוצע ולבצע המרה."
+
+- id: cs.clean-code.small-methods.015
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      Console.WriteLine(Price(2024, 5, 1, 2024, 5, 4, 300m));
+
+      static decimal Price(int inYear, int inMonth, int inDay,
+          int outYear, int outMonth, int outDay, decimal nightlyRate)
+      {
+          int nights = (new DateTime(outYear, outMonth, outDay) - new DateTime(inYear, inMonth, inDay)).Days;
+          return nights * nightlyRate;
+      }
+    - |
+      var stay = new Stay(new DateTime(2024, 5, 1), new DateTime(2024, 5, 4));
+      Console.WriteLine(Price(stay, 300m));
+
+      static decimal Price(Stay stay, decimal nightlyRate) => stay.Nights * nightlyRate;
+
+      record Stay(DateTime CheckIn, DateTime CheckOut)
+      {
+          public int Nights => (CheckOut - CheckIn).Days;
+      }
+  answer: 1
+  explanation: "שבעה פרמטרים, שישה מהם `int`, הם הזמנה להחליף סדר בלי שהקומפיילר ישים לב. אובייקט פרמטר (Parameter Object) כמו `Stay` מקבץ ערכים שבאים יחד, נותן להם שם, ומשמש בית טבעי ללוגיקה שלהם (`Nights`)."
+  optionExplanations:
+    "0": "רשימת פרמטרים ארוכה מאותו טיפוס: קשה לקרוא את הקריאה וקל לטעות בסדר."
+
+- id: cs.clean-code.small-methods.016
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `dana@mail.com,avi@mail.com`. באיזו שורה הבאג?"
+  code: |
+    List<string> emails = new() { " Dana@Mail.com ", "AVI@mail.com" };
+    for (int i = 0; i < emails.Count; i++)
+        Normalize(emails[i]);
+    Console.WriteLine(string.Join(",", emails));
+
+    static string Normalize(string email) => email.Trim().ToLowerInvariant();
+  answer: 3
+  fixed: |
+    List<string> emails = new() { " Dana@Mail.com ", "AVI@mail.com" };
+    for (int i = 0; i < emails.Count; i++)
+        emails[i] = Normalize(emails[i]);
+    Console.WriteLine(string.Join(",", emails));
+
+    static string Normalize(string email) => email.Trim().ToLowerInvariant();
+  explanation: "`Normalize` היא מתודה טהורה (Pure Function): היא לא משנה את הקלט, כי מחרוזות ב-C# אינן ניתנות לשינוי, אלא מחזירה מחרוזת חדשה. זה עיצוב טוב, אבל הקורא חייב להשתמש בערך שחוזר. כאן הוא נזרק, והרשימה מודפסת כמו שהייתה."

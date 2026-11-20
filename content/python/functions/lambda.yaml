@@ -1,0 +1,258 @@
+- id: py.functions.lambda.001
+  type: single
+  difficulty: 1
+  prompt: "מה יוצר הביטוי `lambda x: x * 2`?"
+  options:
+    - "פונקציה ללא שם שמקבלת `x` ומחזירה `x * 2`"
+    - "את המספר שהוא כפליים מ-`x`"
+    - "משתנה בשם `lambda` שערכו `x * 2`"
+    - "רשימה של כל הכפולות של `x`"
+  answer: 0
+  explanation: "`lambda` יוצרת פונקציה אנונימית (Anonymous Function): לפני הנקודתיים הפרמטרים, ואחריהן ביטוי אחד שערכו מוחזר. הביטוי לא מחושב כשה-`lambda` נוצרת, אלא רק כשקוראים לפונקציה, למשל `(lambda x: x * 2)(5)` מחזיר 10."
+  optionExplanations:
+    "1": "שום דבר לא מחושב ביצירת ה-`lambda`. החישוב מתבצע רק בקריאה לפונקציה."
+    "2": "`lambda` היא מילה שמורה ולא שם של משתנה."
+    "3": "`lambda` מחזירה ערך אחד בכל קריאה, לפי הארגומנט שמקבלת."
+
+- id: py.functions.lambda.002
+  type: single
+  difficulty: 1
+  prompt: "איזו הגדרה שקולה ל-`add = lambda a, b: a + b`?"
+  options:
+    - "`def add(a, b): return a + b`"
+    - "`def add(a, b): print(a + b)`"
+    - "`def add(a, b): a + b`"
+    - "`add = a + b`"
+  answer: 0
+  explanation: "גוף ה-`lambda` הוא ביטוי שערכו מוחזר באופן אוטומטי, כאילו נכתב לפניו `return`. לכן היא שקולה לפונקציה רגילה שמחזירה `a + b`."
+  optionExplanations:
+    "1": "`lambda` מחזירה את הערך, היא לא מדפיסה אותו. הפונקציה הזאת מחזירה `None`."
+    "2": "בלי `return` הפונקציה מחשבת ומשליכה את התוצאה, ומחזירה `None`. ב-`lambda` ה-`return` מובלע."
+    "3": "זו השמה של ערך, לא הגדרת פונקציה. היא תיכשל אם `a` ו-`b` לא מוגדרים."
+
+- id: py.functions.lambda.003
+  type: truefalse
+  difficulty: 1
+  prompt: "גוף של `lambda` יכול להכיל כמה הוראות בכמה שורות, למשל לולאת `for` והשמות למשתנים."
+  answer: false
+  explanation: "גוף של `lambda` הוא ביטוי (Expression) אחד בלבד. אי אפשר לכתוב בו הוראות (Statements) כמו `for`, `return` או השמה רגילה. מותר ביטוי תנאי, כמו `lambda n: \"even\" if n % 2 == 0 else \"odd\"`. כשצריך יותר, כותבים פונקציה רגילה עם `def`."
+
+- id: py.functions.lambda.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    words = ["banana", "fig", "apple"]
+    print(sorted(words, key=lambda w: len(w)))
+  options:
+    - "['fig', 'apple', 'banana']"
+    - "['apple', 'banana', 'fig']"
+    - "['banana', 'apple', 'fig']"
+    - "[3, 5, 6]"
+  answer: 0
+  explanation: "הפרמטר `key` מקבל פונקציה ש-`sorted` מפעילה על כל איבר, והמיון נעשה לפי הערך שהיא מחזירה, כאן האורך. אבל הרשימה שחוזרת מכילה את המילים המקוריות, לא את האורכים."
+  optionExplanations:
+    "1": "זה מיון לפי סדר אלפביתי, ברירת המחדל בלי `key`."
+    "2": "זה מיון לפי אורך בסדר יורד. בלי `reverse=True` המיון הוא בסדר עולה."
+    "3": "`key` משמש רק להשוואה. האיברים בתוצאה הם המילים עצמן."
+
+- id: py.functions.lambda.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    nums = [1, 2, 3]
+    result = map(lambda n: n * 10, nums)
+    print(list(result))
+    print(list(result))
+  options:
+    - "[10, 20, 30]\n[]"
+    - "[10, 20, 30]\n[10, 20, 30]"
+    - "[10, 20, 30]\n[100, 200, 300]"
+    - "[1, 2, 3]\n[10, 20, 30]"
+  answer: 0
+  explanation: "`map` לא מחזירה רשימה אלא איטרטור (Iterator), שמחשב כל ערך רק כשמבקשים אותו. `list` הראשון עובר על כל הערכים ומרוקן את האיטרטור, ולכן `list` השני מקבל איטרטור ריק. כשצריך את התוצאה יותר מפעם אחת, שומרים אותה ברשימה: `result = list(map(...))`."
+  optionExplanations:
+    "1": "איטרטור עובר על הערכים פעם אחת בלבד. אחרי המעבר הראשון לא נשאר בו כלום."
+    "2": "`map` לא מפעילה את הפונקציה שוב על התוצאות. היא עוברת על `nums` פעם אחת."
+    "3": "`map` מפעילה את ה-`lambda` על כל איבר, ולכן כבר הרשימה הראשונה מוכפלת."
+
+- id: py.functions.lambda.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    nums = [5, 12, 7, 20]
+    print(list(filter(lambda n: n > 10, nums)))
+  options:
+    - "[12, 20]"
+    - "[False, True, False, True]"
+    - "[5, 7]"
+    - "2"
+  answer: 0
+  explanation: "`filter` מפעילה את הפונקציה על כל איבר ומשאירה רק את האיברים שעבורם התוצאה אמת. האיברים נשארים כמו שהם ובאותו סדר. מי שמחזיר את תוצאות הפונקציה עצמן הוא `map`."
+  optionExplanations:
+    "1": "זו התוצאה של `map` עם אותה פונקציה. `filter` מחזירה את האיברים, לא את ערכי האמת."
+    "2": "`filter` משאירה את האיברים שהתנאי מתקיים עבורם, ולא מסירה אותם."
+    "3": "`filter` לא סופרת. היא מחזירה את האיברים שעברו את הסינון."
+
+- id: py.functions.lambda.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    students = [("Dana", 90), ("Avi", 75), ("Noa", 82)]
+    best = max(students, key=lambda s: s[1])
+    print(best[0])
+  options: ["Dana", "Noa", "90", "Avi"]
+  answer: 0
+  explanation: "גם `max` ו-`min` מקבלות `key`. ההשוואה נעשית לפי הציון, `s[1]`, אבל מוחזר הטאפל כולו, `(\"Dana\", 90)`. לכן `best[0]` הוא השם `Dana`."
+  optionExplanations:
+    "1": "`Noa` הוא המקסימום לפי השם, בסדר אלפביתי. ה-`key` קובע שההשוואה היא לפי הציון."
+    "2": "`max` מחזירה את האיבר המקורי ולא את ערך ה-`key`, ו-`best[0]` הוא השם."
+    "3": "`Avi` הוא בעל הציון הנמוך ביותר, ולכן הוא התשובה של `min`."
+
+- id: py.functions.lambda.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def add(a, b):
+        return a + b
+
+    def sub(a, b):
+        return a - b
+
+    ops = {"+": add, "-": sub}
+    print(ops["-"](10, 4))
+  options: ["6", "14", "-", "TypeError"]
+  answer: 0
+  explanation: "בפייתון פונקציות הן ערכים לכל דבר (First-Class Functions): אפשר לשמור אותן במילון, ברשימה או במשתנה. `ops[\"-\"]` מחזיר את הפונקציה `sub`, והסוגריים שאחריו קוראים לה עם 10 ו-4."
+  optionExplanations:
+    "1": "המפתח `\"-\"` מפנה ל-`sub`, ולא ל-`add`."
+    "2": "`ops[\"-\"]` הוא הערך של המפתח, כלומר פונקציה, ולא המפתח עצמו."
+    "3": "מותר לקרוא לפונקציה ישירות מתוך ביטוי, גם בלי לשמור אותה קודם במשתנה."
+
+- id: py.functions.lambda.009
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    funcs = []
+    for i in range(3):
+        funcs.append(lambda: i)
+
+    print([f() for f in funcs])
+  options: ["[2, 2, 2]", "[0, 1, 2]", "[3, 3, 3]", "[0, 0, 0]"]
+  answer: 0
+  explanation: "ה-`lambda` לא שומרת את הערך של `i` כשהיא נוצרת, אלא את השם `i`. היא קוראת אותו רק כשקוראים לה, ואז הלולאה כבר הסתיימה ו-`i` הוא 2. זו קשירה מאוחרת (Late Binding). כדי לשמור את הערך הנוכחי כותבים `lambda i=i: i`, כי ערך ברירת מחדל מחושב ברגע ההגדרה."
+  optionExplanations:
+    "1": "זו התוצאה הצפויה אילו כל `lambda` הייתה שומרת עותק של `i`, אבל היא קוראת את `i` רק בזמן הקריאה."
+    "2": "`range(3)` נותן 0, 1, 2, ולכן הערך האחרון של `i` הוא 2 ולא 3."
+    "3": "בזמן הקריאה `i` כבר לא 0. הלולאה הסתיימה, והערך האחרון שלו הוא 2."
+
+- id: py.functions.lambda.010
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    words = ["bb", "a", "ccc", "dd"]
+    print(sorted(words, key=lambda w: (-len(w), w)))
+  options:
+    - "['ccc', 'bb', 'dd', 'a']"
+    - "['ccc', 'dd', 'bb', 'a']"
+    - "['a', 'bb', 'dd', 'ccc']"
+    - "['bb', 'a', 'ccc', 'dd']"
+  answer: 0
+  explanation: "ה-`key` מחזיר טאפל, וטאפלים מושווים איבר אחרי איבר. האיבר הראשון, `-len(w)`, ממיין מהארוכה לקצרה. כשהאורך שווה, כמו ב-`bb` ו-`dd`, מכריע האיבר השני: המילה עצמה, בסדר עולה."
+  optionExplanations:
+    "1": "זו התוצאה של `key=lambda w: (len(w), w)` עם `reverse=True`, שהופך גם את סדר המילים באותו אורך. כאן רק האורך הפוך, ו-`bb` לפני `dd`."
+    "2": "המינוס לפני `len` הופך את סדר האורכים, ולכן הארוכה ראשונה."
+    "3": "`sorted` מחזירה רשימה ממוינת חדשה, ולא את הסדר המקורי."
+
+- id: py.functions.lambda.011
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את המוצר היקר ביותר, `('book', 40)`. באיזו שורה הבאג?"
+  code: |
+    products = [("pen", 5), ("book", 40), ("bag", 25)]
+    by_price = sorted(products, key=lambda p: p[0], reverse=True)
+    print(by_price[0])
+  answer: 2
+  explanation: "`p[0]` הוא שם המוצר, ולכן המיון הוא לפי שם בסדר אלפביתי הפוך, ומודפס `('pen', 5)`. המחיר נמצא ב-`p[1]`, וה-`key` צריך להחזיר אותו."
+  fixed: |
+    products = [("pen", 5), ("book", 40), ("bag", 25)]
+    by_price = sorted(products, key=lambda p: p[1], reverse=True)
+    print(by_price[0])
+
+- id: py.functions.lambda.012
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להשאיר רק את השמות שאינם ריקים ולהדפיס `['dana', 'yossi']`. באיזו שורה הבאג?"
+  code: |
+    names = ["dana", "", "yossi", ""]
+    non_empty = map(lambda n: n != "", names)
+    print(list(non_empty))
+  answer: 2
+  explanation: "`map` מחליפה כל איבר בתוצאת הפונקציה, ולכן מודפס `[True, False, True, False]`. כדי להשאיר רק חלק מהאיברים צריך `filter`, שמשתמשת בתוצאה כתנאי ומחזירה את האיברים המקוריים."
+  fixed: |
+    names = ["dana", "", "yossi", ""]
+    non_empty = filter(lambda n: n != "", names)
+    print(list(non_empty))
+
+- id: py.functions.lambda.013
+  type: single
+  difficulty: 2
+  prompt: "מה נכון לגבי הקריאה `sorted(words, key=len)`?"
+  options:
+    - "מעבירים את הפונקציה `len` עצמה, ו-`sorted` קוראת לה על כל איבר"
+    - "זו שגיאה. צריך לכתוב `key=len()`"
+    - "המיון נעשה לפי האורך של הרשימה `words` כולה"
+    - "זו שגיאה. חובה לכתוב `key=lambda w: len(w)`"
+  answer: 0
+  explanation: "`key` מצפה לפונקציה. `len` בלי סוגריים היא הפונקציה עצמה, ו-`sorted` קוראת לה על כל איבר. `lambda` נחוצה רק כשאין פונקציה מוכנה שעושה את מה שצריך."
+  optionExplanations:
+    "1": "`len()` קוראת לפונקציה מיד, בלי ארגומנט, ונזרק `TypeError`. צריך להעביר את הפונקציה, לא את התוצאה שלה."
+    "2": "`sorted` מפעילה את `len` על כל איבר בנפרד, לא על הרשימה."
+    "3": "`lambda w: len(w)` עושה בדיוק מה ש-`len` עושה. עטיפה כזו מיותרת."
+
+- id: py.functions.lambda.014
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      def circle_area(radius):
+          return 3.14159 * radius ** 2
+    - |
+      circle_area = lambda radius: 3.14159 * radius ** 2
+  answer: 0
+  explanation: "`lambda` נועדה לפונקציה קצרה שמעבירים מיד כארגומנט, כמו `key` של `sorted`. כשנותנים לפונקציה שם, `def` הוא הדרך הנכונה: הוא מאפשר docstring, והשם מופיע בהודעות שגיאה. מדריך הסגנון PEP 8 ממליץ במפורש לא להציב `lambda` במשתנה. שתי הגרסאות מחזירות אותו ערך."
+  optionExplanations:
+    "1": "הצבת `lambda` במשתנה מבטלת את היתרון היחיד שלה, היותה ללא שם. בהודעות שגיאה הפונקציה תופיע כ-`<lambda>` ולא כ-`circle_area`."
+
+- id: py.functions.lambda.015
+  type: truefalse
+  difficulty: 1
+  prompt: "בפייתון אפשר להעביר פונקציה כארגומנט לפונקציה אחרת, וגם להחזיר פונקציה מתוך פונקציה."
+  answer: true
+  explanation: "פונקציות בפייתון הן אובייקטים כמו כל ערך אחר. לכן אפשר לשמור אותן במשתנים, להעביר אותן כארגומנט (כמו `key=len`) ולהחזיר אותן מפונקציה. פונקציה שמקבלת או מחזירה פונקציה נקראת פונקציה מסדר גבוה (Higher-Order Function)."
+
+- id: py.functions.lambda.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def multiplier(n):
+        return lambda x: x * n
+
+    double = multiplier(2)
+    triple = multiplier(3)
+    print(double(triple(5)))
+  options: ["30", "15", "10", "6"]
+  answer: 0
+  explanation: "`multiplier` מחזירה פונקציה חדשה שזוכרת את ה-`n` שלה: `double` מכפילה ב-2, ו-`triple` ב-3. קוראים מבפנים החוצה: `triple(5)` מחזירה 15, ו-`double(15)` מחזירה 30."
+  optionExplanations:
+    "1": "15 הוא רק התוצאה של `triple(5)`. אחר כך היא עוברת ל-`double`."
+    "2": "10 הוא `double(5)`, אבל `double` מקבלת את התוצאה של `triple(5)` ולא את 5."
+    "3": "6 הוא מכפלת ערכי `n` של שתי הפונקציות, אבל ה-5 עובר דרך שתיהן: 5 כפול 3, ואז כפול 2."

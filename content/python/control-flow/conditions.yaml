@@ -1,0 +1,265 @@
+- id: py.control-flow.conditions.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    x = 7
+    if x > 5:
+        print("big")
+    elif x > 3:
+        print("medium")
+    else:
+        print("small")
+  options: ["big", "medium", "big\nmedium", "small"]
+  answer: 0
+  explanation: "במבנה `if`/`elif`/`else` פייתון בודקת את התנאים לפי הסדר ומריצה רק את הבלוק של התנאי הראשון שמתקיים. `7 > 5` מתקיים, ולכן מודפס `big` ושאר הענפים מדולגים, למרות ש-`7 > 3` נכון גם הוא."
+  optionExplanations:
+    "1": "`elif` נבדק רק אם כל התנאים שלפניו לא התקיימו. כאן ה-`if` הראשון כבר התקיים."
+    "2": "רק בלוק אחד רץ במבנה `if`/`elif`. שני בלוקים היו רצים רק אם היו כאן שני משפטי `if` נפרדים."
+
+- id: py.control-flow.conditions.002
+  type: single
+  difficulty: 2
+  prompt: "בשתי הגרסאות `x` הוא מספר שלם. עבור איזה ערך של `x` הן ידפיסו פלט שונה?"
+  code: |
+    # version A
+    if x > 10:
+        print("A")
+    elif x > 5:
+        print("B")
+
+    # version B
+    if x > 10:
+        print("A")
+    if x > 5:
+        print("B")
+  options: ["`12`", "`7`", "`5`", "`3`"]
+  answer: 0
+  explanation: "בגרסה A יש שרשרת אחת של `if`/`elif`, ולכן רץ לכל היותר בלוק אחד. בגרסה B יש שני משפטי `if` עצמאיים, וכל אחד נבדק בנפרד. עבור `12` גרסה A מדפיסה רק `A`, וגרסה B מדפיסה `A` וגם `B`."
+  optionExplanations:
+    "1": "עבור `7` רק התנאי `x > 5` מתקיים, ולכן שתי הגרסאות מדפיסות `B` בלבד."
+    "2": "`5 > 5` הוא `False`, ולכן אף גרסה לא מדפיסה דבר."
+    "3": "עבור `3` אף תנאי לא מתקיים בשתי הגרסאות."
+
+- id: py.control-flow.conditions.003
+  type: single
+  difficulty: 1
+  prompt: מהי המילה השמורה בפייתון לענף "אחרת, אם" במשפט תנאי?
+  options: ["`elif`", "`else if`", "`elseif`", "`elsif`"]
+  answer: 0
+  explanation: "בפייתון כותבים `elif`, קיצור של else if. הצורה `else if` מוכרת משפות כמו C#, Java ו-JavaScript, אבל בפייתון היא גורמת לשגיאת תחביר (SyntaxError)."
+  optionExplanations:
+    "1": "`else if` הוא התחביר של C#, Java ו-JavaScript. בפייתון אחרי `else` חייבות לבוא נקודתיים מיד."
+    "3": "`elsif` היא המילה של Ruby ו-Perl, לא של פייתון."
+
+- id: py.control-flow.conditions.004
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    age = 20
+    has_ticket = False
+    if age >= 18:
+        if has_ticket:
+            print("enter")
+        else:
+            print("buy a ticket")
+    else:
+        print("too young")
+  options: ["buy a ticket", "enter", "too young", "buy a ticket\ntoo young"]
+  answer: 0
+  explanation: "זה תנאי מקונן (Nested Condition): ה-`if` הפנימי נבדק רק אם החיצוני התקיים. `age >= 18` מתקיים, ואז `has_ticket` הוא `False`, ולכן רץ ה-`else` הפנימי. ההזחה קובעת לאיזה `if` שייך כל `else`."
+  optionExplanations:
+    "2": "ה-`else` החיצוני שייך ל-`if age >= 18`, שהתקיים, ולכן הוא לא רץ."
+    "3": "ה-`else` החיצוני רץ רק כשהתנאי החיצוני לא מתקיים, וכאן הוא כן מתקיים."
+
+- id: py.control-flow.conditions.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    x = -4
+    result = "positive" if x > 0 else "zero" if x == 0 else "negative"
+    print(result)
+  options: ["negative", "zero", "positive", "SyntaxError"]
+  answer: 0
+  explanation: "ביטוי תנאי (Conditional Expression) נכתב `A if condition else B`. אפשר לשרשר אותו: החלק שאחרי ה-`else` הראשון הוא בעצמו ביטוי תנאי. `x > 0` לא מתקיים, `x == 0` לא מתקיים, ולכן מתקבל `negative`. שרשור כזה חוקי, אבל מעבר לשתי רמות עדיף `if`/`elif` רגיל."
+  optionExplanations:
+    "1": "`zero` היה מתקבל רק אם `x == 0`."
+    "3": "שרשור ביטויי תנאי חוקי לגמרי בפייתון, גם אם קשה לקריאה."
+
+- id: py.control-flow.conditions.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    name = ""
+    display = name or "Guest"
+    print(display)
+  options: ["Guest", "True", "False", "None"]
+  answer: 0
+  explanation: "האופרטור `or` לא מחזיר בהכרח `True` או `False`: הוא מחזיר את האופרנד הראשון שהוא truthy, ואם אין כזה, את האחרון. מחרוזת ריקה היא falsy, ולכן מוחזר `\"Guest\"`. זה דפוס נפוץ לקביעת ערך ברירת מחדל."
+  optionExplanations:
+    "1": "`or` מחזיר את אחד האופרנדים עצמם, לא ערך בוליאני חדש."
+    "3": "אין כאן שום `None`. `or` מחזיר את `\"Guest\"`, האופרנד השני."
+
+- id: py.control-flow.conditions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    items = 0
+    if items == 0 or 10 / items > 1:
+        print("A")
+    if items > 0 and 10 / items > 1:
+        print("B")
+    print(10 / items > 1)
+  options: ["A\nZeroDivisionError", "ZeroDivisionError", "A\nFalse", "A\nB\nZeroDivisionError"]
+  answer: 0
+  explanation: "הערכה מקוצרת (Short-circuit Evaluation): ב-`or`, אם הצד השמאלי אמת, הצד הימני לא מחושב כלל. ב-`and`, אם הצד השמאלי שקר, הצד הימני לא מחושב. לכן שני התנאים לא מחלקים באפס, ומודפס `A` בלבד. בשורה האחרונה אין תנאי ששומר על החלוקה, והיא זורקת `ZeroDivisionError`."
+  optionExplanations:
+    "1": "בתנאי הראשון `items == 0` אמת, ולכן `or` לא מגיע לחלוקה. השגיאה נזרקת רק בשורה האחרונה."
+    "2": "החלוקה בשורה האחרונה מחושבת תמיד, ו-`10 / 0` זורק שגיאה. היא לא מחזירה `False`."
+    "3": "`items > 0` הוא `False`, ולכן `and` עוצר מיד ו-`B` לא מודפס."
+
+- id: py.control-flow.conditions.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    a = 0
+    b = 5
+    print(a and b)
+    print(a or b)
+    print(b and a)
+  options: ["0\n5\n0", "False\nTrue\nFalse", "0\n5\n5", "False\n5\nFalse"]
+  answer: 0
+  explanation: "`and` ו-`or` מחזירים את האופרנד שבו נעצרה ההערכה, לא `True` או `False`. `a and b`: `a` הוא falsy, ולכן מוחזר `0`. `a or b`: `a` falsy, ולכן ממשיכים ומוחזר `5`. `b and a`: `b` truthy, ולכן ממשיכים ומוחזר `a`, כלומר `0`."
+  optionExplanations:
+    "1": "זה היה נכון אם `and` ו-`or` היו ממירים את התוצאה לבוליאני. בפייתון הם מחזירים את אחד האופרנדים."
+    "2": "ב-`b and a` הצד השמאלי truthy, ולכן `and` מחזיר את הצד הימני, `0`."
+
+- id: py.control-flow.conditions.009
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר דמי משלוח: `0` מ-200 ומעלה, `20` מ-100 עד 199, ו-`35` מתחת ל-100. באיזו שורה הבאג?"
+  code: |
+    def shipping_cost(total):
+        if total >= 200:
+            cost = 0
+        if total >= 100:
+            cost = 20
+        else:
+            cost = 35
+        return cost
+  answer: 4
+  explanation: "שורה 4 פותחת `if` חדש ועצמאי במקום להמשיך את השרשרת. עבור `total = 250` הבלוק הראשון קובע `cost = 0`, ואז גם `250 >= 100` מתקיים ודורס את הערך ל-`20`. עם `elif` רק הענף הראשון שמתקיים רץ."
+  fixed: |
+    def shipping_cost(total):
+        if total >= 200:
+            cost = 0
+        elif total >= 100:
+            cost = 20
+        else:
+            cost = 35
+        return cost
+
+- id: py.control-flow.conditions.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר `True` רק עבור `\"Friday\"` או `\"Saturday\"`. באיזו שורה הבאג?"
+  code: |
+    def is_weekend(day):
+        if day == "Saturday" or "Friday":
+            return True
+        return False
+  answer: 2
+  explanation: "התנאי מתפרש כ-`(day == \"Saturday\") or \"Friday\"`. מחרוזת לא ריקה היא truthy, ולכן התנאי תמיד מתקיים והפונקציה מחזירה `True` גם עבור `\"Monday\"`. צריך להשוות את `day` לכל ערך בנפרד, או לכתוב `day in (\"Friday\", \"Saturday\")`."
+  fixed: |
+    def is_weekend(day):
+        if day == "Saturday" or day == "Friday":
+            return True
+        return False
+
+- id: py.control-flow.conditions.011
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר `False` עבור מספר חודש שאינו בין 1 ל-12, ו-`True` אחרת. באיזו שורה הבאג?"
+  code: |
+    def is_valid_month(month):
+        if month < 1 and month > 12:
+            return False
+        return True
+  answer: 2
+  explanation: "אף מספר לא יכול להיות גם קטן מ-1 וגם גדול מ-12, ולכן התנאי עם `and` תמיד `False` והפונקציה מאשרת כל ערך, כולל `13`. מספר לא תקין הוא כזה שחורג מצד אחד או מהצד השני, ולכן צריך `or`."
+  fixed: |
+    def is_valid_month(month):
+        if month < 1 or month > 12:
+            return False
+        return True
+
+- id: py.control-flow.conditions.012
+  type: single
+  difficulty: 2
+  prompt: "עבור איזה ערך של `value` הבלוק של `if value:` לא ירוץ?"
+  options: ["`0.0`", "`[0]`", "`\" \"`", "`\"False\"`"]
+  answer: 0
+  explanation: "`if` בודק את ערך האמת (Truthiness) של הביטוי. ערכים falsy הם אפס מכל סוג (`0`, `0.0`), מחרוזת ריקה, אוסף ריק, `None` ו-`False`. כל השאר truthy."
+  optionExplanations:
+    "1": "זו רשימה עם איבר אחד. רשימה לא ריקה היא truthy, גם אם האיבר שבה הוא `0`."
+    "2": "מחרוזת שמכילה רווח אינה ריקה, ולכן היא truthy."
+    "3": "זו מחרוזת לא ריקה. התוכן שלה לא משנה, ולכן היא truthy."
+
+- id: py.control-flow.conditions.013
+  type: truefalse
+  difficulty: 1
+  prompt: "בלוק `else` הוא אופציונלי: מותר לכתוב `if` ואחריו `elif` אחד או יותר, בלי `else` בסוף."
+  answer: true
+  explanation: "גם `elif` וגם `else` אופציונליים. בלי `else`, אם אף תנאי לא מתקיים, פשוט לא רץ אף בלוק והתוכנית ממשיכה הלאה."
+
+- id: py.control-flow.conditions.014
+  type: truefalse
+  difficulty: 3
+  prompt: "הביטוי `0 or None` מחזיר `False`."
+  answer: false
+  explanation: "`or` מחזיר את האופרנד הראשון שהוא truthy, ואם אין כזה, את האופרנד האחרון שחושב. שניהם falsy, ולכן מוחזר `None`, לא `False`. התוצאה falsy, אבל היא לא הערך הבוליאני `False`."
+
+- id: py.control-flow.conditions.015
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      if user is not None and user.is_active and user.is_admin:
+          print("access granted")
+    - |
+      if user is not None:
+          if user.is_active:
+              if user.is_admin:
+                  print("access granted")
+    - |
+      if user is not None:
+          if user.is_active and user.is_admin:
+              print("access granted")
+          else:
+              pass
+  answer: 0
+  explanation: "כשכל התנאים צריכים להתקיים, תנאי אחד עם `and` קריא יותר משלוש רמות קינון. זה גם בטוח: בזכות ההערכה המקוצרת, אם `user` הוא `None` הבדיקות שאחריו לא מחושבות."
+  optionExplanations:
+    "1": "קינון עמוק (Deep Nesting) של `if` בתוך `if` מקשה על הקריאה בלי להוסיף שום התנהגות."
+    "2": "ענף `else: pass` לא עושה דבר ורק מוסיף רעש, והקינון עדיין מיותר."
+
+- id: py.control-flow.conditions.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    x = 2
+    y = 10 + x if x > 5 else 0
+    print(y)
+  options: ["0", "10", "12", "2"]
+  answer: 0
+  explanation: "לביטוי התנאי יש את הקדימות הנמוכה ביותר כמעט מכל האופרטורים, ולכן השורה מתפרשת כ-`(10 + x) if x > 5 else 0`. `x > 5` לא מתקיים, ולכן `y` הוא `0`. כדי לקבל `10` פלוס ביטוי תנאי צריך סוגריים: `10 + (x if x > 5 else 0)`."
+  optionExplanations:
+    "1": "זו התוצאה של `10 + (x if x > 5 else 0)`, אבל `+` נקשר חזק יותר מביטוי התנאי."
+    "2": "`12` היה מתקבל רק אם התנאי `x > 5` היה מתקיים."

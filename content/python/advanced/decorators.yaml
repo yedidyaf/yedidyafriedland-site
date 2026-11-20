@@ -1,0 +1,380 @@
+- id: py.advanced.decorators.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def shout(func):
+        def wrapper():
+            return func().upper()
+        return wrapper
+
+    @shout
+    def greet():
+        return "hello"
+
+    print(greet())
+  options: ["HELLO", "hello", "None", "TypeError"]
+  answer: 0
+  explanation: "דקורטור (Decorator) הוא פונקציה שמקבלת פונקציה ומחזירה פונקציה אחרת שעוטפת אותה. אחרי `@shout`, השם `greet` מצביע על `wrapper`, שקוראת ל-`greet` המקורית ומחזירה את התוצאה באותיות גדולות."
+  optionExplanations:
+    "1": "`@shout` מחליף את `greet` בעטיפה. הקריאה `greet()` מריצה את `wrapper`, ולא את הפונקציה המקורית ישירות."
+    "2": "`wrapper` מחזירה את `func().upper()`, ולכן יש ערך החזרה."
+    "3": "`wrapper` לא מקבלת פרמטרים, וגם `greet()` נקראת בלי ארגומנטים, ולכן הקריאה תקינה."
+
+- id: py.advanced.decorators.002
+  type: single
+  difficulty: 1
+  prompt: "לאיזו שורה שקולה כתיבת `@timer` מעל `def load(): ...`?"
+  options:
+    - "`load = timer(load)`"
+    - "`timer(load)`"
+    - "`load = timer()`"
+    - "`load = load(timer)`"
+  answer: 0
+  explanation: "תחביר `@` הוא קיצור: אחרי הגדרת הפונקציה, פייתון מעבירה אותה לדקורטור ושומרת את מה שהדקורטור החזיר באותו שם. לכן `load` מצביע מעכשיו על הפונקציה שהחזיר `timer`."
+  optionExplanations:
+    "1": "בלי ההשמה לשם `load`, מה שהדקורטור מחזיר היה הולך לאיבוד והשם `load` היה מצביע עדיין על הפונקציה המקורית."
+    "2": "הדקורטור מקבל את הפונקציה כארגומנט. בלעדיה אין לו מה לעטוף."
+    "3": "הכיוון הפוך: הדקורטור מקבל את הפונקציה, ולא הפונקציה את הדקורטור."
+
+- id: py.advanced.decorators.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def register(func):
+        print("registering", func.__name__)
+        return func
+
+    @register
+    def hello():
+        print("hello")
+
+    print("start")
+    hello()
+  options:
+    - "registering hello\nstart\nhello"
+    - "start\nregistering hello\nhello"
+    - "start\nhello"
+    - "registering hello\nstart\nregistering hello\nhello"
+  answer: 0
+  explanation: "הדקורטור רץ פעם אחת, בזמן הגדרת הפונקציה, ולא בזמן הקריאה לה. לכן `registering hello` מודפס עוד לפני `start`. כאן `register` מחזיר את `func` עצמה בלי עטיפה, ולכן הקריאה `hello()` מריצה רק את הפונקציה המקורית."
+  optionExplanations:
+    "1": "הדקורטור לא מחכה לקריאה. הוא מופעל מיד כשפייתון מגיעה להגדרת הפונקציה."
+    "2": "`register` כן רץ, ובזמן ההגדרה. גם דקורטור שלא עוטף כלום מורץ."
+    "3": "`register` מחזיר את `hello` המקורית, ולכן הקריאה לא מריצה שוב את הדקורטור."
+
+- id: py.advanced.decorators.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def bold(func):
+        def wrapper():
+            return "<b>" + func() + "</b>"
+        return wrapper
+
+    def italic(func):
+        def wrapper():
+            return "<i>" + func() + "</i>"
+        return wrapper
+
+    @bold
+    @italic
+    def text():
+        return "hi"
+
+    print(text())
+  options: ["<b><i>hi</i></b>", "<i><b>hi</b></i>", "<b>hi</b>", "<i>hi</i>"]
+  answer: 0
+  explanation: "דקורטורים מוערמים מוחלים מלמטה למעלה: `text = bold(italic(text))`. הדקורטור הקרוב לפונקציה (`italic`) עוטף ראשון, ו-`bold` עוטף את התוצאה מבחוץ. לכן התגית החיצונית היא `<b>`."
+  optionExplanations:
+    "1": "זה היה נכון אם הסדר היה מלמעלה למטה. בפועל הדקורטור התחתון עוטף ראשון והעליון הוא החיצוני."
+    "2": "שני הדקורטורים מוחלים. `bold` עוטף את מה ש-`italic` החזיר, ולא את הפונקציה המקורית."
+    "3": "`bold` לא מחליף את העטיפה של `italic`, אלא עוטף אותה, ולכן שתי התגיות מופיעות."
+
+- id: py.advanced.decorators.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def log(func):
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
+
+    @log
+    def add(a, b):
+        return a + b
+
+    print(add.__name__, add(2, 3))
+  options: ["wrapper 5", "add 5", "log 5", "wrapper None"]
+  answer: 0
+  explanation: "אחרי העיטור, השם `add` מצביע על הפונקציה `wrapper`, ולכן `__name__` שלה הוא `wrapper`. העטיפה מעבירה את הארגומנטים ומחזירה את התוצאה, ולכן החישוב עצמו תקין. כדי לשמור את השם והתיעוד המקוריים משתמשים ב-`functools.wraps`."
+  optionExplanations:
+    "1": "השם `add` הוא רק משתנה שמצביע עכשיו על `wrapper`. בלי `functools.wraps` המטא־דאטה של המקור לא מועתק."
+    "2": "`log` הוא הדקורטור, אבל הוא מחזיר את `wrapper`, וזו הפונקציה שנשמרת בשם `add`."
+    "3": "`wrapper` מחזירה את `func(*args, **kwargs)`, ולכן מתקבל `5`."
+
+- id: py.advanced.decorators.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    from functools import wraps
+
+    def log(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
+
+    @log
+    def add(a, b):
+        """Add two numbers."""
+        return a + b
+
+    print(add.__name__, add.__doc__)
+  options:
+    - "add Add two numbers."
+    - "wrapper None"
+    - "add None"
+    - "wrapper Add two numbers."
+  answer: 0
+  explanation: "`functools.wraps` מעתיק לעטיפה את המטא־דאטה (Metadata) של הפונקציה המקורית, ובהם `__name__` ו-`__doc__`. בלעדיו, כלי דיבוג, הודעות שגיאה ו-`help()` היו מציגים את `wrapper` במקום את `add`."
+  optionExplanations:
+    "1": "זה המצב בלי `@wraps(func)`: העטיפה מציגה את השם ואת ה-docstring (הריק) של עצמה."
+    "2": "`wraps` מעתיק גם את `__doc__`, לא רק את השם."
+    "3": "`wraps` מעתיק גם את `__name__`, לא רק את התיעוד."
+
+- id: py.advanced.decorators.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def repeat(times):
+        def decorator(func):
+            def wrapper(*args):
+                results = []
+                for _ in range(times):
+                    results.append(func(*args))
+                return results
+            return wrapper
+        return decorator
+
+    @repeat(3)
+    def double(x):
+        return x * 2
+
+    print(double(5))
+  options: ["[10, 10, 10]", "10", "[10, 20, 30]", "30"]
+  answer: 0
+  explanation: "דקורטור עם פרמטרים הוא פונקציה שמחזירה דקורטור: `repeat(3)` מחזיר את `decorator`, והוא מעטר את `double`. העטיפה קוראת ל-`double(5)` שלוש פעמים עם אותו ארגומנט, ואוספת את התוצאות לרשימה."
+  optionExplanations:
+    "1": "`wrapper` מחזירה את הרשימה `results`, ולא תוצאה בודדת."
+    "2": "בכל סיבוב נקראת `func(*args)` עם אותו ארגומנט, `5`, ולכן התוצאה תמיד `10`."
+    "3": "העטיפה אוספת את התוצאות לרשימה ולא סוכמת אותן."
+
+- id: py.advanced.decorators.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def count_calls(func):
+        def wrapper(*args):
+            wrapper.calls += 1
+            return func(*args)
+        wrapper.calls = 0
+        return wrapper
+
+    @count_calls
+    def square(x):
+        return x * x
+
+    square(2)
+    square(3)
+    print(square.calls, square(4))
+  options: ["2 16", "3 16", "0 16", "1 16"]
+  answer: 0
+  explanation: "המונה הוא תכונה של העטיפה, ולכן הוא נשמר בין קריאות: אחרי שתי קריאות הוא `2`. ארגומנטים של `print` מחושבים משמאל לימין, ולכן `square.calls` נקרא (`2`) לפני ש-`square(4)` מעלה אותו ל-3."
+  optionExplanations:
+    "1": "הערך `square.calls` מחושב לפני הקריאה `square(4)`, כי הארגומנטים מחושבים משמאל לימין."
+    "2": "`calls = 0` רץ פעם אחת בזמן העיטור, ולא מתאפס בכל קריאה."
+    "3": "המונה נשמר על אובייקט העטיפה, שהוא אותו אובייקט בכל הקריאות, ולכן הוא מצטבר."
+
+- id: py.advanced.decorators.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def trace(func):
+        def wrapper(x):
+            print("calling")
+            func(x)
+        return wrapper
+
+    @trace
+    def inc(x):
+        return x + 1
+
+    print(inc(1))
+  options: ["calling\nNone", "calling\n2", "2", "None"]
+  answer: 0
+  explanation: "העטיפה קוראת ל-`func(x)` אבל לא מחזירה את התוצאה, ולכן היא מחזירה `None`, כמו כל פונקציה בלי `return`. טעות נפוצה בדקורטורים: צריך `return func(x)` כדי שהערך יעבור לקורא."
+  optionExplanations:
+    "1": "הערך `2` מחושב בתוך `wrapper` אבל נזרק, כי אין `return`."
+    "2": "גם `calling` מודפס, כי `wrapper` רצה בכל קריאה ל-`inc`."
+    "3": "`wrapper` כן רצה ומדפיסה `calling` לפני שהיא מחזירה `None`."
+
+- id: py.advanced.decorators.010
+  type: bug
+  difficulty: 2
+  prompt: "הדקורטור אמור להדפיס `start` לפני כל קריאה לפונקציה המעוטרת ו-`end` אחריה. באיזו שורה הבאג?"
+  code: |
+    def timer(func):
+        def wrapper(*args, **kwargs):
+            print("start")
+            result = func(*args, **kwargs)
+            print("end")
+            return result
+        return func
+  answer: 7
+  explanation: "הדקורטור מחזיר את הפונקציה המקורית במקום את העטיפה, ולכן `wrapper` אף פעם לא נקראת: הפונקציה המעוטרת רצה בלי ההדפסות. דקורטור צריך להחזיר את הפונקציה שתחליף את המקור, כלומר `return wrapper`."
+  fixed: |
+    def timer(func):
+        def wrapper(*args, **kwargs):
+            print("start")
+            result = func(*args, **kwargs)
+            print("end")
+            return result
+        return wrapper
+
+- id: py.advanced.decorators.011
+  type: bug
+  difficulty: 3
+  prompt: "הדקורטור אמור לנסות להריץ את הפונקציה עד `times` פעמים כשנזרקת `ValueError`, ולהשתמש בו כך: `@retry(3)`. באיזו שורה הבאג?"
+  code: |
+    from functools import wraps
+
+    def retry(times):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                for _ in range(times):
+                    try:
+                        return func(*args, **kwargs)
+                    except ValueError:
+                        print("retrying")
+                raise RuntimeError("failed")
+            return wrapper
+        return wrapper
+  answer: 14
+  explanation: "בדקורטור עם פרמטרים יש שלוש שכבות: `retry(times)` מחזיר את `decorator`, ו-`decorator(func)` מחזיר את `wrapper`. השורה האחרונה מחזירה את `wrapper`, שבכלל לא מוגדר בטווח של `retry`, ולכן `@retry(3)` זורק `NameError`. התיקון: `return decorator`."
+  fixed: |
+    from functools import wraps
+
+    def retry(times):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                for _ in range(times):
+                    try:
+                        return func(*args, **kwargs)
+                    except ValueError:
+                        print("retrying")
+                raise RuntimeError("failed")
+            return wrapper
+        return decorator
+
+- id: py.advanced.decorators.012
+  type: truefalse
+  difficulty: 1
+  prompt: "פונקציה שמשמשת כדקורטור היא פונקציה רגילה: היא מקבלת את הפונקציה המעוטרת כארגומנט, ומה שהיא מחזירה נשמר בשם של הפונקציה המעוטרת."
+  answer: true
+  explanation: "אין בדקורטורים קסם מיוחד. `@deco` מעל `def f` שקול ל-`f = deco(f)`. לכן כל פונקציה שמקבלת פונקציה ומחזירה ערך יכולה לשמש כדקורטור, ובדרך כלל היא מחזירה פונקציית עטיפה (Wrapper)."
+
+- id: py.advanced.decorators.013
+  type: truefalse
+  difficulty: 2
+  prompt: "בלי `@functools.wraps(func)`, פונקציית העטיפה לא מסוגלת לקרוא לפונקציה המקורית."
+  answer: false
+  explanation: "`wraps` לא משפיע על הקריאה עצמה. העטיפה ניגשת ל-`func` דרך הסגור (Closure) בכל מקרה. `wraps` רק מעתיק לעטיפה את המטא־דאטה של המקור: `__name__`, `__doc__` ועוד, כדי שכלים והודעות שגיאה יציגו את השם הנכון."
+
+- id: py.advanced.decorators.014
+  type: single
+  difficulty: 2
+  prompt: "`repeat` הוא דקורטור עם פרמטרים. מה פייתון עושה כשהיא פוגשת את `@repeat(3)` מעל `def double(x): ...`?"
+  options:
+    - "`double = repeat(3)(double)`"
+    - "`double = repeat(double, 3)`"
+    - "`double = repeat(double)(3)`"
+    - "`double = repeat(3)`"
+  answer: 0
+  explanation: "הביטוי שאחרי `@` מחושב קודם: `repeat(3)` רץ ומחזיר דקורטור. אחר כך הדקורטור הזה מקבל את `double`. לכן דקורטור עם פרמטרים כתוב כפונקציה שמחזירה פונקציה שמקבלת פונקציה."
+  optionExplanations:
+    "1": "הפרמטרים של הדקורטור והפונקציה המעוטרת לא מועברים באותה קריאה. יש כאן שתי קריאות נפרדות."
+    "2": "הסדר הפוך: קודם מחשבים את `repeat(3)`, ורק התוצאה מקבלת את הפונקציה."
+    "3": "כך הפונקציה `double` לא הייתה מועברת בכלל, ו-`double` היה מצביע על הדקורטור עצמו."
+
+- id: py.advanced.decorators.015
+  type: single
+  difficulty: 1
+  prompt: "למה פונקציית העטיפה בדקורטור כללי נכתבת בדרך כלל כ-`def wrapper(*args, **kwargs)`?"
+  options:
+    - "כדי שהעטיפה תתאים לכל פונקציה ותעביר לה את הארגומנטים כפי שקיבלה"
+    - "כדי לשמור על השם וה-docstring של הפונקציה המקורית"
+    - "כי פייתון דורשת שכל פונקציה פנימית תקבל `*args` ו-`**kwargs`"
+    - "כדי שהקריאה לפונקציה המעוטרת תרוץ מהר יותר"
+  answer: 0
+  explanation: "הדקורטור לא יודע מראש אילו פרמטרים יש לפונקציה שהוא עוטף. `*args` אוסף את הארגומנטים לפי מיקום ו-`**kwargs` את הארגומנטים לפי שם, והקריאה `func(*args, **kwargs)` מעבירה את כולם הלאה בדיוק כמו שהתקבלו."
+  optionExplanations:
+    "1": "שמירת השם והתיעוד היא התפקיד של `functools.wraps`, ולא של `*args` ו-`**kwargs`."
+    "2": "אין דרישה כזו. עטיפה יכולה לקבל כל פרמטרים, אבל אז היא תתאים רק לפונקציות עם אותה חתימה."
+    "3": "העברת ארגומנטים דרך `*args` לא מאיצה דבר. המטרה היא גמישות."
+
+- id: py.advanced.decorators.016
+  type: cleaner
+  difficulty: 1
+  prompt: כל הגרסאות מדפיסות הודעה לפני כל קריאה לפונקציות השמירה והמחיקה. איזו גרסה נקייה יותר?
+  options:
+    - |
+      from functools import wraps
+
+      def log_call(func):
+          @wraps(func)
+          def wrapper(*args, **kwargs):
+              print(f"calling {func.__name__}")
+              return func(*args, **kwargs)
+          return wrapper
+
+      @log_call
+      def save(item):
+          ...
+
+      @log_call
+      def delete(item):
+          ...
+    - |
+      def save(item):
+          print("calling save")
+          ...
+
+      def delete(item):
+          print("calling delete")
+          ...
+    - |
+      def log(name):
+          print(f"calling {name}")
+
+      def save(item):
+          log("save")
+          ...
+
+      def delete(item):
+          log("delete")
+          ...
+  answer: 0
+  explanation: "רישום קריאות הוא דאגה רוחבית (Cross-Cutting Concern) שלא שייכת ללוגיקה של שמירה או מחיקה. דקורטור מגדיר אותה פעם אחת ומחיל אותה בשורה אחת על כל פונקציה, בלי לגעת בגוף שלה ובלי לכתוב את שם הפונקציה ידנית."
+  optionExplanations:
+    "1": "שכפול קוד (Duplicated Code): אותה הדפסה כתובה בכל פונקציה, וכל שינוי בפורמט דורש לעדכן את כולן."
+    "2": "עדיין צריך לזכור לקרוא ל-`log` בכל פונקציה ולהקליד את שמה ידנית, ושם שגוי לא ייתפס."

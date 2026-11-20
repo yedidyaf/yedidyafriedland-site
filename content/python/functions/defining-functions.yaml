@@ -1,0 +1,303 @@
+- id: py.functions.defining-functions.001
+  type: single
+  difficulty: 1
+  prompt: באיזו מילה שמורה מגדירים פונקציה בפייתון?
+  options: ["`def`", "`function`", "`func`", "`define`"]
+  answer: 0
+  explanation: "הגדרת פונקציה (Function Definition) מתחילה ב-`def`, אחריה שם הפונקציה, סוגריים עם הפרמטרים ונקודתיים. `function` ו-`func` הן מילים מ-JavaScript ומ-Go, ולא מילים שמורות בפייתון."
+  optionExplanations:
+    "1": "`function` משמשת להגדרת פונקציות ב-JavaScript, לא בפייתון."
+    "2": "`func` משמשת ב-Go וב-Swift. בפייתון זו סתם מילה שאפשר להשתמש בה כשם משתנה."
+    "3": "`define` היא לא מילה שמורה בשום חלק של פייתון."
+
+- id: py.functions.defining-functions.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def greet(name):
+        print("Hello", name)
+
+    result = greet("Dana")
+    print(result)
+  options:
+    - "Hello Dana\nNone"
+    - "Hello Dana"
+    - "Hello Dana\nHello Dana"
+    - "None"
+  answer: 0
+  explanation: "הקריאה `greet(\"Dana\")` מדפיסה `Hello Dana`, אבל אין בפונקציה `return`, ולכן היא מחזירה `None`. הערך הזה נשמר ב-`result` ומודפס בשורה השנייה. הדפסה (print) והחזרת ערך (return) הן שני דברים שונים."
+  optionExplanations:
+    "1": "השורה `print(result)` כן מתבצעת, ומדפיסה את מה שהפונקציה החזירה: `None`."
+    "2": "`result` לא שומר את מה שהודפס, אלא את הערך המוחזר, וזה `None`."
+    "3": "ההדפסה בתוך הפונקציה מתבצעת לפני ההדפסה של `result`, ולכן `Hello Dana` מופיע ראשון."
+
+- id: py.functions.defining-functions.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    def check(n):
+        if n > 0:
+            return "positive"
+        return "not positive"
+        print("done")
+
+    print(check(5))
+    print(check(-2))
+  options:
+    - "positive\nnot positive"
+    - "positive\nnot positive\ndone"
+    - "positive\ndone\nnot positive\ndone"
+    - "positive"
+  answer: 0
+  explanation: "`return` מסיים את הפונקציה מיד ומחזיר ערך למי שקרא לה. השורה `print(\"done\")` נמצאת אחרי `return` שתמיד מתבצע, ולכן היא אף פעם לא רצה. קוד כזה נקרא קוד שאינו נגיש (Unreachable Code)."
+  optionExplanations:
+    "1": "שום `return` לא ממשיך לשורה שאחריו, ולכן `done` לא מודפס אף פעם."
+    "2": "גם `return \"positive\"` מסיים את הפונקציה מיד, בלי לעבור לשורות הבאות."
+    "3": "יש שתי קריאות לפונקציה ושתי הדפסות, ולכן מודפסות שתי שורות."
+
+- id: py.functions.defining-functions.004
+  type: truefalse
+  difficulty: 1
+  prompt: "מותר לכתוב בפונקציה אחת כמה הוראות `return`, למשל אחת בכל ענף של `if`."
+  answer: true
+  explanation: "מותר לכתוב כמה `return`, וזה דפוס נפוץ: כל ענף מחזיר את התשובה שלו. ברגע שאחד מהם מתבצע, הפונקציה מסתיימת, ולכן השורות שאחריו לא רצות. אם אף `return` לא מתבצע, הפונקציה מחזירה `None`."
+
+- id: py.functions.defining-functions.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def check(x):
+        if x > 0:
+            return
+        return x
+
+    print(check(5), check(-1))
+  options: ["None -1", "5 -1", "-1", "SyntaxError"]
+  answer: 0
+  explanation: "`return` בלי ערך מסיים את הפונקציה ומחזיר `None`, בדיוק כמו פונקציה שמגיעה לסופה בלי `return`. לכן `check(5)` מחזירה `None`, ו-`check(-1)` מגיעה ל-`return x` ומחזירה `-1`."
+  optionExplanations:
+    "1": "`return` ריק לא מחזיר את הפרמטר. הוא מחזיר `None`."
+    "2": "`print` מקבל שני ערכים ומדפיס את שניהם, כולל `None`. הוא לא מדלג עליו."
+    "3": "`return` בלי ערך הוא תחביר חוקי, ונפוץ ליציאה מוקדמת מפונקציה."
+
+- id: py.functions.defining-functions.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    def find_first_even(nums):
+        for n in nums:
+            if n % 2 == 0:
+                return n
+
+    print(find_first_even([3, 8, 6]))
+    print(find_first_even([1, 5]))
+  options:
+    - "8\nNone"
+    - "8\n0"
+    - "6\nNone"
+    - "8\nFalse"
+  answer: 0
+  explanation: "בקריאה הראשונה `return n` מתבצע כשמגיעים ל-8, והלולאה נעצרת. בקריאה השנייה אין מספר זוגי, הלולאה מסתיימת והפונקציה מגיעה לסופה בלי `return`, ולכן היא מחזירה `None` באופן אוטומטי."
+  optionExplanations:
+    "1": "פונקציה שלא הגיעה ל-`return` מחזירה `None`, לא `0`."
+    "2": "`return` עוצר את הלולאה במספר הזוגי הראשון, 8, ולא ממשיך ל-6."
+    "3": "פייתון לא ממציאה ערך `False`. היעדר `return` תמיד נותן `None`."
+
+- id: py.functions.defining-functions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def double(x):
+        print(x * 2)
+
+    y = double(5)
+    print(y + 1)
+  options:
+    - "10\nTypeError"
+    - "11"
+    - "10\n11"
+    - "TypeError"
+  answer: 0
+  explanation: "`double` מדפיסה 10 אבל לא מחזירה כלום, ולכן `y` הוא `None`. הביטוי `None + 1` זורק `TypeError`. זו הטעות הנפוצה של בלבול בין `print` ל-`return`: כדי להשתמש בתוצאה בהמשך, הפונקציה חייבת להחזיר אותה."
+  optionExplanations:
+    "1": "`y` לא מקבל את 10. ההדפסה רק מציגה את הערך במסך, והפונקציה מחזירה `None`."
+    "2": "`y` הוא `None`, ואי אפשר לחבר `None` למספר."
+    "3": "השגיאה קורית רק בשורה האחרונה. הקריאה ל-`double(5)` כבר הדפיסה 10 לפני כן."
+
+- id: py.functions.defining-functions.008
+  type: bug
+  difficulty: 2
+  prompt: הקוד אמור להדפיס את ממוצע הציונים, `90.0`. באיזו שורה הבאג?
+  code: |
+    def average(nums):
+        total = sum(nums)
+        total / len(nums)
+
+    scores = [80, 90, 100]
+    print(average(scores))
+  answer: 3
+  explanation: "בשורה 3 הממוצע מחושב, אבל התוצאה לא נשמרת ולא מוחזרת. הפונקציה מגיעה לסופה בלי `return` ומחזירה `None`, ולכן מודפס `None`. צריך `return total / len(nums)`."
+  fixed: |
+    def average(nums):
+        total = sum(nums)
+        return total / len(nums)
+
+    scores = [80, 90, 100]
+    print(average(scores))
+
+- id: py.functions.defining-functions.009
+  type: bug
+  difficulty: 3
+  prompt: הפונקציה אמורה להחזיר כמה מספרים חיוביים יש ברשימה. באיזו שורה הבאג?
+  code: |
+    def count_positives(nums):
+        count = 0
+        for n in nums:
+            if n > 0:
+                count += 1
+            return count
+  answer: 6
+  explanation: "`return count` מוזח בתוך הלולאה, ולכן הפונקציה חוזרת כבר אחרי האיבר הראשון ומחזירה 0 או 1. ההזחה (Indentation) קובעת לאיזה בלוק שייכת שורה. `return` צריך להיות ברמת ההזחה של `for`, כך שיתבצע רק אחרי שהלולאה עברה על כל האיברים."
+  fixed: |
+    def count_positives(nums):
+        count = 0
+        for n in nums:
+            if n > 0:
+                count += 1
+        return count
+
+- id: py.functions.defining-functions.010
+  type: single
+  difficulty: 2
+  prompt: "מה נדרש כדי שמחרוזת תהיה ה-docstring של פונקציה?"
+  options:
+    - "היא הביטוי הראשון בגוף הפונקציה, מיד אחרי שורת ה-`def`"
+    - "היא מוקפת בגרשיים משולשים, בכל מקום בגוף הפונקציה"
+    - "היא נכתבת בשורה שמעל שורת ה-`def`"
+    - "היא מתחילה בסימן `#` בשורה הראשונה של הפונקציה"
+  answer: 0
+  explanation: "מחרוזת תיעוד (Docstring) היא מחרוזת שמופיעה כהוראה הראשונה בגוף הפונקציה. פייתון שומרת אותה ב-`__doc__`, ו-`help` מציגה אותה. נהוג לכתוב אותה בגרשיים משולשים (`\"\"\"`), אבל זו מוסכמה ולא התנאי: מה שקובע הוא המיקום."
+  optionExplanations:
+    "1": "גרשיים משולשים הם רק מוסכמה. מחרוזת כזו באמצע הפונקציה היא סתם ביטוי שלא נשמר בשום מקום."
+    "2": "מחרוזת מעל ה-`def` לא שייכת לפונקציה בכלל. ה-docstring נמצא בתוך הגוף."
+    "3": "שורה שמתחילה ב-`#` היא הערה (Comment). פייתון מתעלמת ממנה לגמרי ולא שומרת אותה."
+
+- id: py.functions.defining-functions.011
+  type: truefalse
+  difficulty: 1
+  prompt: "הערה שמתחילה ב-`#` בשורה הראשונה של גוף הפונקציה נשמרת ב-`__doc__` של הפונקציה, בדיוק כמו docstring."
+  answer: false
+  explanation: "הערות (Comments) נמחקות כבר בקריאת הקוד ולא נשמרות בשום מקום. רק מחרוזת שהיא ההוראה הראשונה בגוף הפונקציה הופכת ל-docstring ונשמרת ב-`__doc__`. בפונקציה בלי docstring, הערך של `__doc__` הוא `None`."
+
+- id: py.functions.defining-functions.012
+  type: single
+  difficulty: 2
+  prompt: "מה נכון לגבי `x` ו-`y` אחרי הרצת הקוד?"
+  code: |
+    def get_total():
+        return 42
+
+    x = get_total
+    y = get_total()
+  options:
+    - "`x` הוא הפונקציה עצמה, ו-`y` הוא המספר `42`"
+    - "גם `x` וגם `y` הם המספר `42`"
+    - "`x` הוא `None`, ו-`y` הוא המספר `42`"
+    - "השורה `x = get_total` זורקת שגיאה, כי חסרים סוגריים"
+  answer: 0
+  explanation: "בלי סוגריים, `get_total` הוא שם שמפנה לאובייקט הפונקציה, והשמה שלו ל-`x` לא מריצה אותה. רק הסוגריים, `get_total()`, קוראים לפונקציה ומקבלים את הערך המוחזר. אחרי השורה הזאת `x()` יחזיר 42."
+  optionExplanations:
+    "1": "בלי סוגריים הפונקציה לא נקראת, ולכן `x` לא מקבל את הערך המוחזר."
+    "2": "`x` לא ריק. הוא מפנה לפונקציה עצמה, ואפשר לקרוא לה דרכו."
+    "3": "מותר להתייחס לפונקציה כערך ולשמור אותה במשתנה. זה לא שגיאה."
+
+- id: py.functions.defining-functions.013
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print(square(3))
+
+    def square(n):
+        return n * n
+  options: ["NameError", "9", "None", "SyntaxError"]
+  answer: 0
+  explanation: "פייתון מריצה את הקובץ מלמעלה למטה. `def` היא הוראה שמתבצעת בזמן ריצה ויוצרת את השם `square`. בשורה הראשונה השם עוד לא קיים, ולכן נזרק `NameError`. יש להגדיר פונקציה לפני השורה שקוראת לה."
+  optionExplanations:
+    "1": "פייתון לא סורקת מראש את כל הגדרות הפונקציות. השם נוצר רק כשהשורה של `def` מתבצעת."
+    "3": "הקוד תקין מבחינה תחבירית. הבעיה מתגלה רק בזמן ריצה, כשהשם לא נמצא."
+
+- id: py.functions.defining-functions.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def label():
+        return "first"
+
+    def show():
+        return label()
+
+    def label():
+        return "second"
+
+    print(show())
+  options: ["second", "first", "first\nsecond", "NameError"]
+  answer: 0
+  explanation: "`def` השני יוצר פונקציה חדשה ומצמיד אליה את השם `label`, במקום הקודמת. `show` לא זוכרת איזו פונקציה הייתה בשם הזה כשהיא הוגדרה: היא מחפשת את השם `label` רק כשהיא נקראת, ואז השם כבר מפנה לגרסה השנייה."
+  optionExplanations:
+    "1": "השם `label` נבדק בזמן הקריאה ל-`show`, לא בזמן ההגדרה שלה."
+    "2": "`show` מחזירה ערך אחד, ויש רק `print` אחד."
+    "3": "בזמן הקריאה ל-`show` השם `label` כבר מוגדר, ולכן אין שגיאה."
+
+- id: py.functions.defining-functions.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def add_item(items, item):
+        items.append(item)
+
+    cart = ["milk"]
+    cart = add_item(cart, "bread")
+    print(cart)
+  options: ["None", "['milk', 'bread']", "['milk']", "AttributeError"]
+  answer: 0
+  explanation: "הפונקציה אכן מוסיפה את `bread` לרשימה, אבל לא מחזירה כלום, ולכן היא מחזירה `None`. ההשמה `cart = add_item(...)` דורסת את ההפניה לרשימה ב-`None`. פונקציה שמשנה ארגומנט במקום ולא מחזירה ערך לא צריכה השמה של התוצאה."
+  optionExplanations:
+    "1": "הרשימה אכן שונתה, אבל `cart` כבר לא מפנה אליה. ההשמה החליפה אותה ב-`None`."
+    "2": "גם `bread` נוסף, כי `append` משנה את הרשימה המקורית. אבל בכל מקרה `cart` כבר לא מפנה אליה."
+    "3": "`append` נקרא על הרשימה בתוך הפונקציה, לפני ההשמה, ולכן אין שגיאה. `print(None)` מדפיס `None`."
+
+- id: py.functions.defining-functions.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      def sign(n):
+          if n > 0:
+              return "positive"
+          if n < 0:
+              return "negative"
+          return "zero"
+    - |
+      def sign(n):
+          result = ""
+          if n > 0:
+              result = "positive"
+          else:
+              if n < 0:
+                  result = "negative"
+              else:
+                  result = "zero"
+          return result
+  answer: 0
+  explanation: "החזרה מוקדמת (Early Return) מחזירה את התשובה ברגע שהיא ידועה. כך אין צורך במשתנה עזר ובקינון, וכל מקרה נקרא בשורה אחת. שתי הגרסאות מחזירות בדיוק אותו ערך לכל מספר."
+  optionExplanations:
+    "1": "משתנה עזר ו-`if` מקונן בתוך `else` מוסיפים שורות ורמת הזחה בלי להוסיף מידע."

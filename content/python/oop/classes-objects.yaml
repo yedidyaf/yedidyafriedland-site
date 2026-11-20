@@ -1,0 +1,321 @@
+- id: py.oop.classes-objects.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Dog:
+        def __init__(self, name):
+            self.name = name
+
+        def speak(self):
+            return self.name + " says woof"
+
+    d = Dog("Rex")
+    print(d.speak())
+  options: ["Rex says woof", "name says woof", "self says woof", "TypeError"]
+  answer: 0
+  explanation: "`Dog(\"Rex\")` יוצר מופע (Instance) ומפעיל את `__init__`, ששומרת את `Rex` בתכונה `self.name`. בקריאה `d.speak()`, הפרמטר `self` הוא `d`, ולכן `self.name` הוא `Rex`."
+  optionExplanations:
+    "1": "`self.name` הוא הערך שנשמר בתכונה, ולא שם התכונה עצמו."
+    "2": "`self` הוא האובייקט עצמו. הוא לא מחרוזת ולא משתתף בטקסט."
+    "3": "פייתון מעבירה את `d` כ-`self` אוטומטית, ולכן `speak()` נקראת בלי ארגומנטים ועובדת."
+
+- id: py.oop.classes-objects.002
+  type: single
+  difficulty: 1
+  prompt: "מה הוא `self` בתוך מתודה של מחלקה?"
+  options:
+    - "המחלקה עצמה, שמשותפת לכל המופעים"
+    - "המופע שעליו נקראה המתודה"
+    - "מילה שמורה שקיימת רק בתוך `__init__`"
+    - "עותק חדש של האובייקט שנוצר בכל קריאה למתודה"
+  answer: 1
+  explanation: "`self` הוא הפרמטר הראשון של כל מתודת מופע, ופייתון מכניסה אליו את האובייקט שעליו קראו למתודה. ב-`d.speak()`, הערך של `self` הוא `d` עצמו. זה לא עותק ולא מילה שמורה, אלא שם מוסכם לפרמטר."
+  optionExplanations:
+    "0": "המחלקה היא התבנית. `self` מצביע על מופע מסוים, ולכן לכל מופע יש ערכים משלו."
+    "2": "`self` הוא הפרמטר הראשון של כל מתודת מופע, לא רק של `__init__`, וגם אינו מילה שמורה."
+    "3": "לא נוצר עותק. שינוי של `self.x` בתוך מתודה משנה את האובייקט המקורי."
+
+- id: py.oop.classes-objects.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Counter:
+        count = 0
+
+        def __init__(self):
+            Counter.count += 1
+
+    a = Counter()
+    b = Counter()
+    c = Counter()
+    print(Counter.count, a.count)
+  options: ["1 1", "3 1", "3 3", "1 3"]
+  answer: 2
+  explanation: "`count` היא תכונת מחלקה (Class Attribute): יש ממנה עותק אחד, ששייך למחלקה ומשותף לכל המופעים. כל יצירה של מופע מגדילה את `Counter.count`, ולכן הוא 3. ל-`a` אין תכונת מופע בשם `count`, ולכן `a.count` נמצא במחלקה ומחזיר גם הוא 3."
+  optionExplanations:
+    "0": "זו התוצאה אם לכל מופע היה מונה משלו. אבל `Counter.count` משנה את התכונה של המחלקה, שמשותפת לכולם."
+    "1": "`a.count` לא נשמר ברגע יצירת `a`. הוא נקרא מהמחלקה ברגע ההדפסה, ואז הערך כבר 3."
+
+- id: py.oop.classes-objects.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Counter:
+        count = 0
+
+        def increment(self):
+            self.count += 1
+
+    a = Counter()
+    b = Counter()
+    a.increment()
+    a.increment()
+    b.increment()
+    print(a.count, b.count, Counter.count)
+  options: ["3 3 3", "2 1 3", "0 0 0", "2 1 0"]
+  answer: 3
+  explanation: "`self.count += 1` שקול ל-`self.count = self.count + 1`. קריאת הערך מוצאת אותו במחלקה (0), אבל ההשמה ל-`self.count` יוצרת תכונת מופע (Instance Attribute) חדשה שמסתירה את תכונת המחלקה. כך ל-`a` יש 2, ל-`b` יש 1, ו-`Counter.count` נשאר 0."
+  optionExplanations:
+    "0": "השמה דרך `self` אף פעם לא משנה את תכונת המחלקה. היא יוצרת או מעדכנת תכונה של המופע."
+    "1": "המופעים אכן קיבלו ערכים נפרדים, אבל `Counter.count` לא השתנה כלל, כי אף שורה לא כותבת `Counter.count = ...`."
+    "2": "ההשמה לא נעלמת. היא נשמרת כתכונה של המופע, ולכן `a.count` הוא 2."
+
+- id: py.oop.classes-objects.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Student:
+        grades = []
+
+        def __init__(self, name):
+            self.name = name
+
+        def add_grade(self, grade):
+            self.grades.append(grade)
+
+    a = Student("Dana")
+    b = Student("Omer")
+    a.add_grade(90)
+    b.add_grade(75)
+    print(a.grades)
+  options: ["[90]", "[90, 75]", "[75]", "[]"]
+  answer: 1
+  explanation: "`grades` היא תכונת מחלקה, כלומר רשימה אחת שכל התלמידים חולקים. `append` לא יוצר תכונת מופע חדשה (אין כאן השמה), אלא משנה את אותה רשימה משותפת. כדי שלכל תלמיד תהיה רשימה משלו, יש ליצור אותה ב-`__init__`: `self.grades = []`."
+  optionExplanations:
+    "0": "זו ההתנהגות שהמתכנת כנראה רצה, אבל היא דורשת `self.grades = []` בתוך `__init__`."
+    "2": "`a.grades` ו-`b.grades` הם אותה רשימה, ולכן היא מכילה את שני הציונים לפי סדר ההוספה."
+    "3": "`append` משנה את הרשימה במקום. השינוי נשמר ברשימה של המחלקה."
+
+- id: py.oop.classes-objects.006
+  type: bug
+  difficulty: 1
+  prompt: "המחלקה אמורה לשמור שם ומחיר של מוצר ולחשב מחיר אחרי הנחה. באיזו שורה הבאג?"
+  code: |
+    class Product:
+        def __init__(self, name, price):
+            self.name = name
+            price = price
+
+        def price_with_discount(self, percent):
+            return self.price * (100 - percent) / 100
+  answer: 4
+  explanation: "`price = price` משייך את הפרמטר לעצמו, כמשתנה מקומי שנעלם בסוף `__init__`. כדי שהערך יישמר באובייקט צריך לכתוב `self.price = price`. בלי זה, `price_with_discount` תיכשל עם `AttributeError`."
+  fixed: |
+    class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+        def price_with_discount(self, percent):
+            return self.price * (100 - percent) / 100
+
+- id: py.oop.classes-objects.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Rectangle:
+        def __init__(self, width, height):
+            self.width = width
+            self.height = height
+
+        def area():
+            return self.width * self.height
+
+    r = Rectangle(3, 4)
+    print(r.area())
+  options: ["12", "NameError", "TypeError", "0"]
+  answer: 2
+  explanation: "בקריאה `r.area()` פייתון מעבירה את `r` אוטומטית כארגומנט ראשון. המתודה הוגדרה בלי פרמטרים, ולכן נזרקת `TypeError` (המתודה מקבלת 0 ארגומנטים אבל קיבלה 1). כל מתודת מופע חייבת לקבל `self` כפרמטר ראשון."
+  optionExplanations:
+    "0": "פייתון לא מוסיפה את `self` לבד לחתימה. בלעדיו המתודה לא יכולה לקבל את האובייקט."
+    "1": "השגיאה נזרקת עוד לפני שגוף המתודה רץ, כבר בהעברת הארגומנטים. לכן לא מגיעים לשימוש ב-`self` שלא הוגדר."
+
+- id: py.oop.classes-objects.008
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור ליצור חשבון עם יתרה 0, להפקיד 100 ולהדפיס `100`. באיזו שורה הבאג?"
+  code: |
+    class BankAccount:
+        def __init__(self, balance):
+            self.balance = balance
+
+        def deposit(self, amount):
+            self.balance += amount
+
+    account = BankAccount
+    account.deposit(100)
+    print(account.balance)
+  answer: 8
+  explanation: "בלי סוגריים, `account = BankAccount` לא יוצר אובייקט. הוא רק נותן שם נוסף למחלקה עצמה. אז `account.deposit(100)` קוראת לפונקציה דרך המחלקה, ו-100 נכנס ל-`self` במקום ל-`amount`, ולכן נזרקת `TypeError`. יצירת מופע דורשת קריאה: `BankAccount(0)`."
+  fixed: |
+    class BankAccount:
+        def __init__(self, balance):
+            self.balance = balance
+
+        def deposit(self, amount):
+            self.balance += amount
+
+    account = BankAccount(0)
+    account.deposit(100)
+    print(account.balance)
+
+- id: py.oop.classes-objects.009
+  type: truefalse
+  difficulty: 1
+  prompt: "המתודה `__init__` יוצרת את האובייקט ומחזירה אותו בעזרת `return self`."
+  answer: false
+  explanation: "כשכותבים `Dog(\"Rex\")`, פייתון יוצרת את האובייקט, ורק אז קוראת ל-`__init__` כדי לאתחל (Initialize) אותו: לקבוע את התכונות ההתחלתיות. `__init__` לא מחזירה כלום (מחזירה `None`), והקריאה `Dog(...)` היא שמחזירה את האובייקט."
+
+- id: py.oop.classes-objects.010
+  type: truefalse
+  difficulty: 2
+  prompt: "במחלקה רגילה, אפשר להוסיף לאובייקט תכונה חדשה גם מחוץ למחלקה, למשל `p.age = 30`, אף ש-`__init__` לא הגדירה אותה."
+  answer: true
+  explanation: "תכונות מופע הן בסך הכול שמות שמוצמדים לאובייקט, ופייתון מאפשרת להוסיף אותם בכל רגע. התכונה תהיה קיימת רק באובייקט הזה, ולא במופעים אחרים. זה חוקי אבל לא מומלץ: עדיף להגדיר את כל התכונות ב-`__init__`, כדי שלכל המופעים יהיה אותו מבנה."
+
+- id: py.oop.classes-objects.011
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Point:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+    p1 = Point(1, 2)
+    p2 = p1
+    p2.x = 10
+    print(p1.x, p2.x)
+  options: ["1 10", "10 10", "1 1", "10 1"]
+  answer: 1
+  explanation: "`p2 = p1` לא יוצר אובייקט חדש. שני השמות מצביעים על אותו אובייקט, ולכן שינוי דרך `p2` נראה גם דרך `p1`. אובייקט חדש נוצר רק בקריאה למחלקה, כמו `Point(1, 2)`."
+  optionExplanations:
+    "0": "השמה של אובייקט למשתנה לא מעתיקה אותו. יש כאן אובייקט `Point` אחד בלבד."
+    "2": "השינוי `p2.x = 10` משנה את האובייקט המשותף, ולכן הוא נראה דרך שני השמות."
+
+- id: py.oop.classes-objects.012
+  type: single
+  difficulty: 2
+  prompt: "`d` הוא מופע של המחלקה `Dog`, שיש בה מתודה `speak(self)`. איזו קריאה שקולה ל-`d.speak()`?"
+  options:
+    - "`Dog.speak()`"
+    - "`d.speak(d)`"
+    - "`Dog.speak(d)`"
+    - "`speak(d)`"
+  answer: 2
+  explanation: "`d.speak()` הוא קיצור של `Dog.speak(d)`: פייתון מוצאת את הפונקציה במחלקה ומעבירה את המופע כארגומנט הראשון, `self`. כך בדיוק אותה פונקציה עובדת על כל מופע אחר."
+  optionExplanations:
+    "0": "בקריאה דרך המחלקה פייתון לא יודעת על איזה מופע לעבוד, ולכן `self` חסר ונזרקת `TypeError`."
+    "1": "`d` כבר מועבר אוטומטית כ-`self`. העברה נוספת היא ארגומנט מיותר ותגרום ל-`TypeError`."
+    "3": "`speak` מוגדרת בתוך המחלקה, ולא כפונקציה גלובלית, ולכן יתקבל `NameError`."
+
+- id: py.oop.classes-objects.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Config:
+        theme = "light"
+
+    a = Config()
+    b = Config()
+    a.theme = "dark"
+    Config.theme = "blue"
+    print(a.theme, b.theme)
+  options: ["dark light", "blue blue", "dark blue", "dark dark"]
+  answer: 2
+  explanation: "`a.theme = \"dark\"` יוצר תכונת מופע ב-`a` בלבד. בחיפוש תכונה, פייתון בודקת קודם את המופע ורק אחר כך את המחלקה. לכן `a.theme` מוצא `dark` אצלו, ואילו ל-`b` אין תכונה משלו, והוא קורא את הערך העדכני של המחלקה, `blue`."
+  optionExplanations:
+    "0": "`b` לא שמר עותק של `light` ביצירתו. הוא קורא את תכונת המחלקה בכל גישה, וכעת היא `blue`."
+    "1": "שינוי תכונת המחלקה לא דורס תכונת מופע. ל-`a` יש `theme` משלו, והוא נמצא ראשון."
+    "3": "ההשמה דרך `a` משפיעה על `a` בלבד, ולא על המחלקה או על מופעים אחרים."
+
+- id: py.oop.classes-objects.014
+  type: single
+  difficulty: 2
+  prompt: "לאובייקט `car` אין תכונת מופע בשם `color`. מה קורה כשכותבים `car.color`?"
+  options:
+    - "פייתון מחפשת את `color` במחלקה של `car`, ומחזירה אותו אם הוא מוגדר שם"
+    - "נזרקת מיד `AttributeError`, בלי לבדוק את המחלקה"
+    - "מוחזר `None`, כי התכונה לא אותחלה"
+    - "נוצרת ב-`car` תכונה חדשה בשם `color` עם הערך `None`"
+  answer: 0
+  explanation: "חיפוש תכונה עובר מהמופע אל המחלקה: קודם תכונות המופע, ואם לא נמצאה, תכונות ומתודות המחלקה. רק אם השם לא נמצא באף מקום נזרקת `AttributeError`. כך מתודות, שמוגדרות במחלקה, זמינות דרך כל מופע."
+  optionExplanations:
+    "1": "`AttributeError` נזרקת רק אחרי שהחיפוש נכשל גם במחלקה."
+    "2": "פייתון לא ממציאה ערך ברירת מחדל לתכונה חסרה. אם היא לא קיימת בשום מקום, נזרקת שגיאה."
+    "3": "קריאה של תכונה לא יוצרת אותה. רק השמה, כמו `car.color = ...`, יוצרת תכונה."
+
+- id: py.oop.classes-objects.015
+  type: cleaner
+  difficulty: 2
+  prompt: בשתי הגרסאות נוצר משתמש עם שם ואימייל. איזו גרסה נקייה יותר?
+  options:
+    - |
+      class User:
+          pass
+
+      user = User()
+      user.name = "dana"
+      user.email = "dana@example.com"
+    - |
+      class User:
+          def __init__(self, name, email):
+              self.name = name
+              self.email = email
+
+      user = User("dana", "dana@example.com")
+  answer: 1
+  explanation: "`__init__` מבטיחה שכל אובייקט `User` נוצר שלם, עם כל התכונות שלו, בשורה אחת. מי שקורא את המחלקה רואה מיד אילו נתונים יש למשתמש."
+  optionExplanations:
+    "0": "המחלקה ריקה, והתכונות מודבקות מבחוץ. קל לשכוח תכונה, ומהמחלקה עצמה לא רואים מה יש למשתמש."
+
+- id: py.oop.classes-objects.016
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Lamp:
+        def __init__(self):
+            self.is_on = False
+
+        def toggle(self):
+            self.is_on = not self.is_on
+
+    lamp = Lamp()
+    lamp.toggle()
+    lamp.toggle()
+    lamp.toggle()
+    print(lamp.is_on)
+  options: ["False", "True", "None", "3"]
+  answer: 1
+  explanation: "מתודה יכולה לשנות את מצב (State) האובייקט דרך `self`. המנורה מתחילה כבויה (`False`), וכל קריאה ל-`toggle` הופכת את המצב: `True`, `False`, `True`. השינויים נשמרים באובייקט בין הקריאות."
+  optionExplanations:
+    "0": "שלוש החלפות מצב מתחילות ב-`False` ומסתיימות ב-`True`. מספר זוגי של החלפות היה מחזיר ל-`False`."
+    "2": "`toggle` אכן מחזירה `None`, אבל מדפיסים את התכונה `is_on`, ולא את מה שהמתודה מחזירה."

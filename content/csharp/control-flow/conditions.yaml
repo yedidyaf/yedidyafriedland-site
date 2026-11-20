@@ -1,0 +1,320 @@
+- id: cs.control-flow.conditions.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int score = 85;
+    if (score >= 60)
+        Console.WriteLine("Pass");
+    else if (score >= 80)
+        Console.WriteLine("Good");
+    else
+        Console.WriteLine("Fail");
+  options: ["Pass", "Good", "Pass\nGood", "Fail"]
+  answer: 0
+  explanation: "בשרשרת `if` / `else if` / `else` התנאים נבדקים לפי הסדר, ורק הבלוק של התנאי הראשון שמתקיים רץ. `85 >= 60` מתקיים כבר בבדיקה הראשונה, ולכן שאר הענפים לא נבדקים בכלל, גם אם `score >= 80` נכון."
+  optionExplanations:
+    "1": "`Good` היה מודפס רק אם `score >= 80` היה נבדק ראשון. בסדר הזה הענף אף פעם לא ירוץ, כי כל ציון של 80 ומעלה כבר עונה על התנאי הראשון."
+    "2": "רק ענף אחד בשרשרת רץ. אחרי שתנאי מתקיים, כל ה-`else` שאחריו מדולגים."
+
+- id: cs.control-flow.conditions.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int temp = 25;
+    string msg = temp > 30 ? "hot" : temp > 20 ? "warm" : "cold";
+    Console.WriteLine(msg);
+  options: ["hot", "warm", "cold", "שגיאת קומפילציה"]
+  answer: 1
+  explanation: "האופרטור הטרנרי (Ternary Operator) `condition ? a : b` מחזיר את `a` אם התנאי אמת ואת `b` אחרת. הוא מקושר מימין לשמאל, כך שהביטוי נקרא `temp > 30 ? \"hot\" : (temp > 20 ? \"warm\" : \"cold\")`. `25 > 30` שקר, ולכן מחושב הטרנרי הפנימי: `25 > 20` אמת, והתוצאה `warm`."
+  optionExplanations:
+    "0": "`hot` מתקבל רק כש-`temp > 30`, ו-25 לא גדול מ-30."
+    "2": "`cold` מתקבל רק כששני התנאים שקר, אבל `25 > 20` אמת."
+    "3": "מותר לקנן אופרטור טרנרי בתוך אחר. זה חוקי, אם כי קינון עמוק פוגע בקריאות."
+
+- id: cs.control-flow.conditions.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int calls = 0;
+
+    bool IsBig(int n)
+    {
+        calls++;
+        return n > 5;
+    }
+
+    if (IsBig(3) && IsBig(10))
+        Console.WriteLine("both big");
+    Console.WriteLine(calls);
+  options: ["1", "2", "both big\n2", "0"]
+  answer: 0
+  explanation: "הערכה מקוצרת (Short-circuit Evaluation): ב-`&&`, אם האגף השמאלי הוא `false`, התוצאה בהכרח `false`, ולכן האגף הימני לא מחושב. `IsBig(3)` מחזירה `false`, כך ש-`IsBig(10)` לא נקראת כלל ו-`calls` נשאר 1."
+  optionExplanations:
+    "1": "2 מניח ששני האגפים תמיד מחושבים. כך מתנהג האופרטור `&`, לא `&&`."
+    "2": "גם אילו שני האגפים היו מחושבים, `IsBig(3)` מחזירה `false` ולכן התנאי כולו שקר."
+    "3": "`IsBig(3)` כן נקראת: האגף השמאלי תמיד מחושב, ורק הימני יכול להידלג."
+
+- id: cs.control-flow.conditions.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int count = 0;
+    int total = 50;
+    if (count == 0 || total / count < 10)
+        Console.WriteLine("low");
+    else
+        Console.WriteLine("high");
+  options: ["high", "DivideByZeroException", "low", "שגיאת קומפילציה"]
+  answer: 2
+  explanation: "ב-`||` מספיק שאגף אחד יהיה אמת. `count == 0` אמת, ולכן `total / count` לא מחושב כלל ואין חלוקה באפס. זו תבנית נפוצה: שמים את בדיקת השמירה ראשונה, כדי שהאגף המסוכן ירוץ רק כשהוא בטוח."
+  optionExplanations:
+    "0": "`high` דורש ששני האגפים יהיו שקר, אבל `count == 0` אמת."
+    "1": "החלוקה באפס הייתה קורית רק אם `total / count` היה מחושב. ב-`||` האגף הימני מדולג כשהשמאלי אמת."
+
+- id: cs.control-flow.conditions.005
+  type: single
+  difficulty: 3
+  prompt: מה יקרה כשהקוד ירוץ?
+  code: |
+    int x = 0;
+    if (x != 0 & 10 / x > 1)
+        Console.WriteLine("big");
+    else
+        Console.WriteLine("small");
+  options:
+    - "תיזרק `DivideByZeroException`, כי `&` מחשב את שני האגפים גם כשהשמאלי `false`"
+    - "יודפס `small`, כי `x != 0` הוא `false` והאגף הימני מדולג"
+    - "שגיאת קומפילציה, כי `&` מיועד למספרים בלבד"
+    - "יודפס `big`, כי `10 / 0` הוא אינסוף, שגדול מ-1"
+  answer: 0
+  explanation: "על ערכי `bool`, האופרטור `&` הוא «וגם» לוגי בלי הערכה מקוצרת: שני האגפים מחושבים תמיד. לכן `10 / x` מחושב כש-`x` הוא 0, ונזרקת `DivideByZeroException`. עם `&&` האגף הימני היה מדולג, והיה מודפס `small`."
+  optionExplanations:
+    "1": "כך מתנהג `&&`. האופרטור `&` לא מדלג על האגף הימני."
+    "2": "`&` חוקי גם על `bool` ומחזיר `bool`. ההבדל מ-`&&` הוא רק בהערכה המקוצרת."
+    "3": "חלוקת `int` באפס זורקת חריגה. אינסוף (`Infinity`) מתקבל רק בחלוקת `double`."
+
+- id: cs.control-flow.conditions.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int n = 5;
+    if (n > 10)
+        Console.WriteLine("big");
+        Console.WriteLine("checked");
+    Console.WriteLine("done");
+  options: ["done", "checked\ndone", "big\nchecked\ndone", "big\ndone"]
+  answer: 1
+  explanation: "בלי סוגריים מסולסלים `{}`, גוף ה-`if` הוא רק הפקודה הראשונה שאחריו. ההזחה של השורה השנייה מטעה: הקומפיילר מתעלם מהזחה, ו-`Console.WriteLine(\"checked\")` רץ תמיד. לכן מומלץ לשים סוגריים מסולסלים גם סביב פקודה אחת."
+  optionExplanations:
+    "0": "התשובה הזו מניחה ש-`checked` שייכת ל-`if` בגלל ההזחה. ב-C# ההזחה לא משפיעה על המשמעות."
+    "2": "`5 > 10` שקר, ולכן `big` לא מודפס."
+
+- id: cs.control-flow.conditions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int a = 5, b = 0;
+    if (a > 0)
+        if (b > 0)
+            Console.WriteLine("both positive");
+    else
+        Console.WriteLine("a is not positive");
+    Console.WriteLine("end");
+  options: ["end", "both positive\nend", "a is not positive\nend", "שגיאת קומפילציה"]
+  answer: 2
+  explanation: "זו בעיית ה-else התלוי (Dangling Else): `else` משויך תמיד ל-`if` הקרוב ביותר שעדיין אין לו `else`, כלומר ל-`if (b > 0)`, בלי קשר להזחה. `a > 0` אמת ו-`b > 0` שקר, ולכן רץ ה-`else` של התנאי הפנימי ומודפסת הודעה מטעה. סוגריים מסולסלים סביב ה-`if` הפנימי היו מונעים את הבלבול."
+  optionExplanations:
+    "0": "`end` לבד מניח שה-`else` שייך ל-`if (a > 0)`, כפי שההזחה מרמזת. הקומפיילר משייך אותו ל-`if` הפנימי."
+    "1": "`b` הוא 0, ולכן `b > 0` שקר."
+    "3": "`if` מקונן בלי סוגריים הוא חוקי. הבעיה כאן היא בקריאות, לא בקומפילציה."
+
+- id: cs.control-flow.conditions.008
+  type: single
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יקרה כשננסה לקמפל ולהריץ את הקוד?
+  code: |
+    int count = 3;
+    if (count)
+        Console.WriteLine("has items");
+  options:
+    - "יודפס `has items`, כי כל מספר שונה מ-0 נחשב אמת"
+    - "שגיאת קומפילציה, כי התנאי ב-`if` חייב להיות מטיפוס `bool`"
+    - "לא יודפס כלום, כי רק 1 נחשב אמת"
+    - "תיזרק `InvalidCastException` בזמן ריצה"
+  answer: 1
+  explanation: "ב-C#, בניגוד ל-C, ל-JavaScript ול-Python, אין המרה מרומזת ממספר ל-`bool`. התנאי של `if` חייב להיות ביטוי בוליאני, ולכן צריך לכתוב במפורש `if (count > 0)`."
+  optionExplanations:
+    "0": "כך מתנהגות C ו-Python. ב-C# `int` לא מומר ל-`bool` בשום מצב."
+    "3": "הבעיה מתגלה כבר בקומפילציה, ולכן הקוד לא מגיע לשלב הריצה."
+
+- id: cs.control-flow.conditions.009
+  type: single
+  difficulty: 3
+  prompt: "בהינתן `bool flag = true;`, איזו מהשורות הבאות לא תעבור קומפילציה?"
+  options:
+    - "`int a = flag ? 1 : 0;`"
+    - "`double d = flag ? 1 : 2.5;`"
+    - "`string s = flag ? \"yes\" : \"no\";`"
+    - "`var v = flag ? 1 : \"one\";`"
+  answer: 3
+  explanation: "לשני הענפים של האופרטור הטרנרי חייב להיות טיפוס משותף. בין `int` ל-`string` אין המרה, ו-`var` לא נותן לקומפיילר טיפוס יעד, ולכן זו שגיאת קומפילציה. הטרנרי הוא ביטוי עם טיפוס אחד, לא שני ערכים חופשיים."
+  optionExplanations:
+    "0": "שני הענפים `int`, ולכן התוצאה `int`."
+    "1": "`int` מומר במרומז ל-`double`, ולכן לביטוי יש טיפוס משותף: `double`."
+    "2": "שני הענפים מחרוזות, ולכן התוצאה `string`."
+
+- id: cs.control-flow.conditions.010
+  type: truefalse
+  difficulty: 1
+  prompt: "בשרשרת `if` / `else if` / `else`, אם כמה תנאים מתקיימים, הבלוקים של כולם רצים לפי הסדר."
+  answer: false
+  explanation: "בשרשרת רץ לכל היותר בלוק אחד: של התנאי הראשון שמתקיים. אחריו כל ה-`else if` וה-`else` מדולגים. כשרוצים לבדוק כמה תנאים בלתי תלויים ולהריץ כל אחד שמתקיים, כותבים כמה `if` נפרדים בלי `else`."
+
+- id: cs.control-flow.conditions.011
+  type: truefalse
+  difficulty: 2
+  prompt: "הקוד ידפיס `checking` ואחר כך `go`."
+  code: |
+    bool IsReady()
+    {
+        Console.WriteLine("checking");
+        return true;
+    }
+
+    bool cached = true;
+    if (cached || IsReady())
+        Console.WriteLine("go");
+  answer: false
+  explanation: "ב-`||` מספיק שהאגף השמאלי הוא `true` כדי שהתוצאה תהיה `true`, ולכן `IsReady()` לא נקראת כלל ומודפס רק `go`. חשוב לזכור זאת כשבאגף הימני יש מתודה עם תופעת לוואי (Side Effect), כמו הדפסה או שינוי משתנה: ייתכן שהיא לא תרוץ."
+
+- id: cs.control-flow.conditions.012
+  type: bug
+  difficulty: 1
+  prompt: "המתודה אמורה להחזיר `Pass` לכל ציון של 60 ומעלה. באיזו שורה הבאג?"
+  code: |
+    string Result(int score)
+    {
+        if (score > 60)
+            return "Pass";
+        return "Fail";
+    }
+  answer: 3
+  explanation: "`>` לא כולל את 60 עצמו, כך שציון 60 בדיוק מקבל `Fail`. «60 ומעלה» פירושו `>=`. טעות גבול (Boundary Error) כזו נפוצה מאוד בתנאים, ולכן תמיד כדאי לבדוק בראש את ערך הגבול עצמו."
+  fixed: |
+    string Result(int score)
+    {
+        if (score >= 60)
+            return "Pass";
+        return "Fail";
+    }
+
+- id: cs.control-flow.conditions.013
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה להחזיר `true` רק כאשר `name` אינו `null` ואינו מחרוזת ריקה, ואסור לה לזרוק חריגה. באיזו שורה הבאג?"
+  code: |
+    bool IsValidName(string name)
+    {
+        return name.Length > 0 && name != null;
+    }
+  answer: 3
+  explanation: "סדר האגפים ב-`&&` חשוב. כש-`name` הוא `null`, הביטוי `name.Length` מחושב ראשון ונזרקת `NullReferenceException` עוד לפני הבדיקה `name != null`. בדיקת השמירה צריכה להיות באגף השמאלי, כדי שההערכה המקוצרת תעצור לפני הגישה ל-`Length`."
+  fixed: |
+    bool IsValidName(string name)
+    {
+        return name != null && name.Length > 0;
+    }
+
+- id: cs.control-flow.conditions.014
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור למשוך את הסכום מהחשבון רק אם יש בו מספיק כסף. באיזו שורה הבאג?"
+  code: |
+    int balance = 100;
+    int amount = 150;
+    if (amount <= balance);
+    {
+        balance -= amount;
+    }
+    Console.WriteLine(balance);
+  answer: 3
+  explanation: "הנקודה־פסיק בסוף שורת ה-`if` היא פקודה ריקה, והיא כל גוף התנאי. הבלוק `{ ... }` שאחריה הוא בלוק עצמאי שרץ תמיד, ולכן היתרה יורדת ל-`-50`. הקומפיילר רק מזהיר על כך (CS0642), ולא עוצר את הבנייה."
+  fixed: |
+    int balance = 100;
+    int amount = 150;
+    if (amount <= balance)
+    {
+        balance -= amount;
+    }
+    Console.WriteLine(balance);
+
+- id: cs.control-flow.conditions.015
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      bool IsAdult(int age)
+      {
+          if (age >= 18)
+              return true;
+          else
+              return false;
+      }
+    - |
+      bool IsAdult(int age)
+      {
+          return age >= 18;
+      }
+    - |
+      bool IsAdult(int age)
+      {
+          return age >= 18 ? true : false;
+      }
+  answer: 1
+  explanation: "הביטוי `age >= 18` הוא כבר ערך מטיפוס `bool`. עטיפה שלו ב-`if` או באופרטור טרנרי שמחזירים `true` או `false` רק חוזרת על התנאי במילים אחרות."
+  optionExplanations:
+    "0": "`if` שמחזיר `true` בענף אחד ו-`false` בשני משכפל את התנאי עצמו."
+    "2": "`? true : false` הוא טרנרי מיותר: התוצאה זהה לביטוי `age >= 18` עצמו."
+
+- id: cs.control-flow.conditions.016
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    void Ship(Order order)
+    {
+        if (order != null)
+        {
+            if (order.IsPaid)
+            {
+                if (order.ItemCount > 0)
+                {
+                    Console.WriteLine("Shipping");
+                }
+            }
+        }
+    }
+
+    class Order
+    {
+        public bool IsPaid { get; set; }
+        public int ItemCount { get; set; }
+    }
+  options:
+    - "מספר קסם - Magic Number"
+    - "דגל בוליאני - Flag Argument"
+    - "קינון עמוק - Deep Nesting"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+  answer: 2
+  explanation: "שלושה `if` מקוננים דוחפים את הפעולה האמיתית עמוק ימינה, וכל תנאי נוסף יעמיק את הקינון. התיקון הוא תנאי שמירה (Guard Clauses) שיוצאים מוקדם, למשל `if (order == null || !order.IsPaid || order.ItemCount == 0) return;`, ואחריהם הפעולה עצמה בלי קינון. כאן אפשר גם לאחד את התנאים לתנאי אחד עם `&&`, בזכות ההערכה המקוצרת."
+  optionExplanations:
+    "0": "`0` הוא גבול טבעי של כמות ואינו מספר קסם."
+    "1": "המתודה לא מקבלת פרמטר בוליאני שמשנה את התנהגותה. `IsPaid` הוא נתון של ההזמנה."

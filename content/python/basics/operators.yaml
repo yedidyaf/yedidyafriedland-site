@@ -1,0 +1,220 @@
+- id: py.basics.operators.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print(7 // 2, 7 % 2)
+  options: ["3 1", "3.5 1", "3 0.5", "4 1"]
+  answer: 0
+  explanation: "`//` היא חלוקה שלמה (Floor Division): כמה פעמים 2 נכנס ב-7, כלומר `3`. `%` היא שארית (Modulo): מה שנשאר אחרי החלוקה, כלומר `1`."
+  optionExplanations:
+    "1": "`3.5` היא תוצאה של `/`, חלוקה רגילה. `//` מחזירה רק את החלק השלם."
+    "2": "שארית היא מה שנשאר מ-7 אחרי שמורידים `3 * 2`, כלומר `1`, ולא החלק העשרוני של המנה."
+    "3": "`//` לא מעגלת לשלם הקרוב, אלא כלפי מטה, ולכן `3.5` הופך ל-`3`."
+
+- id: py.basics.operators.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print(2 + 3 * 4)
+  options: ["14", "20", "24", "9"]
+  answer: 0
+  explanation: "כמו במתמטיקה, לכפל יש קדימות (Precedence) גבוהה מחיבור. קודם `3 * 4` הוא `12`, ואחר כך `2 + 12` הוא `14`. כדי לחבר קודם צריך סוגריים: `(2 + 3) * 4`."
+  optionExplanations:
+    "1": "`20` מתקבל אם מחשבים משמאל לימין בלי קדימות, כלומר `(2 + 3) * 4`."
+
+- id: py.basics.operators.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print(17 % 5 * 2)
+  options: ["4", "7", "2", "3.4"]
+  answer: 0
+  explanation: "ל-`%` ול-`*` יש אותה קדימות, ולכן הם מחושבים משמאל לימין: `17 % 5` הוא `2`, ו-`2 * 2` הוא `4`."
+  optionExplanations:
+    "1": "`7` הוא `17 % 10`, כלומר חישוב של הכפל קודם. לאופרטורים באותה רמת קדימות אין עדיפות זה על זה, והם מחושבים משמאל לימין."
+    "2": "`2` הוא רק `17 % 5`. התוצאה עוד מוכפלת ב-2."
+    "3": "`3.4` הוא `17 / 5`. האופרטור `%` מחזיר שארית ולא מנה."
+
+- id: py.basics.operators.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    a = True
+    b = False
+    print(not a or b, not (a or b), a or b and False)
+  options: ["False False True", "False False False", "True False True", "False True False"]
+  answer: 0
+  explanation: "סדר הקדימות של האופרטורים הלוגיים הוא `not`, אחריו `and`, ואחריו `or`. לכן `not a or b` הוא `(not a) or b`, כלומר `False`, ו-`a or b and False` הוא `a or (b and False)`, כלומר `True`. רק הסוגריים ב-`not (a or b)` משנים את הסדר."
+  optionExplanations:
+    "1": "כאן הביטוי האחרון חושב כ-`(a or b) and False`. אבל `and` קודם ל-`or`, ולכן מחושב קודם `b and False`."
+    "2": "`not` חל רק על `a` ולא על כל הביטוי `a or b`, ולכן `not a or b` הוא `False or False`."
+    "3": "`not (a or b)` הוא `not True`, כלומר `False`."
+
+- id: py.basics.operators.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    a = [1, 2]
+    b = [1, 2]
+    c = a
+    print(a == b, a is b, a is c)
+  options: ["True False True", "True True True", "False False True", "True False False"]
+  answer: 0
+  explanation: "`==` בודק שוויון ערכים (Equality): לשתי הרשימות אותו תוכן. `is` בודק זהות (Identity): האם זה אותו אובייקט בזיכרון. `a` ו-`b` הן שתי רשימות נפרדות, ואילו `c` הוא שם נוסף לאותה רשימה של `a`."
+  optionExplanations:
+    "1": "תוכן זהה לא הופך שתי רשימות לאותו אובייקט. כל `[1, 2]` יוצר רשימה חדשה."
+    "2": "`==` על רשימות משווה את התוכן, ולא את הזהות."
+    "3": "`c = a` לא מעתיקה את הרשימה, ולכן `c` ו-`a` הם אותו אובייקט."
+
+- id: py.basics.operators.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print(-7 // 2, -7 % 2)
+  options: ["-4 1", "-3 -1", "-3 1", "-4 -1"]
+  answer: 0
+  explanation: "`//` מעגלת תמיד כלפי מטה (לכיוון מינוס אינסוף), ולא לכיוון אפס. `-3.5` מעוגל ל-`-4`. השארית מחושבת כך ש-`(-4) * 2 + r == -7`, ולכן היא `1`. בפייתון לשארית יש תמיד את הסימן של המחלק."
+  optionExplanations:
+    "1": "זו ההתנהגות ב-C וב-Java, שמעגלות לכיוון אפס. בפייתון `//` מעגלת כלפי מטה."
+    "2": "אם המנה הייתה `-3`, השארית הייתה צריכה להיות `-1` כדי שהחשבון יסתדר. בפייתון המנה היא `-4`."
+    "3": "המנה אכן `-4`, אבל אז השארית חייבת להיות `1`, כי `-8 + 1 == -7`."
+
+- id: py.basics.operators.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print(2 ** 3 ** 2, -2 ** 2)
+  options: ["512 -4", "64 4", "512 4", "64 -4"]
+  answer: 0
+  explanation: "חזקה (`**`) מחושבת מימין לשמאל: `2 ** (3 ** 2)` הוא `2 ** 9`, כלומר `512`. בנוסף, ל-`**` יש קדימות גבוהה מסימן המינוס האונרי, ולכן `-2 ** 2` הוא `-(2 ** 2)`, כלומר `-4`."
+  optionExplanations:
+    "1": "`64` הוא `(2 ** 3) ** 2`, כלומר חישוב משמאל לימין. ו-`4` מתקבל אם המינוס נצמד ל-2 לפני החזקה."
+    "2": "החלק הראשון נכון, אבל המינוס מופעל אחרי החזקה: `-(2 ** 2)`. כדי לקבל `4` צריך `(-2) ** 2`."
+    "3": "חזקה היא האופרטור היחיד מבין האריתמטיים שמחושב מימין לשמאל, ולכן `3 ** 2` מחושב ראשון."
+
+- id: py.basics.operators.008
+  type: single
+  difficulty: 1
+  prompt: באיזה אופרטור משתמשים כדי לבדוק אם שני ערכים שווים?
+  options: ["`==`", "`=`", "`===`", "`!=`"]
+  answer: 0
+  explanation: "`==` הוא אופרטור השוואה (Comparison) שמחזיר `True` או `False`. סימן `=` אחד הוא השמה, והוא לא מחזיר ערך."
+  optionExplanations:
+    "1": "`=` הוא השמה. `x = 5` שם ערך במשתנה ולא בודק שוויון."
+    "2": "`===` קיים ב-JavaScript. בפייתון זו שגיאת תחביר."
+    "3": "`!=` בודק אי-שוויון, כלומר ההפך."
+
+- id: py.basics.operators.009
+  type: single
+  difficulty: 2
+  prompt: "איזה ביטוי מחזיר `True` בדיוק כש-`x` נמצא בין 1 ל-10, כולל שני הקצוות?"
+  options: ["`1 <= x <= 10`", "`1 <= x or x <= 10`", "`1 <= x and x < 10`", "`x >= 1 and <= 10`"]
+  answer: 0
+  explanation: "פייתון מאפשרת שרשור השוואות (Chained Comparison): `1 <= x <= 10` שקול ל-`1 <= x and x <= 10`. זו הדרך הקריאה והמקובלת לבדוק טווח."
+  optionExplanations:
+    "1": "עם `or` מספיק שתנאי אחד יתקיים, וכל מספר מקיים לפחות אחד מהם. הביטוי תמיד `True`."
+    "2": "`x < 10` לא כולל את `10`, ולכן עבור `x = 10` הביטוי מחזיר `False`."
+    "3": "לכל השוואה צריך שני צדדים. `and <= 10` הוא שגיאת תחביר."
+
+- id: py.basics.operators.010
+  type: single
+  difficulty: 2
+  prompt: "מה הערך של `7.0 // 2`?"
+  options: ["`3.0`, מטיפוס `float`", "`3`, מטיפוס `int`", "`3.5`, מטיפוס `float`", "`4.0`, מטיפוס `float`"]
+  answer: 0
+  explanation: "`//` מעגלת כלפי מטה, אבל הטיפוס של התוצאה נקבע לפי האופרנדים: אם אחד מהם `float`, גם התוצאה `float`. לכן מתקבל `3.0`."
+  optionExplanations:
+    "1": "`//` לא ממירה ל-`int`. רק כששני האופרנדים שלמים, כמו `7 // 2`, התוצאה היא `int`."
+    "2": "`3.5` הוא תוצאה של `/`. `//` חותכת את החלק העשרוני."
+    "3": "`//` מעגלת כלפי מטה ולא לשלם הקרוב, ולכן `3.5` הופך ל-`3.0`."
+
+- id: py.basics.operators.011
+  type: truefalse
+  difficulty: 1
+  prompt: "האופרטור `/` בין שני מספרים שלמים מחזיר `int` כשהחלוקה יוצאת בלי שארית, למשל `10 / 5`."
+  answer: false
+  explanation: "בפייתון 3 האופרטור `/` מחזיר תמיד `float`, ולכן `10 / 5` הוא `2.0`. כדי לקבל `int` משתמשים בחלוקה שלמה: `10 // 5`."
+
+- id: py.basics.operators.012
+  type: truefalse
+  difficulty: 2
+  prompt: "לכל שני מספרים שלמים `a` ו-`b`, כש-`b` שונה מאפס, מתקיים `(a // b) * b + a % b == a`."
+  answer: true
+  explanation: "פייתון מגדירה את `//` ואת `%` יחד כך שהשוויון הזה מתקיים תמיד, גם למספרים שליליים. לכן כשהמנה מעוגלת כלפי מטה, למשל `-7 // 2 == -4`, השארית מתאימה את עצמה ויוצאת `1`."
+
+- id: py.basics.operators.013
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס `True` אם `number` זוגי, ו-`False` אחרת. באיזו שורה הבאג?"
+  code: |
+    number = 7
+    is_even = number % 2 == 1
+    print(is_even)
+  answer: 2
+  explanation: "מספר זוגי מתחלק ב-2 בלי שארית, כלומר `number % 2 == 0`. התנאי בשורה 2 בודק את ההפך, אי-זוגיות, ולכן עבור 7 מודפס `True`."
+  fixed: |
+    number = 7
+    is_even = number % 2 == 0
+    print(is_even)
+
+- id: py.basics.operators.014
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את ממוצע שלושת הציונים: `90.0`. באיזו שורה הבאג?"
+  code: |
+    a = 80
+    b = 90
+    c = 100
+    average = a + b + c / 3
+    print(average)
+  answer: 4
+  explanation: "לחילוק יש קדימות גבוהה מחיבור, ולכן בשורה 4 רק `c` מחולק ב-3, ומודפס `203.33333333333334`. צריך סוגריים סביב הסכום: `(a + b + c) / 3`."
+  fixed: |
+    a = 80
+    b = 90
+    c = 100
+    average = (a + b + c) / 3
+    print(average)
+
+- id: py.basics.operators.015
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס את ספרת האחדות, ספרת העשרות וספרת המאות של `4725`, כלומר `5 2 7`. באיזו שורה הבאג?"
+  code: |
+    number = 4725
+    units = number % 10
+    tens = number // 10 % 100
+    hundreds = number // 100 % 10
+    print(units, tens, hundreds)
+  answer: 3
+  explanation: "השיטה היא להזיז את הספרה הרצויה למקום האחדות עם `//`, ואז לחלץ אותה עם `% 10`. בשורה 3 `4725 // 10` הוא `472`, אבל `% 100` משאיר שתי ספרות, `72`. צריך `number // 10 % 10`, בדיוק כמו בשורת המאות."
+  fixed: |
+    number = 4725
+    units = number % 10
+    tens = number // 10 % 10
+    hundreds = number // 100 % 10
+    print(units, tens, hundreds)
+
+- id: py.basics.operators.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו שורה כתובה בצורה הנקייה ביותר?
+  options:
+    - |
+      is_different = a != b
+    - |
+      is_different = not (a == b)
+    - |
+      is_different = (a == b) == False
+  answer: 0
+  explanation: "לפייתון יש אופרטור ייעודי לאי-שוויון, `!=`. הוא אומר ישירות את הכוונה, בלי היפוך או השוואה נוספת."
+  optionExplanations:
+    "1": "`not (a == b)` נכון, אבל עוקף את האופרטור הייעודי ומכריח את הקורא לבצע היפוך בראש."
+    "2": "השוואה של תוצאה בוליאנית ל-`False` מיותרת ומבלבלת. PEP 8 ממליץ שלא להשוות ערכים בוליאניים ל-`True` או ל-`False` עם `==`."

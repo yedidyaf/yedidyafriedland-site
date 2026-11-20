@@ -1,0 +1,485 @@
+- id: cs.software-design.dependency-injection.001
+  type: single
+  difficulty: 1
+  prompt: "איך `ReminderService` מקבלת את התלות שלה?"
+  code: |
+    public interface IClock
+    {
+        DateTime Now { get; }
+    }
+
+    public class ReminderService
+    {
+        private readonly IClock _clock;
+
+        public ReminderService(IClock clock)
+        {
+            _clock = clock;
+        }
+
+        public bool IsOverdue(DateTime dueDate) => _clock.Now > dueDate;
+    }
+  options:
+    - "הזרקה דרך הבנאי - Constructor Injection: מי שיוצר את השירות מעביר לו `IClock`"
+    - "השירות יוצר בעצמו את השעון עם `new` בתוך הבנאי"
+    - "השירות ניגש לשעון דרך משתנה סטטי גלובלי"
+    - "השירות יורש מ-`IClock`, ולכן יש לו את `Now`"
+  answer: 0
+  explanation: "בהזרקת תלויות (Dependency Injection) המחלקה לא יוצרת את התלויות שלה, אלא מקבלת אותן מבחוץ. הבנאי מצהיר «אני צריכה `IClock`», ומי שיוצר את השירות מחליט איזה שעון לתת: שעון אמיתי באפליקציה או שעון קבוע בבדיקה."
+  optionExplanations:
+    "1": "אין בקוד שום `new`. הבנאי מקבל את השעון כפרמטר."
+    "2": "השדה `_clock` הוא שדה מופע, והוא מקבל את ערכו מהפרמטר."
+    "3": "`ReminderService` לא מממשת את `IClock`. היא מחזיקה הפניה לאובייקט שמממש אותו."
+
+- id: cs.software-design.dependency-injection.002
+  type: cleaner
+  difficulty: 1
+  prompt: "איזו גרסה של `SignupService` מאפשרת להחליף את שולח המיילים בלי לשנות את המחלקה?"
+  options:
+    - |
+      var service = new SignupService(new ConsoleEmailSender());
+      service.Register("dana@example.com");
+
+      public interface IEmailSender
+      {
+          void Send(string to, string body);
+      }
+
+      public class ConsoleEmailSender : IEmailSender
+      {
+          public void Send(string to, string body) => Console.WriteLine($"{to}: {body}");
+      }
+
+      public class SignupService
+      {
+          private readonly IEmailSender _sender;
+
+          public SignupService(IEmailSender sender) => _sender = sender;
+
+          public void Register(string email) => _sender.Send(email, "Welcome!");
+      }
+    - |
+      var service = new SignupService();
+      service.Register("dana@example.com");
+
+      public interface IEmailSender
+      {
+          void Send(string to, string body);
+      }
+
+      public class ConsoleEmailSender : IEmailSender
+      {
+          public void Send(string to, string body) => Console.WriteLine($"{to}: {body}");
+      }
+
+      public class SignupService
+      {
+          private readonly IEmailSender _sender = new ConsoleEmailSender();
+
+          public void Register(string email) => _sender.Send(email, "Welcome!");
+      }
+  answer: 0
+  explanation: "בגרסה הראשונה השולח מוזרק דרך הבנאי, ולכן אפשר להעביר שולח SMTP באפליקציה ושולח מדומה בבדיקה. השימוש בממשק לבד לא מספיק: מי שמחליט על המחלקה הקונקרטית צריך להיות מחוץ לשירות."
+  optionExplanations:
+    "1": "השדה מוגדר מטיפוס הממשק, אבל השירות עדיין יוצר בעצמו `ConsoleEmailSender`. כדי להחליף שולח צריך לשנות את המחלקה."
+
+- id: cs.software-design.dependency-injection.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var service = new GreetingService(new FixedClock(new DateTime(2024, 1, 1, 9, 0, 0)));
+    Console.WriteLine(service.Greet("Dana"));
+
+    public interface IClock
+    {
+        DateTime Now { get; }
+    }
+
+    public class FixedClock : IClock
+    {
+        private readonly DateTime _now;
+        public FixedClock(DateTime now) => _now = now;
+        public DateTime Now => _now;
+    }
+
+    public class GreetingService
+    {
+        private readonly IClock _clock;
+        public GreetingService(IClock clock) => _clock = clock;
+
+        public string Greet(string name) =>
+            _clock.Now.Hour < 12 ? $"Good morning, {name}" : $"Good evening, {name}";
+    }
+  options:
+    - "Good morning, Dana"
+    - "Good evening, Dana"
+    - "תלוי בשעה שבה מריצים את התוכנית"
+    - "שגיאת קומפילציה"
+  answer: 0
+  explanation: "השירות לא קורא ל-`DateTime.Now`, אלא לשעון שהוזרק לו. `FixedClock` מחזיר תמיד 09:00, ולכן התוצאה קבועה. כך בודקים קוד שתלוי בזמן: מזריקים שעון מדומה במקום השעון האמיתי."
+  optionExplanations:
+    "1": "השעה המוזרקת היא 9, שקטנה מ-12."
+    "2": "זה היה נכון אם השירות היה קורא ל-`DateTime.Now`. כאן הזמן מגיע מ-`FixedClock`."
+    "3": "`FixedClock` מממש את `IClock`, ולכן אפשר להעביר אותו לבנאי."
+
+- id: cs.software-design.dependency-injection.004
+  type: single
+  difficulty: 2
+  prompt: "`ShopDbContext` עוקב אחרי שינויים באובייקטים שנטענו, ואינו בטוח לשימוש מכמה Threads במקביל. כל השירותים שמטפלים באותה בקשת HTTP צריכים לחלוק אותו, כדי לשמור הכול ב-`SaveChanges` אחד. באיזה משך חיים (Lifetime) לרשום אותו?"
+  options:
+    - "`AddTransient`"
+    - "`AddScoped`"
+    - "`AddSingleton`"
+    - "שדה `static` במחלקה `Program`"
+  answer: 1
+  explanation: "Scoped יוצר מופע אחד לכל Scope, וב-ASP.NET Core כל בקשת HTTP היא Scope. כך כל השירותים באותה בקשה חולקים את אותו `DbContext`, ובקשה אחרת מקבלת מופע משלה."
+  optionExplanations:
+    "0": "Transient נותן מופע חדש לכל שירות, ולכן שני שירותים באותה בקשה לא יחלקו את השינויים."
+    "2": "Singleton משותף לכל הבקשות במקביל, ו-`DbContext` אינו בטוח לשימוש כזה."
+    "3": "שדה סטטי הוא מופע אחד לכולם, עם אותה בעיה של Singleton, ובלי שהקונטיינר מנהל אותו."
+
+- id: cs.software-design.dependency-injection.005
+  type: truefalse
+  difficulty: 1
+  prompt: "שירות שנרשם כ-Transient נוצר מחדש בכל פעם שמבקשים אותו מהקונטיינר (Container)."
+  answer: true
+  explanation: "זו ההגדרה של Transient: כל בקשה לשירות, כולל הזרקה לשני בנאים שונים באותה בקשת HTTP, מקבלת מופע חדש. Scoped נותן מופע אחד לכל Scope, ו-Singleton מופע אחד לכל חיי האפליקציה."
+
+- id: cs.software-design.dependency-injection.006
+  type: single
+  difficulty: 3
+  prompt: "`ReportCache` נרשם כ-Singleton ומקבל בבנאי את `ShopDbContext`, שנרשם כ-Scoped. מה הבעיה?"
+  options:
+    - "ה-Singleton «לוכד» את מופע ה-`DbContext` שקיבל בפעם הראשונה ומשתמש בו בכל הבקשות, הרבה מעבר לבקשה אחת שהוא נועד לה"
+    - "אין בעיה: הקונטיינר ייצור `ShopDbContext` חדש בכל פעם ש-`ReportCache` ניגש לשדה"
+    - "הקונטיינר יהפוך אוטומטית את `ReportCache` ל-Scoped"
+    - "הבעיה היחידה היא ביצועים: כל בקשה תיצור `ReportCache` חדש"
+  answer: 0
+  explanation: "זו תלות שבויה (Captive Dependency): שירות שחי זמן ארוך מחזיק שירות שאמור לחיות זמן קצר. ה-`DbContext` ישותף בין בקשות במקביל ויחיה כל חיי האפליקציה, עם השינויים שנצברו בו. ASP.NET Core בסביבת פיתוח (Scope Validation) מזהה זאת וזורק חריגה. כלל אצבע: שירות יכול להיות תלוי רק בשירותים שחיים לפחות כמוהו."
+  optionExplanations:
+    "1": "הבנאי של Singleton רץ פעם אחת, ולכן השדה מקבל מופע אחד ולא משתנה."
+    "2": "הקונטיינר לא משנה את משך החיים שנרשם."
+    "3": "Singleton נוצר פעם אחת לכל חיי האפליקציה, לא בכל בקשה."
+
+- id: cs.software-design.dependency-injection.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var shared = new VisitCounter();
+    var home = new Page(shared);
+    var about = new Page(shared);
+    var contact = new Page(new VisitCounter());
+    home.Visit();
+    about.Visit();
+    contact.Visit();
+    Console.WriteLine(home.Visits);
+    Console.WriteLine(contact.Visits);
+
+    public class VisitCounter
+    {
+        public int Count { get; private set; }
+        public void Increment() => Count++;
+    }
+
+    public class Page
+    {
+        private readonly VisitCounter _counter;
+        public Page(VisitCounter counter) => _counter = counter;
+        public int Visits => _counter.Count;
+        public void Visit() => _counter.Increment();
+    }
+  options: ["2\n1", "1\n1", "3\n1", "2\n2"]
+  answer: 0
+  explanation: "`home` ו-`about` קיבלו את אותו מופע של `VisitCounter`, ולכן שני הביקורים נספרים באותו מונה (2). `contact` קיבל מונה משלו (1). כך עובד משך חיים משותף, כמו Singleton או Scoped: כל מי שמקבל את אותו מופע רואה את אותו מצב."
+  optionExplanations:
+    "1": "זה היה נכון אם כל דף היה מקבל מונה חדש. כאן שני הדפים הראשונים חולקים מונה."
+    "2": "`contact` קיבל מונה נפרד, ולכן הביקור שלו לא נספר במונה המשותף."
+    "3": "המונה של `contact` נפרד, ובו היה ביקור אחד בלבד."
+
+- id: cs.software-design.dependency-injection.008
+  type: bug
+  difficulty: 2
+  prompt: "`InvoiceService` אמורה לשמור כל חשבונית דרך ה-Repository שהוזרק לה, אבל `Issue` נכשלת ב-`NullReferenceException`. באיזו שורה הבאג?"
+  code: |
+    public interface IInvoiceRepository
+    {
+        void Save(int invoiceId, decimal amount);
+    }
+
+    public class InvoiceService
+    {
+        private readonly IInvoiceRepository _repository;
+
+        public InvoiceService(IInvoiceRepository repository)
+        {
+            repository = _repository;
+        }
+
+        public void Issue(int invoiceId, decimal amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            _repository.Save(invoiceId, amount);
+        }
+    }
+  answer: 12
+  fixed: |
+    public interface IInvoiceRepository
+    {
+        void Save(int invoiceId, decimal amount);
+    }
+
+    public class InvoiceService
+    {
+        private readonly IInvoiceRepository _repository;
+
+        public InvoiceService(IInvoiceRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public void Issue(int invoiceId, decimal amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            _repository.Save(invoiceId, amount);
+        }
+    }
+  explanation: "ההשמה הפוכה: הפרמטר מקבל את ערך השדה (`null`) במקום שהשדה יקבל את התלות שהוזרקה. לכן `_repository` נשאר `null`. בהזרקה דרך בנאי השורה הנכונה היא תמיד `_field = parameter`."
+
+- id: cs.software-design.dependency-injection.009
+  type: hierarchy
+  difficulty: 1
+  prompt: "איזה ממשק מממשת כל מחלקה? חלק מהמחלקות משמשות באפליקציה וחלק בבדיקות."
+  targets:
+    - id: IEmailSender
+      desc: שליחת מייל
+    - id: IClock
+      desc: השעה הנוכחית
+    - id: IPaymentGateway
+      desc: חיוב כרטיס אשראי
+  items:
+    - label: SmtpEmailSender
+      answer: IEmailSender
+      why: "המימוש האמיתי ששולח דרך שרת SMTP."
+    - label: FakeEmailSender
+      answer: IEmailSender
+      why: "מימוש מדומה לבדיקות ששומר את ההודעות ברשימה במקום לשלוח. הוא מממש את אותו ממשק, ולכן אפשר להזריק אותו במקום האמיתי."
+    - label: SystemClock
+      answer: IClock
+      why: "מחזיר את `DateTime.Now` האמיתי."
+    - label: FixedClock
+      answer: IClock
+      why: "מחזיר תמיד אותה שעה, כדי שבדיקות יהיו צפויות."
+    - label: SandboxPaymentGateway
+      answer: IPaymentGateway
+      why: "מימוש מול סביבת הבדיקות של ספק הסליקה, בלי חיוב אמיתי."
+  explanation: "בגלל שהשירותים תלויים בממשקים, לכל ממשק יכולים להיות כמה מימושים: אמיתי לאפליקציה ומדומה (Fake) לבדיקות. השירות לא משתנה, רק מה שמוזרק לו."
+
+- id: cs.software-design.dependency-injection.010
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת תזכורות ה-SMS של מרפאת השיניים בקובץ המתאים."
+  requirement: "מרפאת שיניים שולחת SMS תזכורת יום לפני כל תור. השירות מקבל את התלויות שלו בבנאי, ובבדיקות מחליפים את שולח ה-SMS האמיתי במימוש מדומה שרק סופר הודעות."
+  targets:
+    - id: Program.cs
+      desc: "נקודת ההרכבה (Composition Root): רישום השירותים בקונטיינר"
+    - id: Interfaces/ISmsSender.cs
+      desc: החוזה לשליחת SMS
+    - id: Infrastructure/HttpSmsSender.cs
+      desc: שליחת SMS אמיתית דרך ספק חיצוני
+    - id: Services/ReminderService.cs
+      desc: לוגיקת התזכורות
+    - id: Tests/ReminderServiceTests.cs
+      desc: בדיקות יחידה עם שולח מדומה
+  items:
+    - label: "builder.Services.AddHttpClient<ISmsSender, HttpSmsSender>();"
+      answer: Program.cs
+      why: "חיבור הממשק למימוש נעשה במקום אחד, בנקודת הכניסה לאפליקציה."
+    - label: "void Send(string phoneNumber, string text)"
+      answer: Interfaces/ISmsSender.cs
+      why: "חבר ממשק בלי משנה גישה ובלי גוף."
+    - label: "public HttpSmsSender(HttpClient httpClient, IOptions<SmsOptions> options)"
+      answer: Infrastructure/HttpSmsSender.cs
+      why: "`HttpClient` והגדרות הספק הם פרטים טכניים של המימוש האמיתי."
+    - label: "public int SendRemindersFor(DateOnly day)"
+      answer: Services/ReminderService.cs
+      why: "הלוגיקה: מוצאת את התורים של היום ושולחת תזכורת לכל אחד דרך `ISmsSender`."
+    - label: "[Fact] public void SendRemindersFor_TwoAppointments_SendsTwoMessages()"
+      answer: Tests/ReminderServiceTests.cs
+      why: "מתודת בדיקה עם `[Fact]` ושם בתבנית מתודה_מצב_תוצאה."
+    - label: "private sealed class CountingSmsSender : ISmsSender"
+      answer: Tests/ReminderServiceTests.cs
+      why: "מימוש מדומה שמשמש רק את הבדיקות, ולכן הוא מוגדר בקובץ הבדיקות ולא בקוד האפליקציה."
+  explanation: "השירות תלוי רק ב-`ISmsSender`. בקוד האמיתי `Program.cs` מחבר אותו ל-`HttpSmsSender`, ובבדיקה מעבירים לבנאי `CountingSmsSender`. כך בודקים את הלוגיקה בלי לשלוח SMS אמיתי."
+
+- id: cs.software-design.dependency-injection.011
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של מערכת השכר בקובץ המתאים."
+  requirement: "חישוב שכר חודשי לפי שעות עבודה: עד 8 שעות ביום בתעריף רגיל, ומעבר לכך 125%. את חישוב השכר בודקים בלי מסד נתונים, בעזרת מקור נתונים מדומה שמוזרק לשירות."
+  targets:
+    - id: Interfaces/ITimesheetSource.cs
+      desc: החוזה לקבלת ימי עבודה
+    - id: Data/SqlTimesheetSource.cs
+      desc: קריאת ימי עבודה ממסד הנתונים
+    - id: Services/PayrollService.cs
+      desc: חישוב השכר
+    - id: Tests/Fakes/FakeTimesheetSource.cs
+      desc: מקור נתונים מדומה עם ימי עבודה קבועים
+    - id: Tests/PayrollServiceTests.cs
+      desc: בדיקות היחידה של חישוב השכר
+  items:
+    - label: "IReadOnlyList<WorkDay> GetWorkDays(int employeeId, int year, int month)"
+      answer: Interfaces/ITimesheetSource.cs
+      why: "חבר ממשק. גם המימוש האמיתי וגם המדומה מממשים אותו."
+    - label: "private WorkDay MapRow(IDataRecord row)"
+      answer: Data/SqlTimesheetSource.cs
+      why: "המרת שורה ממסד הנתונים לאובייקט קיימת רק במימוש מול SQL."
+    - label: "public decimal MonthlySalary(int employeeId, int year, int month, decimal hourlyRate)"
+      answer: Services/PayrollService.cs
+      why: "הלוגיקה העסקית שמשתמשת ב-`ITimesheetSource` שהוזרק."
+    - label: "private static decimal OvertimeHours(WorkDay day)"
+      answer: Services/PayrollService.cs
+      why: "כלל השעות הנוספות הוא חלק מחישוב השכר."
+    - label: "public FakeTimesheetSource(params WorkDay[] days)"
+      answer: Tests/Fakes/FakeTimesheetSource.cs
+      why: "המימוש המדומה מקבל את הנתונים ישירות בבנאי, כדי שכל בדיקה תקבע את התרחיש שלה."
+    - label: "[Fact] public void MonthlySalary_TenHourDay_PaysTwoOvertimeHours()"
+      answer: Tests/PayrollServiceTests.cs
+      why: "בדיקה שמזריקה `FakeTimesheetSource` עם יום של 10 שעות ובודקת את התוצאה."
+  explanation: "הזרקה דרך ממשק מאפשרת להחליף את מקור הנתונים: בייצור `SqlTimesheetSource`, ובבדיקות `FakeTimesheetSource`. הלוגיקה של השעות הנוספות נשארת ב-`PayrollService`, והבדיקות רצות מהר ובלי מסד נתונים."
+
+- id: cs.software-design.dependency-injection.012
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל מחלקה במשך החיים (Lifetime) המתאים לה ברישום לקונטיינר."
+  requirement: "אתר הזמנות ב-ASP.NET Core. לכל מחלקה מתואר איך היא מחזיקה מצב (State). בחרו לכל מחלקה את משך החיים הארוך ביותר שעדיין לא משתף מצב במקום שאסור."
+  targets:
+    - id: AddSingleton
+      desc: מופע אחד לכל חיי האפליקציה
+    - id: AddScoped
+      desc: מופע אחד לכל בקשת HTTP
+    - id: AddTransient
+      desc: מופע חדש בכל פעם שמבקשים
+  items:
+    - label: "public class ExchangeRateCache (מטמון שערי מטבע שמשותף לכל המשתמשים ובטוח לשימוש מקביל)"
+      answer: AddSingleton
+      why: "המטמון צריך להיות משותף לכולם, ואם היה נוצר מחדש הוא היה מאבד את מה שנשמר בו."
+    - label: "public class FeatureFlags (נטען פעם אחת מקובץ ההגדרות בעליית האפליקציה, לקריאה בלבד ולא משתנה עד הפעלה מחדש)"
+      answer: AddSingleton
+      why: "מצב לקריאה בלבד בטוח לשיתוף בין כל הבקשות, ולכן משך החיים הארוך ביותר מתאים. Scoped היה קורא את הקובץ מחדש בכל בקשה בלי שום תועלת, כי הערכים לא משתנים."
+    - label: "public class ShopDbContext : DbContext (עוקב אחרי השינויים של בקשה אחת ואינו בטוח לשימוש מקביל)"
+      answer: AddScoped
+      why: "כל בקשה צריכה עותק משלה, וכל השירותים באותה בקשה צריכים לחלוק אותו."
+    - label: "public class CurrentUserContext (מחזיק את המשתמש המחובר של הבקשה הנוכחית)"
+      answer: AddScoped
+      why: "המשתמש שונה בכל בקשה, אבל זהה לכל השירותים שמטפלים בה."
+    - label: "public class InvoicePdfBuilder (צובר שורות לתוך מסמך אחד, וכל שימוש חייב להתחיל ממסמך ריק)"
+      answer: AddTransient
+      why: "אם שני שירותים באותה בקשה היו חולקים מופע, השורות שלהם היו מתערבבות. לכן כל צרכן מקבל מופע חדש."
+  explanation: "משך החיים נקבע לפי המצב שהמחלקה מחזיקה, ובוחרים את הארוך ביותר שבטוח. מצב משותף ובטוח לכולם: Singleton. מצב של בקשה אחת: Scoped. מצב שאסור לשתף אפילו בתוך בקשה: Transient. בחירה שגויה גורמת לערבוב נתונים בין משתמשים או בין שירותים."
+
+- id: cs.software-design.dependency-injection.013
+  type: single
+  difficulty: 2
+  prompt: "מה החיסרון העיקרי של `WelcomeService` לעומת הזרקה דרך בנאי?"
+  code: |
+    public interface IEmailSender
+    {
+        void Send(string to, string body);
+    }
+
+    public static class ServiceLocator
+    {
+        private static readonly Dictionary<Type, object> Services = new();
+
+        public static void Register<T>(T service) => Services[typeof(T)] = service;
+
+        public static T Get<T>() => (T)Services[typeof(T)];
+    }
+
+    public class WelcomeService
+    {
+        public void Welcome(string email)
+        {
+            var sender = ServiceLocator.Get<IEmailSender>();
+            sender.Send(email, "Welcome!");
+        }
+    }
+  options:
+    - "התלות ב-`IEmailSender` מוסתרת בתוך המתודה: היא לא מופיעה בחתימה, ואם שכחו לרשום אותה מגלים זאת רק בזמן ריצה"
+    - "`ServiceLocator` יוצר מופע חדש של השולח בכל קריאה, ולכן הקוד איטי"
+    - "אי אפשר להשתמש בממשק עם `ServiceLocator`, רק במחלקות קונקרטיות"
+    - "המתודה `Welcome` חייבת להיות `static` כדי לגשת ל-`ServiceLocator`"
+  answer: 0
+  explanation: "מאתר שירותים (Service Locator) מסתיר תלויות: מהבנאי של `WelcomeService` אי אפשר לדעת שהיא צריכה שולח מיילים. בבדיקה צריך לזכור לרשום מימוש במילון גלובלי, ובדיקות שונות עלולות להפריע זו לזו. בהזרקה דרך בנאי התלות גלויה בחתימה, ואי אפשר ליצור את המחלקה בלי לספק אותה."
+  optionExplanations:
+    "1": "`Get` מחזיר את המופע שנרשם. הוא לא יוצר מופע חדש."
+    "2": "הקוד עצמו מבקש `IEmailSender`, שהוא ממשק."
+    "3": "מתודת מופע יכולה לקרוא למתודה סטטית של מחלקה אחרת."
+
+- id: cs.software-design.dependency-injection.014
+  type: truefalse
+  difficulty: 2
+  prompt: "כדי להשתמש בהזרקה דרך בנאי, חייבים קונטיינר DI כמו זה של ASP.NET Core."
+  answer: false
+  explanation: "הזרקה דרך בנאי היא פשוט העברת תלויות כפרמטרים: `new OrderService(new SqlOrderRepository())`. אפשר לעשות זאת ידנית ב-`Main` או בבדיקה (Pure DI). הקונטיינר רק חוסך את העבודה הזו ומנהל משך חיים."
+
+- id: cs.software-design.dependency-injection.015
+  type: single
+  difficulty: 2
+  prompt: "באפליקציה שבנויה בהזרקת תלויות, איפה נכון להחליט שהמימוש של `IEmailSender` הוא `SmtpEmailSender`?"
+  options:
+    - "בכל שירות שצריך לשלוח מייל, בתוך הבנאי שלו"
+    - "במקום אחד בנקודת הכניסה לאפליקציה (Composition Root), למשל `Program.cs`"
+    - "בתוך הממשק `IEmailSender`, כמימוש ברירת מחדל"
+    - "במחלקת המודל `User`, כי המשתמש הוא שמקבל את המייל"
+  answer: 1
+  explanation: "נקודת ההרכבה (Composition Root) היא המקום היחיד שמכיר את המחלקות הקונקרטיות ומחבר ביניהן, למשל `builder.Services.AddScoped<IEmailSender, SmtpEmailSender>()`. כל שאר הקוד מכיר רק ממשקים, ולכן החלפת מימוש היא שינוי של שורה אחת."
+  optionExplanations:
+    "0": "אם כל שירות יוצר את המימוש בעצמו, אין הזרקה, והחלפת מימוש מחייבת לשנות את כל השירותים."
+    "2": "ממשק שמכיר מימוש מסוים קושר את החוזה לפרט טכני, וזה ההפך מהמטרה."
+    "3": "מודל שיוצר שירותי תשתית מערבב שכבות, ולא שייך להחלטה על מימושים."
+
+- id: cs.software-design.dependency-injection.016
+  type: single
+  difficulty: 3
+  prompt: "לבנאי של `OrderManager` מוזרקות שמונה תלויות. מה זה מרמז בדרך כלל, ומה התיקון המומלץ?"
+  code: |
+    public interface IOrderRepository { }
+    public interface ICustomerRepository { }
+    public interface IEmailSender { }
+    public interface ISmsSender { }
+    public interface IPdfGenerator { }
+    public interface IPaymentGateway { }
+    public interface IInventoryService { }
+    public interface IAuditLog { }
+
+    public class OrderManager
+    {
+        public OrderManager(
+            IOrderRepository orders,
+            ICustomerRepository customers,
+            IEmailSender email,
+            ISmsSender sms,
+            IPdfGenerator pdf,
+            IPaymentGateway payments,
+            IInventoryService inventory,
+            IAuditLog audit)
+        {
+        }
+    }
+  options:
+    - "שהמחלקה עושה יותר מדי (הפרה של אחריות יחידה): לפצל אותה לכמה מחלקות ממוקדות, למשל תשלום, התראות ומסמכים"
+    - "שצריך להחליף את ההזרקה ב-`ServiceLocator`, כדי שהבנאי יהיה קצר"
+    - "שצריך להפוך את כל התלויות לשדות `static`, כדי שלא יהיה צורך להעביר אותן"
+    - "שאין שום בעיה: מספר התלויות בבנאי לא אומר דבר על התכנון"
+  answer: 0
+  explanation: "בנאי עם הרבה תלויות (Constructor Over-injection) הוא סימן שהמחלקה אחראית על יותר מדי דברים. הזרקה דרך בנאי רק חושפת את הבעיה. הפתרון הוא לפצל לשירותים ממוקדים, למשל `OrderNotifier` שמקבל את שולחי המייל וה-SMS, וכך כל מחלקה מקבלת מעט תלויות."
+  optionExplanations:
+    "1": "Service Locator רק מסתיר את אותן שמונה תלויות, והבעיה נשארת."
+    "2": "שדות סטטיים הם מצב גלובלי: קשה לבדוק אותם, ואי אפשר להחליף מימוש לבדיקה אחת."
+    "3": "מספר התלויות הוא מדד טוב לכמות האחריות של מחלקה."

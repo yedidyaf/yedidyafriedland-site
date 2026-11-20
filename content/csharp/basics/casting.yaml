@@ -1,0 +1,230 @@
+- id: cs.basics.casting.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    double d = 9.99;
+    int i = (int)d;
+    Console.WriteLine(i);
+  options: ["9", "10", "9.99", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "המרה מפורשת (Explicit Cast) מ-`double` ל-`int` חותכת (Truncation) את החלק העשרוני ולא מעגלת. לכן 9.99 הופך ל-9. כדי לעגל לשלם הקרוב צריך `Math.Round`."
+  optionExplanations:
+    "1": "`(int)` לא מעגל. הוא פשוט זורק את כל מה שאחרי הנקודה."
+    "2": "`i` הוא `int`, ולכן הוא לא יכול להחזיק חלק עשרוני."
+    "3": "המרה מ-`double` ל-`int` חוקית כשכותבים אותה במפורש עם `(int)`."
+
+- id: cs.basics.casting.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int a = 5;
+    double b = a;
+    Console.WriteLine(b / 2);
+  options: ["2.5", "2", "3", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "המרה מ-`int` ל-`double` היא המרה מרומזת (Implicit Conversion): היא בטוחה, כי כל `int` נכנס ב-`double` בלי לאבד מידע, ולכן לא צריך לכתוב cast. `b` הוא `double`, ולכן `b / 2` היא חלוקה עשרונית."
+  optionExplanations:
+    "1": "`b` כבר `double`, ולכן החלוקה עשרונית ולא שלמה."
+    "3": "המרה מ-`int` ל-`double` לא מאבדת מידע, ולכן C# מבצע אותה אוטומטית."
+
+- id: cs.basics.casting.003
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    double price = 4.5;
+    int whole = price;
+    Console.WriteLine(whole);
+  options: ["4", "5", "4.5", "שגיאת קומפילציה"]
+  answer: 3
+  explanation: "המרה מ-`double` ל-`int` עלולה לאבד מידע (את החלק העשרוני), ולכן C# לא מבצע אותה במרומז. צריך לכתוב המרה מפורשת, `(int)price`, וכך להצהיר שאתם מודעים לאובדן המידע."
+  optionExplanations:
+    "0": "זה הפלט עם המרה מפורשת `(int)price`. בלי ה-cast הקוד לא מתקמפל."
+
+- id: cs.basics.casting.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Convert.ToInt32(2.5));
+    Console.WriteLine(Convert.ToInt32(3.5));
+    Console.WriteLine((int)3.5);
+  options: ["2\n4\n3", "3\n4\n3", "3\n4\n4", "2\n3\n3"]
+  answer: 0
+  explanation: "`Convert.ToInt32` מעגל לשלם הקרוב, ובמקרה של חצי בדיוק הוא מעגל למספר הזוגי הקרוב (Banker's Rounding): 2.5 הופך ל-2, ו-3.5 הופך ל-4. לעומת זאת, `(int)` לא מעגל בכלל אלא חותך, ולכן `(int)3.5` הוא 3."
+  optionExplanations:
+    "1": "זה עיגול \"של בית הספר\", שבו חצי תמיד עולה. `Convert.ToInt32` מעגל חצי למספר הזוגי."
+    "2": "`(int)` חותך את החלק העשרוני ולא מעגל, ולכן השורה השלישית היא 3."
+    "3": "`Convert.ToInt32` מעגל ולא חותך, ולכן 3.5 הופך ל-4 (הזוגי הקרוב)."
+
+- id: cs.basics.casting.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string s = "42";
+    int n = int.Parse(s);
+    Console.WriteLine(s + 1);
+    Console.WriteLine(n + 1);
+  options: ["421\n43", "43\n43", "421\n421", "43\n421"]
+  answer: 0
+  explanation: "`int.Parse` יוצר `int` חדש מתוך הטקסט, אבל לא משנה את המחרוזת המקורית. `s + 1` הוא שרשור של מחרוזת ומספר, ולכן `421`. `n + 1` הוא חיבור של מספרים, ולכן 43."
+  optionExplanations:
+    "1": "`s` נשאר מחרוזת גם אחרי `int.Parse`. הפרסור מחזיר ערך חדש ולא משנה את המשתנה."
+    "2": "`n` הוא `int`, ולכן `n + 1` הוא חיבור חשבוני."
+
+- id: cs.basics.casting.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    bool ok = int.TryParse("12a", out int value);
+    Console.WriteLine(ok);
+    Console.WriteLine(value);
+  options: ["False\n0", "False\n12", "True\n12", "FormatException"]
+  answer: 0
+  explanation: "`int.TryParse` מנסה להמיר בלי לזרוק חריגה. היא מחזירה `true` או `false` לפי ההצלחה, והמספר עצמו מוחזר דרך פרמטר ה-`out`. `\"12a\"` אינו מספר שלם תקין, ולכן מוחזר `false` ו-`value` מקבל 0."
+  optionExplanations:
+    "1": "`TryParse` לא מפרסרת \"חלק\" מהמחרוזת. אם המחרוזת כולה לא תקינה, `value` מקבל 0."
+    "3": "`TryParse` לא זורקת על קלט לא תקין. זו בדיוק הסיבה להשתמש בה במקום `int.Parse`."
+
+- id: cs.basics.casting.007
+  type: single
+  difficulty: 2
+  prompt: "מה קורה בהרצה של `int n = int.Parse(\"abc\");`?"
+  options:
+    - "נזרקת `FormatException`"
+    - "`n` מקבל 0"
+    - "שגיאת קומפילציה"
+    - "נזרקת `InvalidCastException`"
+  answer: 0
+  explanation: "`int.Parse` מניחה שהמחרוזת היא מספר תקין. כשהיא לא, נזרקת `FormatException` בזמן ריצה. כשהקלט מגיע ממשתמש ואולי אינו תקין, עדיף `int.TryParse`, שמחזירה `false` במקום לזרוק."
+  optionExplanations:
+    "1": "זו ההתנהגות של `int.TryParse` במקרה של כישלון, לא של `int.Parse`."
+    "2": "הקומפיילר רק בודק שהארגומנט הוא `string`. את התוכן של המחרוזת בודקים רק בזמן ריצה."
+    "3": "`InvalidCastException` נזרקת בהמרת טיפוסים לא תואמים, למשל `(int)obj` כש-`obj` מחזיק מחרוזת. בפרסור טקסט לא תקין נזרקת `FormatException`."
+
+- id: cs.basics.casting.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    long big = 3_000_000_000;
+    int small = (int)big;
+    Console.WriteLine(small);
+  options: ["-1294967296", "2147483647", "3000000000", "OverflowException"]
+  answer: 0
+  explanation: "`(int)` על `long` שומר רק את 32 הביטים התחתונים. 3,000,000,000 גדול מהמקסימום של `int`, ולכן הערך \"מסתובב\": 3,000,000,000 פחות 2 בחזקת 32 (4,294,967,296) נותן 1,294,967,296-. זה אובדן מידע שקט, ובדיוק בגלל זה C# דורש cast מפורש."
+  optionExplanations:
+    "1": "המרה מפורשת לא נעצרת בגבול הטווח. היא חותכת ביטים, והתוצאה יכולה להיות שלילית."
+    "2": "`int` לא יכול להחזיק 3,000,000,000."
+    "3": "חריגה נזרקת רק בהקשר `checked`. כברירת מחדל ההמרה לא נבדקת."
+
+- id: cs.basics.casting.009
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את הממוצע המדויק, `4.25`. באיזו שורה הבאג?"
+  code: |
+    int sum = 17;
+    int count = 4;
+    double average = (double)(sum / count);
+    Console.WriteLine(average);
+  answer: 3
+  explanation: "הסוגריים גורמים לחלוקה `sum / count` להתבצע קודם, בין שני `int`, ולכן היא מחזירה 4. ההמרה ל-`double` מגיעה אחרי שהשבר כבר אבד, ומודפס `4`. צריך להמיר את אחד האופרנדים לפני החלוקה: `(double)sum / count`."
+  fixed: |
+    int sum = 17;
+    int count = 4;
+    double average = (double)sum / count;
+    Console.WriteLine(average);
+
+- id: cs.basics.casting.010
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור לעגל את המחיר לשלם הקרוב ולהדפיס `8`. באיזו שורה הבאג?"
+  code: |
+    double price = 7.8;
+    int rounded = (int)price;
+    Console.WriteLine(rounded);
+  answer: 2
+  explanation: "`(int)` חותך את החלק העשרוני ולא מעגל, ולכן 7.8 הופך ל-7. כדי לעגל לשלם הקרוב משתמשים ב-`Math.Round`, ואז ממירים ל-`int`, כי `Math.Round` מחזירה `double`."
+  fixed: |
+    double price = 7.8;
+    int rounded = (int)Math.Round(price);
+    Console.WriteLine(rounded);
+
+- id: cs.basics.casting.011
+  type: single
+  difficulty: 1
+  prompt: איזו מההמרות הבאות C# מבצע במרומז, בלי לכתוב cast?
+  options: ["מ-`int` ל-`long`", "מ-`long` ל-`int`", "מ-`double` ל-`int`", "מ-`double` ל-`float`"]
+  answer: 0
+  explanation: "C# מבצע המרה מרומזת רק כשהיא בטוחה, כלומר כשכל ערך של טיפוס המקור נכנס בטיפוס היעד. כל `int` נכנס ב-`long`, ולכן אין צורך ב-cast. שאר ההמרות עלולות לאבד מידע ולכן דורשות המרה מפורשת."
+  optionExplanations:
+    "1": "`long` יכול להחזיק ערכים גדולים מהטווח של `int`, ולכן ההמרה עלולה לאבד מידע."
+    "2": "ההמרה מאבדת את החלק העשרוני, ולכן היא חייבת להיות מפורשת."
+    "3": "ל-`float` יש פחות דיוק וטווח קטן יותר מ-`double`, ולכן גם זו המרה מצמצמת."
+
+- id: cs.basics.casting.012
+  type: truefalse
+  difficulty: 1
+  prompt: "המרה מפורשת מ-`double` ל-`int`, כמו `(int)2.7`, מעגלת למספר השלם הקרוב ביותר."
+  answer: false
+  explanation: "המרה מפורשת מ-`double` ל-`int` חותכת את החלק העשרוני (לכיוון אפס), ולכן `(int)2.7` הוא 2. לעיגול לשלם הקרוב משתמשים ב-`Math.Round` או ב-`Convert.ToInt32`."
+
+- id: cs.basics.casting.013
+  type: truefalse
+  difficulty: 2
+  prompt: "המרה מרומזת מ-`int` ל-`long` לעולם לא מאבדת מידע."
+  answer: true
+  explanation: "`long` הוא 64 ביט ו-`int` הוא 32 ביט, וכל ערך של `int` נמצא בטווח של `long`. זו המרה מרחיבה (Widening Conversion), ולכן C# מרשה אותה בלי cast. אובדן מידע קורה בכיוון ההפוך, מ-`long` ל-`int`."
+
+- id: cs.basics.casting.014
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    char c = 'A';
+    int code = c;
+    char next = (char)(code + 2);
+    Console.WriteLine(code);
+    Console.WriteLine(next);
+  options: ["65\nC", "A\nC", "65\n67", "A\n67"]
+  answer: 0
+  explanation: "המרה מ-`char` ל-`int` היא מרומזת ומחזירה את הקוד המספרי של התו: `'A'` הוא 65. בכיוון ההפוך צריך המרה מפורשת: `(char)67` הוא התו `C`. `Console.WriteLine` מדפיס `int` כמספר ו-`char` כתו."
+  optionExplanations:
+    "1": "`code` הוא `int`, ולכן מודפס המספר 65 ולא התו."
+    "2": "`next` הוא `char` בזכות ה-cast, ולכן מודפס התו `C` ולא המספר."
+
+- id: cs.basics.casting.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    double d = -7.9;
+    Console.WriteLine((int)d);
+    Console.WriteLine(Math.Floor(d));
+  options: ["-7\n-8", "-8\n-8", "-7\n-7", "-8\n-7"]
+  answer: 0
+  explanation: "`(int)` חותך לכיוון אפס, ולכן 7.9- הופך ל-7-. `Math.Floor` מעגל כלפי מטה, לכיוון מינוס אינסוף, ולכן מתקבל 8-. במספרים חיוביים שתי הפעולות נותנות אותה תוצאה, ורק במספרים שליליים רואים את ההבדל."
+  optionExplanations:
+    "1": "`(int)` לא מעגל כלפי מטה. הוא זורק את החלק העשרוני, כלומר מתקרב לאפס."
+    "2": "`Math.Floor` מחזיר את השלם הגדול ביותר שקטן או שווה למספר, ועבור 7.9- זה 8-."
+
+- id: cs.basics.casting.016
+  type: single
+  difficulty: 3
+  prompt: "כאשר `string s = null;`, מה ההבדל בין `int.Parse(s)` לבין `Convert.ToInt32(s)`?"
+  options:
+    - "`int.Parse` זורקת `ArgumentNullException`, ו-`Convert.ToInt32` מחזירה 0"
+    - "שתיהן מחזירות 0"
+    - "שתיהן זורקות `ArgumentNullException`"
+    - "`int.Parse` מחזירה 0, ו-`Convert.ToInt32` זורקת `FormatException`"
+  answer: 0
+  explanation: "`Convert.ToInt32(string)` מתייחסת ל-`null` כאל 0, ואילו `int.Parse` דורשת מחרוזת אמיתית וזורקת `ArgumentNullException` על `null`. על מחרוזת לא תקינה כמו `\"abc\"` שתיהן זורקות `FormatException`. לכן `Convert` לא \"בטוחה\" יותר: היא רק מטפלת אחרת ב-`null`."
+  optionExplanations:
+    "1": "`int.Parse` לא מחליפה `null` בערך ברירת מחדל. היא זורקת חריגה."
+    "2": "`Convert.ToInt32` מטפלת ב-`null` במיוחד ומחזירה 0."
+    "3": "זה הפוך: דווקא `Convert.ToInt32` מחזירה 0 על `null`."

@@ -1,0 +1,227 @@
+- id: py.strings.slicing.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    s = "python"
+    print(s[-3:])
+  options: ["hon", "pyt", "tho", "n"]
+  answer: 0
+  explanation: "אינדקס שלילי סופר מהסוף. `s[-3:]` מתחיל שלושה תווים מהסוף וממשיך עד סוף המחרוזת, ולכן מתקבל `hon`."
+  optionExplanations:
+    "1": "`pyt` הוא `s[:3]`, שלושת התווים הראשונים."
+    "2": "`tho` הוא `s[2:5]`."
+    "3": "`n` הוא `s[-1]`, תו בודד. החיתוך `s[-3:]` ממשיך מאינדקס `-3` עד הסוף."
+
+- id: py.strings.slicing.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    word = "abcdefg"
+    print(word[::2])
+  options: ["aceg", "bdf", "abcdefg", "gfedcba"]
+  answer: 0
+  explanation: "הקפיצה (Step) היא 2, ולכן לוקחים כל תו שני החל מאינדקס 0: `a`, `c`, `e`, `g`."
+  optionExplanations:
+    "1": "`bdf` מתחיל מאינדקס 1. כשמשמיטים את ההתחלה, החיתוך מתחיל מאינדקס 0."
+    "3": "המחרוזת ההפוכה היא `word[::-1]`. קפיצה חיובית הולכת קדימה."
+
+- id: py.strings.slicing.003
+  type: single
+  difficulty: 1
+  prompt: איזה ביטוי הופך את המחרוזת `text`?
+  options: ["`text[::-1]`", "`text[-1:]`", "`text.reverse()`", "`text[::1]`"]
+  answer: 0
+  explanation: "קפיצה של `-1` עוברת על המחרוזת מהסוף להתחלה. למחרוזות אין מתודה `reverse`, ו-`text[-1:]` מחזיר רק את התו האחרון."
+  optionExplanations:
+    "1": "`text[-1:]` מתחיל בתו האחרון וממשיך קדימה עד הסוף, ולכן מחזיר תו אחד בלבד."
+    "2": "`reverse` קיימת לרשימות בלבד, ולכן נקבל `AttributeError`."
+    "3": "קפיצה של `1` היא ברירת המחדל, ומחזירה עותק של המחרוזת באותו סדר."
+
+- id: py.strings.slicing.004
+  type: truefalse
+  difficulty: 2
+  prompt: "לכל מחרוזת `s`, החיתוך `s[2:5]` מחזיר מחרוזת באורך 3."
+  answer: false
+  explanation: "אורך החיתוך הוא `stop - start` רק כששני הגבולות בתוך המחרוזת. החיתוך נעצר בסוף המחרוזת בלי שגיאה, ולכן `\"abcd\"[2:5]` הוא `\"cd\"`, באורך 2, ו-`\"ab\"[2:5]` הוא מחרוזת ריקה."
+
+- id: py.strings.slicing.005
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה להחזיר את שלושת התווים האחרונים של מחרוזת. באיזו שורה הבאג?
+  code: |
+    def last_three(s):
+        if len(s) < 3:
+            return s
+        return s[-3:-1]
+  answer: 4
+  explanation: "הגבול העליון בחיתוך לא נכלל. `s[-3:-1]` מחזיר רק שני תווים. צריך `s[-3:]`."
+  fixed: |
+    def last_three(s):
+        if len(s) < 3:
+            return s
+        return s[-3:]
+
+- id: py.strings.slicing.006
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    s = "programming"
+    print(s[3:7])
+  options: ["gram", "gramm", "ogra", "ram"]
+  answer: 0
+  explanation: "חיתוך (Slicing) `s[start:stop]` מתחיל באינדקס `start` ועוצר לפני `stop`. כאן לוקחים את האינדקסים 3, 4, 5, 6, כלומר `gram`. אורך החיתוך הוא `stop - start`, כאן 4."
+  optionExplanations:
+    "1": "`gramm` כולל גם את אינדקס 7. הגבול העליון בחיתוך לא נכלל."
+    "2": "`ogra` מתקבל אם סופרים מ-1 במקום מ-0. האינדקס 3 הוא התו הרביעי, `g`."
+    "3": "`ram` מתחיל באינדקס 4. החיתוך מתחיל בדיוק ב-`start`."
+
+- id: py.strings.slicing.007
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    s = "hello"
+    print(s[3:99] + "|" + s[10:])
+  options: ["lo|", "IndexError", "lo|hello", "l|"]
+  answer: 0
+  explanation: "חיתוך לא זורק שגיאה כשהגבולות חורגים מהמחרוזת. `s[3:99]` עוצר בסוף המחרוזת ומחזיר `lo`, ו-`s[10:]` מתחיל אחרי הסוף ולכן מחזיר מחרוזת ריקה."
+  optionExplanations:
+    "1": "רק גישה לתו בודד מחוץ לגבולות, כמו `s[10]`, זורקת `IndexError`. חיתוך פשוט נעצר בקצה."
+    "2": "התחלה שמעבר לסוף המחרוזת לא חוזרת להתחלה. החיתוך פשוט ריק."
+    "3": "`s[3:99]` כולל את כל התווים מאינדקס 3 ועד הסוף, ולא רק את אינדקס 3."
+
+- id: py.strings.slicing.008
+  type: single
+  difficulty: 1
+  prompt: "`s` היא מחרוזת. מה מחזיר `s[:]`?"
+  options:
+    - "את כל המחרוזת"
+    - "מחרוזת ריקה"
+    - "את התו הראשון בלבד"
+    - "שגיאת תחביר, כי חסרים אינדקסים"
+  answer: 0
+  explanation: "כשמשמיטים את ההתחלה היא 0, וכשמשמיטים את הסוף הוא סוף המחרוזת. לכן `s[:]` הוא חיתוך מההתחלה ועד הסוף: כל המחרוזת."
+  optionExplanations:
+    "1": "השמטת הגבולות לא אומרת \"כלום\", אלא \"מהקצה\". חיתוך ריק מתקבל כשההתחלה לא לפני הסוף."
+    "2": "התו הראשון הוא `s[0]`. חיתוך מחזיר רצף, לא תו בודד."
+    "3": "מותר להשמיט כל אחד מחלקי החיתוך. זה תחביר חוקי ונפוץ."
+
+- id: py.strings.slicing.009
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "abcdef"
+    print(s[5:1:-1])
+  options: ["fedc", "fedcb", "bcde", "edcb"]
+  answer: 0
+  explanation: "עם קפיצה (Step) שלילית החיתוך הולך אחורה: מתחיל באינדקס 5 (`f`) ויורד עד לפני אינדקס 1. מתקבלים האינדקסים 5, 4, 3, 2, כלומר `fedc`. גם כשהולכים אחורה, `stop` לא נכלל."
+  optionExplanations:
+    "1": "`b` נמצא באינדקס 1, שהוא `stop`, ולכן לא נכלל."
+    "2": "החיתוך לא \"מסדר\" את הגבולות. הקפיצה השלילית קובעת שהתווים יוצאים בסדר הפוך."
+    "3": "`edcb` מתחיל אחרי `start` ומסתיים ב-`stop`. בפועל ההפך: `start` נכלל ו-`stop` לא."
+
+- id: py.strings.slicing.010
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "abcdef"
+    print("[" + s[4:1] + "]")
+  options: ["[]", "[edc]", "[bcd]", "IndexError"]
+  answer: 0
+  explanation: "בלי קפיצה, ברירת המחדל היא 1 והחיתוך הולך קדימה. מאינדקס 4 אי אפשר להגיע קדימה ל-1, ולכן החיתוך ריק. חיתוך כזה לא זורק שגיאה."
+  optionExplanations:
+    "1": "כדי ללכת אחורה צריך קפיצה שלילית במפורש: `s[4:1:-1]` מחזיר `edc`."
+    "2": "Python לא מחליפה את הגבולות כשהם בסדר הפוך. היא מחזירה חיתוך ריק."
+    "3": "חיתוך אף פעם לא זורק `IndexError` בגלל גבולות. במקרה הגרוע הוא ריק."
+
+- id: py.strings.slicing.011
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    s = "python"
+    print(s[-2:-5:-1])
+  options: ["oht", "tho", "ohty", "hty"]
+  answer: 0
+  explanation: "במחרוזת באורך 6, `-2` הוא אינדקס 4 (`o`) ו-`-5` הוא אינדקס 1 (`y`). הקפיצה `-1` הולכת אחורה מ-4 עד לפני 1: האינדקסים 4, 3, 2, כלומר `oht`."
+  optionExplanations:
+    "1": "`tho` הוא אותם תווים בסדר קדימה. הקפיצה השלילית מוציאה אותם מהסוף להתחלה."
+    "2": "`y` נמצא באינדקס `-5`, שהוא `stop`, ולכן לא נכלל."
+    "3": "`hty` מתקבל אם חושבים ש-`-2` הוא אינדקס 3. האינדקס `-1` הוא התו האחרון, ולכן `-2` הוא הלפני אחרון, `o`."
+
+- id: py.strings.slicing.012
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    digits = "0123456789"
+    print(digits[::-3])
+  options: ["9630", "963", "0369", "7410"]
+  answer: 0
+  explanation: "כשהקפיצה שלילית ואין התחלה וסוף, החיתוך מתחיל בתו האחרון וממשיך עד תחילת המחרוזת כולל. בקפיצות של 3 אחורה מקבלים את האינדקסים 9, 6, 3, 0."
+  optionExplanations:
+    "1": "כשמשמיטים את `stop` בקפיצה שלילית, החיתוך ממשיך עד אינדקס 0 כולל, ולכן `0` נכלל."
+    "2": "`0369` הוא `digits[::3]`. הסימן השלילי הופך את כיוון ההליכה."
+    "3": "`7410` מתקבל אם מתחילים מאינדקס 7. עם קפיצה שלילית ההתחלה ברירת המחדל היא התו האחרון."
+
+- id: py.strings.slicing.013
+  type: bug
+  difficulty: 2
+  prompt: הפונקציה אמורה לבדוק אם מילה היא פלינדרום (נקראת אותו דבר משני הכיוונים). באיזו שורה הבאג?
+  code: |
+    def is_palindrome(word):
+        reversed_word = word[::1]
+        return word == reversed_word
+  answer: 2
+  explanation: "`word[::1]` הוא עותק של המילה באותו סדר, ולכן הפונקציה מחזירה `True` לכל מילה. כדי להפוך מחרוזת צריך קפיצה שלילית: `word[::-1]`."
+  fixed: |
+    def is_palindrome(word):
+        reversed_word = word[::-1]
+        return word == reversed_word
+
+- id: py.strings.slicing.014
+  type: truefalse
+  difficulty: 3
+  prompt: "לכל מחרוזת `s` ולכל מספר שלם `k`, הביטוי `s[:k] + s[k:] == s` מחזיר `True`."
+  answer: true
+  explanation: "`s[:k]` הוא כל מה שלפני הנקודה `k`, ו-`s[k:]` הוא כל מה שממנה והלאה, ולכן יחד הם כל המחרוזת. זה נכון גם ל-`k` שלילי וגם ל-`k` שחורג מהגבולות: אז אחד החלקים ריק והשני הוא המחרוזת כולה."
+
+- id: py.strings.slicing.015
+  type: cleaner
+  difficulty: 2
+  prompt: כל הגרסאות מחזירות את שלושת התווים הראשונים (או את כל המחרוזת אם היא קצרה יותר). איזו גרסה נקייה יותר?
+  options:
+    - |
+      def first_three(s):
+          return s[:3]
+    - |
+      def first_three(s):
+          result = ""
+          for i in range(min(3, len(s))):
+              result += s[i]
+          return result
+    - |
+      def first_three(s):
+          return s[0:len(s) - (len(s) - 3)]
+  answer: 0
+  explanation: "`s[:3]` אומר בדיוק את הכוונה: מההתחלה ועד לפני אינדקס 3. חיתוך כבר מטפל במחרוזות קצרות בלי שגיאה, ולכן אין צורך בלולאה, ב-`min` או בחישוב."
+  optionExplanations:
+    "1": "לולאה שמחברת תווים בונה ידנית את מה שחיתוך עושה בביטוי אחד."
+    "2": "החישוב `len(s) - (len(s) - 3)` הוא פשוט 3. ביטוי מסובך לערך קבוע רק מבלבל את הקורא."
+
+- id: py.strings.slicing.016
+  type: single
+  difficulty: 3
+  prompt: "`s = \"abcdef\"`. איזה ביטוי מחזיר `\"fdb\"`?"
+  options: ["`s[::-2]`", "`s[-2::-2]`", "`s[5:1:-2]`", "`s[1::-2]`"]
+  answer: 0
+  explanation: "בקפיצה `-2` בלי גבולות מתחילים בתו האחרון, `f` (אינדקס 5), ויורדים בשניים: 5, 3, 1, כלומר `fdb`."
+  optionExplanations:
+    "1": "`-2` הוא אינדקס 4 (`e`), ולכן מתקבל `eca`."
+    "2": "אינדקס 1 הוא `stop` ולא נכלל, ולכן מתקבל רק `fd`."
+    "3": "מתחילים באינדקס 1 והולכים אחורה, ולכן מתקבל רק `b`."

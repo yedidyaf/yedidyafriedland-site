@@ -1,0 +1,468 @@
+- id: cs.clean-code.dry.001
+  type: smell
+  difficulty: 1
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class PriceCalculator
+    {
+        private const decimal StudentDiscount = 0.2m;
+        private const decimal SeniorDiscount = 0.3m;
+
+        public decimal StudentPrice(decimal price)
+        {
+            if (price < 0)
+                throw new ArgumentOutOfRangeException(nameof(price));
+            return price * (1 - StudentDiscount);
+        }
+
+        public decimal SeniorPrice(decimal price)
+        {
+            if (price < 0)
+                throw new ArgumentOutOfRangeException(nameof(price));
+            return price * (1 - SeniorDiscount);
+        }
+    }
+  options:
+    - "מספר קסם - Magic Number"
+    - "מחלקת אל - God Class"
+    - "שכפול קוד - Duplicated Code"
+    - "רשימת פרמטרים ארוכה - Long Parameter List"
+  answer: 2
+  explanation: "שתי המתודות זהות חוץ משיעור ההנחה. כל שינוי בבדיקה או בנוסחה יצטרך להיעשות פעמיים. חלצו מתודה משותפת (Extract Method), למשל `ApplyDiscount(decimal price, decimal rate)`, ושתי המתודות יקראו לה."
+  optionExplanations:
+    "0": "שיעורי ההנחה כבר מוגדרים כקבועים עם שם."
+    "1": "המחלקה קטנה ועוסקת בנושא אחד: חישוב מחירים."
+    "3": "לכל מתודה יש פרמטר אחד."
+
+- id: cs.clean-code.dry.002
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class AccountService
+      {
+          public void Register(string email)
+          {
+              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+                  throw new ArgumentException("Invalid email.", nameof(email));
+              Console.WriteLine($"Registered {email}");
+          }
+
+          public void ChangeEmail(string email)
+          {
+              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+                  throw new ArgumentException("Invalid email.", nameof(email));
+              Console.WriteLine($"Changed to {email}");
+          }
+      }
+    - |
+      class AccountService
+      {
+          public void Register(string email)
+          {
+              EnsureValidEmail(email);
+              Console.WriteLine($"Registered {email}");
+          }
+
+          public void ChangeEmail(string email)
+          {
+              EnsureValidEmail(email);
+              Console.WriteLine($"Changed to {email}");
+          }
+
+          private static void EnsureValidEmail(string email)
+          {
+              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+                  throw new ArgumentException("Invalid email.", nameof(email));
+          }
+      }
+  answer: 1
+  explanation: "הכלל «מהי כתובת מייל תקינה» הוא ידע אחד, ולכן צריך לגור במקום אחד. כשיחמירו את הבדיקה, ישנו רק את `EnsureValidEmail`, ואין סכנה ששתי המתודות יבדקו דברים שונים."
+  optionExplanations:
+    "0": "הבדיקה משוכפלת; שינוי עתידי יחייב לזכור לעדכן שני מקומות."
+
+- id: cs.clean-code.dry.003
+  type: bug
+  difficulty: 2
+  prompt: הקוד אמור להדפיס את הממוצע של כל מקצוע. באיזו שורה הבאג?
+  code: |
+    int[] mathGrades = { 90, 80 };
+    int[] englishGrades = { 70, 100, 85 };
+    Console.WriteLine($"Math: {mathGrades.Sum() / (double)mathGrades.Length}");
+    Console.WriteLine($"English: {englishGrades.Sum() / (double)mathGrades.Length}");
+  answer: 4
+  fixed: |
+    int[] mathGrades = { 90, 80 };
+    int[] englishGrades = { 70, 100, 85 };
+    Console.WriteLine($"Math: {mathGrades.Sum() / (double)mathGrades.Length}");
+    Console.WriteLine($"English: {englishGrades.Sum() / (double)englishGrades.Length}");
+  explanation: "השורה הועתקה מהשורה הקודמת, ורק חלק מהשמות עודכן: הסכום של אנגלית מחולק במספר הציונים במתמטיקה. זה באג קלאסי של העתק-הדבק. כשהחישוב כתוב פעם אחת, למשל עם `grades.Average()` או מתודה `Average(int[] grades)`, אין מה לשכוח לעדכן."
+
+- id: cs.clean-code.dry.004
+  type: single
+  difficulty: 3
+  prompt: שם משתמש וקוד מוצר הם דרישות של שני צוותים שונים, וכל אחת מהן עשויה להשתנות בנפרד. מה כדאי לעשות עם הדמיון בין המתודות?
+  code: |
+    class Validation
+    {
+        public bool IsValidUserName(string userName) =>
+            userName.Length >= 3 && userName.Length <= 20;
+
+        public bool IsValidProductCode(string code) =>
+            code.Length >= 3 && code.Length <= 20;
+    }
+  options:
+    - "לאחד אותן למתודה אחת IsValidLength ולקרוא לה משני המקומות"
+    - "להשאיר שתי מתודות נפרדות, כל אחת עם קבועים משלה, כי זה דמיון מקרי ולא אותו ידע"
+    - "לאחד אותן למתודה אחת עם פרמטר bool isProduct"
+    - "למחוק את אחת המתודות, כי קוד כפול הוא תמיד באג"
+  answer: 1
+  explanation: "DRY עוסק בידע, לא בקוד שנראה דומה. אלה שני כללים עסקיים שבמקרה זהים היום. איחוד שלהם יוצר צימוד: כשצוות אחד ירצה 30 תווים, המתודה המשותפת תתחיל לקבל דגלים ותנאים. שכפול קטן עדיף על הפשטה מוקדמת (Premature Abstraction)."
+  optionExplanations:
+    "0": "האיחוד קושר שני כללים שמשתנים מסיבות שונות; ביום שאחד ישתנה, צריך יהיה לפרק אותו שוב."
+    "2": "דגל בוליאני שבוחר בין שני כללים הוא סימן שהם לא באמת אותו דבר."
+    "3": "שתי המתודות נחוצות; קוד שנראה דומה הוא לא בהכרח באג או שכפול של ידע."
+
+- id: cs.clean-code.dry.005
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      Console.WriteLine("{0,-10}|{1,5}", "Apples", 3);
+      Console.WriteLine("{0,-10}|{1,5}", "Bananas", 12);
+      Console.WriteLine("{0,-10}|{1,5}", "Cherries", 40);
+    - |
+      PrintRow("Apples", 3);
+      PrintRow("Bananas", 12);
+      PrintRow("Cherries", 40);
+
+      static void PrintRow(string product, int quantity) =>
+          Console.WriteLine("{0,-10}|{1,5}", product, quantity);
+  answer: 1
+  explanation: "פורמט השורה הוא ידע אחד: רוחב העמודות והמפריד. כשהוא כתוב במתודה אחת עם שם, שינוי רוחב עמודה נעשה במקום אחד, והקריאות אומרות מה הן עושות: `PrintRow`."
+  optionExplanations:
+    "0": "מחרוזת הפורמט משוכפלת שלוש פעמים; שינוי שלה מחייב לעדכן כל שורה ולא לפספס אף אחת."
+
+- id: cs.clean-code.dry.006
+  type: cleaner
+  difficulty: 3
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Notifier
+      {
+          public string WelcomeMessage(string name) => $"Welcome, {name}!";
+          public string GoodbyeMessage(string name) => $"Goodbye, {name}.";
+      }
+    - |
+      class Notifier
+      {
+          public string WelcomeMessage(string name) => BuildMessage(name, true);
+          public string GoodbyeMessage(string name) => BuildMessage(name, false);
+
+          private static string BuildMessage(string name, bool isWelcome)
+          {
+              string greeting = isWelcome ? "Welcome" : "Goodbye";
+              string ending = isWelcome ? "!" : ".";
+              return $"{greeting}, {name}{ending}";
+          }
+      }
+  answer: 0
+  explanation: "שתי ההודעות דומות במבנה, אבל הן לא אותו ידע. ההפשטה בגרסה השנייה ארוכה יותר, מסתמכת על דגל בוליאני, ומקשה לראות מה כל הודעה אומרת. זו הפשטה מוקדמת (Premature Abstraction): שכפול קטן וברור עדיף עליה."
+  optionExplanations:
+    "1": "ההפשטה לא חוסכת שינויים עתידיים, רק מסבכת: כל הודעה חדשה תדרוש עוד דגל או עוד תנאי."
+
+- id: cs.clean-code.dry.007
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class InvoiceService
+    {
+        private const decimal VatRate = 0.18m;
+
+        public void Print(decimal subtotal, decimal discount)
+        {
+            decimal total = (subtotal - discount) * (1 + VatRate);
+            Console.WriteLine($"Total: {total:F2}");
+        }
+
+        public void Email(decimal subtotal, decimal discount, string address)
+        {
+            decimal total = (subtotal - discount) * (1 + VatRate);
+            Console.WriteLine($"To {address}: total {total:F2}");
+        }
+    }
+  options:
+    - "קנאת תכונות - Feature Envy"
+    - "שכפול קוד - Duplicated Code"
+    - "מספר קסם - Magic Number"
+    - "מתודה ארוכה - Long Method"
+  answer: 1
+  explanation: "החישוב של סך החשבונית מופיע פעמיים. זה אותו ידע עסקי: אם ישנו את סדר ההנחה והמע״מ במקום אחד בלבד, החשבונית המודפסת והחשבונית במייל יציגו סכומים שונים. חלצו `CalculateTotal(subtotal, discount)` ששתי המתודות משתמשות בה."
+  optionExplanations:
+    "0": "המתודות עובדות על הפרמטרים שלהן ועל קבוע של המחלקה, לא על נתונים של מחלקה אחרת."
+    "2": "שיעור המע״מ מוגדר כקבוע עם שם."
+    "3": "כל מתודה היא שתי שורות."
+
+- id: cs.clean-code.dry.008
+  type: single
+  difficulty: 1
+  prompt: "מה המשמעות של העיקרון DRY (Don't Repeat Yourself)?"
+  options:
+    - "אסור ששתי שורות בקוד ייראו זהות"
+    - "כל מתודה צריכה להיקרא ממקום אחד בלבד"
+    - "לכל פיסת ידע במערכת צריך להיות ייצוג אחד, ברור ומוסמך"
+    - "צריך לכתוב כמה שפחות הערות בקוד"
+  answer: 2
+  explanation: "DRY עוסק בידע: כלל עסקי, נוסחה, פורמט או ערך קבוע צריכים להיות מוגדרים במקום אחד. כך שינוי נעשה פעם אחת, ואין סכנה ששני עותקים יתחילו לסתור זה את זה."
+  optionExplanations:
+    "0": "שתי שורות יכולות להיראות זהות במקרה ולייצג דברים שונים; DRY לא דורש לאחד אותן."
+    "1": "להפך: מתודה שנקראת מכמה מקומות היא בדיוק הדרך להימנע משכפול."
+    "3": "DRY לא עוסק בהערות."
+
+- id: cs.clean-code.dry.009
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Product
+      {
+          public string Name { get; }
+          public decimal Price { get; }
+          public int Stock { get; }
+
+          public Product(string name, decimal price)
+          {
+              Name = name;
+              Price = price;
+              Stock = 0;
+          }
+
+          public Product(string name, decimal price, int stock)
+          {
+              Name = name;
+              Price = price;
+              Stock = stock;
+          }
+      }
+    - |
+      class Product
+      {
+          public string Name { get; }
+          public decimal Price { get; }
+          public int Stock { get; }
+
+          public Product(string name, decimal price) : this(name, price, 0) { }
+
+          public Product(string name, decimal price, int stock)
+          {
+              Name = name;
+              Price = price;
+              Stock = stock;
+          }
+      }
+  answer: 1
+  explanation: "שרשור בנאים עם `: this(...)` משאיר את האתחול במקום אחד. כשיוסיפו בדיקה, למשל שהמחיר לא שלילי, היא תחול על שני הבנאים בלי לשכפל אותה."
+  optionExplanations:
+    "0": "האתחול משוכפל בשני הבנאים; בדיקה שתתווסף לאחד מהם בלבד תיצור אובייקטים לא תקינים דרך השני."
+
+- id: cs.clean-code.dry.010
+  type: bug
+  difficulty: 3
+  prompt: באתר ובסניף, קנייה של 10 יחידות או יותר מקבלת הנחה של 10%. באיזו שורה הבאג?
+  code: |
+    class Pricing
+    {
+        private const int BulkQuantity = 10;
+        private const decimal BulkPriceFactor = 0.9m;
+
+        public decimal OnlineTotal(decimal price, int quantity)
+        {
+            decimal total = price * quantity;
+            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+        }
+
+        public decimal StoreTotal(decimal price, int quantity)
+        {
+            decimal total = price * quantity;
+            return quantity > BulkQuantity ? total * BulkPriceFactor : total;
+        }
+    }
+  answer: 15
+  fixed: |
+    class Pricing
+    {
+        private const int BulkQuantity = 10;
+        private const decimal BulkPriceFactor = 0.9m;
+
+        public decimal OnlineTotal(decimal price, int quantity)
+        {
+            decimal total = price * quantity;
+            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+        }
+
+        public decimal StoreTotal(decimal price, int quantity)
+        {
+            decimal total = price * quantity;
+            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+        }
+    }
+  explanation: "בסניף נכתב `>` במקום `>=`, ולכן מי שקונה בדיוק 10 יחידות לא מקבל הנחה. זה מה שקורה כשאותו כלל משוכפל: העותקים מתרחקים זה מזה. מתודה אחת, למשל `ApplyBulkDiscount(total, quantity)`, הייתה מבטיחה כלל אחד לשני הערוצים."
+
+- id: cs.clean-code.dry.011
+  type: truefalse
+  difficulty: 1
+  prompt: לפי DRY, כל שני קטעי קוד שנראים זהים חייבים להתאחד למתודה אחת.
+  answer: false
+  explanation: "DRY עוסק בשכפול של ידע, לא של טקסט. שני קטעים יכולים להיראות זהים במקרה ולהשתנות בעתיד מסיבות שונות. כלל אצבע מקובל הוא כלל השלוש (Rule of Three): מחכים להופעה השלישית, כשכבר ברור מה באמת משותף, ורק אז מפשטים."
+
+- id: cs.clean-code.dry.012
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class OrderService
+      {
+          private const decimal MemberPriceFactor = 0.9m;
+
+          public decimal Checkout(decimal price, bool isMember)
+          {
+              decimal total;
+              if (isMember)
+              {
+                  total = price * MemberPriceFactor;
+                  Console.WriteLine("Saving order...");
+              }
+              else
+              {
+                  total = price;
+                  Console.WriteLine("Saving order...");
+              }
+              return total;
+          }
+      }
+    - |
+      class OrderService
+      {
+          private const decimal MemberPriceFactor = 0.9m;
+
+          public decimal Checkout(decimal price, bool isMember)
+          {
+              decimal total = isMember ? price * MemberPriceFactor : price;
+              Console.WriteLine("Saving order...");
+              return total;
+          }
+      }
+  answer: 1
+  explanation: "כששני הענפים של `if` מסתיימים באותה פקודה, היא לא שייכת לתנאי. מוציאים אותה החוצה (Consolidate Duplicate Conditional Fragments), ונשאר רק מה שבאמת שונה: חישוב המחיר."
+  optionExplanations:
+    "0": "ההדפסה משוכפלת בשני הענפים, והקורא צריך להשוות ביניהם כדי לגלות מה שונה."
+
+- id: cs.clean-code.dry.013
+  type: single
+  difficulty: 1
+  prompt: מה השינוי הטוב ביותר לקוד?
+  code: |
+    Console.WriteLine("==========");
+    Console.WriteLine("Sales");
+    Console.WriteLine("==========");
+    Console.WriteLine("Total: 1200");
+    Console.WriteLine("==========");
+    Console.WriteLine("Refunds");
+    Console.WriteLine("==========");
+    Console.WriteLine("Total: 300");
+  options:
+    - "להוסיף הערה מעל כל כותרת"
+    - "לחלץ מתודה (Extract Method) בשם PrintHeader(string title) ולקרוא לה פעמיים"
+    - "ליצור מחלקה נפרדת לכל כותרת: SalesHeader ו-RefundsHeader"
+    - "להשאיר את הקוד כמו שהוא, כי שורות הדפסה לא נחשבות שכפול"
+  answer: 1
+  explanation: "שלוש השורות של הכותרת חוזרות, וההבדל היחיד הוא הטקסט. מתודה עם פרמטר לחלק המשתנה מגדירה את עיצוב הכותרת פעם אחת, וכל קריאה אומרת מה היא עושה: `PrintHeader(\"Sales\")`."
+  optionExplanations:
+    "0": "הערות לא מסירות את השכפול; שינוי העיצוב עדיין יחייב לעדכן כמה מקומות."
+    "2": "מחלקה לכל כותרת מכפילה את הקוד במקום לצמצם אותו."
+    "3": "עיצוב הכותרת הוא ידע שמשוכפל; אם ירצו לשנות את קו ההפרדה, צריך לשנות ארבע שורות."
+
+- id: cs.clean-code.dry.014
+  type: single
+  difficulty: 2
+  prompt: שיעור המע״מ משתנה מ-18% ל-17%. כמה מספרים בקוד צריך לשנות?
+  code: |
+    class Invoice
+    {
+        public decimal Net { get; set; }
+
+        public decimal Vat() => Net * 0.18m;
+        public decimal Gross() => Net * 1.18m;
+        public string Summary() => $"VAT: {Net * 0.18m}, Gross: {Net + Net * 0.18m}";
+    }
+  options:
+    - "1"
+    - "2"
+    - "3"
+    - "4"
+  answer: 3
+  explanation: "אותו ידע מופיע ארבע פעמים: שלוש פעמים `0.18m` ופעם אחת בצורה אחרת, `1.18m`, שקל לפספס בחיפוש. עם קבוע אחד `VatRate`, ועם `Gross() => Net + Vat()` ו-`Summary` שמשתמשת ב-`Vat()` וב-`Gross()`, השינוי הוא במקום אחד."
+  optionExplanations:
+    "0": "זה המצב הרצוי, אבל כאן השיעור לא מוגדר במקום אחד."
+    "1": "יש יותר מופעים: גם ב-`Summary`, ושם השיעור מופיע פעמיים."
+    "2": "קל לפספס את `1.18m` ב-`Gross`, שהוא אותו שיעור בצורה אחרת."
+
+- id: cs.clean-code.dry.015
+  type: single
+  difficulty: 3
+  prompt: האם יש כאן הפרה של DRY?
+  code: |
+    class UserForm
+    {
+        public bool IsValid(string userName) => userName.Length <= 20;
+
+        public string Hint() => "Up to 20 characters";
+    }
+  options:
+    - "לא, כי אין בקוד שתי שורות זהות"
+    - "כן: שתי המתודות משתמשות ב-=>, וזה שכפול תחבירי"
+    - "לא, כי אחד המופעים נמצא בתוך מחרוזת, ומחרוזות לא נחשבות קוד"
+    - "כן: הידע «אורך מקסימלי 20» מופיע פעמיים, ואם ישנו אותו במקום אחד ההודעה תשקר"
+  answer: 3
+  explanation: "שכפול של ידע לא חייב להיראות כמו שורות זהות. אם הכלל ישתנה ל-30 רק ב-`IsValid`, המשתמש יראה הודעה שגויה. קבוע אחד `MaxUserNameLength`, שמשמש גם בבדיקה וגם בהודעה (`$\"Up to {MaxUserNameLength} characters\"`), פותר את זה."
+  optionExplanations:
+    "0": "DRY עוסק בידע, לא בטקסט זהה; כאן אותו מספר מופיע בשני מקומות."
+    "1": "תחביר משותף הוא לא ידע; אין סיבה להימנע משימוש ב-`=>`."
+    "2": "המספר בתוך ההודעה הוא אותו כלל עסקי, ולכן הוא חלק מהשכפול."
+
+- id: cs.clean-code.dry.016
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להעתיק את כתובת המשלוח לכתובת החיוב ולהדפיס `Haifa 3100000`. באיזו שורה הבאג?"
+  code: |
+    var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
+    var billing = new Address();
+    billing.City = shipping.City;
+    billing.ZipCode = billing.ZipCode;
+    Console.WriteLine($"{billing.City} {billing.ZipCode}");
+
+    class Address
+    {
+        public string City { get; set; }
+        public string ZipCode { get; set; }
+    }
+  answer: 4
+  fixed: |
+    var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
+    var billing = new Address();
+    billing.City = shipping.City;
+    billing.ZipCode = shipping.ZipCode;
+    Console.WriteLine($"{billing.City} {billing.ZipCode}");
+
+    class Address
+    {
+        public string City { get; set; }
+        public string ZipCode { get; set; }
+    }
+  explanation: "השורה הועתקה מהשורה הקודמת ורק חלק ממנה עודכן, ולכן `billing.ZipCode` מקבל את עצמו (`null`). העתקה ידנית של שדה אחרי שדה חוזרת על אותו דפוס ומזמינה באגים כאלה; מתודה אחת כמו `CopyFrom(Address other)`, או `record` עם `with`, כותבת את ההעתקה פעם אחת."

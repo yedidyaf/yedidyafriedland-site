@@ -1,0 +1,432 @@
+- id: cs.software-design.layers.001
+  type: single
+  difficulty: 1
+  prompt: "בארכיטקטורת שכבות, באיזו שכבה צריך לממש את הכלל «הזמנה מעל 500 שקלים מקבלת משלוח חינם»?"
+  options:
+    - "שכבת הממשק - Controllers"
+    - "שכבת הלוגיקה העסקית - Services"
+    - "שכבת הגישה לנתונים - Repositories"
+    - "שכבת התצוגה - Views"
+  answer: 1
+  explanation: "כלל עסקי (Business Rule) שייך לשכבת הלוגיקה העסקית. ה-Controller רק מקבל בקשה ומחזיר תשובה, ה-Repository רק שומר ושולף, וה-View רק מציג. כך אפשר לשנות את הכלל במקום אחד ולבדוק אותו בלי HTTP ובלי מסד נתונים."
+  optionExplanations:
+    "0": "Controller שמכיל כללים עסקיים מכריח לשכפל אותם בכל ממשק נוסף, למשל באפליקציה לנייד."
+    "2": "ה-Repository אחראי רק על גישה לנתונים, לא על החלטות עסקיות."
+    "3": "ה-View מציג תוצאה שכבר חושבה. הוא לא מחליט מי מקבל משלוח חינם."
+
+- id: cs.software-design.layers.002
+  type: single
+  difficulty: 1
+  prompt: "מהו כיוון הקריאות הנכון בארכיטקטורת שכבות קלאסית?"
+  options:
+    - "ה-Controller קורא ל-Service, וה-Service קורא ל-Repository"
+    - "ה-Repository קורא ל-Service, וה-Service קורא ל-Controller"
+    - "ה-Controller קורא ישירות ל-Repository, וה-Repository קורא ל-Service"
+    - "כל שכבה רשאית לקרוא לכל שכבה אחרת, בתנאי שהיא עושה זאת דרך ממשק"
+  answer: 0
+  explanation: "התלות (Dependency) זורמת בכיוון אחד: מהשכבה העליונה (ממשק) אל השכבה העסקית ומשם אל שכבת הנתונים. שכבה תחתונה לא מכירה את השכבות שמעליה, ולכן אפשר להחליף את הממשק בלי לגעת בלוגיקה ובנתונים."
+  optionExplanations:
+    "1": "זה הכיוון ההפוך: שכבת הנתונים לא אמורה להכיר את מי שמשתמש בה."
+    "2": "דילוג על ה-Service מוציא את הכללים העסקיים מהמקום שלהם, ו-Repository שקורא ל-Service יוצר תלות הפוכה."
+    "3": "ממשקים לא מבטלים את כיוון התלות. גם דרך ממשק, שכבה תחתונה לא קוראת לשכבה שמעליה."
+
+- id: cs.software-design.layers.003
+  type: architecture
+  difficulty: 1
+  prompt: "שבצו כל חתימה של מערכת הזמנת הכרטיסים לקולנוע בקובץ המתאים."
+  requirement: "צופה בוחר הקרנה ומושבים באתר. המערכת בודקת שהמושבים פנויים, שומרת את ההזמנה במסד הנתונים ומחזירה לדפדפן אישור עם מספר הזמנה."
+  targets:
+    - id: Models/Booking.cs
+      desc: מחלקת הנתונים של הזמנה
+    - id: Data/BookingRepository.cs
+      desc: קריאה ושמירה במסד הנתונים
+    - id: Services/BookingService.cs
+      desc: הכללים העסקיים של הזמנת מושבים
+    - id: Controllers/BookingsController.cs
+      desc: מקבל בקשות HTTP ומחזיר תשובות
+  items:
+    - label: "public class Booking"
+      answer: Models/Booking.cs
+      why: "מחלקה שמחזיקה את נתוני ההזמנה בלבד, ולכן היא בתיקיית המודלים."
+    - label: "public IReadOnlyList<int> GetTakenSeats(int screeningId)"
+      answer: Data/BookingRepository.cs
+      why: "שליפה של המושבים התפוסים מהמסד. אין כאן החלטה עסקית, רק קריאת נתונים."
+    - label: "public void Add(Booking booking)"
+      answer: Data/BookingRepository.cs
+      why: "שמירת הזמנה במסד היא אחריות שכבת הנתונים."
+    - label: "public Booking BookSeats(int screeningId, IReadOnlyList<int> seatNumbers)"
+      answer: Services/BookingService.cs
+      why: "הבדיקה שהמושבים פנויים ויצירת ההזמנה הן הכלל העסקי. השירות משתמש ב-Repository כדי לקרוא ולשמור."
+    - label: "public IActionResult Create(int screeningId, int[] seatNumbers)"
+      answer: Controllers/BookingsController.cs
+      why: "`IActionResult` הוא תשובת HTTP, ולכן המתודה שייכת ל-Controller. היא מעבירה את הבקשה לשירות ומחזירה את האישור."
+  explanation: "כל שכבה אחראית על דבר אחד: Models מחזיקים נתונים, Repository מדבר עם המסד, Service מחליט לפי הכללים, ו-Controller מדבר עם הדפדפן. התלות זורמת מה-Controller אל ה-Service ומשם אל ה-Repository."
+
+- id: cs.software-design.layers.004
+  type: single
+  difficulty: 2
+  prompt: "מה הבעיה העיקרית בקוד הזה מבחינת חלוקה לשכבות?"
+  code: |
+    public class GradesController
+    {
+        public string GetAverage(int studentId)
+        {
+            var grades = new List<int>();
+            foreach (var line in File.ReadAllLines("grades.csv"))
+            {
+                var parts = line.Split(',');
+                if (int.Parse(parts[0]) == studentId)
+                    grades.Add(int.Parse(parts[1]));
+            }
+            double average = grades.Count == 0 ? 0 : grades.Average();
+            return $"<p>Average: {average:F1}</p>";
+        }
+    }
+  options:
+    - "ה-Controller קורא קובץ, מחשב ממוצע ובונה HTML: שלוש אחריויות של שלוש שכבות שונות"
+    - "היה צריך להשתמש ב-`Dictionary` במקום `List` כדי שהחיפוש יהיה מהיר יותר"
+    - "המתודה צריכה להיות `static`, כי היא לא משתמשת בשדות של המחלקה"
+    - "אסור ל-Controller להחזיר `string`, הוא חייב להחזיר מספר"
+  answer: 0
+  explanation: "גישה לנתונים (קריאת הקובץ), לוגיקה עסקית (חישוב הממוצע) ותצוגה (HTML) מעורבבות במתודה אחת. נכון לפצל ל-`GradeRepository` שקורא את הנתונים, ל-`GradeService` שמחשב, ול-Controller שרק מחזיר את התוצאה. כך מעבר מ-CSV למסד נתונים לא יחייב לגעת ב-Controller."
+  optionExplanations:
+    "1": "זה שיקול ביצועים, לא בעיית חלוקה לשכבות. גם עם `Dictionary` הערבוב נשאר."
+    "2": "גם מתודה סטטית הייתה ממשיכה לערבב שלוש אחריויות."
+    "3": "Controller יכול להחזיר מחרוזת. הבעיה היא מה עוד הוא עושה בדרך."
+
+- id: cs.software-design.layers.005
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה מפרידה נכון בין הלוגיקה של חישוב הטמפרטורה הממוצעת לבין התצוגה?"
+  options:
+    - |
+      var service = new TemperatureService();
+      service.PrintAverage(new[] { 20.0, 22.0, 24.0 });
+
+      public class TemperatureService
+      {
+          public void PrintAverage(IReadOnlyList<double> readings)
+          {
+              Console.WriteLine($"Average: {readings.Average()}");
+          }
+      }
+    - |
+      var service = new TemperatureService();
+      double average = service.Average(new[] { 20.0, 22.0, 24.0 });
+      Console.WriteLine($"Average: {average}");
+
+      public class TemperatureService
+      {
+          public double Average(IReadOnlyList<double> readings) => readings.Average();
+      }
+  answer: 1
+  explanation: "השירות מחזיר נתון (`double`), ושכבת הממשק מחליטה איך להציג אותו. כך אותו שירות משמש גם אתר, גם API וגם בדיקת יחידה, ואפשר לבדוק את החישוב בלי ללכוד פלט של הקונסול."
+  optionExplanations:
+    "0": "השירות כותב ישירות לקונסול, ולכן הוא קשור לממשק אחד בלבד וקשה לבדוק אותו או להשתמש בו מאתר."
+
+- id: cs.software-design.layers.006
+  type: hierarchy
+  difficulty: 2
+  prompt: "בפרויקט שמחולק לשכבות, בחרו את סוג היחס בין כל זוג מחלקות."
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: implements
+      desc: מימוש ממשק - Implements
+    - id: uses
+      desc: שימוש - Dependency
+  items:
+    - label: "SqlOrderRepository ו-IOrderRepository"
+      answer: implements
+      why: "המחלקה בשכבת הנתונים מממשת את החוזה שהשכבה העסקית מכירה."
+    - label: "Order ו-OrderLine (ההזמנה מחזיקה רשימת שורות)"
+      answer: has-a
+      why: "השורות הן חלק מההזמנה ונשמרות בתוכה."
+    - label: "OrderPdfPrinter ו-Order (מתקבלת כפרמטר במתודה Print בלבד)"
+      answer: uses
+      why: "המדפסת לא שומרת את ההזמנה, היא רק משתמשת בה בזמן הקריאה."
+    - label: "ExpressOrder ו-Order"
+      answer: is-a
+      why: "הזמנה מהירה היא סוג של הזמנה."
+  explanation: "ירושה (is-a) היא «סוג של». הרכבה (has-a) היא «מחזיק בתוכו». מימוש ממשק הוא עמידה בחוזה, וכך שכבת הנתונים מתחברת לשכבה העסקית. שימוש (Dependency) הוא תלות זמנית, למשל פרמטר של מתודה."
+
+- id: cs.software-design.layers.007
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת השכרת הרכבים בקובץ המתאים."
+  requirement: "לקוח מזמין רכב לטווח תאריכים. המערכת בודקת שהרכב פנוי, מחשבת מחיר לפי מספר הימים וקטגוריית הרכב ושומרת את ההשכרה. שכבת השירות מכירה את מסד הנתונים רק דרך ממשק."
+  targets:
+    - id: Models/Rental.cs
+      desc: מחלקת הנתונים של השכרה
+    - id: Interfaces/IRentalRepository.cs
+      desc: החוזה של הגישה לנתוני השכרות
+    - id: Data/SqlRentalRepository.cs
+      desc: מימוש הגישה לנתונים מול SQL Server
+    - id: Services/RentalService.cs
+      desc: חישובי מחיר וכללי השכרה
+  items:
+    - label: "public class Rental"
+      answer: Models/Rental.cs
+      why: "מחלקת הנתונים של ההשכרה."
+    - label: "void Add(Rental rental)"
+      answer: Interfaces/IRentalRepository.cs
+      why: "בלי משנה גישה ובלי גוף: זו הצהרה של חבר בממשק. המימוש ב-SQL יהיה `public`."
+    - label: "bool IsCarAvailable(int carId, DateOnly from, DateOnly to)"
+      answer: Interfaces/IRentalRepository.cs
+      why: "שאילתה על נתונים, מוצהרת בחוזה כדי שהשירות לא יכיר את SQL."
+    - label: "public SqlRentalRepository(string connectionString)"
+      answer: Data/SqlRentalRepository.cs
+      why: "מחרוזת חיבור היא פרט טכני של המימוש מול SQL, ורק הוא צריך אותה."
+    - label: "public decimal CalculatePrice(CarCategory category, DateOnly from, DateOnly to)"
+      answer: Services/RentalService.cs
+      why: "תמחור הוא כלל עסקי."
+    - label: "public Rental RentCar(int customerId, int carId, DateOnly from, DateOnly to)"
+      answer: Services/RentalService.cs
+      why: "מתאם את התהליך: בודק זמינות דרך הממשק, מחשב מחיר ושומר."
+  explanation: "השירות תלוי בממשק `IRentalRepository` ולא במחלקה `SqlRentalRepository`. כך אפשר להחליף את מסד הנתונים או להשתמש במימוש מדומה בבדיקות בלי לשנות את הלוגיקה העסקית. חברי ממשק נכתבים בלי משנה גישה ובלי גוף."
+
+- id: cs.software-design.layers.008
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של חנות הספרים בקובץ של המודול המתאים."
+  requirement: "חנות ספרים מקוונת בנויה כמונוליט מודולרי (Modular Monolith): לכל תחום מודול נפרד עם שירות ציבורי משלו. מודול הקטלוג אחראי על ספרים ומחירים, מודול ההזמנות על הזמנות, ומודול המשלוחים על זמני אספקה ומעקב. טיפוס הכסף משותף לכל המודולים."
+  targets:
+    - id: Modules/Catalog/CatalogService.cs
+      desc: ספרים, חיפוש ומחירים
+    - id: Modules/Ordering/OrderingService.cs
+      desc: יצירה וביטול של הזמנות
+    - id: Modules/Shipping/ShippingService.cs
+      desc: זמני אספקה ומעקב אחרי משלוחים
+    - id: Shared/Money.cs
+      desc: טיפוס משותף לכל המודולים
+  items:
+    - label: "public Money GetPrice(string isbn)"
+      answer: Modules/Catalog/CatalogService.cs
+      why: "המחיר הוא מידע של הקטלוג. מודול ההזמנות שואל את הקטלוג ולא מחזיק מחירים משלו."
+    - label: "public IReadOnlyList<Book> SearchByAuthor(string author)"
+      answer: Modules/Catalog/CatalogService.cs
+      why: "חיפוש ספרים שייך לקטלוג."
+    - label: "public int CreateOrder(int customerId, IReadOnlyList<string> isbns)"
+      answer: Modules/Ordering/OrderingService.cs
+      why: "יצירת הזמנה היא הליבה של מודול ההזמנות. הוא מקבל רק מזהי ספרים ומשתמש בקטלוג דרך השירות הציבורי שלו."
+    - label: "public void CancelOrder(int orderId)"
+      answer: Modules/Ordering/OrderingService.cs
+      why: "ביטול הוא שינוי מצב של הזמנה."
+    - label: "public DateOnly EstimateDelivery(string city)"
+      answer: Modules/Shipping/ShippingService.cs
+      why: "הערכת זמן אספקה תלויה בעיר היעד ובחברת השליחויות, ולכן שייכת למשלוחים."
+    - label: "public TrackingInfo Track(string trackingNumber)"
+      answer: Modules/Shipping/ShippingService.cs
+      why: "מעקב לפי מספר משלוח הוא אחריות מודול המשלוחים."
+    - label: "public readonly record struct Money(decimal Amount, string Currency)"
+      answer: Shared/Money.cs
+      why: "כל המודולים משתמשים בכסף, ולכן הטיפוס נמצא בתיקייה המשותפת ולא בתוך מודול אחד."
+  explanation: "מודול (Module) מקבץ את כל מה שקשור לתחום אחד, ומודולים אחרים מדברים איתו רק דרך השירות הציבורי שלו. רק טיפוסים קטנים שכולם צריכים, כמו `Money`, יושבים בתיקייה משותפת. כך שינוי בתחום המשלוחים לא מחייב לגעת בקטלוג."
+
+- id: cs.software-design.layers.009
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של הבלוג (ASP.NET Core MVC) בקובץ המתאים."
+  requirement: "בלוג שבו קוראים רואים פוסט עם התגובות שלו ויכולים להוסיף תגובה. הדף מציג את תאריך הפרסום בפורמט קריא, ותגובה ריקה או ארוכה מדי נדחית. הנתונים נשמרים במסד הנתונים, וה-View לא מעצב נתונים בעצמו: כל טקסט מגיע אליו מוכן ב-ViewModel."
+  targets:
+    - id: Controllers/PostsController.cs
+      desc: מקבל בקשות HTTP ובוחר View
+    - id: Models/Post.cs
+      desc: ישות הפוסט ונתוני המקור שלו כפי שהם נשמרים במסד
+    - id: ViewModels/PostPageViewModel.cs
+      desc: טקסטים מוכנים לתצוגה של דף אחד, לקריאה בלבד
+    - id: Services/CommentService.cs
+      desc: כללי הוספת תגובה
+    - id: Views/Posts/Show.cshtml
+      desc: תבנית Razor שמציגה את הדף
+  items:
+    - label: "public IActionResult Show(int id)"
+      answer: Controllers/PostsController.cs
+      why: "פעולת Controller שמחזירה View לבקשת GET."
+    - label: "[HttpPost] public IActionResult AddComment(int postId, string text)"
+      answer: Controllers/PostsController.cs
+      why: "מקבלת את הטופס, מעבירה לשירות ומחזירה תשובת HTTP."
+    - label: "public DateTime PublishedAt { get; set; }"
+      answer: Models/Post.cs
+      why: "`DateTime` גולמי עם `set` הוא נתון המקור שנשמר במסד. ה-ViewModel לא צריך אותו, כי הוא מקבל את התאריך כבר כטקסט מעוצב."
+    - label: "public string PublishedText { get; init; }"
+      answer: ViewModels/PostPageViewModel.cs
+      why: "טקסט מעוצב לתצוגה («לפני שעתיים») שייך ל-ViewModel, לא לישות שנשמרת."
+    - label: "public Comment AddComment(int postId, string authorName, string text)"
+      answer: Services/CommentService.cs
+      why: "מחזירה `Comment` ולא תשובת HTTP: זו הלוגיקה שבודקת את התגובה ושומרת אותה."
+    - label: "@model PostPageViewModel"
+      answer: Views/Posts/Show.cshtml
+      why: "הצהרת המודל בראש תבנית Razor. ה-View מקבל ViewModel ולא את הישות."
+  explanation: "ב-MVC ה-Controller מתאם, ה-Model מחזיק את הנתונים כפי שהם, וה-View מציג. ViewModel מכין בדיוק את מה שהדף צריך, כך שהישות לא מתמלאת בשדות תצוגה. שתי מתודות בשם `AddComment` נבדלות בטיפוס ההחזרה: `IActionResult` שייך ל-Controller, `Comment` לשירות."
+
+- id: cs.software-design.layers.010
+  type: truefalse
+  difficulty: 1
+  prompt: "בארכיטקטורת שכבות, מחלקת Repository רשאית לקרוא למתודה של Controller כדי להציג למשתמש הודעת שגיאה."
+  answer: false
+  explanation: "שכבת הנתונים לא מכירה את השכבות שמעליה. אם יש שגיאה, ה-Repository זורק חריגה או מחזיר תוצאה, וה-Controller מחליט איך להציג אותה. קריאה כלפי מעלה יוצרת תלות מעגלית (Circular Dependency)."
+
+- id: cs.software-design.layers.011
+  type: truefalse
+  difficulty: 2
+  prompt: "מתודה ב-Service שמחזירה מחרוזת HTML מוכנה לתצוגה מכניסה אחריות של שכבת הממשק לתוך השכבה העסקית."
+  answer: true
+  explanation: "HTML הוא החלטה של התצוגה. Service שמחזיר HTML לא יתאים ל-API שמחזיר JSON או לאפליקציה לנייד. נכון שה-Service יחזיר נתונים, ושכבת הממשק תהפוך אותם ל-HTML."
+
+- id: cs.software-design.layers.012
+  type: single
+  difficulty: 1
+  prompt: "לאיזו שכבה שייכת המחלקה `ProductStore`?"
+  code: |
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public class ProductStore
+    {
+        private readonly Dictionary<int, Product> _products = new();
+
+        public void Add(Product product) => _products[product.Id] = product;
+
+        public Product FindById(int id) =>
+            _products.TryGetValue(id, out var product) ? product : null;
+
+        public void Remove(int id) => _products.Remove(id);
+    }
+  options:
+    - "שכבת הממשק - Presentation"
+    - "שכבת הלוגיקה העסקית - Business Logic"
+    - "שכבת הגישה לנתונים - Data Access"
+    - "שכבת המודלים - Models"
+  answer: 2
+  explanation: "המחלקה רק מוסיפה, מוצאת ומוחקת מוצרים באחסון, בלי שום כלל עסקי. זה בדיוק תפקיד של Repository בשכבת הגישה לנתונים, גם כשהאחסון הוא מילון בזיכרון ולא מסד נתונים."
+  optionExplanations:
+    "0": "אין כאן קלט מהמשתמש ואין תצוגה."
+    "1": "אין כאן החלטה עסקית, למשל מחיר מינימלי או בדיקת מלאי. רק שמירה ושליפה."
+    "3": "המודל הוא `Product`, שמחזיק את הנתונים. `ProductStore` מנהלת את האחסון שלהם."
+
+- id: cs.software-design.layers.013
+  type: single
+  difficulty: 2
+  prompt: "למערכת עם שכבות Controllers, Services ו-Repositories מוסיפים אפליקציה לנייד שצריכה את אותם כללים עסקיים. מה צריך לכתוב בעיקר?"
+  options:
+    - "שכבת ממשק חדשה (למשל Controllers של API לנייד) שקוראת לאותם Services"
+    - "עותק של כל ה-Services בתוך פרויקט האפליקציה לנייד"
+    - "Repositories חדשים, כי אפליקציה לנייד צריכה מסד נתונים אחר"
+    - "להעביר את הכללים העסקיים לתוך ה-Controllers, כדי שכל ממשק יקבל אותם"
+  answer: 0
+  explanation: "זה היתרון של הפרדת שכבות: הכללים העסקיים נמצאים ב-Services, ולכן כל ממשק חדש רק מתחבר אליהם. רק שכבת הממשק משתנה, והלוגיקה והנתונים נשארים כמו שהם."
+  optionExplanations:
+    "1": "העתקת השירותים היא שכפול קוד: כל שינוי בכלל יצטרך להיעשות בשני מקומות."
+    "2": "הנייד משתמש באותם נתונים דרך אותם שירותים. אין סיבה למסד נתונים חדש."
+    "3": "זה ההפך: כללים בתוך Controllers צריך לשכפל לכל ממשק."
+
+- id: cs.software-design.layers.014
+  type: single
+  difficulty: 2
+  prompt: "ב-Services משתמשים רק בממשק `IProductRepository`, ושאילתות SQL קיימות רק ב-`SqlProductRepository`. מחליטים לעבור מ-SQL Server ל-MongoDB. איזה קוד צריך להשתנות?"
+  options:
+    - "ה-Services וה-Controllers, כי הם אלה שמבקשים את המוצרים"
+    - "כל השכבות, כי מסד הנתונים הוא הבסיס של כל המערכת"
+    - "רק מימוש חדש של `IProductRepository` ורישום שלו במקום הישן"
+    - "רק ה-Models, כי הם מייצגים את הטבלאות"
+  answer: 2
+  explanation: "מכיוון שה-Services תלויים בממשק ולא במימוש, מספיק לכתוב `MongoProductRepository` שמממש את אותו ממשק ולרשום אותו במקום הקודם. זו המטרה של שכבת נתונים מבודדת: שינוי טכנולוגי נשאר בשכבה אחת."
+  optionExplanations:
+    "0": "ה-Services מכירים רק את הממשק, ולכן הם לא יודעים איזה מסד נמצא מאחוריו."
+    "1": "בארכיטקטורה שכבתית טובה, החלפת מסד נוגעת רק בשכבת הנתונים."
+    "3": "המודלים מייצגים את הנתונים העסקיים, לא טבלאות של מסד מסוים. השאילתות נמצאות ב-Repository."
+
+- id: cs.software-design.layers.015
+  type: single
+  difficulty: 3
+  prompt: "מה הבעיה העיקרית בתכנון של `OrderService`?"
+  code: |
+    public class OrdersController
+    {
+        private readonly OrderService _service;
+
+        public OrdersController() => _service = new OrderService(this);
+
+        public void ShowError(string message) => Console.WriteLine($"Error: {message}");
+
+        public void Submit(int quantity) => _service.Place(quantity);
+    }
+
+    public class OrderService
+    {
+        private readonly OrdersController _controller;
+
+        public OrderService(OrdersController controller) => _controller = controller;
+
+        public void Place(int quantity)
+        {
+            if (quantity <= 0)
+            {
+                _controller.ShowError("Quantity must be positive");
+                return;
+            }
+            Console.WriteLine($"Placed {quantity}");
+        }
+    }
+  options:
+    - "חסרה בדיקה שהכמות קטנה מ-1000"
+    - "השכבה העסקית תלויה בשכבת הממשק: זו תלות הפוכה ומעגלית, ואי אפשר להשתמש ב-`OrderService` בלי Controller"
+    - "`OrderService` צריכה לרשת מ-`OrdersController` כדי לקרוא ל-`ShowError`"
+    - "`ShowError` צריכה להיות `private`"
+  answer: 1
+  explanation: "ה-Service מחזיק הפניה ל-Controller ומחליט איך להציג שגיאה, ולכן אי אפשר להפעיל אותו מ-API אחר או מבדיקה בלי Controller. נכון שה-Service יזרוק חריגה (למשל `ArgumentException`) או יחזיר תוצאה, וה-Controller יחליט מה להציג. התלות צריכה להיות בכיוון אחד בלבד: מהממשק אל הלוגיקה."
+  optionExplanations:
+    "0": "זו דרישה עסקית שלא הוגדרה, לא בעיה בתכנון השכבות."
+    "2": "שירות אינו סוג של Controller. ירושה רק תחזק את הצימוד בין השכבות."
+    "3": "אז ה-Service לא יוכל לקרוא לה בכלל. הבעיה היא שהוא קורא לה מלכתחילה."
+
+- id: cs.software-design.layers.016
+  type: single
+  difficulty: 3
+  prompt: "לאן נכון להעביר את הבדיקה שהקופון קיים ובתוקף ואת חישוב ההנחה?"
+  code: |
+    public class Coupon
+    {
+        public string Code { get; set; }
+        public decimal Percent { get; set; }
+        public DateTime ExpiresAt { get; set; }
+    }
+
+    public interface ICouponRepository
+    {
+        Coupon FindByCode(string code);
+    }
+
+    public class CheckoutController
+    {
+        private readonly ICouponRepository _coupons;
+
+        public CheckoutController(ICouponRepository coupons) => _coupons = coupons;
+
+        public string ApplyCoupon(decimal subtotal, string code)
+        {
+            var coupon = _coupons.FindByCode(code);
+            if (coupon == null || coupon.ExpiresAt < DateTime.Now)
+                return "Invalid coupon";
+            decimal total = subtotal * (1 - coupon.Percent / 100);
+            return $"Total: {total:F2}";
+        }
+    }
+  options:
+    - "למתודה ב-`CheckoutService` שמקבלת `ICouponRepository` בבנאי ומחזירה את הסכום אחרי ההנחה"
+    - "למתודה במחלקה `Coupon` שתשלוף את עצמה ממסד הנתונים לפי הקוד"
+    - "למימוש של `ICouponRepository`, כדי שהשאילתה תחזיר כבר את הסכום הסופי"
+    - "להשאיר אותן ב-Controller, כי שם מתקבל הקלט מהמשתמש"
+  answer: 0
+  explanation: "בדיקת תוקף וחישוב הנחה הם כללים עסקיים, וצריך גם לשלוף את הקופון. מי שמתאם בין כלל עסקי לגישה לנתונים הוא ה-Service. ה-Controller יקרא לשירות ויעצב את התשובה. השירות עצמו יכול להיעזר במתודה פשוטה כמו `coupon.IsExpired(now)`, אבל המודל לא ניגש למסד."
+  optionExplanations:
+    "1": "מודל שניגש בעצמו למסד מערבב את שכבת הנתונים בתוך שכבת המודלים."
+    "2": "ה-Repository אחראי רק על שמירה ושליפה. חישוב הנחה בתוכו מסתיר כלל עסקי בשכבת הנתונים."
+    "3": "כך הכלל נשאר בשכבת הממשק, ואפליקציה אחרת תצטרך לשכפל אותו."

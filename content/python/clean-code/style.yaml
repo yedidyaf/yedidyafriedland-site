@@ -1,0 +1,280 @@
+- id: py.clean-code.style.001
+  type: cleaner
+  difficulty: 3
+  prompt: "`is_valid` הוא תמיד ערך בוליאני. איזו גרסה כתובה לפי ההמלצות של PEP 8?"
+  options:
+    - |
+      if is_valid == True:
+          save(record)
+    - |
+      if is_valid is True:
+          save(record)
+    - |
+      if is_valid:
+          save(record)
+  answer: 2
+  explanation: "`is_valid` כבר בוליאני, ולכן השוואה ל-`True` רק מוסיפה מילים. PEP 8 אומר במפורש לא להשוות ערך בוליאני ל-`True` עם `==`, ומגדיר את ההשוואה עם `is` כגרועה עוד יותר. `if is_valid:` נקרא כמו משפט."
+  optionExplanations:
+    "0": "`== True` מיותר, ו-PEP 8 מציין אותו כצורה שגויה."
+    "1": "`is True` בודק זהות של אובייקט, ו-PEP 8 מגדיר אותו כגרוע יותר מ-`== True`."
+
+- id: py.clean-code.style.002
+  type: single
+  difficulty: 1
+  prompt: איזו שורה כתובה לפי מוסכמות השמות של PEP 8?
+  options:
+    - "`class shopping_cart:`"
+    - "`def CalculateTotal(items):`"
+    - "`MAX_RETRIES = 3`"
+    - "`userName = \"dana\"`"
+  answer: 2
+  explanation: "לפי PEP 8: פונקציות ומשתנים נכתבים ב-snake_case (`calculate_total`, `user_name`), מחלקות ב-CapWords (`ShoppingCart`), וקבועים ברמת המודול באותיות גדולות עם קווים תחתונים (`MAX_RETRIES`)."
+  optionExplanations:
+    "0": "שם של מחלקה נכתב ב-CapWords: `ShoppingCart`."
+    "1": "שם של פונקציה נכתב ב-snake_case: `calculate_total`."
+    "3": "camelCase אינו מקובל בפייתון. שם של משתנה נכתב ב-snake_case: `user_name`."
+
+- id: py.clean-code.style.003
+  type: cleaner
+  difficulty: 1
+  prompt: "איזו גרסה של `area` כתובה לפי PEP 8?"
+  options:
+    - |
+      def area( width,height = 1 ):
+          return width * height
+    - |
+      def area(width, height=1):
+          return width * height
+  answer: 1
+  explanation: "PEP 8 קובע: בלי רווחים בתוך סוגריים, רווח אחד אחרי פסיק, ובלי רווחים סביב `=` של ערך ברירת מחדל או של ארגומנט בשם. כשכולם כותבים באותו סגנון, העין מתמקדת בתוכן."
+  optionExplanations:
+    "0": "יש רווחים מיותרים בתוך הסוגריים וסביב `=`, וחסר רווח אחרי הפסיק."
+
+- id: py.clean-code.style.004
+  type: single
+  difficulty: 2
+  prompt: לפי PEP 8, באיזה סדר מופיעות קבוצות הייבוא בראש הקובץ?
+  options:
+    - "כל הייבואים יחד, בסדר אלפביתי, בלי הפרדה"
+    - "ספרייה סטנדרטית, אחר כך ספריות צד שלישי, ואחר כך מודולים מקומיים של הפרויקט, עם שורה ריקה בין הקבוצות"
+    - "מודולים מקומיים של הפרויקט קודם, כי הם החשובים ביותר"
+    - "ספריות צד שלישי קודם, ואחריהן הספרייה הסטנדרטית"
+  answer: 1
+  explanation: "הסדר הוא מהכללי לפרטי: `import os`, אחר כך `import requests`, ואחר כך `from shop import models`. השורה הריקה בין הקבוצות מראה במבט אחד במה הקובץ תלוי ומאיפה כל שם מגיע."
+  optionExplanations:
+    "0": "סדר אלפביתי מקובל בתוך כל קבוצה, אבל הקבוצות עצמן מופרדות."
+    "2": "המודולים המקומיים מופיעים אחרונים, לא ראשונים."
+    "3": "הספרייה הסטנדרטית מופיעה לפני ספריות צד שלישי."
+
+- id: py.clean-code.style.005
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה של הייבוא מ-`math` נקייה יותר?"
+  options:
+    - |
+      from math import *
+
+      print(sqrt(16) + floor(2.5))
+    - |
+      from math import floor, sqrt
+
+      print(sqrt(16) + floor(2.5))
+    - |
+      import math, json
+
+      print(math.sqrt(16) + math.floor(2.5))
+  answer: 1
+  explanation: "ייבוא מפורש של השמות שבשימוש מראה בדיוק מאיפה מגיעים `sqrt` ו-`floor`. ייבוא כוכבית (Wildcard Import) מכניס לקובץ עשרות שמות בלי שרואים אותם, ועלול לדרוס שמות קיימים בשקט."
+  optionExplanations:
+    "0": "`import *` מסתיר מאיפה כל שם מגיע, ו-PEP 8 ממליץ להימנע ממנו."
+    "2": "PEP 8 ממליץ על ייבוא אחד בכל שורה, ו-`json` מיובא בלי שימוש."
+
+- id: py.clean-code.style.006
+  type: single
+  difficulty: 1
+  prompt: מה האורך המרבי של שורת קוד לפי PEP 8?
+  options:
+    - "79 תווים"
+    - "120 תווים"
+    - "100 תווים"
+    - "אין מגבלה, כי מסכים רחבים מספיק"
+  answer: 0
+  explanation: "PEP 8 ממליץ על 79 תווים לשורת קוד (ו-72 לטקסט של הערות ומחרוזות תיעוד). שורות קצרות מאפשרות לפתוח שני קבצים זה לצד זה ולקרוא השוואה בין גרסאות (Diff) בלי גלילה הצידה. צוותים רבים קובעים מגבלה אחרת, אבל ההמלצה של PEP 8 עצמו היא 79."
+  optionExplanations:
+    "1": "120 היא מגבלה שצוותים מסוימים בוחרים, לא ההמלצה של PEP 8."
+    "2": "PEP 8 מאפשר לצוותים להגיע עד 99, אבל ברירת המחדל שלו היא 79."
+    "3": "גם במסך רחב, שורה ארוכה קשה לקריאה וקשה להשוואה בין גרסאות."
+
+- id: py.clean-code.style.007
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה של שבירת השורה הארוכה כתובה לפי PEP 8?
+  options:
+    - |
+      total = base_price * quantity + \
+          shipping_cost - \
+          discount
+    - |
+      total = (base_price * quantity
+               + shipping_cost
+               - discount)
+  answer: 1
+  explanation: "PEP 8 מעדיף המשך שורה בתוך סוגריים על פני לוכסן הפוך (`\\`), ומעדיף לשבור לפני אופרטור, כך שכל שורה מתחילה בפעולה שהיא מבצעת. כך קל לראות במבט אחד מה מחברים ומה מחסירים."
+  optionExplanations:
+    "0": "לוכסן הפוך בסוף שורה שביר: רווח אחד אחריו גורם לשגיאה. בנוסף, האופרטורים בסוף השורות קשים לסריקה."
+
+- id: py.clean-code.style.008
+  type: single
+  difficulty: 1
+  prompt: איזו הערה מוסיפה ערך לקוד?
+  options:
+    - "`i += 1  # increment i`"
+    - "`# loop over the users` מעל `for user in users:`"
+    - "`# The payment API rejects the first call after idle, so we retry once`"
+    - "`x = x * 2  # multiply x by 2`"
+  answer: 2
+  explanation: "הערה טובה מסבירה למה, מידע שאי אפשר לקרוא מהקוד עצמו. ההערה על ה-API מסבירה החלטה שנראית מוזרה בלי הקשר. שאר ההערות חוזרות במילים על מה שהקוד כבר אומר."
+  optionExplanations:
+    "0": "ההערה חוזרת על הקוד מילה במילה."
+    "1": "`for user in users:` כבר אומר בדיוק את זה."
+    "3": "ההערה מתרגמת את הקוד לאנגלית בלי להסביר למה מכפילים."
+
+- id: py.clean-code.style.009
+  type: truefalse
+  difficulty: 1
+  prompt: PEP 8 ממליץ על 4 רווחים לכל רמת הזחה, ולא על טאבים.
+  answer: true
+  explanation: "PEP 8 קובע 4 רווחים לכל רמת הזחה (Indentation), ומעדיף רווחים על טאבים. בפייתון ההזחה היא חלק מהתחביר, ולכן עקביות בה חשובה במיוחד: ערבוב של טאבים ורווחים עלול לגרום ל-`TabError`."
+
+- id: py.clean-code.style.010
+  type: bug
+  difficulty: 1
+  prompt: הפונקציה אמורה להחזיר את סכום כל המחירים ברשימה. באיזו שורה הבאג?
+  code: |
+    def total(prices):
+        result = 0
+        for price in prices:
+            result += price
+            return result
+  answer: 5
+  explanation: "בפייתון ההזחה קובעת את המבנה. `return` מוזח בתוך הלולאה, ולכן הפונקציה חוזרת אחרי המחיר הראשון. צריך להזיח אותו לרמה של ה-`for`, כדי שירוץ אחרי שהלולאה מסתיימת."
+  fixed: |
+    def total(prices):
+        result = 0
+        for price in prices:
+            result += price
+        return result
+
+- id: py.clean-code.style.011
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר `\"no discount\"` רק כשלא הועברה הנחה בכלל (`None`). הנחה של `0` היא ערך תקין, ועבורה צריך לחזור `\"0% off\"`. באיזו שורה הבאג?"
+  code: |
+    def describe_discount(discount=None):
+        if not discount:
+            return "no discount"
+        return f"{discount}% off"
+  answer: 2
+  explanation: "`not discount` נכון גם עבור `0`, כי `0` הוא ערך falsy. כשרוצים לבדוק אם ערך הוא `None`, PEP 8 ממליץ לכתוב `is None`. זה גם מדויק וגם מבהיר לקורא מה בדיוק בודקים."
+  fixed: |
+    def describe_discount(discount=None):
+        if discount is None:
+            return "no discount"
+        return f"{discount}% off"
+
+- id: py.clean-code.style.012
+  type: cleaner
+  difficulty: 2
+  prompt: "`items` היא תמיד רשימה. איזו גרסה של `describe` כתובה לפי PEP 8?"
+  options:
+    - |
+      def describe(items):
+          if not items:
+              return "empty"
+          return f"{len(items)} items"
+    - |
+      def describe(items):
+          if len(items) == 0:
+              return "empty"
+          return f"{len(items)} items"
+  answer: 0
+  explanation: "רשימה ריקה היא ערך falsy, ו-PEP 8 ממליץ להשתמש בזה ישירות: `if not items:`. הבדיקה קצרה יותר ונקראת כמו משפט: «אם אין פריטים»."
+  optionExplanations:
+    "1": "`len(items) == 0` עובד, אבל PEP 8 ממליץ לבדוק רצף ריק לפי ערך האמת שלו, ולא לפי האורך שלו."
+
+- id: py.clean-code.style.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    def floor(x):
+        return "my floor"
+
+
+    from math import *
+
+    print(floor(2.7))
+  options: ["my floor", "2", "2.7", "3"]
+  answer: 1
+  explanation: "`from math import *` מייבא גם את `floor` של `math` ודורס בשקט את הפונקציה שהוגדרה קודם. `math.floor(2.7)` מחזירה `2`. זו בדיוק הסכנה בייבוא כוכבית (Wildcard Import): לא רואים אילו שמות נכנסו. לכן PEP 8 ממליץ על ייבוא מפורש, וגם על ייבוא בראש הקובץ."
+  optionExplanations:
+    "0": "ה-`import` רץ אחרי ה-`def`, ולכן השם `floor` מצביע עכשיו על הפונקציה של `math`."
+    "2": "`floor` מעגלת כלפי מטה למספר שלם."
+    "3": "`floor` מעגלת כלפי מטה, לא למספר השלם הקרוב."
+
+- id: py.clean-code.style.014
+  type: single
+  difficulty: 2
+  prompt: איפה מקובל בפייתון לתעד מה פונקציה עושה, מה הפרמטרים שלה ומה היא מחזירה?
+  options:
+    - "בהערת `#` מעל שורת ה-`def`"
+    - "במחרוזת תיעוד (Docstring) בין שלוש מירכאות, כהוראה הראשונה בגוף הפונקציה"
+    - "בהערה בסוף הפונקציה, אחרי ה-`return`"
+    - "בשם הפונקציה עצמו, גם אם הוא יוצא ארוך מאוד"
+  answer: 1
+  explanation: "מחרוזת תיעוד (Docstring) היא חלק מהפונקציה עצמה: `help(func)` מציג אותה, ועורכי קוד מראים אותה כשמרחפים מעל קריאה. המוסכמות שלה מוגדרות ב-PEP 257. הערת `#` נעלמת ברגע שהקוד רץ."
+  optionExplanations:
+    "0": "הערת `#` לא נשמרת בפונקציה, ולכן `help` וכלי פיתוח לא יכולים להציג אותה."
+    "2": "הערה אחרי ה-`return` רחוקה מהחתימה, וגם `help` לא יציג אותה."
+    "3": "שם טוב מסביר מה הפונקציה עושה, אבל הוא לא מקום לפרט פרמטרים וערכי החזרה."
+
+- id: py.clean-code.style.015
+  type: single
+  difficulty: 3
+  prompt: "מה PEP 8 אומר על השורה `square = lambda x: x * x`?"
+  options:
+    - "שזו הדרך המומלצת להגדיר פונקציה קצרה של שורה אחת"
+    - "שזה אסור ויגרום ל-`SyntaxError`"
+    - "שעדיף להגדיר אותה עם `def square(x):`. `lambda` נועדה לפונקציה בלי שם, ובהודעות שגיאה (Traceback) יופיע `<lambda>` במקום `square`"
+    - "שצריך לכתוב את השם באותיות גדולות, `SQUARE`, כי הוא לא משתנה"
+  answer: 2
+  explanation: "`lambda` נועדה לפונקציה קטנה בלי שם, שמעבירים ישירות, למשל `key=lambda p: p.price`. ברגע שנותנים לה שם בהשמה, `def` עדיף: השם יופיע בהודעות שגיאה, ואפשר להוסיף מחרוזת תיעוד. PEP 8 אומר זאת במפורש."
+  optionExplanations:
+    "0": "PEP 8 ממליץ במפורש על `def` במקום השמה של `lambda` למשתנה."
+    "1": "הקוד תקין תחבירית ורץ. זו המלצת סגנון, לא שגיאה."
+    "3": "זו פונקציה, לא קבוע, ולכן אין סיבה לאותיות גדולות."
+
+- id: py.clean-code.style.016
+  type: cleaner
+  difficulty: 2
+  prompt: "איזו גרסה של ההמתנה בין קריאות ל-API מתועדת טוב יותר?"
+  options:
+    - |
+      import time
+
+      # sleep for 1 second
+      time.sleep(1)
+    - |
+      import time
+
+      time.sleep(1)  # sleep
+    - |
+      import time
+
+      # The weather API allows only one request per second
+      time.sleep(1)
+  answer: 2
+  explanation: "`time.sleep(1)` כבר אומר שישנים שנייה. מה שהקורא לא יכול לדעת מהקוד הוא למה. ההערה על המגבלה של ה-API מונעת ממפתח הבא למחוק את ההמתנה כדי «לשפר ביצועים»."
+  optionExplanations:
+    "0": "ההערה חוזרת על הקוד במילים, ולא מסבירה למה צריך לחכות."
+    "1": "ההערה `# sleep` לא מוסיפה דבר על מה שכבר כתוב בשורה."

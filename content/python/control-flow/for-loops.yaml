@@ -1,0 +1,256 @@
+- id: py.control-flow.for-loops.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    for ch in "abc":
+        print(ch)
+  options: ["a\nb\nc", "abc", "0\n1\n2", "a b c"]
+  answer: 0
+  explanation: "לולאת `for` עוברת ישירות על האיברים של רצף (Sequence). במחרוזת האיברים הם התווים, ולכן `ch` מקבל בכל סיבוב תו אחד, ו-`print` מדפיס כל תו בשורה נפרדת."
+  optionExplanations:
+    "1": "`print` נקרא שלוש פעמים, פעם בכל סיבוב, וכל קריאה מסתיימת בירידת שורה."
+    "2": "`ch` מקבל את התווים עצמם, לא את האינדקסים שלהם. לאינדקסים צריך `enumerate` או `range`."
+
+- id: py.control-flow.for-loops.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    total = 0
+    for i in range(5):
+        total += i
+    print(total)
+  options: ["10", "15", "5", "4"]
+  answer: 0
+  explanation: "`range(5)` מייצר את המספרים 0 עד 4: מתחיל ב-0, והסוף 5 לא נכלל. הסכום הוא 0 + 1 + 2 + 3 + 4 = 10."
+  optionExplanations:
+    "1": "`15` הוא הסכום של 1 עד 5. אבל `range(5)` מתחיל ב-0 ולא כולל את 5."
+    "2": "`5` הוא מספר הסיבובים, לא סכום הערכים."
+    "3": "`4` הוא הערך האחרון של `i`, אבל `total` צובר את כל הערכים."
+
+- id: py.control-flow.for-loops.003
+  type: single
+  difficulty: 2
+  prompt: "איזו קריאה ל-`range` מייצרת בדיוק את המספרים 2, 5, 8?"
+  options: ["`range(2, 9, 3)`", "`range(2, 8, 3)`", "`range(2, 12, 3)`", "`range(8, 2, -3)`"]
+  answer: 0
+  explanation: "`range(start, stop, step)` מתחיל ב-`start`, מתקדם בקפיצות של `step`, ועוצר לפני `stop`. עם `range(2, 9, 3)` מקבלים 2, 5, 8, והמספר הבא, 11, כבר מעבר לגבול."
+  optionExplanations:
+    "1": "הגבול `8` לא נכלל, ולכן מתקבלים רק 2 ו-5."
+    "2": "הגבול 12 מאפשר גם את 11, ולכן מתקבלים 2, 5, 8, 11."
+    "3": "קפיצה שלילית סופרת לאחור ועוצרת לפני 2, ולכן מתקבלים 8 ו-5 בלבד, ובסדר הפוך."
+
+- id: py.control-flow.for-loops.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for i in range(5, 0, -2):
+        print(i)
+  options: ["5\n3\n1", "5\n3", "4\n2", "5\n3\n1\n-1"]
+  answer: 0
+  explanation: "קפיצה שלילית גורמת ל-`range` לספור לאחור: מתחילים ב-5 ויורדים ב-2 בכל פעם. גם כאן הגבול `0` לא נכלל, ולכן אחרי 1 הלולאה נעצרת."
+  optionExplanations:
+    "1": "1 עדיין גדול מהגבול 0, ולכן הוא נכלל."
+    "2": "ההתחלה, 5, כן נכללת. רק הגבול לא נכלל."
+    "3": "בספירה לאחור עוצרים לפני שמגיעים לגבול או עוברים אותו, ולכן -1 לא נכלל."
+
+- id: py.control-flow.for-loops.005
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    names = ["Dana", "Avi", "Noa"]
+    for i, name in enumerate(names, start=1):
+        print(i, name)
+  options: ["1 Dana\n2 Avi\n3 Noa", "0 Dana\n1 Avi\n2 Noa", "Dana 1\nAvi 2\nNoa 3", "(1, 'Dana')\n(2, 'Avi')\n(3, 'Noa')"]
+  answer: 0
+  explanation: "`enumerate` מחזיר בכל סיבוב זוג של מונה ואיבר, ופירוק (Unpacking) בכותרת הלולאה מכניס אותם ל-`i` ול-`name`. הפרמטר `start=1` קובע שהמונה יתחיל ב-1 במקום ב-0."
+  optionExplanations:
+    "1": "זו ברירת המחדל של `enumerate`, אבל כאן `start=1` מזיז את תחילת הספירה."
+    "3": "הזוג מפורק לשני משתנים, ו-`print` מקבל שני ארגומנטים נפרדים ולא טאפל."
+
+- id: py.control-flow.for-loops.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    letters = ["a", "b", "c"]
+    numbers = [1, 2]
+    for letter, number in zip(letters, numbers):
+        print(letter * number)
+  options: ["a\nbb", "a\nbb\nc", "a\nbb\nValueError", "a1\nb2"]
+  answer: 0
+  explanation: "`zip` עובר על כמה רצפים במקביל ומחזיר בכל סיבוב זוג של איברים מאותו מיקום. הוא עוצר כשהרצף הקצר ביותר נגמר, ולכן `\"c\"` לא מגיע ללולאה ואין שגיאה."
+  optionExplanations:
+    "1": "ל-`\"c\"` אין בן זוג ב-`numbers`, ולכן `zip` לא מייצר עבורו סיבוב."
+    "2": "`zip` לא זורק שגיאה כשהאורכים שונים. הוא פשוט עוצר בקצר ביותר."
+    "3": "הכפלת מחרוזת במספר שלם חוזרת עליה, ולא מצמידה אליה את המספר."
+
+- id: py.control-flow.for-loops.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for i in range(1, 4):
+        for j in range(i, 3):
+            print(i, j)
+  options: ["1 1\n1 2\n2 2", "1 1\n1 2\n2 2\n3 3", "1 1\n1 2\n1 3\n2 2\n2 3\n3 3", "1 2\n2 2"]
+  answer: 0
+  explanation: "בלולאות מקוננות (Nested Loops) הלולאה הפנימית רצה מחדש בכל סיבוב של החיצונית. כאן גבולות הפנימית תלויים ב-`i`: עבור 1 היא `range(1, 3)`, עבור 2 היא `range(2, 3)`, ועבור 3 היא `range(3, 3)` הריק, ולכן בסיבוב האחרון לא מודפס כלום."
+  optionExplanations:
+    "1": "`range(3, 3)` ריק, כי ההתחלה כבר שווה לגבול שלא נכלל."
+    "2": "הגבול 3 של הלולאה הפנימית לא נכלל, ולכן `j` לעולם לא מגיע ל-3."
+    "3": "`range(i, 3)` מתחיל ב-`i` עצמו, ולכן עבור `i = 1` מודפס גם `1 1`."
+
+- id: py.control-flow.for-loops.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for i in range(3):
+        print(i)
+        i += 10
+  options: ["0\n1\n2", "0", "0\n11", "0\n10\n20"]
+  answer: 0
+  explanation: "בתחילת כל סיבוב `for` מציב ב-`i` את הערך הבא מ-`range`, ולכן שינוי של `i` בתוך הגוף לא משפיע על הסיבוב הבא. זה שונה מלולאת `for` בסגנון C, שבה המונה הוא משתנה שהלולאה מקדמת."
+  optionExplanations:
+    "1": "השינוי של `i` לא מקצר את הלולאה. `range` ממשיך לספק 1 ו-2."
+    "2": "זה מודל של לולאת C, שבה `i++` מקדם את אותו משתנה. בפייתון `i` פשוט מקבל את הערך הבא מ-`range`."
+
+- id: py.control-flow.for-loops.009
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for i in range(4):
+        square = i * i
+    print(i, square)
+  options: ["3 9", "4 16", "NameError", "0 0"]
+  answer: 0
+  explanation: "משתנה הלולאה ומשתנים שנוצרו בגוף שלה ממשיכים להתקיים אחרי הלולאה, ושומרים את הערך מהסיבוב האחרון. הערך האחרון של `range(4)` הוא 3, ולכן `i` הוא 3 ו-`square` הוא 9."
+  optionExplanations:
+    "1": "`range(4)` נעצר לפני 4, ולכן `i` לעולם לא מקבל את הערך 4."
+    "2": "בפייתון ללולאה אין טווח הכרה (Scope) משלה, ולכן המשתנים זמינים גם אחריה."
+
+- id: py.control-flow.for-loops.010
+  type: bug
+  difficulty: 1
+  prompt: "הפונקציה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. באיזו שורה הבאג?"
+  code: |
+    def sum_to(n):
+        total = 0
+        for i in range(1, n):
+            total += i
+        return total
+  answer: 3
+  explanation: "הגבול של `range` לא נכלל, ולכן `range(1, n)` עוצר ב-`n - 1`. עבור `n = 3` הפונקציה מחזירה 3 במקום 6. זו טעות של אחד (Off-by-one), והתיקון הוא `range(1, n + 1)`."
+  fixed: |
+    def sum_to(n):
+        total = 0
+        for i in range(1, n + 1):
+            total += i
+        return total
+
+- id: py.control-flow.for-loops.011
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה לספור בכמה מקומות `answers` ו-`key` זהים. באיזו שורה הבאג?"
+  code: |
+    def count_matches(answers, key):
+        matches = 0
+        for a, k in zip(answers, key):
+            if a == k:
+                matches += 1
+            return matches
+  answer: 6
+  explanation: "ה-`return` מוזח בתוך הלולאה, ולכן הפונקציה חוזרת כבר בסוף הסיבוב הראשון ובודקת זוג אחד בלבד. ההזחה קובעת מה שייך לגוף הלולאה: ה-`return` צריך להיות ברמה של ה-`for`, כדי לרוץ רק אחרי שהלולאה סיימה."
+  fixed: |
+    def count_matches(answers, key):
+        matches = 0
+        for a, k in zip(answers, key):
+            if a == k:
+                matches += 1
+        return matches
+
+- id: py.control-flow.for-loops.012
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה להחזיר את האינדקס של הערך הגדול ביותר ברשימה לא ריקה. באיזו שורה הבאג?"
+  code: |
+    def index_of_max(values):
+        best_index = 0
+        for i, value in enumerate(values):
+            if value > values[best_index]:
+                best_index = value
+        return best_index
+  answer: 5
+  explanation: "`enumerate` נותן גם את האינדקס `i` וגם את הערך `value`, ושורה 5 שומרת את הערך במקום את האינדקס. עבור `[1, 2]` הפונקציה מחזירה 2 במקום 1, ועבור `[3, 9, 4]` היא אפילו זורקת `IndexError`, כי בסיבוב הבא היא ניגשת ל-`values[9]`."
+  fixed: |
+    def index_of_max(values):
+        best_index = 0
+        for i, value in enumerate(values):
+            if value > values[best_index]:
+                best_index = i
+        return best_index
+
+- id: py.control-flow.for-loops.013
+  type: single
+  difficulty: 1
+  prompt: "אילו מספרים מייצר `range(3, 8)`?"
+  options: ["3, 4, 5, 6, 7", "3, 4, 5, 6, 7, 8", "4, 5, 6, 7, 8", "4, 5, 6, 7"]
+  answer: 0
+  explanation: "`range(start, stop)` כולל את ההתחלה ולא כולל את הסוף. לכן מתקבלים המספרים מ-3 עד 7, ובסך הכול `8 - 3 = 5` מספרים."
+  optionExplanations:
+    "1": "הסוף לא נכלל ב-`range`. זו הטעות הנפוצה ביותר."
+    "2": "ההתחלה כן נכללת, ורק הסוף לא נכלל."
+    "3": "ההתחלה, 3, נכללת."
+
+- id: py.control-flow.for-loops.014
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      names = ["Dana", "Avi"]
+      for i, name in enumerate(names, start=1):
+          print(i, name)
+    - |
+      names = ["Dana", "Avi"]
+      for i in range(len(names)):
+          print(i + 1, names[i])
+    - |
+      names = ["Dana", "Avi"]
+      i = 1
+      for name in names:
+          print(i, name)
+          i += 1
+  answer: 0
+  explanation: "כשצריך גם מספור וגם את האיבר, `enumerate` נותן את שניהם ישירות, בלי גישה לפי אינדקס ובלי מונה ידני. הפרמטר `start=1` חוסך את החישוב `i + 1`."
+  optionExplanations:
+    "1": "`range(len(...))` עם `names[i]` הוא דפוס שהועתק משפות אחרות. הוא ארוך יותר ופתוח לטעויות אינדקס."
+    "2": "מונה ידני מוסיף שתי שורות שאפשר לשכוח לעדכן, כשבדיוק לזה נועד `enumerate`."
+
+- id: py.control-flow.for-loops.015
+  type: single
+  difficulty: 2
+  prompt: "כמה פעמים תרוץ הפקודה `print` בקוד הבא?"
+  code: |
+    for i in range(4):
+        for j in range(0, 10, 3):
+            print(i, j)
+  options: ["16", "12", "40", "20"]
+  answer: 0
+  explanation: "בלולאה מקוננת, מספר ההרצות של הגוף הפנימי הוא מכפלת מספרי הסיבובים. החיצונית רצה 4 פעמים. `range(0, 10, 3)` מייצר 0, 3, 6, 9, כלומר 4 ערכים. סך הכול 4 × 4 = 16."
+  optionExplanations:
+    "1": "`range(0, 10, 3)` כולל גם את 9, ולכן יש בו 4 ערכים ולא 3."
+    "2": "זה מתעלם מהקפיצה של 3. הלולאה הפנימית לא רצה 10 פעמים."
+    "3": "בלולאות מקוננות מכפילים את מספרי הסיבובים, לא מחברים."
+
+- id: py.control-flow.for-loops.016
+  type: truefalse
+  difficulty: 2
+  prompt: "`range(10, 0)` מייצר את המספרים מ-10 עד 1 בסדר יורד."
+  answer: false
+  explanation: "ברירת המחדל של הקפיצה היא `1`, כלומר ספירה קדימה. כשההתחלה גדולה מהסוף אין מספרים בדרך, ו-`range(10, 0)` ריק. כדי לספור לאחור צריך קפיצה שלילית: `range(10, 0, -1)`."

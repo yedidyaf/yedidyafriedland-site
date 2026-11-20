@@ -1,0 +1,272 @@
+- id: py.control-flow.while-loops.001
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    n = 1
+    while n < 20:
+        n *= 2
+    print(n)
+  options: ["32", "16", "20", "64"]
+  answer: 0
+  explanation: "לולאת `while` בודקת את התנאי לפני כל סיבוב. `n` עובר את הערכים 2, 4, 8, 16, ואז `16 < 20` עדיין מתקיים, ולכן יש סיבוב נוסף ו-`n` הופך ל-32. רק אז התנאי נכשל. הלולאה נעצרת אחרי שהערך כבר עבר את הגבול, לא לפניו."
+  optionExplanations:
+    "1": "`16` הוא הערך האחרון שעדיין קטן מ-20, ולכן הוא מקבל עוד סיבוב ומוכפל ל-32."
+    "2": "הלולאה לא עוצרת בדיוק על הגבול. היא בודקת את התנאי ונעצרת כשהוא נכשל."
+    "3": "אחרי ש-`n` מגיע ל-32 התנאי נבדק שוב, נכשל, ולא מתבצעת הכפלה נוספת."
+
+- id: py.control-flow.while-loops.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    count = 3
+    while count > 0:
+        print(count)
+        count -= 1
+    print("go")
+  options: ["3\n2\n1\ngo", "3\n2\n1\n0\ngo", "2\n1\n0\ngo", "3\ngo"]
+  answer: 0
+  explanation: "המונה (Counter) `count` מתחיל ב-3 ויורד ב-1 בכל סיבוב. כשהוא מגיע ל-0, התנאי `count > 0` נכשל והלולאה נעצרת לפני שמודפס 0. אחר כך רצה השורה שאחרי הלולאה."
+  optionExplanations:
+    "1": "כש-`count` הוא 0 התנאי נבדק ונכשל, ולכן 0 לא מודפס."
+    "2": "ההדפסה באה לפני ההורדה, ולכן הערך הראשון שמודפס הוא 3."
+
+- id: py.control-flow.while-loops.003
+  type: single
+  difficulty: 1
+  prompt: "מה יקרה אם נמחק מהקוד את השורה `attempts += 1`?"
+  code: |
+    attempts = 0
+    while attempts < 3:
+        print("Trying...")
+        attempts += 1
+  options:
+    - "התוכנית תדפיס `Trying...` בלי סוף, כי התנאי יישאר אמת לתמיד"
+    - "הלולאה לא תרוץ אף פעם"
+    - "הלולאה תרוץ פעם אחת ותיעצר"
+    - "פייתון תזרוק שגיאה, כי המשתנה בתנאי לא משתנה בגוף הלולאה"
+  answer: 0
+  explanation: "לולאת `while` נעצרת רק כשהתנאי נעשה שקר, ולכן משהו בגוף שלה חייב לקרב אותה לעצירה. בלי קידום המונה `attempts` נשאר 0, התנאי `0 < 3` מתקיים תמיד, ונוצרת לולאה אינסופית (Infinite Loop)."
+  optionExplanations:
+    "1": "התנאי נבדק עם הערך ההתחלתי 0, ו-`0 < 3` מתקיים, ולכן הלולאה כן נכנסת."
+    "2": "אין שום דבר שעוצר את הלולאה אחרי סיבוב אחד. היא חוזרת לבדוק את התנאי, שעדיין מתקיים."
+    "3": "פייתון לא בודקת אם הלולאה תסתיים. לולאה אינסופית היא קוד חוקי לגמרי."
+
+- id: py.control-flow.while-loops.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    number = 4071
+    digits = 0
+    while number > 0:
+        number //= 10
+        digits += 1
+    print(digits, number)
+  options: ["4 0", "4 4071", "3 0", "4 4"]
+  answer: 0
+  explanation: "חלוקה שלמה ב-10 מורידה ספרה אחת מהסוף: 407, 40, 4, 0. כל סיבוב מוסיף 1 ל-`digits`, ולכן נספרו 4 ספרות. הלולאה משנה את `number` עצמו, ולכן בסוף הוא 0."
+  optionExplanations:
+    "1": "`number //= 10` משנה את המשתנה המקורי. אחרי הלולאה לא נשאר ממנו דבר."
+    "2": "גם הסיבוב שבו 4 הופך ל-0 נספר, כי התנאי `4 > 0` עדיין התקיים בתחילתו."
+    "3": "הלולאה ממשיכה עד שהתנאי `number > 0` נכשל, כלומר עד ש-`number` הוא 0."
+
+- id: py.control-flow.while-loops.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    balance = 100
+    months = 0
+    while balance < 150 and months < 5:
+        balance += 20
+        months += 1
+    print(balance, months)
+  options: ["160 3", "140 2", "200 5", "160 5"]
+  answer: 0
+  explanation: "תנאי עצירה (Stop Condition) עם `and` ממשיך רק כל עוד שני החלקים מתקיימים, ועוצר ברגע שאחד מהם נכשל. אחרי 3 חודשים `balance` הוא 160, ו-`160 < 150` נכשל, למרות ש-`months < 5` עדיין מתקיים."
+  optionExplanations:
+    "1": "כש-`balance` הוא 140 התנאי עדיין מתקיים, ולכן יש סיבוב נוסף."
+    "2": "זה היה נכון אם הלולאה הייתה עוצרת רק כששני התנאים נכשלים. עם `and` מספיק שאחד נכשל."
+    "3": "`months` גדל יחד עם `balance` באותו סיבוב, ולכן שניהם עצרו אחרי 3 סיבובים."
+
+- id: py.control-flow.while-loops.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    n = 6
+    steps = 0
+    while n != 1:
+        if n % 2 == 0:
+            n //= 2
+        else:
+            n = 3 * n + 1
+        steps += 1
+    print(steps)
+  options: ["8", "7", "9", "2"]
+  answer: 0
+  explanation: "זו דוגמה קלאסית ל-`while`: אין דרך לדעת מראש כמה סיבובים יידרשו, ולכן ממשיכים עד שתנאי העצירה מתקיים. המסלול הוא 6, 3, 10, 5, 16, 8, 4, 2, 1. אלה 8 מעברים, ו-`steps` גדל באחד בכל מעבר."
+  optionExplanations:
+    "1": "גם המעבר האחרון, מ-2 ל-1, נספר: `steps` גדל בסוף אותו סיבוב, ורק אז התנאי נבדק ונכשל."
+    "2": "`9` הוא מספר הערכים במסלול כולל ה-6 ההתחלתי, אבל `steps` גדל רק כשמתבצע מעבר."
+    "3": "זה המסלול אם תמיד מחלקים ב-2: 6, 3, 1. אבל 3 אי-זוגי, ולכן הוא הופך ל-10 והמסלול מתארך."
+
+- id: py.control-flow.while-loops.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    stack = [1, 2, 3]
+    total = 0
+    while stack:
+        total += stack.pop()
+        print(total)
+  options: ["3\n5\n6", "1\n3\n6", "6", "3\n5\n6\nIndexError"]
+  answer: 0
+  explanation: "`while stack:` בודק את ערך האמת של הרשימה: כל עוד היא לא ריקה, היא truthy. `pop()` מוציא את האיבר האחרון, ולכן מצטברים 3, אחר כך 2, ואז 1. כשהרשימה מתרוקנת היא falsy, והלולאה נעצרת בלי לנסות להוציא איבר מרשימה ריקה."
+  optionExplanations:
+    "1": "`pop()` בלי ארגומנט מוציא מהסוף, לא מההתחלה."
+    "2": "`print` נמצא בתוך גוף הלולאה, ולכן הוא רץ בכל סיבוב."
+    "3": "התנאי נבדק לפני כל סיבוב. רשימה ריקה היא falsy, ולכן `pop` לא נקרא עליה."
+
+- id: py.control-flow.while-loops.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    i = 0
+    total = 0
+    while i < 10:
+        i += 3
+        total += i
+    print(i, total)
+  options: ["12 30", "9 18", "12 18", "9 30"]
+  answer: 0
+  explanation: "המונה מקודם לפני שהוא נוסף ל-`total`, ולכן נוספים 3, 6, 9 ו-12. כש-`i` הוא 9 התנאי `9 < 10` עדיין מתקיים, ולכן יש סיבוב נוסף ו-`i` עובר את הגבול ל-12. הסכום הוא 3 + 6 + 9 + 12 = 30."
+  optionExplanations:
+    "1": "התנאי נבדק רק בתחילת סיבוב. בסיבוב שבו `i` היה 9 הוא קודם ל-12 ונוסף לסכום."
+    "2": "גם 12 נוסף לסכום, כי ההוספה באה אחרי הקידום באותו סיבוב."
+    "3": "אחרי שהסכום הגיע ל-30, `i` כבר היה 12 ולא 9."
+
+- id: py.control-flow.while-loops.009
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס את המספרים 1 עד 5. באיזו שורה הבאג?"
+  code: |
+    i = 1
+    while i <= 5:
+        print(i)
+    i += 1
+  answer: 4
+  explanation: "השורה `i += 1` לא מוזחת, ולכן היא לא חלק מגוף הלולאה. `i` נשאר 1 לתמיד, והתוכנית מדפיסה `1` בלולאה אינסופית. קידום המונה חייב להיות בתוך הלולאה."
+  fixed: |
+    i = 1
+    while i <= 5:
+        print(i)
+        i += 1
+
+- id: py.control-flow.while-loops.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר כמה שנים יעברו עד שסכום שצובר ריבית שנתית `rate` יגיע ל-`target`. באיזו שורה הבאג?"
+  code: |
+    def years_to_target(amount, target, rate):
+        years = 0
+        while amount > target:
+            amount *= 1 + rate
+            years += 1
+        return years
+  answer: 3
+  explanation: "תנאי של `while` מתאר מתי להמשיך, לא מתי לעצור. צריך להמשיך כל עוד הסכום עדיין לא הגיע ליעד, כלומר `amount < target`. עם `>` הלולאה לא רצה בכלל כשהסכום קטן מהיעד, והפונקציה מחזירה 0."
+  fixed: |
+    def years_to_target(amount, target, rate):
+        years = 0
+        while amount < target:
+            amount *= 1 + rate
+            years += 1
+        return years
+
+- id: py.control-flow.while-loops.011
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה להחזיר את החזקה הקטנה ביותר של 2 שגדולה או שווה ל-`n` (עבור `n` חיובי). למשל, עבור 5 היא צריכה להחזיר 8, ועבור 8 גם כן 8. באיזו שורה הבאג?"
+  code: |
+    def next_power_of_two(n):
+        power = 1
+        while power <= n:
+            power *= 2
+        return power
+  answer: 3
+  explanation: "טעות גבול: עם `<=` הלולאה ממשיכה גם כש-`power` כבר שווה ל-`n`, ולכן עבור 8 מתקבל 16. עבור 5 התוצאה נכונה במקרה, ולכן באג כזה מתגלה רק כשבודקים את ערך הגבול עצמו. צריך להמשיך רק כל עוד `power < n`."
+  fixed: |
+    def next_power_of_two(n):
+        power = 1
+        while power < n:
+            power *= 2
+        return power
+
+- id: py.control-flow.while-loops.012
+  type: single
+  difficulty: 1
+  prompt: "באיזה מצב לולאת `while` מתאימה יותר מלולאת `for`?"
+  options:
+    - "כשלא ידוע מראש כמה סיבובים יידרשו, למשל עד שהמשתמש מקליד ערך תקין"
+    - "כשעוברים על כל התווים של מחרוזת"
+    - "כשצריך לחזור על פעולה בדיוק 10 פעמים"
+    - "כשעוברים על שתי רשימות במקביל"
+  answer: 0
+  explanation: "`for` מתאימה כשיש רצף ידוע לעבור עליו או מספר סיבובים ידוע. `while` מתאימה כשהעצירה תלויה בתנאי שמשתנה תוך כדי ריצה, ואי אפשר לדעת מראש מתי הוא יתקיים."
+  optionExplanations:
+    "1": "מעבר על רצף הוא בדיוק התפקיד של `for ch in text`."
+    "2": "מספר סיבובים ידוע מראש נכתב בפשטות עם `for _ in range(10)`, בלי מונה ידני."
+    "3": "לזה יש `for` עם `zip`."
+
+- id: py.control-flow.while-loops.013
+  type: single
+  difficulty: 3
+  prompt: "בכל האפשרויות `n` מתחיל ב-`10`, וגוף הלולאה הוא `n -= 3`. עם איזה תנאי הלולאה לא תיעצר לעולם?"
+  options: ["`while n != 0:`", "`while n != 1:`", "`while n > 0:`", "`while n >= -5:`"]
+  answer: 0
+  explanation: "`n` עובר את הערכים 10, 7, 4, 1, -2, -5 וכן הלאה, ולעולם לא שווה בדיוק ל-0. לכן התנאי `n != 0` תמיד מתקיים. תנאי עצירה עם `!=` מסוכן כשהמשתנה קופץ בצעדים: בטוח יותר לכתוב תנאי עם `>` או `<`, שעוצר גם כשעוברים את הגבול."
+  optionExplanations:
+    "1": "`n` כן מגיע בדיוק ל-1 אחרי שלושה סיבובים, ואז הלולאה נעצרת."
+    "2": "אחרי 1 מגיע -2, ו-`-2 > 0` נכשל."
+    "3": "אחרי -5 מגיע -8, ו-`-8 >= -5` נכשל."
+
+- id: py.control-flow.while-loops.014
+  type: truefalse
+  difficulty: 1
+  prompt: "גוף של לולאת `while` תמיד רץ לפחות פעם אחת."
+  answer: false
+  explanation: "התנאי נבדק לפני הסיבוב הראשון. אם הוא שקר כבר בהתחלה, הגוף לא רץ אף פעם. לפייתון אין לולאת do-while, שבה הבדיקה מתבצעת בסוף הסיבוב."
+
+- id: py.control-flow.while-loops.015
+  type: truefalse
+  difficulty: 2
+  prompt: "הקוד הבא לא ידפיס כלום."
+  code: |
+    items = []
+    while items:
+        print("x")
+  answer: true
+  explanation: "תנאי של `while` לא חייב להיות השוואה. כל ערך נבדק לפי ערך האמת שלו, ורשימה ריקה היא falsy. לכן התנאי שקר כבר בבדיקה הראשונה, והגוף לא רץ."
+
+- id: py.control-flow.while-loops.016
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      for i in range(5):
+          print(i)
+    - |
+      i = 0
+      while i < 5:
+          print(i)
+          i += 1
+  answer: 0
+  explanation: "כשמספר הסיבובים ידוע מראש, `for` עם `range` מבטאת את הכוונה בשורה אחת. אין מונה לאתחל ואין קידום שאפשר לשכוח, ולכן אין סכנה ללולאה אינסופית."
+  optionExplanations:
+    "1": "מונה ידני ב-`while` דורש שלושה חלקים נפרדים: אתחול, תנאי וקידום. שכחה של אחד מהם היא באג נפוץ."

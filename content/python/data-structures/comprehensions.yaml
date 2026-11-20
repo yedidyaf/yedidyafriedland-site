@@ -1,0 +1,253 @@
+- id: py.data-structures.comprehensions.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    squares = [n * n for n in range(4)]
+    print(squares)
+  options: ["[0, 1, 4, 9]", "[1, 4, 9, 16]", "[0, 1, 4, 9, 16]", "[0, 2, 4, 6]"]
+  answer: 0
+  explanation: "הבנת רשימה (List Comprehension) בונה רשימה חדשה מביטוי שמחושב לכל איבר. `range(4)` נותן את 0 עד 3, כלומר בלי 4, וכל אחד מהם מועלה בריבוע."
+  optionExplanations:
+    "1": "`range(4)` מתחיל מ-0, לא מ-1."
+    "2": "`range(4)` לא כולל את 4, ולכן יש ארבעה איברים בלבד."
+    "3": "`n * n` הוא ריבוע, לא הכפלה ב-2."
+
+- id: py.data-structures.comprehensions.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    nums = [5, 12, 7, 20]
+    big = [n for n in nums if n > 10]
+    print(big)
+  options:
+    - "[12, 20]"
+    - "[False, True, False, True]"
+    - "[5, 7]"
+    - "[5, 12, 7, 20]"
+  answer: 0
+  explanation: "`if` בסוף ההבנה הוא מסנן (Filter): רק איברים שעומדים בתנאי נכנסים לרשימה החדשה. הביטוי שבהתחלה, `n`, קובע מה נכנס, ולכן נכנסים המספרים עצמם."
+  optionExplanations:
+    "1": "זה היה מתקבל מ-`[n > 10 for n in nums]`, שבו התנאי הוא הביטוי עצמו ולא מסנן."
+    "2": "אלה האיברים שלא עומדים בתנאי. המסנן משאיר את אלה שכן עומדים בו."
+    "3": "התנאי בסוף כן מסנן. בלעדיו הרשימה הייתה זהה למקור."
+
+- id: py.data-structures.comprehensions.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    nums = [1, 2, 3, 4]
+    labels = ["even" if n % 2 == 0 else "odd" for n in nums]
+    print(labels)
+  options:
+    - "['odd', 'even', 'odd', 'even']"
+    - "['even', 'even']"
+    - "['even', 'odd', 'even', 'odd']"
+    - "['odd', 'odd']"
+  answer: 0
+  explanation: "`if ... else` שמופיע לפני ה-`for` אינו מסנן, אלא חלק מהביטוי: הוא בוחר ערך לכל איבר. לכן לרשימה החדשה יש אותו מספר איברים כמו למקור. מסנן, לעומת זאת, נכתב אחרי ה-`for` ובלי `else`."
+  optionExplanations:
+    "1": "`if ... else` לפני ה-`for` לא מוריד איברים. כל מספר מקבל תווית."
+    "2": "1 אי־זוגי, ולכן התווית הראשונה היא `odd`."
+    "3": "אין כאן סינון. גם המספרים הזוגיים מקבלים תווית."
+
+- id: py.data-structures.comprehensions.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    words = ["hi", "hello", "hey"]
+    lengths = {w: len(w) for w in words}
+    print(lengths)
+  options:
+    - "{'hi': 2, 'hello': 5, 'hey': 3}"
+    - "[2, 5, 3]"
+    - "{2: 'hi', 5: 'hello', 3: 'hey'}"
+    - "{'hi', 'hello', 'hey'}"
+  answer: 0
+  explanation: "הבנת מילון (Dict Comprehension) נכתבת בסוגריים מסולסלים עם `key: value`. מה שמשמאל לנקודתיים הוא המפתח, ומה שמימין הוא הערך, ולכן כל מילה ממופה לאורך שלה."
+  optionExplanations:
+    "1": "סוגריים מסולסלים עם נקודתיים יוצרים מילון, לא רשימה."
+    "2": "המפתח הוא מה שמשמאל לנקודתיים, כלומר המילה `w`."
+    "3": "בלי נקודתיים זו הייתה הבנת קבוצה. כאן יש `key: value`, ולכן זה מילון."
+
+- id: py.data-structures.comprehensions.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    words = ["Cat", "cat", "DOG", "dog", "bird"]
+    unique = {w.lower() for w in words}
+    print(len(unique))
+  options: ["3", "5", "4", "2"]
+  answer: 0
+  explanation: "הבנת קבוצה (Set Comprehension) נכתבת בסוגריים מסולסלים בלי נקודתיים, והתוצאה היא קבוצה, ולכן כפילויות נעלמות. אחרי `lower` נשארות שלוש מילים שונות: `cat`, `dog` ו-`bird`."
+  optionExplanations:
+    "1": "התוצאה היא קבוצה, לא רשימה, ולכן ערכים זהים נשמרים פעם אחת."
+    "2": "`lower` הופכת את `DOG` ל-`dog`, ולכן גם הוא כפילות."
+    "3": "`bird` מופיע פעם אחת, אבל גם הוא נכנס לקבוצה."
+
+- id: py.data-structures.comprehensions.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    pairs = [("a", 1), ("b", 2), ("a", 3)]
+    d = {k: v for k, v in pairs}
+    print(d)
+  options:
+    - "{'a': 3, 'b': 2}"
+    - "{'a': 1, 'b': 2}"
+    - "{'b': 2, 'a': 3}"
+    - "{'a': [1, 3], 'b': 2}"
+  answer: 0
+  explanation: "הבנת מילון מבצעת השמה לכל זוג לפי הסדר. כשהמפתח `a` מופיע שוב, הערך שלו מוחלף ב-3, והמפתח נשאר במקום שבו נוסף לראשונה. כפילויות לא נאספות לרשימה."
+  optionExplanations:
+    "1": "השמה מאוחרת לאותו מפתח דורסת את הערך הקודם. הערך האחרון מנצח."
+    "2": "עדכון ערך לא מזיז את המפתח לסוף. `a` נוסף ראשון ונשאר ראשון."
+    "3": "מילון לא אוסף כמה ערכים לאותו מפתח מעצמו. לכל מפתח יש ערך אחד."
+
+- id: py.data-structures.comprehensions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    matrix = [[1, 2], [3, 4], [5]]
+    flat = [x for row in matrix for x in row]
+    print(flat)
+  options:
+    - "[1, 2, 3, 4, 5]"
+    - "[[1, 2], [3, 4], [5]]"
+    - "[1, 3, 5]"
+    - "NameError"
+  answer: 0
+  explanation: "כשיש כמה `for` בהבנה אחת, הם נקראים משמאל לימין, באותו סדר כמו לולאות מקוננות: הלולאה החיצונית על השורות, והפנימית על האיברים בכל שורה. כך משטחים רשימה מקוננת."
+  optionExplanations:
+    "1": "הביטוי שנכנס לרשימה הוא `x`, איבר בודד, לא `row`."
+    "2": "הלולאה הפנימית עוברת על כל האיברים בשורה, לא רק על הראשון."
+    "3": "הסדר כאן נכון: `row` מוגדר ב-`for` הראשון לפני שה-`for` השני משתמש בו. `NameError` הייתה נזרקת אילו הסדר היה הפוך."
+
+- id: py.data-structures.comprehensions.008
+  type: single
+  difficulty: 1
+  prompt: "איזה סוג אובייקט יוצר הביטוי `{x % 3 for x in range(10)}`?"
+  options: ["קבוצה (`set`)", "מילון (`dict`)", "רשימה (`list`)", "טאפל (`tuple`)"]
+  answer: 0
+  explanation: "סוגריים מסולסלים עם ביטוי אחד, בלי נקודתיים, יוצרים קבוצה. התוצאה כאן היא `{0, 1, 2}`. עם `key: value` הייתה נוצרת הבנת מילון, ועם סוגריים מרובעים הבנת רשימה."
+  optionExplanations:
+    "1": "מילון דורש `key: value` עם נקודתיים."
+    "2": "הבנת רשימה נכתבת בסוגריים מרובעים."
+    "3": "סוגריים עגולים יוצרים ביטוי מחולל (Generator Expression), לא טאפל, ובכל מקרה כאן הסוגריים מסולסלים."
+
+- id: py.data-structures.comprehensions.009
+  type: single
+  difficulty: 2
+  prompt: "איזו שורה יוצרת רשימה של **האורכים** של המילים ב-`words` שאורכן לפחות 3 בלבד?"
+  options:
+    - "`[len(w) for w in words if len(w) >= 3]`"
+    - "`[len(w) if len(w) >= 3 for w in words]`"
+    - "`[len(w) for w in words if len(w) >= 3 else 0]`"
+    - "`[w for w in words if len(w) >= 3]`"
+  answer: 0
+  explanation: "מסנן נכתב אחרי ה-`for` ובלי `else`. `if` לפני ה-`for` מותר רק כביטוי מלא עם `else`, ואז הוא בוחר ערך ולא מסנן."
+  optionExplanations:
+    "1": "`if` לפני ה-`for` חייב לבוא עם `else`. בלעדיו זו שגיאת תחביר."
+    "2": "מסנן שבא אחרי ה-`for` לא יכול לקבל `else`. זו שגיאת תחביר."
+    "3": "הסינון נכון, אבל נכנסות המילים עצמן ולא האורכים שלהן."
+
+- id: py.data-structures.comprehensions.010
+  type: single
+  difficulty: 2
+  prompt: מתי עדיף לכתוב לולאת `for` רגילה במקום הבנת רשימה?
+  options:
+    - "כשהלוגיקה כוללת כמה תנאים מקוננים או פעולות כמו הדפסה, והבנה אחת תסתיר מה קורה"
+    - "תמיד, כי הבנת רשימה איטית יותר מלולאה רגילה"
+    - "כשהרשימה שנוצרת ארוכה מ-100 איברים"
+    - "כשרוצים לסנן איברים לפי תנאי"
+  answer: 0
+  explanation: "הבנה נועדה לבטא בקריאות \"בנה רשימה מכל איבר, אולי עם סינון\". כשצריך כמה רמות של תנאים, משתני עזר או פעולות עם תופעות לוואי (Side Effects), לולאה רגילה קריאה יותר. הבנה שקשה לקרוא בשורה אחת פוגעת בקוד."
+  optionExplanations:
+    "1": "הבנת רשימה בדרך כלל מהירה מעט יותר מלולאה עם `append`, לא איטית יותר."
+    "2": "גודל הרשימה לא משנה את הבחירה. השיקול הוא קריאות."
+    "3": "סינון פשוט הוא בדיוק מה שהבנה עם `if` עושה היטב."
+
+- id: py.data-structures.comprehensions.011
+  type: truefalse
+  difficulty: 1
+  prompt: "הבנת רשימה, כמו `[p * 2 for p in prices]`, יוצרת רשימה חדשה ולא משנה את `prices`."
+  answer: true
+  explanation: "הבנה תמיד בונה אוסף חדש. הרשימה המקורית נשארת כפי שהייתה, וצריך לשמור את התוצאה במשתנה כדי להשתמש בה, למשל `prices = [p * 2 for p in prices]`."
+
+- id: py.data-structures.comprehensions.012
+  type: truefalse
+  difficulty: 2
+  prompt: "אחרי השורה `squares = [x * x for x in range(5)]`, המשתנה `x` מוגדר ומכיל את הערך 4."
+  answer: false
+  explanation: "בפייתון 3 להבנה יש טווח הכרה (Scope) משלה, ומשתנה הלולאה שלה לא \"דולף\" החוצה. אם `x` לא הוגדר קודם, גישה אליו אחרי השורה תזרוק `NameError`. זה שונה מלולאת `for` רגילה, שבה המשתנה נשאר עם הערך האחרון."
+
+- id: py.data-structures.comprehensions.013
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור לשמור את כל הציונים העוברים, כלומר 60 ומעלה. באיזו שורה הבאג?"
+  code: |
+    grades = [55, 80, 60, 42, 91]
+    passed = [g for g in grades if g > 60]
+    print(passed)
+  answer: 2
+  explanation: "\"60 ומעלה\" כולל את 60, אבל `g > 60` מסנן אותו החוצה, ומודפס `[80, 91]`. התנאי הנכון הוא `g >= 60`. זו טעות גבול (Off-by-one) קלאסית."
+  fixed: |
+    grades = [55, 80, 60, 42, 91]
+    passed = [g for g in grades if g >= 60]
+    print(passed)
+
+- id: py.data-structures.comprehensions.014
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור ליצור לוח 3 על 3 של אפסים, עם שורות עצמאיות, ולשים 1 רק במרכז. באיזו שורה הבאג?"
+  code: |
+    board = [[0] * 3] * 3
+    board[1][1] = 1
+    print(board)
+  answer: 1
+  explanation: "`* 3` על הרשימה החיצונית משכפל הפניה לאותה שורה, כך ששלוש השורות הן אותה רשימה, ו-1 מופיע במרכז של כל שורה. הבנת רשימה מריצה את `[0] * 3` מחדש בכל סיבוב, ולכן יוצרת שורה חדשה בכל פעם: `[[0] * 3 for _ in range(3)]`."
+  fixed: |
+    board = [[0] * 3 for _ in range(3)]
+    board[1][1] = 1
+    print(board)
+
+- id: py.data-structures.comprehensions.015
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      nums = [4, 7, 10, 3]
+      evens = [n for n in nums if n % 2 == 0]
+    - |
+      nums = [4, 7, 10, 3]
+      evens = []
+      for n in nums:
+          if n % 2 == 0:
+              evens.append(n)
+  answer: 0
+  explanation: "כשכל מה שהלולאה עושה הוא לבנות רשימה מסוננת, הבנת רשימה אומרת את זה בשורה אחת: מה נכנס, מאיפה, ובאיזה תנאי. אין רשימה ריקה שמתמלאת בהדרגה ואין `append`."
+  optionExplanations:
+    "1": "ארבע שורות של תבנית \"רשימה ריקה, לולאה, `append`\" עבור סינון פשוט שהבנה מבטאת ישירות."
+
+- id: py.data-structures.comprehensions.016
+  type: cleaner
+  difficulty: 3
+  prompt: "הקוד שולח קבלה על כל הזמנה ששולמה. `send_receipt` לא מחזירה ערך שימושי. איזו גרסה נקייה יותר?"
+  options:
+    - |
+      for order in orders:
+          if order.paid:
+              send_receipt(order)
+    - |
+      [send_receipt(order) for order in orders if order.paid]
+  answer: 0
+  explanation: "הבנת רשימה נועדה לבנות רשימה. כאן המטרה היא פעולה, תופעת לוואי (Side Effect), ולא רשימה, ולכן לולאה רגילה מבטאת את הכוונה בדיוק. זו דוגמה למקרה שבו הבנה פוגעת בקריאות."
+  optionExplanations:
+    "1": "ההבנה בונה רשימה של ערכי `None` שאף אחד לא משתמש בה, ומטעה את הקורא לחשוב שהתוצאה חשובה."

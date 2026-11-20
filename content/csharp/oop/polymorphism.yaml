@@ -1,0 +1,497 @@
+- id: cs.oop.polymorphism.001
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Animal a = new Dog();
+    a.Speak();
+
+    class Animal
+    {
+        public virtual void Speak() => Console.WriteLine("...");
+    }
+
+    class Dog : Animal
+    {
+        public override void Speak() => Console.WriteLine("Woof");
+    }
+  options: ["Woof", "...", "שגיאת קומפילציה", "לא יודפס כלום"]
+  answer: 0
+  explanation: "`Speak` מוגדרת `virtual` ונדרסת עם `override`. בזמן ריצה האובייקט הוא `Dog`, ולכן נקראת הגרסה של `Dog`, גם כשההפניה היא מטיפוס `Animal`."
+
+- id: cs.oop.polymorphism.002
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Animal a = new Cat();
+    a.Speak();
+
+    class Animal
+    {
+        public void Speak() => Console.WriteLine("Animal");
+    }
+
+    class Cat : Animal
+    {
+        public new void Speak() => Console.WriteLine("Meow");
+    }
+  options: ["Animal", "Meow", "שגיאת קומפילציה", "AnimalMeow"]
+  answer: 0
+  explanation: "עם `new` המתודה ב-`Cat` מסתירה את המתודה של הבסיס, אבל לא דורסת אותה. ההחלטה נעשית לפי טיפוס ההפניה (`Animal`), ולכן מודפס `Animal`."
+  optionExplanations:
+    "1": "`Meow` היה מודפס רק עם `virtual` ו-`override`, או אם ההפניה הייתה מטיפוס `Cat`."
+
+- id: cs.oop.polymorphism.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var shapes = new List<Shape> { new Circle(), new Square(), new Shape() };
+    foreach (var s in shapes)
+        Console.WriteLine(s.Name());
+
+    class Shape
+    {
+        public virtual string Name() => "Shape";
+    }
+
+    class Circle : Shape
+    {
+        public override string Name() => "Circle";
+    }
+
+    class Square : Shape
+    {
+        public override string Name() => "Square";
+    }
+  options: ["Circle\nSquare\nShape", "Shape\nShape\nShape", "Circle\nSquare", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "זה פולימורפיזם (Polymorphism): אותה קריאה `s.Name()` מפעילה גרסה שונה לפי הטיפוס האמיתי של כל אובייקט ברשימה. הרשימה מטיפוס `List<Shape>` יכולה להחזיק כל אובייקט שהוא `Shape`, כולל מחלקות יורשות."
+  optionExplanations:
+    "1": "עם `virtual` ו-`override` ההחלטה נעשית לפי האובייקט בזמן ריצה, לא לפי טיפוס הרשימה."
+    "2": "גם `new Shape()` הוא איבר ברשימה, והוא מדפיס את הגרסה של `Shape`."
+    "3": "אובייקט של מחלקה יורשת מתאים למקום שבו מצופה טיפוס הבסיס, ולכן אפשר להכניס `Circle` ל-`List<Shape>`."
+
+- id: cs.oop.polymorphism.004
+  type: single
+  difficulty: 1
+  prompt: "בקוד `Animal a = new Dog(); a.Speak();`, מה התנאי לכך שתרוץ הגרסה של `Speak` שמוגדרת ב-`Dog`?"
+  options:
+    - "`Speak` מוגדרת `virtual` (או `abstract`) ב-`Animal`, ו-`Dog` דורסת אותה עם `override`"
+    - "מספיק ש-`Dog` תגדיר מתודה `Speak` עם המילה `new`"
+    - "מספיק שהאובייקט נוצר עם `new Dog()`, בלי קשר להגדרת המתודות"
+    - "`Dog` צריכה להיות מוגדרת `sealed`"
+  answer: 0
+  explanation: "קישור דינמי (Dynamic Dispatch) קורה רק למתודות וירטואליות. `virtual` בבסיס מאפשר דריסה, ו-`override` ביורשת מבצע אותה. בלי זוג המילים האלה, הקומפיילר בוחר את המתודה לפי טיפוס ההפניה, `Animal`."
+  optionExplanations:
+    "1": "`new` מסתיר את המתודה של הבסיס ולא דורס אותה. דרך הפניה מטיפוס `Animal` תרוץ הגרסה של `Animal`."
+    "2": "כשהמתודה לא וירטואלית, הטיפוס האמיתי של האובייקט לא משפיע על הבחירה."
+    "3": "`sealed` רק מונע ירושה מ-`Dog`. הוא לא קשור לבחירת המתודה."
+
+- id: cs.oop.polymorphism.005
+  type: truefalse
+  difficulty: 1
+  prompt: "ב-C#, כמו ב-Java, כל מתודה של מחלקה היא וירטואלית כברירת מחדל, ומחלקה יורשת יכולה לדרוס אותה עם `override`."
+  answer: false
+  explanation: "ב-C# מתודות אינן וירטואליות כברירת מחדל. כדי לאפשר דריסה (Override) מחלקת הבסיס חייבת לסמן את המתודה `virtual` (או `abstract`). `override` על מתודה רגילה הוא שגיאת קומפילציה."
+
+- id: cs.oop.polymorphism.006
+  type: hierarchy
+  difficulty: 1
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה ישירות?"
+  code: |
+    class Notification
+    {
+        public virtual void Send() { }
+    }
+
+    class EmailNotification : Notification
+    {
+        public override void Send() { }
+    }
+
+    class SmsNotification : Notification { }
+    class UrgentEmail : EmailNotification { }
+
+    class NotificationCenter
+    {
+        private List<Notification> queue = new();
+    }
+  targets:
+    - id: Notification
+    - id: EmailNotification
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: EmailNotification
+      answer: Notification
+    - label: SmsNotification
+      answer: Notification
+      why: גם בלי override, SmsNotification יורשת מ-Notification ומשתמשת בגרסה שלה.
+    - label: UrgentEmail
+      answer: EmailNotification
+    - label: NotificationCenter
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: NotificationCenter מחזיקה תור של התראות (has-a) ושולחת אותן דרך הפניה מטיפוס הבסיס.
+    - label: Notification
+      answer: "object (אין מחלקת בסיס מפורשת)"
+  explanation: "כל ההתראות יורשות מ-`Notification`, ולכן אפשר להחזיק אותן ברשימה אחת מטיפוס הבסיס ולקרוא ל-`Send` בלי לדעת את הסוג המדויק. `NotificationCenter` לא יורשת מאף התראה: היא משתמשת בהן."
+
+- id: cs.oop.polymorphism.007
+  type: single
+  difficulty: 2
+  tags: [compile-error]
+  prompt: "למה השורה `a.Fetch();` לא מתקמפלת?"
+  code: |
+    Animal a = new Dog();
+    a.Fetch();
+
+    class Animal
+    {
+        public virtual void Speak() => Console.WriteLine("...");
+    }
+
+    class Dog : Animal
+    {
+        public void Fetch() => Console.WriteLine("Fetching");
+    }
+  options:
+    - "הקומפיילר בודק אילו מתודות זמינות לפי טיפוס ההפניה, `Animal`, ול-`Animal` אין `Fetch`"
+    - "`Fetch` לא מוגדרת `virtual`, ולכן אי אפשר לקרוא לה"
+    - "האובייקט שנוצר הוא בפועל `Animal` ולא `Dog`"
+    - "מתודות של מחלקה יורשת נגישות רק מתוך המחלקה עצמה"
+  answer: 0
+  explanation: "בזמן קומפילציה ידוע רק טיפוס ההפניה (`Animal`). האובייקט אכן `Dog`, אבל דרך `Animal` אפשר לקרוא רק למה ש-`Animal` מגדירה. כדי לקרוא ל-`Fetch` צריך המרה, למשל `if (a is Dog d) d.Fetch();`."
+  optionExplanations:
+    "1": "`virtual` נדרש רק לדריסה. מתודה רגילה של `Dog` נקראת בלי בעיה דרך הפניה מטיפוס `Dog`."
+    "2": "האובייקט הוא `Dog`. הבעיה היא טיפוס ההפניה, לא האובייקט."
+    "3": "`Fetch` מוגדרת `public`, ולכן נגישה מכל מקום דרך הפניה מטיפוס `Dog`."
+
+- id: cs.oop.polymorphism.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Animal a = new Cat();
+    Console.WriteLine(a.Name());
+    Dog d = (Dog)a;
+    Console.WriteLine("done");
+
+    class Animal
+    {
+        public virtual string Name() => "Animal";
+    }
+
+    class Dog : Animal
+    {
+        public override string Name() => "Dog";
+    }
+
+    class Cat : Animal
+    {
+        public override string Name() => "Cat";
+    }
+  options: ["Cat\nInvalidCastException", "Cat\ndone", "Animal\nInvalidCastException", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`a.Name()` מפעילה את הגרסה של `Cat`. ההמרה `(Dog)a` מתקמפלת, כי `Animal` יכול להיות `Dog`, אבל בזמן ריצה האובייקט הוא `Cat`, ולכן נזרקת `InvalidCastException`. המרה כלפי מטה (Downcast) בודקת את האובייקט האמיתי; `as` או `is` הם הדרך הבטוחה."
+  optionExplanations:
+    "1": "המרה לא משנה את האובייקט. `Cat` לא יכול להפוך ל-`Dog`, והתוכנית נעצרת לפני `done`."
+    "2": "`Name` וירטואלית ונדרסת ב-`Cat`, ולכן מודפס `Cat` ולא `Animal`."
+    "3": "המרה מטיפוס בסיס לטיפוס יורש מותרת בקומפילציה. הבדיקה נעשית רק בזמן ריצה."
+
+- id: cs.oop.polymorphism.009
+  type: hierarchy
+  difficulty: 2
+  prompt: לפי הקוד, בחרו לכל זוג את היחס ביניהם.
+  code: |
+    class Exporter
+    {
+        public virtual string Export(string data) => data;
+    }
+
+    class CsvExporter : Exporter
+    {
+        public override string Export(string data) => data.Replace(' ', ',');
+    }
+
+    class PdfExporter : Exporter
+    {
+        public override string Export(string data) => $"PDF[{data}]";
+    }
+
+    class ReportService
+    {
+        private readonly Exporter exporter;
+
+        public ReportService(Exporter exporter) => this.exporter = exporter;
+
+        public string Run() => exporter.Export("a b c");
+    }
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: none
+      desc: אין יחס ישיר
+  items:
+    - label: "CsvExporter ו-Exporter"
+      answer: is-a
+    - label: "PdfExporter ו-Exporter"
+      answer: is-a
+    - label: "ReportService ו-Exporter"
+      answer: has-a
+      why: ReportService מחזיקה שדה מטיפוס Exporter וקוראת לו, אבל היא לא סוג של Exporter.
+    - label: "PdfExporter ו-CsvExporter"
+      answer: none
+      why: שתיהן יורשות מאותו בסיס, אבל אף אחת לא יורשת מהשנייה ואף אחת לא מחזיקה את השנייה.
+  explanation: "`ReportService` מחזיקה הפניה מטיפוס הבסיס `Exporter`, ולכן אפשר להעביר לה `CsvExporter` או `PdfExporter`, והקריאה `Export` תפעיל את הגרסה המתאימה. כך פולימורפיזם והרכבה עובדים יחד. מחלקות אחיות לא קשורות זו לזו."
+
+- id: cs.oop.polymorphism.010
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס עמלה לכל אמצעי תשלום. עבור תשלום במזומן העמלה צריכה להיות 1, אבל מודפס 0. באיזו שורה הבאג?"
+  code: |
+    var payments = new List<Payment> { new CardPayment(), new CashPayment() };
+    foreach (var p in payments)
+        Console.WriteLine(p.Fee(100));
+
+    class Payment
+    {
+        public virtual decimal Fee(decimal amount) => 0;
+    }
+
+    class CardPayment : Payment
+    {
+        public override decimal Fee(decimal amount) => amount * 0.02m;
+    }
+
+    class CashPayment : Payment
+    {
+        public new decimal Fee(decimal amount) => 1;
+    }
+  answer: 17
+  fixed: |
+    var payments = new List<Payment> { new CardPayment(), new CashPayment() };
+    foreach (var p in payments)
+        Console.WriteLine(p.Fee(100));
+
+    class Payment
+    {
+        public virtual decimal Fee(decimal amount) => 0;
+    }
+
+    class CardPayment : Payment
+    {
+        public override decimal Fee(decimal amount) => amount * 0.02m;
+    }
+
+    class CashPayment : Payment
+    {
+        public override decimal Fee(decimal amount) => 1;
+    }
+  explanation: "`new` מסתיר את `Fee` של הבסיס במקום לדרוס אותה. בלולאה `p` הוא מטיפוס `Payment`, ולכן עבור `CashPayment` נקראת הגרסה של `Payment`, שמחזירה 0. עם `override` הקריאה דרך הבסיס תגיע לגרסה של `CashPayment`."
+
+- id: cs.oop.polymorphism.011
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Shape
+      {
+          public virtual double Area() => 0;
+      }
+
+      class Circle : Shape
+      {
+          public double Radius { get; init; }
+          public override double Area() => Math.PI * Radius * Radius;
+      }
+
+      class Square : Shape
+      {
+          public double Side { get; init; }
+          public override double Area() => Side * Side;
+      }
+    - |
+      class Shape
+      {
+          public double Area()
+          {
+              if (this is Circle c) return Math.PI * c.Radius * c.Radius;
+              if (this is Square s) return s.Side * s.Side;
+              return 0;
+          }
+      }
+
+      class Circle : Shape { public double Radius { get; init; } }
+
+      class Square : Shape { public double Side { get; init; } }
+  answer: 0
+  explanation: "בגרסה הפולימורפית כל צורה יודעת לחשב את השטח של עצמה. הוספת `Triangle` היא מחלקה חדשה עם `override`, בלי לגעת בקוד קיים. זה עקרון פתוח/סגור (Open/Closed)."
+  optionExplanations:
+    "1": "שרשרת בדיקות `is` מחליפה את הפולימורפיזם: מחלקת הבסיס צריכה להכיר כל יורשת, וכל צורה חדשה מחייבת לשנות את `Shape`. צורה ששוכחים להוסיף מחזירה 0 בשקט."
+
+- id: cs.oop.polymorphism.012
+  type: single
+  difficulty: 2
+  prompt: "מה המשמעות של `public sealed override void Speak()` במחלקה `Dog : Animal`?"
+  options:
+    - "`Dog` דורסת את `Speak`, ומחלקות שיורשות מ-`Dog` לא יכולות לדרוס אותה שוב"
+    - "אי אפשר לרשת מהמחלקה `Dog`"
+    - "אי אפשר לקרוא ל-`Speak` דרך הפניה מטיפוס `Animal`"
+    - "`Speak` הופכת למתודה `static` של `Dog`"
+  answer: 0
+  explanation: "מתודה עם `override` היא בעצמה וירטואלית, ויורשות נוספות יכולות לדרוס אותה שוב. `sealed` על מתודה עוצר את שרשרת הדריסות בנקודה הזו. מחלקה `Puppy : Dog` עדיין חוקית, אבל `override` של `Speak` בה הוא שגיאת קומפילציה."
+  optionExplanations:
+    "1": "זה מה ש-`sealed` עושה על המחלקה עצמה (`sealed class Dog`). על מתודה הוא חוסם רק את דריסתה."
+    "2": "הדריסה עדיין פועלת דרך `Animal`: `Animal a = new Dog(); a.Speak();` מפעיל את הגרסה של `Dog`."
+    "3": "`sealed` לא קשור ל-`static`. זו עדיין מתודת מופע."
+
+- id: cs.oop.polymorphism.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    new Derived();
+
+    class Base
+    {
+        public Base() => Show();
+
+        public virtual void Show() => Console.WriteLine("Base");
+    }
+
+    class Derived : Base
+    {
+        private string label = "field";
+
+        public Derived() => label = "ctor";
+
+        public override void Show() => Console.WriteLine(label);
+    }
+  options: ["field", "Base", "ctor", "Base\nfield"]
+  answer: 0
+  explanation: "הבנאי של `Base` קורא למתודה וירטואלית, והאובייקט כבר מטיפוס `Derived`, ולכן רצה הגרסה של `Derived`. אתחול השדה `label = \"field\"` רץ לפני בנאי הבסיס, אבל גוף הבנאי של `Derived` עוד לא רץ. זו הסיבה שלא מומלץ לקרוא למתודה וירטואלית מתוך בנאי."
+  optionExplanations:
+    "1": "גם בתוך הבנאי של `Base`, קריאה וירטואלית מגיעה לגרסה של הטיפוס האמיתי, `Derived`."
+    "2": "`label = \"ctor\"` רץ בגוף הבנאי של `Derived`, כלומר אחרי שבנאי הבסיס כבר הדפיס."
+    "3": "`Show` נקראת פעם אחת בלבד, והגרסה של `Base` לא רצה כי היא נדרסה."
+
+- id: cs.oop.polymorphism.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Base b = new Derived();
+    Derived d = new Derived();
+    b.A();
+    b.B();
+    d.B();
+
+    class Base
+    {
+        public virtual void A() => Console.WriteLine("Base.A");
+        public void B() => Console.WriteLine("Base.B");
+    }
+
+    class Derived : Base
+    {
+        public override void A() => Console.WriteLine("Derived.A");
+        public new void B() => Console.WriteLine("Derived.B");
+    }
+  options:
+    - "Derived.A\nBase.B\nDerived.B"
+    - "Derived.A\nDerived.B\nDerived.B"
+    - "Base.A\nBase.B\nDerived.B"
+    - "Derived.A\nBase.B\nBase.B"
+  answer: 0
+  explanation: "`A` היא `virtual` ונדרסת, ולכן היא נבחרת לפי האובייקט: `Derived.A`. `B` מוסתרת עם `new`, ולכן היא נבחרת לפי טיפוס ההפניה: דרך `b` (מטיפוס `Base`) רצה `Base.B`, ודרך `d` (מטיפוס `Derived`) רצה `Derived.B`."
+  optionExplanations:
+    "1": "`new` לא דורס. דרך הפניה מטיפוס `Base` נקראת הגרסה של `Base`."
+    "2": "`A` נדרסה עם `override`, ולכן גם דרך `b` רצה הגרסה של `Derived`."
+    "3": "דרך הפניה מטיפוס `Derived` רואים את המתודה החדשה שהוגדרה עם `new`."
+
+- id: cs.oop.polymorphism.015
+  type: hierarchy
+  difficulty: 3
+  prompt: "לכל קריאה, בחרו באיזו מחלקה מוגדרת הגרסה של המתודה שתרוץ."
+  code: |
+    class Animal
+    {
+        public virtual string Sound() => "...";
+        public string Kind() => "Animal";
+    }
+
+    class Dog : Animal
+    {
+        public override string Sound() => "Woof";
+        public new string Kind() => "Dog";
+    }
+
+    class Puppy : Dog
+    {
+        public override string Sound() => "Yip";
+    }
+  targets:
+    - id: Animal
+    - id: Dog
+    - id: Puppy
+  items:
+    - label: "Animal a = new Puppy(); a.Sound()"
+      answer: Puppy
+      why: Sound וירטואלית, ולכן נבחרת לפי האובייקט, שהוא Puppy.
+    - label: "Dog d = new Dog(); d.Sound()"
+      answer: Dog
+    - label: "Animal a = new Dog(); a.Kind()"
+      answer: Animal
+      why: Kind לא וירטואלית, ו-Dog רק מסתירה אותה עם new. הבחירה לפי טיפוס ההפניה, Animal.
+    - label: "Dog d = new Puppy(); d.Kind()"
+      answer: Dog
+      why: טיפוס ההפניה הוא Dog, וזו הגרסה של Dog.
+    - label: "Puppy p = new Puppy(); p.Kind()"
+      answer: Dog
+      why: Puppy לא מגדירה Kind, ולכן היא יורשת את הגרסה הקרובה ביותר מעליה, של Dog.
+  explanation: "מתודה וירטואלית שנדרסה עם `override` נבחרת לפי הטיפוס האמיתי של האובייקט בזמן ריצה. מתודה רגילה, גם אם הוסתרה עם `new`, נבחרת לפי טיפוס ההפניה בזמן קומפילציה, ומשם עולים בהיררכיה עד הגרסה הקרובה."
+
+- id: cs.oop.polymorphism.016
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס `Pen: 5`, אבל מודפס שם המחלקה במקום זה. באיזו שורה הבאג?"
+  code: |
+    var product = new Product("Pen", 5);
+    Console.WriteLine(product);
+
+    class Product
+    {
+        public string Name { get; }
+        public decimal Price { get; }
+
+        public Product(string name, decimal price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public string ToString() => $"{Name}: {Price}";
+    }
+  answer: 15
+  fixed: |
+    var product = new Product("Pen", 5);
+    Console.WriteLine(product);
+
+    class Product
+    {
+        public string Name { get; }
+        public decimal Price { get; }
+
+        public Product(string name, decimal price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public override string ToString() => $"{Name}: {Price}";
+    }
+  explanation: "`Console.WriteLine(object)` קוראת ל-`ToString`, שהיא מתודה וירטואלית של `object`. בלי `override`, המתודה ב-`Product` רק מסתירה את המקורית (הקומפיילר מזהיר על כך), ולכן נקראת הגרסה של `object`, שמחזירה את שם הטיפוס. עם `override` ההדפסה תשתמש בגרסה של `Product`."

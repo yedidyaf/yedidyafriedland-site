@@ -1,0 +1,415 @@
+- id: py.software-design.modules-layers.001
+  type: single
+  difficulty: 1
+  prompt: באיזו שכבה צריכה לשבת הפונקציה הבאה?
+  code: |
+    def shipping_fee(total: float, is_member: bool) -> float:
+        if is_member or total >= 200:
+            return 0.0
+        return 25.0
+  options:
+    - "שכבת הממשק - UI"
+    - "שכבת הלוגיקה העסקית - Business Logic"
+    - "שכבת הגישה לנתונים - Data Access"
+    - "קובץ ההגדרות - Config"
+  answer: 1
+  explanation: "הפונקציה מחליטה לפי כלל עסקי (Business Rule): חבר מועדון או הזמנה מעל 200 פטורים מדמי משלוח. אין בה קלט או הדפסה, ואין בה קריאה או כתיבה של נתונים, ולכן מקומה בשכבת הלוגיקה העסקית."
+  optionExplanations:
+    "0": "אין כאן `input` או `print`. הממשק רק מציג את התוצאה, הוא לא מחליט מה דמי המשלוח."
+    "2": "הפונקציה לא קוראת ולא שומרת שום דבר במסד נתונים או בקובץ."
+    "3": "קובץ הגדרות יכול להחזיק את הקבועים 200 ו-25, אבל ההחלטה עצמה היא כלל עסקי."
+
+- id: py.software-design.modules-layers.002
+  type: single
+  difficulty: 2
+  prompt: מה הבעיה העיקרית בעיצוב הפונקציה?
+  code: |
+    import json
+
+    def add_student():
+        name = input("Name: ")
+        grade = int(input("Grade: "))
+        if not 0 <= grade <= 100:
+            print("Invalid grade")
+            return
+        with open("students.json", "a") as f:
+            f.write(json.dumps({"name": name, "grade": grade}) + "\n")
+        print("Saved")
+  options:
+    - "היא מערבבת קלט ופלט, כלל עסקי ושמירה לקובץ, ולכן אי אפשר לבדוק או להחליף אף אחד מהם בנפרד"
+    - "היא שומרת לקובץ JSON במקום למסד נתונים אמיתי"
+    - "היא לא מחזירה ערך, ולכן היא לא עושה כלום"
+    - "הביטוי `0 <= grade <= 100` אינו תחביר חוקי בפייתון"
+  answer: 0
+  explanation: "בפונקציה אחת יש שלוש שכבות: ממשק (`input` ו-`print`), לוגיקה עסקית (טווח הציונים) וגישה לנתונים (כתיבה לקובץ). כדי לבדוק את כלל הטווח צריך להקליד במקלדת וליצור קובץ, וכדי לעבור לממשק אינטרנט צריך לשכתב הכול. מפרידים לשלוש פונקציות בשלושה קבצים."
+  optionExplanations:
+    "1": "קובץ JSON הוא אחסון לגיטימי. הבעיה היא שהגישה אליו מעורבבת עם הממשק ועם הכללים."
+    "2": "הפונקציה כן עושה משהו: היא שומרת ומדפיסה. פונקציה בלי `return` היא חוקית לגמרי."
+    "3": "פייתון תומכת בשרשור השוואות, והביטוי שקול ל-`0 <= grade and grade <= 100`."
+
+- id: py.software-design.modules-layers.003
+  type: cleaner
+  difficulty: 2
+  prompt: איזו גרסה מפרידה נכון בין הלוגיקה לממשק?
+  options:
+    - |
+      def is_valid_grade(grade: int) -> bool:
+          return 0 <= grade <= 100
+
+
+      def main() -> None:
+          grade = int(input("Grade: "))
+          if is_valid_grade(grade):
+              print("OK")
+          else:
+              print("Invalid grade")
+    - |
+      def is_valid_grade(grade: int) -> bool:
+          if 0 <= grade <= 100:
+              print("OK")
+              return True
+          print("Invalid grade")
+          return False
+
+
+      def main() -> None:
+          grade = int(input("Grade: "))
+          is_valid_grade(grade)
+    - |
+      def main() -> None:
+          grade = int(input("Grade: "))
+          if 0 <= grade <= 100:
+              print("OK")
+          else:
+              print("Invalid grade")
+  answer: 0
+  explanation: "בגרסה הנבחרת הכלל `0 <= grade <= 100` נמצא בפונקציה טהורה שמחזירה ערך, וכל הקלט והפלט נמצאים ב-`main`. כך אפשר לבדוק את הכלל בבדיקה אוטומטית ולהשתמש בו גם מממשק אחר, למשל טופס באתר."
+  optionExplanations:
+    "1": "פונקציית הלוגיקה מדפיסה בעצמה, כלומר שכבת הלוגיקה מדברת עם המשתמש. ממשק אחר לא יוכל להשתמש בה בלי לקבל הדפסות."
+    "2": "הכלל העסקי כתוב בתוך הממשק, ולכן אי אפשר לבדוק אותו או להשתמש בו בלי `input`."
+
+- id: py.software-design.modules-layers.004
+  type: truefalse
+  difficulty: 1
+  prompt: "בארכיטקטורת שכבות, קובץ הגישה לנתונים `repository.py` רשאי לייבא את קובץ הממשק `ui.py` כדי להדפיס למשתמש הודעות שגיאה."
+  answer: false
+  explanation: "התלויות בארכיטקטורת שכבות (Layered Architecture) זורמות בכיוון אחד: ממשק ← לוגיקה ← נתונים. שכבת הנתונים לא מכירה את הממשק. אם יש תקלה היא זורקת חריגה (Exception) או מחזירה `None`, והממשק מחליט איך להציג את זה."
+
+- id: py.software-design.modules-layers.005
+  type: truefalse
+  difficulty: 2
+  prompt: "בארכיטקטורת שכבות, `service.py` רשאי לייבא את `repository.py`, אבל `repository.py` לא אמור לייבא את `service.py`."
+  answer: true
+  explanation: "השכבה העליונה משתמשת בשכבה שמתחתיה, ולא להפך. אם גם `repository.py` יייבא את `service.py` נוצרת תלות מעגלית (Circular Dependency): אי אפשר להבין או לבדוק אף אחד מהם לבד, ובפייתון זה גם עלול לגרום ל-`ImportError`."
+
+- id: py.software-design.modules-layers.006
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל חתימה של אפליקציית המשימות בקובץ המתאים.
+  requirement: "אפליקציית משימות בשורת הפקודה: המשתמש מוסיף משימה עם כותרת ותאריך יעד, המערכת שומרת את כל המשימות בקובץ JSON ומציגה רק את המשימות שעוד לא בוצעו."
+  targets:
+    - id: models.py
+      desc: מחלקות הנתונים
+    - id: storage.py
+      desc: קריאה וכתיבה של קובץ ה-JSON
+    - id: tasks_service.py
+      desc: הכללים של המשימות
+    - id: cli.py
+      desc: קלט מהמשתמש והדפסה
+  items:
+    - label: "class Task: def __init__(self, title: str, due: date, done: bool = False)"
+      answer: models.py
+      why: "מחלקה שמחזיקה נתונים בלבד, בלי קלט ובלי קבצים."
+    - label: "def load_tasks(path: Path) -> list[Task]"
+      answer: storage.py
+      why: "קריאה מקובץ היא גישה לנתונים."
+    - label: "def save_tasks(path: Path, tasks: list[Task]) -> None"
+      answer: storage.py
+      why: "כתיבה לקובץ היא גישה לנתונים."
+    - label: "def open_tasks(tasks: list[Task]) -> list[Task]"
+      answer: tasks_service.py
+      why: "ההחלטה אילו משימות נחשבות פתוחות היא כלל של המערכת. הפונקציה מקבלת רשימה ומחזירה רשימה, בלי קלט, הדפסה או קבצים."
+    - label: "def ask_new_task() -> Task"
+      answer: cli.py
+      why: "הפונקציה שואלת את המשתמש עם `input` ובונה ממה שהקליד אובייקט `Task`."
+    - label: "def print_tasks(tasks: list[Task]) -> None"
+      answer: cli.py
+      why: "הדפסה למשתמש שייכת לממשק."
+  explanation: "כל קובץ עונה על שאלה אחת: מה הנתונים (models), איפה הם נשמרים (storage), מה הכללים (service) ואיך מדברים עם המשתמש (cli). כך מחליפים את JSON במסד נתונים בלי לגעת בממשק ובכללים."
+
+- id: py.software-design.modules-layers.007
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל חתימה של מערכת הציונים בשכבה שאליה היא שייכת.
+  requirement: "מערכת ציונים לבית ספר: מורה מזין ציון לתלמיד בקורס, המערכת דוחה ציון מחוץ לטווח 0 עד 100, שומרת אותו במסד SQLite, ומציגה למורה את ממוצע הקורס."
+  targets:
+    - id: models.py
+      desc: מחלקות הנתונים
+    - id: grade_repository.py
+      desc: שאילתות SQL מול מסד SQLite
+    - id: grade_service.py
+      desc: כללים וחישובים
+    - id: teacher_cli.py
+      desc: קלט מהמורה והצגת תוצאות
+  items:
+    - label: "class Grade: def __init__(self, student_id: int, course: str, score: int)"
+      answer: models.py
+      why: "מחלקת נתונים בלי לוגיקה ובלי גישה למסד."
+    - label: "def insert_grade(conn: sqlite3.Connection, grade: Grade) -> None"
+      answer: grade_repository.py
+      why: "הפונקציה מקבלת חיבור למסד ומבצעת `INSERT`. זו גישה לנתונים."
+    - label: "def scores_for_course(conn: sqlite3.Connection, course: str) -> list[int]"
+      answer: grade_repository.py
+      why: "שליפת ציונים מהמסד היא שאילתה, ולכן שייכת ל-Repository."
+    - label: "def validate_score(score: int) -> None"
+      answer: grade_service.py
+      why: "הטווח 0 עד 100 הוא כלל של המערכת. הפונקציה זורקת `ValueError` אם הוא מופר, ולא מדפיסה בעצמה."
+    - label: "def course_average(scores: list[int]) -> float"
+      answer: grade_service.py
+      why: "חישוב על רשימת מספרים, בלי מסד ובלי משתמש."
+    - label: "def read_grade_from_teacher() -> Grade"
+      answer: teacher_cli.py
+      why: "קליטת נתונים מהמורה היא ממשק."
+    - label: "def show_average(course: str, average: float) -> None"
+      answer: teacher_cli.py
+      why: "הצגת התוצאה למורה היא ממשק."
+  explanation: "הממשק קורא ומציג, השירות בודק ומחשב, וה-Repository מדבר עם SQLite. רק פונקציות ה-Repository מקבלות `sqlite3.Connection`, וזה סימן טוב: פרטי המסד לא דולפים לשכבות האחרות."
+
+- id: py.software-design.modules-layers.008
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל חתימה של שירות ההזמנות לחנות באינטרנט בשכבה הנכונה.
+  requirement: "API של חנות: בקשת HTTP מסוג POST יוצרת הזמנה. המערכת מוודאת שכל המוצרים במלאי, מורידה את הכמויות, שומרת את ההזמנה ומחזירה תשובת JSON עם קוד 201."
+  targets:
+    - id: routes.py
+      desc: טיפול בבקשות ובתשובות HTTP
+    - id: order_service.py
+      desc: תהליך ההזמנה וכללי המלאי
+    - id: order_repository.py
+      desc: קריאה וכתיבה של הזמנות ומלאי במסד
+    - id: models.py
+      desc: מחלקות הנתונים
+  items:
+    - label: "def create_order_endpoint(request: HttpRequest) -> HttpResponse"
+      answer: routes.py
+      why: "מקבלת בקשת HTTP ומחזירה תשובת HTTP. רק השכבה הזאת מכירה את הטיפוסים של HTTP."
+    - label: "def to_http_response(order: Order, status: int) -> HttpResponse"
+      answer: routes.py
+      why: "בניית תשובת HTTP עם קוד סטטוס היא פרט של שכבת ה-Web."
+    - label: "def place_order(customer_id: int, lines: list[OrderLine]) -> Order"
+      answer: order_service.py
+      why: "מנהלת את התהליך: בודקת מלאי, מעדכנת כמויות ושומרת. היא מקבלת טיפוסים רגילים ולא בקשת HTTP, ולכן אפשר לקרוא לה גם מבדיקה או מסקריפט."
+    - label: "def ensure_in_stock(lines: list[OrderLine]) -> None"
+      answer: order_service.py
+      why: "הכלל שאסור להזמין יותר ממה שיש במלאי הוא כלל עסקי."
+    - label: "def set_stock_quantity(product_id: int, quantity: int) -> None"
+      answer: order_repository.py
+      why: "רק כותבת למסד את הכמות שהשירות כבר חישב, בלי להחליט כלום."
+    - label: "def save_order(order: Order) -> int"
+      answer: order_repository.py
+      why: "שמירה במסד והחזרת המזהה החדש היא גישה לנתונים."
+    - label: "class OrderLine: def __init__(self, product_id: int, quantity: int)"
+      answer: models.py
+      why: "מחלקת נתונים שכל השכבות משתמשות בה."
+  explanation: "שכבת ה-Web מתרגמת בין HTTP לבין קריאות רגילות, השירות מחליט, וה-Repository רק קורא וכותב. החישוב של הכמות החדשה נעשה בשירות, ו-`set_stock_quantity` רק שומרת את התוצאה. אם ה-Repository היה מחליט בעצמו, כלל עסקי היה מסתתר בשכבת הנתונים."
+
+- id: py.software-design.modules-layers.009
+  type: single
+  difficulty: 2
+  prompt: "בכל קובץ מופיעות שורות ה-import שלו. איזה import שובר את כיוון התלות בין השכבות?"
+  code: |
+    # ui.py
+    from order_service import place_order
+
+    # order_service.py
+    from order_repository import save_order
+    from ui import show_error
+
+    # order_repository.py
+    import sqlite3
+    from models import Order
+  options:
+    - "`from order_service import place_order` ב-`ui.py`"
+    - "`from order_repository import save_order` ב-`order_service.py`"
+    - "`from ui import show_error` ב-`order_service.py`"
+    - "`from models import Order` ב-`order_repository.py`"
+  answer: 2
+  explanation: "שכבת הלוגיקה מייבאת את שכבת הממשק, כלומר התלות מצביעה כלפי מעלה. עכשיו אי אפשר להריץ את `order_service` בלי ממשק, ו-`ui.py` ו-`order_service.py` מייבאים זה את זה. השירות צריך לזרוק חריגה, והממשק יתפוס אותה ויציג שגיאה."
+  optionExplanations:
+    "0": "הממשק משתמש בשכבת הלוגיקה. זה הכיוון הנכון."
+    "1": "הלוגיקה משתמשת בשכבת הנתונים. זה הכיוון הנכון."
+    "3": "המודלים נמצאים בבסיס, וכל שכבה רשאית להשתמש בהם."
+
+- id: py.software-design.modules-layers.010
+  type: single
+  difficulty: 3
+  prompt: "בספרייה חל הכלל: חבר לא יכול להחזיק יותר משלושה ספרים מושאלים בו-זמנית. היכן נכון לממש את הבדיקה?"
+  options:
+    - "ב-`cli.py`, לפני הקריאה לשירות, כי שם יודעים מי המשתמש המחובר"
+    - "ב-`loan_service.py`, בפונקציה שמבצעת את ההשאלה"
+    - "ב-`loan_repository.py`, בתוך הפונקציה ששומרת את ההשאלה"
+    - "גם ב-`cli.py` וגם ב-`loan_repository.py`, כדי להיות בטוחים"
+  answer: 1
+  explanation: "זה כלל עסקי, ולכן הוא שייך לשכבת השירות. כל ממשק, שורת פקודה, אתר או אפליקציה, עובר דרך השירות ומקבל את אותה בדיקה. ה-Repository רק שומר ושולף, בלי להחליט מה מותר."
+  optionExplanations:
+    "0": "אם יתווסף ממשק אינטרנט, הוא יעקוף את הבדיקה. הממשק לא אמור להחזיק כללים."
+    "2": "שכבת הנתונים לא אמורה להחליט מה מותר. כלל שמסתתר בפונקציית שמירה קשה למצוא ולשנות."
+    "3": "שכפול הכלל בשני מקומות מבטיח שיום אחד הם יפסיקו להתאים זה לזה, ושני המקומות הם שכבות לא נכונות."
+
+- id: py.software-design.modules-layers.011
+  type: hierarchy
+  difficulty: 2
+  prompt: "בפרויקט יש מחלקת בסיס לגישה לנתונים ומחלקת בסיס לתצוגה. ממה צריכה לרשת כל מחלקה?"
+  code: |
+    class BaseRepository:
+        def find(self, item_id: int): ...
+        def save(self, item) -> None: ...
+
+    class BaseView:
+        def render(self, data) -> str: ...
+  targets:
+    - id: BaseRepository
+    - id: BaseView
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: "class ProductRepository: def find(self, item_id: int) -> Product | None"
+      answer: BaseRepository
+      why: "מוצאת מוצר במסד, כלומר גישה לנתונים."
+    - label: "class CustomerRepository: def save(self, item: Customer) -> None"
+      answer: BaseRepository
+      why: "שומרת לקוח, כלומר גישה לנתונים."
+    - label: "class CartView: def render(self, data: Cart) -> str"
+      answer: BaseView
+      why: "הופכת עגלה לטקסט להצגה, כלומר תצוגה."
+    - label: "class PricingService: def cart_total(self, cart: Cart) -> float"
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "שירות לוגיקה הוא לא סוג של Repository ולא סוג של View. אם הוא צריך מאגר, הוא מחזיק אחד (has-a) ולא יורש ממנו."
+    - label: "class Product: def __init__(self, name: str, price: float)"
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "מודל נתונים לא יודע איך שומרים או מציגים אותו."
+  explanation: "מחלקת בסיס של שכבה מתאימה רק למחלקות מאותה שכבה. שירותים ומודלים לא יורשים ממחלקות הבסיס של שכבות אחרות, אחרת מודל או שירות היו מקבלים מתודות של שמירה או תצוגה שאין להם מה לעשות איתן."
+
+- id: py.software-design.modules-layers.012
+  type: cleaner
+  difficulty: 3
+  prompt: "בשתי הגרסאות הממשק מקבל בסוף את אותן שורות להצגה. איזו גרסה מחלקת נכון את האחריות בין שכבת הנתונים לממשק?"
+  options:
+    - |
+      def find_overdue(conn) -> list[tuple[str, int]]:
+          return conn.execute(
+              "SELECT title, days_late FROM loans WHERE days_late > 0"
+          ).fetchall()
+
+
+      def overdue_lines(rows: list[tuple[str, int]]) -> list[str]:
+          return [f"{title}: {days} days late" for title, days in rows]
+    - |
+      def find_overdue(conn) -> list[str]:
+          rows = conn.execute(
+              "SELECT title, days_late FROM loans WHERE days_late > 0"
+          ).fetchall()
+          return [f"{title}: {days} days late" for title, days in rows]
+  answer: 0
+  explanation: "שכבת הנתונים מחזירה נתונים, והממשק מחליט איך להציג אותם. כך אפשר להציג את רשימת האיחורים כטבלת HTML או לשלוח אותה כ-JSON בלי לגעת בשאילתה."
+  optionExplanations:
+    "1": "ה-Repository מחזיר טקסט מעוצב באנגלית. כל שינוי בתצוגה, כמו תרגום או טבלה, ידרוש לשנות את שכבת הנתונים, ושום קוד אחר לא יוכל לקבל את המספרים עצמם."
+
+- id: py.software-design.modules-layers.013
+  type: single
+  difficulty: 1
+  prompt: מה היתרון המרכזי של חלוקת תוכנית לשכבות של ממשק, לוגיקה ונתונים?
+  options:
+    - "אפשר להחליף את אופן השמירה, למשל מקובץ למסד נתונים, בלי לשנות את הממשק ואת הלוגיקה"
+    - "התוכנית רצה מהר יותר, כי כל שכבה רצה במקביל לאחרות"
+    - "התוכנית קצרה יותר, כי החלוקה חוסכת שורות קוד"
+    - "אין יותר צורך בבדיקות, כי כל שכבה קטנה ופשוטה"
+  answer: 0
+  explanation: "הפרדת אחריות (Separation of Concerns) מבודדת שינויים: שינוי במסד נוגע רק בשכבת הנתונים, ושינוי בעיצוב נוגע רק בממשק. בנוסף, אפשר לבדוק את הלוגיקה בלי משתמש ובלי מסד."
+  optionExplanations:
+    "1": "השכבות רצות באותו תהליך ובזו אחר זו. החלוקה היא ארגון של הקוד, לא הרצה מקבילית."
+    "2": "בדרך כלל החלוקה מוסיפה מעט שורות, למשל פונקציות וקריאות בין קבצים. הרווח הוא בתחזוקה."
+    "3": "החלוקה מקלה על הבדיקות, אבל לא מייתרת אותן."
+
+- id: py.software-design.modules-layers.014
+  type: single
+  difficulty: 2
+  prompt: "מה התפקיד של `main.py` בפרויקט הזה?"
+  code: |
+    # main.py
+    from storage import JsonStorage
+    from tasks_service import TaskService
+    from cli import TaskCli
+
+    storage = JsonStorage("tasks.json")
+    service = TaskService(storage)
+    TaskCli(service).run()
+  options:
+    - "נקודת הכניסה, שיוצרת את האובייקטים של כל השכבות ומחברת ביניהם"
+    - "שכבת לוגיקה נוספת, שנמצאת מעל `TaskService`"
+    - "שכבת הגישה לנתונים, כי רק הוא יודע את שם הקובץ `tasks.json`"
+    - "קובץ מיותר, כי `TaskCli` יכול ליצור בעצמו את השירות ואת האחסון"
+  answer: 0
+  explanation: "`main.py` הוא שורש ההרכבה (Composition Root): המקום היחיד שמכיר את כל השכבות, יוצר אותן ומעביר כל אחת לזו שמעליה. בזכותו `TaskCli` לא צריך לדעת איזה אחסון בשימוש."
+  optionExplanations:
+    "1": "אין ב-`main.py` שום כלל או חישוב. הוא רק יוצר ומחבר."
+    "2": "שם הקובץ הוא הגדרה שמועברת ל-`JsonStorage`. הקריאה והכתיבה עצמן נמצאות ב-`storage.py`."
+    "3": "אם הממשק ייצור את האחסון בעצמו, הוא יהיה תלוי בשכבת הנתונים, ולא נוכל להחליף אותה."
+
+- id: py.software-design.modules-layers.015
+  type: single
+  difficulty: 3
+  prompt: "הקוד נכשל, כי `register` מצפה ל-`int` ומקבלת מחרוזת. היכן נכון להמיר את `age_text` למספר?"
+  code: |
+    # cli.py
+    def run() -> None:
+        name = input("Name: ")
+        age_text = input("Age: ")
+        member = register(name, age_text)
+
+
+    # member_service.py
+    def register(name: str, age: int) -> Member:
+        if age < 16:
+            raise ValueError("Too young")
+        return Member(name, age)
+  options:
+    - "ב-`cli.py`, לפני הקריאה ל-`register`"
+    - "ב-`register`, בשורה `age = int(age)` בתחילת הפונקציה"
+    - "בבנאי של `Member`"
+    - "בשכבת הגישה לנתונים, לפני השמירה"
+  answer: 0
+  explanation: "`input` תמיד מחזירה מחרוזת, וזה פרט של הממשק. לכן הממשק הוא שמתרגם טקסט לערכים בעלי טיפוס, ושכבת השירות מקבלת `int` כפי שהחתימה שלה מבטיחה. טופס באתר או בדיקה אוטומטית יעבירו לשירות `int` ישירות."
+  optionExplanations:
+    "1": "השירות היה צריך לנחש מאיזה ממשק הגיע הערך, והחתימה `age: int` הייתה משקרת."
+    "2": "עד שמגיעים לבנאי, הבדיקה `age < 16` כבר רצה על מחרוזת ונכשלת."
+    "3": "הבדיקה `age < 16` רצה לפני כל שמירה, ולכן ההמרה מגיעה מאוחר מדי. ושכבת הנתונים לא אחראית על קלט."
+
+- id: py.software-design.modules-layers.016
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל חתימה של קופת בית הקפה בתיקייה של השכבה שלה.
+  requirement: "קופה של בית קפה: התפריט נטען מקובץ CSV, הקופאי בוחר פריטים לפי מספר, ובין 17:00 ל-19:00 יש הנחה של 20 אחוז. בסוף מוצג הסכום לתשלום."
+  targets:
+    - id: presentation/menu_screen.py
+      desc: מסך הקופה
+    - id: domain/pricing.py
+      desc: חישובי מחיר והנחות
+    - id: data/menu_repository.py
+      desc: קריאת התפריט מקובץ CSV
+  items:
+    - label: "def load_menu(csv_path: Path) -> list[MenuItem]"
+      answer: data/menu_repository.py
+      why: "קריאה מקובץ היא גישה לנתונים."
+    - label: "def happy_hour_price(price: float, hour: int) -> float"
+      answer: domain/pricing.py
+      why: "כלל ההנחה בשעות 17:00 עד 19:00 הוא כלל עסקי."
+    - label: "def order_total(items: list[MenuItem], hour: int) -> float"
+      answer: domain/pricing.py
+      why: "חישוב הסכום לתשלום הוא לוגיקה."
+    - label: "def show_menu(items: list[MenuItem]) -> None"
+      answer: presentation/menu_screen.py
+      why: "הצגה לקופאי שייכת לשכבת התצוגה."
+    - label: "def ask_item_number(max_number: int) -> int"
+      answer: presentation/menu_screen.py
+      why: "קליטת בחירה מהקופאי היא ממשק."
+  explanation: "שלוש השכבות כאן הן תצוגה (Presentation), תחום (Domain) ונתונים (Data). שמות התיקיות שונים מ-ui, service ו-repository, אבל העיקרון זהה: כל שכבה עושה דבר אחד, והתחום לא יודע מאיפה הגיע התפריט ואיך הוא מוצג."

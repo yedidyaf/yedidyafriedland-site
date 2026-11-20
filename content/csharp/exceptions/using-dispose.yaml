@@ -1,0 +1,414 @@
+- id: cs.exceptions.using-dispose.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    using (var file = new Resource("log"))
+    {
+        Console.WriteLine("write");
+    }
+    Console.WriteLine("end");
+
+    class Resource : IDisposable
+    {
+        private readonly string _name;
+
+        public Resource(string name)
+        {
+            _name = name;
+            Console.WriteLine($"open {_name}");
+        }
+
+        public void Dispose() => Console.WriteLine($"close {_name}");
+    }
+  options: ["open log\nwrite\nclose log\nend", "open log\nwrite\nend\nclose log", "open log\nwrite\nend", "write\nend"]
+  answer: 0
+  explanation: "הצהרת `using` קוראת ל-`Dispose` ברגע שהביצוע יוצא מהבלוק שלה. לכן `close log` מודפס מיד אחרי `write`, לפני השורה שאחרי הבלוק. כך משחררים משאב (Resource) בנקודה ידועה ולא «מתישהו»."
+  optionExplanations:
+    "1": "`Dispose` נקרא בסוף בלוק ה-`using`, לא בסוף התוכנית."
+    "2": "`using` קורא ל-`Dispose` אוטומטית; לא צריך לקרוא לה בעצמכם."
+    "3": "הבנאי של `Resource` רץ כשיוצרים את האובייקט, ולכן `open log` מודפס ראשון."
+
+- id: cs.exceptions.using-dispose.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    using (var a = new Resource("A"))
+    using (var b = new Resource("B"))
+    {
+        Console.WriteLine("work");
+    }
+
+    class Resource : IDisposable
+    {
+        private readonly string _name;
+
+        public Resource(string name)
+        {
+            _name = name;
+            Console.WriteLine($"open {_name}");
+        }
+
+        public void Dispose() => Console.WriteLine($"close {_name}");
+    }
+  options: ["open A\nopen B\nwork\nclose B\nclose A", "open A\nopen B\nwork\nclose A\nclose B", "open A\nwork\nclose A\nopen B\nwork\nclose B", "open B\nopen A\nwork\nclose A\nclose B"]
+  answer: 0
+  explanation: "שני ה-`using` מקוננים: `b` נמצא בתוך הבלוק של `a`. המשאבים נפתחים לפי הסדר ונסגרים בסדר הפוך, כמו מחסנית. זה חשוב כש-`B` תלוי ב-`A`, למשל פקודה שרצה על חיבור למסד נתונים."
+  optionExplanations:
+    "1": "המשאב שנפתח אחרון נסגר ראשון, כי הוא נמצא בבלוק הפנימי."
+    "2": "יש בלוק אחד משותף לשני ה-`using`, ולכן `work` מודפס פעם אחת."
+    "3": "המשאבים נוצרים לפי סדר הכתיבה: קודם `A` ואז `B`."
+
+- id: cs.exceptions.using-dispose.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        using (var conn = new Resource("db"))
+        {
+            Console.WriteLine("query");
+            throw new InvalidOperationException();
+        }
+    }
+    catch (InvalidOperationException)
+    {
+        Console.WriteLine("error");
+    }
+
+    class Resource : IDisposable
+    {
+        private readonly string _name;
+
+        public Resource(string name)
+        {
+            _name = name;
+            Console.WriteLine($"open {_name}");
+        }
+
+        public void Dispose() => Console.WriteLine($"close {_name}");
+    }
+  options: ["open db\nquery\nclose db\nerror", "open db\nquery\nerror\nclose db", "open db\nquery\nerror", "open db\nerror\nclose db"]
+  answer: 0
+  explanation: "`using` מבטיח ש-`Dispose` ייקרא גם כשנזרקת חריגה. החריגה יוצאת מבלוק ה-`using`, `Dispose` רץ, ורק אחר כך החריגה מגיעה ל-`catch` שבחוץ."
+  optionExplanations:
+    "1": "`Dispose` רץ כשהחריגה עוזבת את בלוק ה-`using`, וזה קורה לפני שה-`catch` החיצוני מתחיל."
+    "2": "חריגה לא מבטלת את `Dispose`; זו בדיוק ההבטחה של `using`."
+    "3": "השורה `query` מודפסת לפני ה-`throw`."
+
+- id: cs.exceptions.using-dispose.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Run();
+    Console.WriteLine("after Run");
+
+    static void Run()
+    {
+        using var a = new Resource("A");
+        using var b = new Resource("B");
+        Console.WriteLine("work");
+    }
+
+    class Resource : IDisposable
+    {
+        private readonly string _name;
+
+        public Resource(string name)
+        {
+            _name = name;
+            Console.WriteLine($"open {_name}");
+        }
+
+        public void Dispose() => Console.WriteLine($"close {_name}");
+    }
+  options: ["open A\nopen B\nwork\nclose B\nclose A\nafter Run", "open A\nopen B\nwork\nafter Run\nclose B\nclose A", "open A\nclose A\nopen B\nclose B\nwork\nafter Run", "open A\nopen B\nwork\nclose A\nclose B\nafter Run"]
+  answer: 0
+  explanation: "הצהרת `using var` (בלי סוגריים ובלוק) קוראת ל-`Dispose` בסוף הבלוק שבו המשתנה הוגדר, כאן בסוף המתודה `Run`. כמו ב-`using` מקונן, הסגירה בסדר הפוך להצהרה."
+  optionExplanations:
+    "1": "הטווח של `using var` הוא הבלוק שבו הוא הוגדר, כלומר `Run`, לא כל התוכנית."
+    "2": "`using var` לא סוגר מיד בסוף השורה; הוא סוגר בסוף הבלוק."
+    "3": "הסגירה היא בסדר הפוך: המשתנה שהוגדר אחרון נסגר ראשון."
+
+- id: cs.exceptions.using-dispose.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        using (var r = new Resource("bad"))
+        {
+            Console.WriteLine("inside");
+        }
+    }
+    catch (ArgumentException)
+    {
+        Console.WriteLine("caught");
+    }
+
+    class Resource : IDisposable
+    {
+        public Resource(string name)
+        {
+            Console.WriteLine($"open {name}");
+            throw new ArgumentException("cannot open");
+        }
+
+        public void Dispose() => Console.WriteLine("close");
+    }
+  options: ["open bad\ncaught", "open bad\nclose\ncaught", "open bad\ninside\nclose\ncaught", "caught\nclose"]
+  answer: 0
+  explanation: "הבנאי זורק, ולכן אובייקט לא נוצר ושום דבר לא הוקצה ל-`r`. ההגנה של `using` (ה-`try` וה-`finally` שהוא מייצר) מתחילה רק אחרי שהמשאב נוצר בהצלחה, ולכן אין למי לקרוא `Dispose`."
+  optionExplanations:
+    "1": "`Dispose` נקרא רק על משאב שנוצר בהצלחה; כאן הבנאי נכשל."
+    "2": "הבנאי זורק לפני שנכנסים לבלוק, ולכן `inside` לא מודפס."
+    "3": "`open bad` מודפס בבנאי לפני ה-`throw`, ו-`Dispose` לא נקרא."
+
+- id: cs.exceptions.using-dispose.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Read());
+
+    static string Read()
+    {
+        using (var r = new Resource("file"))
+        {
+            return "data";
+        }
+    }
+
+    class Resource : IDisposable
+    {
+        private readonly string _name;
+
+        public Resource(string name)
+        {
+            _name = name;
+            Console.WriteLine($"open {_name}");
+        }
+
+        public void Dispose() => Console.WriteLine($"close {_name}");
+    }
+  options: ["open file\nclose file\ndata", "open file\ndata\nclose file", "open file\ndata", "data"]
+  answer: 0
+  explanation: "`return` מתוך בלוק `using` לא מדלג על `Dispose`, כי `using` בנוי על `finally`. המשאב נסגר עוד לפני שהמתודה מחזירה, ורק אז `Console.WriteLine` שבחוץ מדפיס את הערך."
+  optionExplanations:
+    "1": "ההדפסה שבחוץ מתבצעת רק אחרי ש-`Read` הסתיימה, כולל `Dispose`."
+    "2": "`return` לא עוקף את `Dispose`; היציאה מהבלוק מפעילה אותו."
+
+- id: cs.exceptions.using-dispose.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var stream = new MemoryStream();
+    using (stream)
+    {
+        stream.WriteByte(1);
+    }
+    try
+    {
+        stream.WriteByte(2);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.GetType().Name);
+    }
+  options: ["ObjectDisposedException", "NullReferenceException", "InvalidOperationException", "לא יודפס כלום"]
+  answer: 0
+  explanation: "בסוף בלוק ה-`using` נקרא `Dispose` על `stream`, אבל המשתנה עצמו עדיין מפנה לאובייקט. שימוש באובייקט אחרי `Dispose` זורק `ObjectDisposedException`. לכן עדיף להצהיר על המשתנה בתוך ה-`using`, כך שלא יהיה נגיש אחריו."
+  optionExplanations:
+    "1": "`Dispose` לא הופך את המשתנה ל-`null`; ההפניה לאובייקט נשארת."
+    "2": "`ObjectDisposedException` אכן יורשת מ-`InvalidOperationException`, אבל `GetType().Name` מחזיר את הטיפוס המדויק."
+    "3": "אובייקט שעבר `Dispose` לא אמור לעבוד כרגיל; הוא זורק חריגה."
+
+- id: cs.exceptions.using-dispose.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Resource r = null;
+    using (r)
+    {
+        Console.WriteLine("inside");
+    }
+    Console.WriteLine("end");
+
+    class Resource : IDisposable
+    {
+        public void Dispose() => Console.WriteLine("dispose");
+    }
+  options: ["inside\nend", "inside\ndispose\nend", "NullReferenceException", "inside\nNullReferenceException"]
+  answer: 0
+  explanation: "הקוד ש-`using` מייצר בודק אם המשאב הוא `null` לפני הקריאה ל-`Dispose`. לכן `using` על `null` לא זורק חריגה, ופשוט לא קורא ל-`Dispose`."
+  optionExplanations:
+    "1": "אין אובייקט, ולכן אין `Dispose` לקרוא לו."
+    "2": "הבלוק עצמו לא משתמש ב-`r`, ולכן `inside` מודפס בלי בעיה."
+    "3": "ה-`finally` של `using` בודק `null` לפני `Dispose`, ולכן לא נזרקת חריגה."
+
+- id: cs.exceptions.using-dispose.009
+  type: single
+  difficulty: 1
+  prompt: "איזה ממשק צריכה מחלקה לממש כדי שאפשר יהיה להשתמש בה בהצהרת `using` רגילה?"
+  options: ["`IDisposable`", "`IEnumerable`", "`ICloneable`", "`IComparable`"]
+  answer: 0
+  explanation: "`using` קורא ל-`Dispose()`, והמתודה הזו מוגדרת בממשק `IDisposable`. מחלקה שלא מממשת אותו לא יכולה להופיע ב-`using`, והקומפיילר יחזיר שגיאה."
+  optionExplanations:
+    "1": "`IEnumerable` מאפשר מעבר עם `foreach`, לא שחרור משאבים."
+    "2": "`ICloneable` נועד להעתקת אובייקטים."
+    "3": "`IComparable` נועד להשוואה ומיון."
+
+- id: cs.exceptions.using-dispose.010
+  type: single
+  difficulty: 2
+  prompt: "למה שקולה הצהרת `using (var r = new Resource()) { ... }`?"
+  options:
+    - "ליצירת `r`, ואחריה `try` עם הגוף ו-`finally` שקורא ל-`r.Dispose()`"
+    - "ל-`try` עם הגוף ו-`catch` שקורא ל-`r.Dispose()` רק כשנזרקת חריגה"
+    - "לקריאה ל-`r.Dispose()` בסוף הגוף, רק אם לא נזרקה חריגה"
+    - "לבקשה מאוסף הזבל לשחרר את `r` מיד"
+  answer: 0
+  explanation: "הקומפיילר הופך `using` ל-`try` ו-`finally`. בגלל ה-`finally`, `Dispose` רץ בכל יציאה מהבלוק: בסיום רגיל, ב-`return` ובחריגה. החריגה עצמה ממשיכה החוצה ולא נבלעת."
+  optionExplanations:
+    "1": "`Dispose` נקרא גם בסיום רגיל, ו-`using` לא תופס את החריגה."
+    "2": "ההבטחה של `using` היא בדיוק שהשחרור קורה גם כשנזרקת חריגה."
+    "3": "`using` לא קשור לאוסף הזבל (Garbage Collector); הוא קורא ל-`Dispose` בעצמו."
+
+- id: cs.exceptions.using-dispose.011
+  type: single
+  difficulty: 1
+  prompt: "איזה מהאובייקטים הבאים חשוב במיוחד לעטוף ב-`using`?"
+  options:
+    - "`StreamWriter` שכותב לקובץ"
+    - "`List<int>` עם מיליון מספרים"
+    - "`string` ארוך מאוד"
+    - "מערך `int[]` גדול"
+  answer: 0
+  explanation: "`StreamWriter` מחזיק משאב של מערכת ההפעלה (קובץ פתוח) ונתונים במאגר זמני (Buffer). עד שקוראים ל-`Dispose` הקובץ נשאר נעול ואולי לא כל הטקסט נכתב. זיכרון רגיל, כמו רשימות ומערכים, משחרר אוסף הזבל, והם לא מממשים `IDisposable`."
+  optionExplanations:
+    "1": "רשימה, גדולה ככל שתהיה, היא זיכרון רגיל שאוסף הזבל משחרר."
+    "2": "`string` לא מחזיק משאב חיצוני ולא מממש `IDisposable`."
+    "3": "מערך הוא זיכרון רגיל, ולכן אין בו `Dispose`."
+
+- id: cs.exceptions.using-dispose.012
+  type: truefalse
+  difficulty: 1
+  prompt: "אוסף הזבל (Garbage Collector) קורא ל-`Dispose` אוטומטית כשאובייקט כבר לא בשימוש."
+  answer: false
+  explanation: "אוסף הזבל משחרר זיכרון, אבל לא קורא ל-`Dispose`. אם לא תקראו ל-`Dispose` (בעצמכם או עם `using`), משאבים כמו קבצים וחיבורים יישארו פתוחים עד זמן לא ידוע."
+
+- id: cs.exceptions.using-dispose.013
+  type: truefalse
+  difficulty: 3
+  prompt: "לפי ההנחיות של .NET, קריאה שנייה ל-`Dispose` על אותו אובייקט צריכה להיות בטוחה ולא לזרוק חריגה."
+  answer: true
+  explanation: "ההנחיות קובעות ש-`Dispose` צריך להיות בטוח לקריאה חוזרת: בקריאה השנייה הוא פשוט לא עושה כלום. מימוש טיפוסי שומר דגל כמו `_disposed` ובודק אותו בתחילת המתודה."
+
+- id: cs.exceptions.using-dispose.014
+  type: bug
+  difficulty: 2
+  prompt: "המתודה מעתיקה את תוכן הקובץ `from` לקובץ `to`, אבל לפעמים הקובץ החדש נשאר ריק. באיזו שורה הבאג?"
+  code: |
+    class FileCopier
+    {
+        public static void Copy(string from, string to)
+        {
+            using var reader = new StreamReader(from);
+            var writer = new StreamWriter(to);
+            writer.Write(reader.ReadToEnd());
+        }
+    }
+  answer: 6
+  explanation: "`StreamWriter` שומר טקסט במאגר זמני (Buffer) וכותב אותו לקובץ רק בשחרור. כאן לא קוראים ל-`Dispose` על `writer`, ולכן הנתונים עלולים לא להיכתב והקובץ נשאר פתוח. גם הכותב צריך `using`."
+  fixed: |
+    class FileCopier
+    {
+        public static void Copy(string from, string to)
+        {
+            using var reader = new StreamReader(from);
+            using var writer = new StreamWriter(to);
+            writer.Write(reader.ReadToEnd());
+        }
+    }
+
+- id: cs.exceptions.using-dispose.015
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה לכתוב טקסט לקובץ ולסגור את הקובץ תמיד, בין אם הכתיבה הצליחה ובין אם נכשלה (שגיאות צריכות להגיע לקוד הקורא). באיזו שורה הבאג?"
+  code: |
+    class ReportWriter
+    {
+        public static void Save(string path, string text)
+        {
+            var writer = new StreamWriter(path);
+            try
+            {
+                writer.Write(text);
+            }
+            catch (IOException)
+            {
+                writer.Dispose();
+            }
+        }
+    }
+  answer: 10
+  explanation: "`catch` רץ רק כשנזרקת חריגה, ולכן בהצלחה הקובץ לא נסגר אף פעם. בנוסף, הוא בולע את השגיאה במקום להעביר אותה לקוד הקורא. `finally` רץ בכל מקרה ולא תופס את החריגה, ולכן הוא המקום הנכון לשחרור."
+  fixed: |
+    class ReportWriter
+    {
+        public static void Save(string path, string text)
+        {
+            var writer = new StreamWriter(path);
+            try
+            {
+                writer.Write(text);
+            }
+            finally
+            {
+                writer.Dispose();
+            }
+        }
+    }
+
+- id: cs.exceptions.using-dispose.016
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Report
+      {
+          public static void Save(string path, string text)
+          {
+              using var writer = new StreamWriter(path);
+              writer.Write(text);
+          }
+      }
+    - |
+      class Report
+      {
+          public static void Save(string path, string text)
+          {
+              StreamWriter writer = null;
+              try
+              {
+                  writer = new StreamWriter(path);
+                  writer.Write(text);
+              }
+              finally
+              {
+                  if (writer != null)
+                      writer.Dispose();
+              }
+          }
+      }
+  answer: 0
+  explanation: "שתי הגרסאות מתנהגות אותו דבר: `using var` מייצר בדיוק `try` ו-`finally` עם בדיקת `null`. הגרסה עם `using` קצרה, ואי אפשר לשכוח בה את השחרור או לטעות בסדר."
+  optionExplanations:
+    "1": "כתיבה ידנית של מה שהקומפיילר עושה לבד: עוד שורות ועוד מקומות לטעות, בלי שום יתרון."

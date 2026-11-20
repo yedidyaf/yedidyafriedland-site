@@ -1,0 +1,443 @@
+- id: cs.exceptions.custom-exceptions.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        throw new InsufficientFundsException("Balance too low");
+    }
+    catch (InsufficientFundsException e)
+    {
+        Console.WriteLine(e.Message);
+    }
+
+    class InsufficientFundsException : Exception
+    {
+        public InsufficientFundsException(string message) : base(message) { }
+    }
+  options: ["Balance too low", "InsufficientFundsException", "Exception of type 'InsufficientFundsException' was thrown."]
+  answer: 0
+  explanation: "חריגה מותאמת אישית (Custom Exception) היא מחלקה שיורשת מ-`Exception`. הבנאי מעביר את ההודעה לבנאי של מחלקת הבסיס עם `: base(message)`, ולכן `Message` מחזיר בדיוק את הטקסט שהועבר."
+  optionExplanations:
+    "1": "`Message` מחזיר את טקסט ההודעה, לא את שם המחלקה."
+    "2": "הודעת ברירת המחדל מופיעה רק כשלא מעבירים הודעה ל-`base`; כאן היא הועברה."
+
+- id: cs.exceptions.custom-exceptions.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string[] actions = { "pay", "ship" };
+    foreach (string action in actions)
+    {
+        try
+        {
+            Run(action);
+        }
+        catch (OrderException e)
+        {
+            Console.WriteLine($"{e.GetType().Name}: {e.Message}");
+        }
+    }
+
+    static void Run(string action)
+    {
+        if (action == "pay")
+            throw new PaymentException("card declined");
+        throw new ShippingException("no address");
+    }
+
+    class OrderException : Exception
+    {
+        public OrderException(string message) : base(message) { }
+    }
+
+    class PaymentException : OrderException
+    {
+        public PaymentException(string message) : base(message) { }
+    }
+
+    class ShippingException : OrderException
+    {
+        public ShippingException(string message) : base(message) { }
+    }
+  options: ["PaymentException: card declined\nShippingException: no address", "OrderException: card declined\nOrderException: no address", "PaymentException: card declined", "OrderException: card declined\nShippingException: no address"]
+  answer: 0
+  explanation: "היררכיית חריגות (Exception Hierarchy) מאפשרת לתפוס משפחה שלמה דרך מחלקת הבסיס: `catch (OrderException)` תופס גם `PaymentException` וגם `ShippingException`. `GetType()` מחזיר את הטיפוס האמיתי של כל חריגה."
+  optionExplanations:
+    "1": "הטיפוס ב-`catch` קובע מה נתפס, אבל `GetType()` מחזיר את הטיפוס האמיתי של האובייקט."
+    "2": "ה-`try` בתוך הלולאה, ולכן אחרי התפיסה הלולאה ממשיכה לפעולה הבאה."
+    "3": "שתי החריגות נתפסות באותה דרך, ושתיהן מדפיסות את הטיפוס האמיתי שלהן."
+
+- id: cs.exceptions.custom-exceptions.003
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        throw new PaymentException("declined");
+    }
+    catch (OrderException)
+    {
+        Console.WriteLine("order");
+    }
+    catch (PaymentException)
+    {
+        Console.WriteLine("payment");
+    }
+
+    class OrderException : Exception
+    {
+        public OrderException(string message) : base(message) { }
+    }
+
+    class PaymentException : OrderException
+    {
+        public PaymentException(string message) : base(message) { }
+    }
+  options: ["שגיאת קומפילציה", "order", "payment", "order\npayment"]
+  answer: 0
+  explanation: "`PaymentException` יורשת מ-`OrderException`, ולכן `catch (OrderException)` כבר תופס אותה. ה-`catch` השני לעולם לא יגיע, והקומפיילר מחזיר שגיאה (CS0160). גם בחריגות שלכם, סדרו את ה-`catch` מהמחלקה היורשת אל מחלקת הבסיס."
+  optionExplanations:
+    "1": "זה היה קורה אילו הקוד היה מתקמפל, אבל C# לא מאפשר `catch` שאי אפשר להגיע אליו."
+    "2": "הבלוק הראשון לפי הסדר שמתאים הוא שתופס, ולכן גם בלי השגיאה לא היה מודפס `payment`."
+    "3": "חריגה נתפסת בבלוק `catch` אחד בלבד."
+
+- id: cs.exceptions.custom-exceptions.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        Withdraw(100, 30);
+    }
+    catch (InsufficientFundsException e)
+    {
+        Console.WriteLine(e.Missing);
+    }
+
+    static void Withdraw(int amount, int balance)
+    {
+        if (amount > balance)
+            throw new InsufficientFundsException(amount - balance);
+    }
+
+    class InsufficientFundsException : Exception
+    {
+        public int Missing { get; }
+
+        public InsufficientFundsException(int missing) : base("Insufficient funds")
+        {
+            Missing = missing;
+        }
+    }
+  options: ["70", "-70", "130", "Insufficient funds"]
+  answer: 0
+  explanation: "יתרון חשוב של חריגה מותאמת: אפשר להוסיף לה מאפיינים עם מידע על השגיאה. הקוד שתופס מקבל את הסכום החסר (`100 - 30 = 70`) כמספר, בלי לפרק את הטקסט של `Message`."
+  optionExplanations:
+    "1": "החישוב הוא `amount - balance`, כלומר `100 - 30`."
+    "2": "`130` הוא סכום של שני הערכים, לא ההפרש."
+    "3": "מודפס המאפיין `Missing`, לא `Message`."
+
+- id: cs.exceptions.custom-exceptions.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    try
+    {
+        throw new ConfigException("Missing key");
+    }
+    catch (ConfigException e)
+    {
+        Console.WriteLine(e.Message == "Missing key");
+    }
+
+    class ConfigException : Exception
+    {
+        public string Detail { get; }
+
+        public ConfigException(string message)
+        {
+            Detail = message;
+        }
+    }
+  options: ["False", "True", "Missing key", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "הבנאי לא מעביר את ההודעה ל-`Exception` עם `: base(message)`, ולכן נקרא בנאי הבסיס בלי פרמטרים. `Message` מחזיר אז הודעת ברירת מחדל בנוסח «Exception of type ... was thrown», וההשוואה יוצאת `False`."
+  optionExplanations:
+    "1": "`Message` מגיע ממחלקת הבסיס, והיא לא קיבלה את ההודעה; הערך נשמר רק ב-`Detail`."
+    "2": "מודפסת תוצאה של השוואה, כלומר `True` או `False`, ולא ההודעה עצמה."
+    "3": "בלי `: base(...)` נקרא בנאי הבסיס בלי פרמטרים, ו-`Exception` מגדירה כזה, ולכן הקוד מתקמפל."
+
+- id: cs.exceptions.custom-exceptions.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[] codes = { 404, 503 };
+    foreach (int code in codes)
+    {
+        try
+        {
+            throw new ApiException(code);
+        }
+        catch (ApiException e) when (e.StatusCode >= 500)
+        {
+            Console.WriteLine($"retry {e.StatusCode}");
+        }
+        catch (ApiException e)
+        {
+            Console.WriteLine($"fail {e.StatusCode}");
+        }
+    }
+
+    class ApiException : Exception
+    {
+        public int StatusCode { get; }
+
+        public ApiException(int statusCode) : base($"HTTP {statusCode}")
+        {
+            StatusCode = statusCode;
+        }
+    }
+  options: ["fail 404\nretry 503", "retry 404\nretry 503", "fail 404\nfail 503", "retry 503"]
+  answer: 0
+  explanation: "המאפיין `StatusCode` של החריגה המותאמת מאפשר לסנן עם `when` לפי המידע שבה. 404 לא עומד בתנאי `>= 500`, ולכן נתפס בבלוק השני. 503 עומד בתנאי ונתפס בראשון."
+  optionExplanations:
+    "1": "404 קטן מ-500, ולכן המסנן של הבלוק הראשון שקר עבורו."
+    "2": "עבור 503 התנאי אמת, ולכן הבלוק הראשון תופס אותו."
+    "3": "גם 404 נתפס, בבלוק השני, ומודפס עבורו `fail 404`."
+
+- id: cs.exceptions.custom-exceptions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Exception e = new PaymentException("declined");
+    Console.WriteLine(e is OrderException);
+    Console.WriteLine(e is ArgumentException);
+    Console.WriteLine(e.GetType().BaseType.Name);
+
+    class OrderException : Exception
+    {
+        public OrderException(string message) : base(message) { }
+    }
+
+    class PaymentException : OrderException
+    {
+        public PaymentException(string message) : base(message) { }
+    }
+  options: ["True\nFalse\nOrderException", "False\nFalse\nException", "True\nFalse\nException", "True\nTrue\nOrderException"]
+  answer: 0
+  explanation: "`PaymentException` היא סוג של `OrderException` (ירושה, is-a), ולכן `is` מחזיר `True`. אין לה קשר ל-`ArgumentException`, שנמצאת בענף אחר של ההיררכיה. מחלקת הבסיס הישירה שלה היא `OrderException`, ו-`Exception` נמצאת רמה אחת מעליה."
+  optionExplanations:
+    "1": "`is` בודק גם מחלקות בסיס, לא רק את הטיפוס המדויק."
+    "2": "`BaseType` מחזיר את מחלקת הבסיס הישירה, לא את `Exception` שבראש ההיררכיה."
+    "3": "שתי המחלקות יורשות מ-`Exception`, אבל זה לא הופך אחת לסוג של השנייה."
+
+- id: cs.exceptions.custom-exceptions.008
+  type: hierarchy
+  difficulty: 2
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה?"
+  code: |
+    class AppException : Exception { }
+    class InvalidInputException : AppException { }
+    class PaymentException : AppException { }
+    class CardDeclinedException : PaymentException { }
+    class ErrorLogger { }
+  targets:
+    - id: Exception
+    - id: AppException
+    - id: PaymentException
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: AppException
+      answer: Exception
+      why: זו מחלקת הבסיס של כל החריגות של האפליקציה, והיא יורשת ישירות מ-Exception.
+    - label: InvalidInputException
+      answer: AppException
+    - label: PaymentException
+      answer: AppException
+    - label: CardDeclinedException
+      answer: PaymentException
+      why: כרטיס שנדחה הוא מקרה פרטי של שגיאת תשלום, ולכן catch על PaymentException יתפוס גם אותו.
+    - label: ErrorLogger
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: ErrorLogger מטפלת בחריגות, אבל היא לא חריגה בעצמה ואי אפשר לזרוק אותה.
+  explanation: "בונים היררכיה כך שכל רמה תהיה מקרה פרטי של הרמה שמעליה. כך הקוד הקורא בוחר את רמת הפירוט: `catch (CardDeclinedException)` למקרה אחד, `catch (PaymentException)` לכל שגיאות התשלום, או `catch (AppException)` לכל שגיאות האפליקציה."
+
+- id: cs.exceptions.custom-exceptions.009
+  type: hierarchy
+  difficulty: 3
+  prompt: "בחרו לכל חריגה מובנית של .NET את מחלקת הבסיס הישירה שלה."
+  targets:
+    - id: ArithmeticException
+    - id: ArgumentException
+    - id: SystemException
+  items:
+    - label: DivideByZeroException
+      answer: ArithmeticException
+    - label: OverflowException
+      answer: ArithmeticException
+      why: גם גלישה היא שגיאה חשבונית, ולכן catch על ArithmeticException תופס את שתיהן.
+    - label: ArgumentNullException
+      answer: ArgumentException
+    - label: ArgumentOutOfRangeException
+      answer: ArgumentException
+      why: ערך מחוץ לטווח הוא סוג של ארגומנט לא חוקי.
+    - label: FormatException
+      answer: SystemException
+    - label: InvalidOperationException
+      answer: SystemException
+  explanation: "גם החריגות המובנות בנויות כהיררכיה: משפחות של חריגות חשבוניות וחריגות ארגומנטים יושבות מתחת ל-`SystemException`, שיורשת מ-`Exception`. כשתכננו חריגות משלכם, בנו משפחות באותה דרך."
+
+- id: cs.exceptions.custom-exceptions.010
+  type: single
+  difficulty: 1
+  prompt: איזו הגדרה נכונה גם לפי הקומפיילר וגם לפי מוסכמות .NET?
+  options:
+    - "`class OrderNotFoundException : Exception`"
+    - "`class OrderNotFoundException`"
+    - "`struct OrderNotFoundException : Exception`"
+    - "`class OrderNotFoundError : Exception`"
+  answer: 0
+  explanation: "מחלקת חריגה חייבת לרשת (ישירות או בעקיפין) מ-`Exception`, אחרת אי אפשר לזרוק אותה. לפי המוסכמות, שם של מחלקת חריגה מסתיים ב-`Exception`."
+  optionExplanations:
+    "1": "בלי ירושה מ-`Exception` אי אפשר לזרוק את האובייקט, והקומפיילר יחזיר שגיאה ב-`throw`."
+    "2": "`struct` לא יכול לרשת ממחלקה, ולכן גם לא מ-`Exception`."
+    "3": "הקוד מתקמפל, אבל לפי המוסכמה שם של חריגה מסתיים ב-`Exception`, לא ב-`Error`."
+
+- id: cs.exceptions.custom-exceptions.011
+  type: single
+  difficulty: 1
+  prompt: מה היתרון העיקרי של חריגה מותאמת אישית, כמו `InsufficientFundsException`, על פני זריקת `Exception` עם הודעה?
+  options:
+    - "הקוד הקורא יכול לתפוס בדיוק את סוג השגיאה הזה ולקבל ממנה מידע נוסף במאפיינים"
+    - "חריגה מותאמת רצה מהר יותר מ-`Exception` רגילה"
+    - "חריגה מותאמת לא דורשת `try` ו-`catch` כדי לטפל בה"
+    - "חריגה מותאמת לא עוצרת את המתודה שזרקה אותה"
+  answer: 0
+  explanation: "טיפוס ייעודי מאפשר `catch (InsufficientFundsException)` שמטפל רק בשגיאה הזו, ומאפיינים כמו `Missing` מעבירים מידע מובנה. עם `Exception` כללית הקוד הקורא נאלץ לתפוס הכול ולפרק את טקסט ההודעה."
+  optionExplanations:
+    "1": "אין הבדל ביצועים משמעותי; היתרון הוא בבהירות ובדיוק התפיסה."
+    "2": "כל חריגה, מותאמת או מובנית, נתפסת באותה דרך עם `try` ו-`catch`."
+    "3": "`throw` עוצר את המתודה, בלי קשר לטיפוס החריגה."
+
+- id: cs.exceptions.custom-exceptions.012
+  type: single
+  difficulty: 2
+  prompt: "בחריגה מותאמת מגדירים בנאי `public ImportException(string message, Exception inner) : base(message, inner)`. למה הוא משמש?"
+  options:
+    - "לעטוף חריגה מקורית בחריגה חדשה, ולשמור את המקורית במאפיין `InnerException`"
+    - "לזרוק את שתי החריגות יחד, כך ששני בלוקי `catch` ירוצו"
+    - "להעתיק את ההודעה של `inner` אל `Message` של החריגה החדשה"
+    - "למנוע מ-`inner` להיתפס בבלוק `catch` אחר"
+  answer: 0
+  explanation: "כשמתרגמים חריגה טכנית (למשל `FormatException`) לחריגה של האפליקציה, מעבירים את המקורית כ-`inner`. היא נשמרת ב-`InnerException`, והמידע על הסיבה המקורית לא אובד. לכן מקובל שלחריגה מותאמת יהיה גם בנאי כזה."
+  optionExplanations:
+    "1": "נזרקת חריגה אחת בלבד, החדשה; המקורית רק נשמרת בתוכה."
+    "2": "`Message` של החריגה החדשה הוא `message` שהועבר, לא ההודעה של `inner`."
+    "3": "הבנאי לא משפיע על תפיסת חריגות; הוא רק שומר הפניה לחריגה המקורית."
+
+- id: cs.exceptions.custom-exceptions.013
+  type: truefalse
+  difficulty: 1
+  prompt: "אפשר לזרוק עם `throw` אובייקט של כל מחלקה, גם אם היא לא יורשת מ-`Exception`."
+  answer: false
+  explanation: "`throw` מקבל רק אובייקטים מטיפוס `Exception` או טיפוס שיורש ממנו. ניסיון לזרוק אובייקט אחר הוא שגיאת קומפילציה (CS0155). לכן כל חריגה מותאמת חייבת לרשת מ-`Exception`."
+
+- id: cs.exceptions.custom-exceptions.014
+  type: truefalse
+  difficulty: 3
+  prompt: "לפי הנחיות .NET, מחלקת חריגה מותאמת צריכה לרשת מ-`ApplicationException` ולא ישירות מ-`Exception`."
+  answer: false
+  explanation: "ההנחיות של מיקרוסופט ממליצות לרשת מ-`Exception` (או מחריגה קיימת ומתאימה יותר). `ApplicationException` נועדה במקור להפריד חריגות של אפליקציות, אבל זה לא הוסיף ערך, ולכן לא מומלץ להשתמש בה."
+
+- id: cs.exceptions.custom-exceptions.015
+  type: bug
+  difficulty: 2
+  prompt: "`CardDeclinedException` אמורה להיות סוג של `PaymentException`, כך שה-`catch` יטפל בה. באיזו שורה הבאג?"
+  code: |
+    try
+    {
+        Pay(0);
+    }
+    catch (PaymentException e)
+    {
+        Console.WriteLine($"Payment failed: {e.Message}");
+    }
+
+    static void Pay(int amount)
+    {
+        if (amount <= 0)
+            throw new CardDeclinedException("Amount must be positive");
+    }
+
+    class PaymentException : Exception
+    {
+        public PaymentException(string message) : base(message) { }
+    }
+
+    class CardDeclinedException : Exception
+    {
+        public CardDeclinedException(string message) : base(message) { }
+    }
+  answer: 21
+  explanation: "`CardDeclinedException` יורשת ישירות מ-`Exception`, ולכן היא לא סוג של `PaymentException`, וה-`catch` לא תופס אותה. החריגה יוצאת מהתוכנית בלי טיפול. התיקון הוא לרשת מ-`PaymentException`."
+  fixed: |
+    try
+    {
+        Pay(0);
+    }
+    catch (PaymentException e)
+    {
+        Console.WriteLine($"Payment failed: {e.Message}");
+    }
+
+    static void Pay(int amount)
+    {
+        if (amount <= 0)
+            throw new CardDeclinedException("Amount must be positive");
+    }
+
+    class PaymentException : Exception
+    {
+        public PaymentException(string message) : base(message) { }
+    }
+
+    class CardDeclinedException : PaymentException
+    {
+        public CardDeclinedException(string message) : base(message) { }
+    }
+
+- id: cs.exceptions.custom-exceptions.016
+  type: bug
+  difficulty: 2
+  prompt: "`Message` של החריגה אמור להחזיר את ההודעה, ו-`Sku` את קוד המוצר. באיזו שורה הבאג?"
+  code: |
+    class StockException : Exception
+    {
+        public string Sku { get; }
+
+        public StockException(string sku, string message) : base(sku)
+        {
+            Sku = sku;
+        }
+    }
+  answer: 5
+  explanation: "הבנאי מעביר ל-`base` את המשתנה הלא נכון: `sku` במקום `message`. לכן `Message` יחזיר את קוד המוצר, וההודעה האמיתית תאבד. צריך `: base(message)`."
+  fixed: |
+    class StockException : Exception
+    {
+        public string Sku { get; }
+
+        public StockException(string sku, string message) : base(message)
+        {
+            Sku = sku;
+        }
+    }

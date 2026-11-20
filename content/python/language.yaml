@@ -1,0 +1,261 @@
+id: python
+prefix: py
+title_he: פייתון
+title_en: Python
+highlight: python
+version: "3.12"
+description_he: מבחנים בפייתון מהיסודות ועד תכנות מונחה עצמים, קוד נקי וארכיטקטורה. כל שאלה מגיעה עם הסבר, וכל קטע קוד נבדק בהרצה אמיתית.
+simulation:
+  questions: 30
+  minutes: 40
+  passScore: 85
+  blueprint:
+    basics: 3
+    control-flow: 3
+    strings: 3
+    data-structures: 4
+    functions: 3
+    oop: 4
+    exceptions: 2
+    clean-code: 3
+    software-design: 3
+    advanced: 2
+chapters:
+  - id: basics
+    title_he: יסודות
+    title_en: Basics
+    description_he: משתנים, סוגי נתונים, אופרטורים, קלט ופלט והמרות בין טיפוסים. הבסיס שכל השאר נשען עליו.
+    topics:
+      - id: variables
+        title_he: משתנים
+        title_en: Variables
+        summary_he: יצירת משתנים, השמה, שמות חוקיים, השמה מרובה והחלפת ערכים, ומה קורה כשמשתנה מצביע על אובייקט.
+      - id: data-types
+        title_he: סוגי נתונים
+        title_en: Data Types
+        summary_he: int, float, str, bool ו-None. איך בודקים טיפוס עם type ו-isinstance, ומה ההבדל בין טיפוסים ניתנים לשינוי ושאינם ניתנים.
+      - id: operators
+        title_he: אופרטורים
+        title_en: Operators
+        summary_he: אופרטורים אריתמטיים, חלוקה שלמה ושארית, השוואה, אופרטורים לוגיים, קדימות אופרטורים ו-is מול ==.
+      - id: input-output
+        title_he: קלט ופלט
+        title_en: Input and Output
+        summary_he: print עם sep ו-end, input שמחזיר תמיד מחרוזת, והדפסה של כמה ערכים יחד.
+      - id: type-conversion
+        title_he: המרת טיפוסים
+        title_en: Type Conversion
+        summary_he: int, float, str ו-bool כהמרות, ערכי אמת ושקר (truthy ו-falsy), ושגיאות המרה נפוצות.
+  - id: control-flow
+    title_he: זרימת בקרה
+    title_en: Control Flow
+    description_he: תנאים ולולאות. איך התוכנית מחליטה מה לעשות ובאיזה סדר.
+    topics:
+      - id: conditions
+        title_he: תנאים
+        title_en: Conditions
+        summary_he: if, elif ו-else, תנאים מקוננים, ביטוי תנאי בשורה אחת, והערכה מקוצרת של and ו-or.
+      - id: for-loops
+        title_he: לולאות for
+        title_en: For Loops
+        summary_he: מעבר על רצפים, range עם התחלה, סוף וקפיצה, enumerate ו-zip, ולולאות מקוננות.
+      - id: while-loops
+        title_he: לולאות while
+        title_en: While Loops
+        summary_he: לולאות while, תנאי עצירה, לולאה אינסופית ומונים, ומתי עדיף while על for.
+      - id: loop-control
+        title_he: שליטה בלולאות
+        title_en: Loop Control
+        summary_he: break, continue, pass, ו-else של לולאה שרץ רק כשלא היה break.
+  - id: strings
+    title_he: מחרוזות
+    title_en: Strings
+    description_he: עבודה עם טקסט. אינדקסים, חיתוך, מתודות ועיצוב פלט.
+    topics:
+      - id: string-basics
+        title_he: יסודות מחרוזות
+        title_en: String Basics
+        summary_he: יצירת מחרוזות, אינדקסים חיוביים ושליליים, שרשור, הכפלה, len, ומחרוזות שאינן ניתנות לשינוי.
+      - id: slicing
+        title_he: חיתוך
+        title_en: Slicing
+        summary_he: חיתוך עם התחלה, סוף וקפיצה, אינדקסים שליליים, היפוך מחרוזת ומה קורה בחריגה מהגבולות.
+      - id: string-methods
+        title_he: מתודות מחרוזת
+        title_en: String Methods
+        summary_he: upper, lower, strip, split, join, replace, find, startswith ועוד, ומה כל אחת מחזירה.
+      - id: formatting
+        title_he: עיצוב מחרוזות
+        title_en: String Formatting
+        summary_he: f-strings, מספר ספרות אחרי הנקודה, ריפוד ויישור, ו-format.
+  - id: data-structures
+    title_he: מבני נתונים
+    title_en: Data Structures
+    description_he: רשימות, טאפלים, מילונים וקבוצות. מתי להשתמש בכל אחד ומה עלות הפעולות.
+    topics:
+      - id: lists
+        title_he: רשימות
+        title_en: Lists
+        summary_he: יצירה, הוספה והסרה, מיון, העתקה מול הפניה לאותה רשימה, ורשימות מקוננות.
+      - id: tuples
+        title_he: טאפלים
+        title_en: Tuples
+        summary_he: טאפלים שאינם ניתנים לשינוי, פירוק (unpacking), טאפל של איבר אחד, והחזרת כמה ערכים מפונקציה.
+      - id: dictionaries
+        title_he: מילונים
+        title_en: Dictionaries
+        summary_he: מפתחות וערכים, get, items, עדכון ומחיקה, מעבר על מילון, ומה יכול להיות מפתח.
+      - id: sets
+        title_he: קבוצות
+        title_en: Sets
+        summary_he: איברים ייחודיים, איחוד, חיתוך והפרש, בדיקת שייכות מהירה, וקבוצה ריקה.
+      - id: comprehensions
+        title_he: הבנות רשימה
+        title_en: Comprehensions
+        summary_he: list, dict ו-set comprehensions, עם תנאי ובלי, ומתי הן פוגעות בקריאות.
+  - id: functions
+    title_he: פונקציות
+    title_en: Functions
+    description_he: הגדרת פונקציות, פרמטרים, טווח הכרה, למבדא ורקורסיה.
+    topics:
+      - id: defining-functions
+        title_he: הגדרת פונקציות
+        title_en: Defining Functions
+        summary_he: def, return, פונקציה שלא מחזירה כלום מחזירה None, ותיעוד עם docstring.
+      - id: parameters
+        title_he: פרמטרים וארגומנטים
+        title_en: Parameters and Arguments
+        summary_he: ארגומנטים לפי מיקום ולפי שם, ערכי ברירת מחדל, ערך ברירת מחדל שניתן לשינוי, args* ו-kwargs**.
+      - id: scope
+        title_he: טווח הכרה
+        title_en: Scope
+        summary_he: משתנים מקומיים וגלובליים, global ו-nonlocal, וכלל LEGB.
+      - id: lambda
+        title_he: פונקציות למבדא
+        title_en: Lambda Functions
+        summary_he: lambda, שימוש עם sorted, map ו-filter, ופונקציות כערכים.
+      - id: recursion
+        title_he: רקורסיה
+        title_en: Recursion
+        summary_he: מקרה בסיס וקריאה רקורסיבית, מעקב אחרי קריאות, ומגבלת עומק הרקורסיה.
+  - id: oop
+    title_he: תכנות מונחה עצמים
+    title_en: Object-Oriented Programming
+    description_he: מחלקות ואובייקטים, ירושה, פולימורפיזם, הרכבה, מחלקות מופשטות ומתודות מיוחדות. כולל שאלות על יחסים בין מחלקות.
+    topics:
+      - id: classes-objects
+        title_he: מחלקות ואובייקטים
+        title_en: Classes and Objects
+        summary_he: class, __init__, self, תכונות של מופע מול תכונות של מחלקה, ומתודות.
+      - id: inheritance
+        title_he: ירושה
+        title_en: Inheritance
+        summary_he: מחלקת בסיס ומחלקה יורשת, super, דריסת מתודות, ירושה מרובה וסדר חיפוש המתודות (MRO).
+      - id: polymorphism
+        title_he: פולימורפיזם
+        title_en: Polymorphism
+        summary_he: אותה מתודה עם התנהגות שונה, duck typing, וקריאה למתודה דרך מחלקת הבסיס.
+      - id: composition
+        title_he: הרכבה מול ירושה
+        title_en: Composition vs Inheritance
+        summary_he: יחס is-a מול has-a, מתי להעדיף הרכבה על ירושה, וזיהוי יחסים בין מחלקות.
+      - id: abstract-classes
+        title_he: מחלקות מופשטות
+        title_en: Abstract Classes
+        summary_he: ABC ו-abstractmethod, מחלקה שאי אפשר ליצור ממנה מופע, וחוזה בין מחלקות.
+      - id: special-methods
+        title_he: מתודות מיוחדות
+        title_en: Special (Dunder) Methods
+        summary_he: __str__, __repr__, __eq__, __len__ ועוד, ואיך הן משנות את התנהגות האובייקט.
+  - id: exceptions
+    title_he: חריגות
+    title_en: Exceptions
+    description_he: טיפול בשגיאות. try, except, finally, זריקת חריגות וחריגות מותאמות אישית.
+    topics:
+      - id: try-except
+        title_he: try ו-except
+        title_en: Try and Except
+        summary_he: תפיסת חריגות, כמה בלוקי except, else ו-finally, וסדר הביצוע.
+      - id: raising
+        title_he: זריקת חריגות
+        title_en: Raising Exceptions
+        summary_he: raise, זריקה מחדש, שרשור חריגות עם from, ומתי לזרוק חריגה.
+      - id: custom-exceptions
+        title_he: חריגות מותאמות אישית
+        title_en: Custom Exceptions
+        summary_he: הגדרת מחלקת חריגה, היררכיית חריגות, ותפיסה לפי מחלקת בסיס.
+      - id: context-managers
+        title_he: מנהלי הקשר
+        title_en: Context Managers
+        summary_he: with, סגירת קבצים ומשאבים אוטומטית, __enter__ ו-__exit__.
+  - id: clean-code
+    title_he: קוד נקי
+    title_en: Clean Code
+    description_he: קוד שקל לקרוא ולשנות. שמות טובים, פונקציות קצרות, אי־שכפול, זיהוי ריחות קוד וסגנון PEP 8.
+    topics:
+      - id: naming
+        title_he: שמות
+        title_en: Naming
+        summary_he: שמות שמסבירים כוונה, שמות לפונקציות, למשתנים ולמחלקות, וקיצורים שכדאי להימנע מהם.
+      - id: small-functions
+        title_he: פונקציות קטנות וממוקדות
+        title_en: Small Functions
+        summary_he: פונקציה שעושה דבר אחד, מספר פרמטרים קטן, ללא תופעות לוואי מפתיעות, ורמת הפשטה אחידה.
+      - id: dry
+        title_he: אל תחזור על עצמך
+        title_en: DRY (Don't Repeat Yourself)
+        summary_he: זיהוי שכפול קוד, חילוץ פונקציה, ומתי שכפול קטן עדיף על הפשטה מוקדמת.
+      - id: code-smells
+        title_he: ריחות קוד
+        title_en: Code Smells
+        summary_he: Long Method, Magic Number, Deep Nesting, God Class ועוד, ואיך מתקנים כל אחד.
+      - id: style
+        title_he: סגנון ומוסכמות
+        title_en: Style Conventions (PEP 8)
+        summary_he: מוסכמות שמות, הזחה, אורך שורה, ייבוא, והערות שמוסיפות ערך.
+  - id: software-design
+    title_he: ארכיטקטורה ותכנון
+    title_en: Software Design
+    description_he: איך מחלקים מערכת לקבצים, למחלקות ולשכבות. עקרונות SOLID, תבניות עיצוב, הזרקת תלויות ושאלות הרכבת ארכיטקטורה מדרישה.
+    topics:
+      - id: modules-layers
+        title_he: מודולים ושכבות
+        title_en: Modules and Layers
+        summary_he: הפרדה בין ממשק, לוגיקה עסקית ונתונים, תלויות בין שכבות, ואיזו פונקציה שייכת לאיזה קובץ.
+      - id: solid
+        title_he: עקרונות SOLID
+        title_en: SOLID Principles
+        summary_he: אחריות יחידה, פתוח לסגור, החלפת ליסקוב, הפרדת ממשקים והיפוך תלויות, עם דוגמאות קוד.
+      - id: design-patterns
+        title_he: תבניות עיצוב
+        title_en: Design Patterns
+        summary_he: Strategy, Factory, Observer, Singleton, Adapter ו-Repository, ואיזו תבנית פותרת איזו בעיה.
+      - id: dependency-injection
+        title_he: הזרקת תלויות
+        title_en: Dependency Injection
+        summary_he: העברת תלויות מבחוץ, החלפת מימוש בבדיקות, וצימוד חלש בין מחלקות.
+      - id: architecture-assembly
+        title_he: הרכבת ארכיטקטורה
+        title_en: Architecture Assembly
+        summary_he: מקבלים דרישה, חתימות פונקציות מלאות ושמות קבצים, וצריך לשבץ כל פונקציה במקום הנכון.
+  - id: advanced
+    title_he: נושאים מתקדמים
+    title_en: Advanced Topics
+    description_he: איטרטורים וגנרטורים, דקורטורים, מודולים וחבילות, ורמזי טיפוס.
+    topics:
+      - id: iterators-generators
+        title_he: איטרטורים וגנרטורים
+        title_en: Iterators and Generators
+        summary_he: yield, הערכה עצלה, next, ומה קורה כשגנרטור נגמר.
+      - id: decorators
+        title_he: דקורטורים
+        title_en: Decorators
+        summary_he: פונקציה שעוטפת פונקציה, תחביר @, דקורטור עם פרמטרים ו-functools.wraps.
+      - id: modules-packages
+        title_he: מודולים וחבילות
+        title_en: Modules and Packages
+        summary_he: import, from import, __name__ == '__main__', וחבילות עם __init__.py.
+      - id: type-hints
+        title_he: רמזי טיפוס
+        title_en: Type Hints
+        summary_he: הערות טיפוס לפרמטרים ולערכי החזרה, Optional, list[int], ומה פייתון עושה (ולא עושה) איתן בזמן ריצה.

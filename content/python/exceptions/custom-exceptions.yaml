@@ -1,0 +1,350 @@
+- id: py.exceptions.custom-exceptions.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class InsufficientFundsError(Exception):
+        pass
+
+
+    def withdraw(balance, amount):
+        if amount > balance:
+            raise InsufficientFundsError("not enough money")
+        return balance - amount
+
+
+    try:
+        withdraw(50, 80)
+    except InsufficientFundsError as e:
+        print("Error:", e)
+  options: ["Error: not enough money", "Error: InsufficientFundsError", "Error:", "InsufficientFundsError"]
+  answer: 0
+  explanation: "מחלקת חריגה מותאמת אישית (Custom Exception) היא מחלקה שיורשת מ-`Exception`. גם עם `pass` בלבד היא יורשת את כל ההתנהגות, כולל שמירת ההודעה, ולכן `print(e)` מדפיס את ההודעה שהועברה."
+  optionExplanations:
+    "1": "הדפסת החריגה מציגה את ההודעה שלה, לא את שם המחלקה."
+    "2": "המחלקה לא צריכה `__init__` משלה. ה-`__init__` של `Exception` שומר את ההודעה."
+    "3": "החריגה נתפסת על ידי `except InsufficientFundsError`, ולכן התוכנית לא נעצרת."
+
+- id: py.exceptions.custom-exceptions.002
+  type: single
+  difficulty: 1
+  prompt: ממה כדאי שמחלקת חריגה מותאמת אישית תירש?
+  options: ["`Exception`", "`BaseException`", "`object`", "`Error`"]
+  answer: 0
+  explanation: "חריגות של אפליקציה יורשות מ-`Exception` (או מחריגה שיורשת ממנה). כך `except Exception:` תופס אותן, כמו את שאר שגיאות התוכנית."
+  optionExplanations:
+    "1": "`BaseException` שמורה לחריגות מערכת כמו `KeyboardInterrupt` ו-`SystemExit`. חריגה שיורשת ממנה ישירות לא תיתפס ב-`except Exception:`."
+    "2": "אפשר לזרוק רק אובייקט שיורש מ-`BaseException`. זריקה של מחלקה שיורשת מ-`object` תגרום ל-`TypeError`."
+    "3": "אין ב-Python מחלקה מובנית בשם `Error`, ולכן תתקבל `NameError`."
+
+- id: py.exceptions.custom-exceptions.003
+  type: truefalse
+  difficulty: 1
+  prompt: "מחלקת חריגה מותאמת אישית חייבת להגדיר `__init__` משלה."
+  answer: false
+  explanation: "`class PaymentError(Exception): pass` היא חריגה תקינה לגמרי: היא יורשת את `__init__` של `Exception` ושומרת את ההודעה. מגדירים `__init__` רק כשרוצים לשמור מידע נוסף, כמו קוד שגיאה."
+
+- id: py.exceptions.custom-exceptions.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class AppError(Exception):
+        pass
+
+
+    class NotFoundError(AppError):
+        pass
+
+
+    try:
+        raise NotFoundError("user 7")
+    except AppError as e:
+        print(type(e).__name__, e)
+  options: ["NotFoundError user 7", "AppError user 7", "NotFoundError", "AppError NotFoundError"]
+  answer: 0
+  explanation: "`except AppError` תופס כל חריגה שהיא מופע של `AppError`, כולל מחלקות שיורשות ממנה. התפיסה לפי מחלקת הבסיס לא משנה את האובייקט: `e` הוא עדיין `NotFoundError`, וההודעה שלו נשמרת."
+  optionExplanations:
+    "1": "`type(e)` מחזיר את הסוג האמיתי של האובייקט, לא את המחלקה שכתובה ב-`except`."
+    "2": "`print` מקבל שני ערכים: שם המחלקה ואת החריגה עצמה, שמודפסת כהודעה שלה."
+    "3": "הערך השני הוא `e`, ו-`print(e)` מציג את ההודעה `user 7`."
+
+- id: py.exceptions.custom-exceptions.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class ShopError(Exception):
+        pass
+
+
+    class OutOfStockError(ShopError):
+        pass
+
+
+    try:
+        raise OutOfStockError()
+    except ShopError:
+        print("shop")
+    except OutOfStockError:
+        print("stock")
+  options: ["shop", "stock", "shop\nstock", "OutOfStockError"]
+  answer: 0
+  explanation: "בלוקי `except` נבדקים לפי הסדר, והראשון שמתאים רץ. `OutOfStockError` היא סוג של `ShopError`, ולכן הבלוק הראשון תופס אותה, והבלוק הספציפי לעולם לא יגיע לתורו. כותבים את המחלקות הספציפיות לפני מחלקות הבסיס."
+  optionExplanations:
+    "1": "Python לא מחפשת את ההתאמה המדויקת ביותר, אלא את הראשונה לפי הסדר."
+    "2": "רק בלוק `except` אחד רץ לכל חריגה."
+    "3": "`except ShopError` תופס גם מחלקות שיורשות מ-`ShopError`."
+
+- id: py.exceptions.custom-exceptions.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class ValidationError(Exception):
+        pass
+    class EmailError(ValidationError):
+        pass
+    class PasswordError(ValidationError):
+        pass
+
+    try:
+        raise PasswordError("too short")
+    except EmailError:
+        print("email")
+    print("done")
+  options: ["PasswordError", "email\ndone", "done", "ValidationError"]
+  answer: 0
+  explanation: "`PasswordError` ו-`EmailError` הן אחיות: שתיהן יורשות מ-`ValidationError`, אבל אף אחת לא יורשת מהשנייה. לכן `except EmailError` לא תופס `PasswordError`, והתוכנית נעצרת לפני `print(\"done\")`. כדי לתפוס את שתיהן תופסים את מחלקת הבסיס `ValidationError`."
+  optionExplanations:
+    "1": "בסיס משותף לא הופך את המחלקות לאותו סוג. `PasswordError` אינה `EmailError`."
+    "2": "החריגה לא נתפסה, ולכן התוכנית נעצרת ו-`done` לא מודפס."
+    "3": "נזרקה `PasswordError`, ושם המחלקה המדויקת שלה הוא שמופיע, לא שם מחלקת הבסיס."
+
+- id: py.exceptions.custom-exceptions.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class HttpError(Exception):
+        def __init__(self, status, message):
+            super().__init__(f"{status}: {message}")
+            self.status = status
+
+
+    try:
+        raise HttpError(404, "not found")
+    except HttpError as e:
+        print(e.status)
+        print(e)
+  options: ["404\n404: not found", "404\nnot found", "404\nHttpError", "404\n404"]
+  answer: 0
+  explanation: "חריגה מותאמת יכולה לשמור מידע נוסף כמאפיינים, כאן `status`. הקריאה ל-`super().__init__` עם מחרוזת קובעת את ההודעה ש-`print(e)` מציג, ולכן מודפסת המחרוזת המעוצבת `404: not found`."
+  optionExplanations:
+    "1": "ההודעה היא מה שהועבר ל-`super().__init__`, כלומר המחרוזת המעוצבת שכוללת גם את הסטטוס."
+    "2": "הדפסת החריגה מציגה את ההודעה שלה, לא את שם המחלקה."
+    "3": "`print(e)` לא מדפיס את `e.status` אלא את ההודעה שנשמרה ב-`super().__init__`."
+
+- id: py.exceptions.custom-exceptions.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class AppError(Exception):
+        pass
+    class DatabaseError(AppError):
+        pass
+    class NetworkError(AppError):
+        pass
+
+    for error in [DatabaseError(), NetworkError(), KeyError()]:
+        try:
+            raise error
+        except DatabaseError:
+            print("db")
+        except AppError:
+            print("app")
+  options: ["db\napp\nKeyError", "db\napp\napp", "db\napp", "db\nNetworkError"]
+  answer: 0
+  explanation: "`DatabaseError` נתפסת בבלוק הספציפי שלה. `NetworkError` לא מתאימה לבלוק הראשון, אבל היא סוג של `AppError` ולכן נתפסת בשני. `KeyError` לא שייכת להיררכיה של `AppError`, אף בלוק לא תופס אותה, והתוכנית נעצרת."
+  optionExplanations:
+    "1": "`KeyError` יורשת מ-`LookupError`, לא מ-`AppError`, ולכן `except AppError` לא תופס אותה."
+    "2": "החריגה האחרונה לא נבלעת בשקט. היא לא נתפסת ועוצרת את התוכנית."
+    "3": "`NetworkError` יורשת מ-`AppError`, ולכן הבלוק `except AppError` תופס אותה."
+
+- id: py.exceptions.custom-exceptions.009
+  type: single
+  difficulty: 2
+  prompt: "ספרייה לתשלומים מגדירה `PaymentError(Exception)`, וממנה יורשות `CardDeclinedError` ו-`GatewayTimeoutError`. מה היתרון העיקרי של המבנה הזה?"
+  options:
+    - "הקוד שמשתמש בספרייה יכול לתפוס את כל שגיאות התשלום ב-`except PaymentError`, ועדיין לטפל בנפרד בסוג מסוים"
+    - "חריגות שיורשות ממחלקת בסיס משותפת נזרקות ונתפסות מהר יותר"
+    - "בזכות מחלקת הבסיס אין צורך לכתוב בלוקי `except` בקוד שמשתמש בספרייה"
+    - "כל החריגות בהיררכיה מקבלות אוטומטית את אותה הודעת שגיאה"
+  answer: 0
+  explanation: "היררכיית חריגות (Exception Hierarchy) נותנת למשתמש לבחור את רמת הפירוט: מי שרוצה רק לדעת שהתשלום נכשל תופס את `PaymentError`, ומי שרוצה להגיב אחרת לכרטיס שנדחה תופס את `CardDeclinedError`."
+  optionExplanations:
+    "1": "ירושה לא משפיעה על מהירות הזריקה או התפיסה. היתרון הוא בגמישות של מי שתופס."
+    "2": "חריגה שלא נתפסת עוצרת את התוכנית, עם מחלקת בסיס או בלעדיה."
+    "3": "ההודעה נקבעת בכל `raise` בנפרד. הירושה משתפת התנהגות, לא תוכן."
+
+- id: py.exceptions.custom-exceptions.010
+  type: single
+  difficulty: 1
+  prompt: לפי מוסכמות השמות של Python (PEP 8), מה השם המתאים ביותר למחלקת חריגה שנזרקת כשתשלום נדחה?
+  options: ["`PaymentDeclinedError`", "`payment_declined_error`", "`PaymentDeclined`", "`PAYMENT_DECLINED_ERROR`"]
+  answer: 0
+  explanation: "חריגה היא מחלקה, ולכן שמה נכתב ב-CapWords (PascalCase). PEP 8 ממליץ גם להוסיף את הסיומת `Error` לחריגה שמייצגת שגיאה, כמו `ValueError` ו-`KeyError` המובנות."
+  optionExplanations:
+    "1": "snake_case משמש לפונקציות ולמשתנים, לא לשמות מחלקות."
+    "2": "בלי הסיומת `Error` לא ברור מהשם שזו חריגה ולא מחלקה רגילה שמתארת תשלום שנדחה."
+    "3": "אותיות גדולות עם קווים תחתונים שמורות לקבועים."
+
+- id: py.exceptions.custom-exceptions.011
+  type: bug
+  difficulty: 2
+  prompt: הקוד אמור לזרוק `InvalidEmailError` כשאין `@` בכתובת. באיזו שורה הבאג?
+  code: |
+    class InvalidEmailError:
+        pass
+
+
+    def validate(email):
+        if "@" not in email:
+            raise InvalidEmailError(email)
+        return email
+  answer: 1
+  explanation: "המחלקה לא יורשת מ-`Exception`, ולכן היא לא חריגה. כשמגיעים ל-`raise` נזרקת במקומה `TypeError: exceptions must derive from BaseException`."
+  fixed: |
+    class InvalidEmailError(Exception):
+        pass
+
+
+    def validate(email):
+        if "@" not in email:
+            raise InvalidEmailError(email)
+        return email
+
+- id: py.exceptions.custom-exceptions.012
+  type: bug
+  difficulty: 2
+  prompt: כל שגיאות הספרייה אמורות להיתפס על ידי `except LibraryError`. באיזו שורה הבאג?
+  code: |
+    class LibraryError(Exception):
+        pass
+
+
+    class BookNotFoundError(Exception):
+        pass
+
+
+    def find(books, title):
+        if title not in books:
+            raise BookNotFoundError(title)
+        return books[title]
+  answer: 5
+  explanation: "`BookNotFoundError` יורשת ישירות מ-`Exception`, ולכן היא לא חלק מההיררכיה של `LibraryError`, ו-`except LibraryError` לא יתפוס אותה. היא צריכה לרשת מ-`LibraryError`."
+  fixed: |
+    class LibraryError(Exception):
+        pass
+
+
+    class BookNotFoundError(LibraryError):
+        pass
+
+
+    def find(books, title):
+        if title not in books:
+            raise BookNotFoundError(title)
+        return books[title]
+
+- id: py.exceptions.custom-exceptions.013
+  type: bug
+  difficulty: 3
+  prompt: "המחלקה אמורה לשמור את `used` ואת `limit`, ו-`print(e)` אמור להציג למשל `used 120 of 100`. באיזו שורה הבאג?"
+  code: |
+    class QuotaExceededError(Exception):
+        def __init__(self, used, limit):
+            super().__init__()
+            self.used = used
+            self.limit = limit
+
+
+    try:
+        raise QuotaExceededError(120, 100)
+    except QuotaExceededError as e:
+        print(e)
+  answer: 3
+  explanation: "ההודעה של חריגה נקבעת לפי הארגומנטים שמועברים ל-`__init__` של `Exception`. הקריאה `super().__init__()` לא מעבירה כלום, ולכן `print(e)` מדפיס שורה ריקה. צריך להעביר את ההודעה המעוצבת."
+  fixed: |
+    class QuotaExceededError(Exception):
+        def __init__(self, used, limit):
+            super().__init__(f"used {used} of {limit}")
+            self.used = used
+            self.limit = limit
+
+
+    try:
+        raise QuotaExceededError(120, 100)
+    except QuotaExceededError as e:
+        print(e)
+
+- id: py.exceptions.custom-exceptions.014
+  type: truefalse
+  difficulty: 2
+  prompt: "אם `NotFoundError` יורשת מ-`AppError`, אז `except NotFoundError:` יתפוס גם חריגה מסוג `AppError`."
+  answer: false
+  explanation: "התפיסה עובדת רק בכיוון אחד: `except` תופס את המחלקה שכתובה בו ואת כל המחלקות שיורשות ממנה. `NotFoundError` היא סוג של `AppError`, אבל `AppError` כללית היא לא `NotFoundError`. ההפך כן נכון: `except AppError:` יתפוס `NotFoundError`."
+
+- id: py.exceptions.custom-exceptions.015
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    def withdraw(balance, amount):
+        if amount > balance:
+            raise Exception("INSUFFICIENT_FUNDS")
+        if amount <= 0:
+            raise Exception("INVALID_AMOUNT")
+        return balance - amount
+
+
+    try:
+        withdraw(100, 500)
+    except Exception as e:
+        if str(e) == "INSUFFICIENT_FUNDS":
+            print("not enough money")
+  options:
+    - "אובססיית טיפוסים פרימיטיביים - Primitive Obsession"
+    - "מתודה ארוכה - Long Method"
+    - "קוד מת - Dead Code"
+    - "שם לא ברור - Unclear Name"
+  answer: 0
+  explanation: "סוג השגיאה מקודד במחרוזת, והקוד הקורא נאלץ לתפוס כל `Exception` ולהשוות טקסט. התיקון: מחלקות חריגה מותאמות, למשל `InsufficientFundsError` ו-`InvalidAmountError`, ותפיסה לפי סוג: `except InsufficientFundsError:`."
+  optionExplanations:
+    "1": "הפונקציה קצרה וממוקדת. הבעיה היא בייצוג סוג השגיאה, לא באורך."
+    "2": "כל השורות יכולות לרוץ. אין כאן קוד שלעולם לא מתבצע."
+    "3": "השמות `withdraw`, `balance` ו-`amount` ברורים. הבעיה היא שהשגיאות הן מחרוזות ולא מחלקות."
+
+- id: py.exceptions.custom-exceptions.016
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class AppError(Exception):
+        pass
+
+
+    class AuthError(AppError):
+        pass
+
+
+    e = AuthError("denied")
+    print(isinstance(e, AppError), isinstance(e, ValueError), issubclass(AuthError, Exception))
+  options: ["True False True", "False False True", "True False False", "True True True"]
+  answer: 0
+  explanation: "`AuthError` יורשת מ-`AppError`, שיורשת מ-`Exception`. לכן מופע של `AuthError` הוא גם `AppError`, והמחלקה היא תת-מחלקה (Subclass) של `Exception`. אין קשר ל-`ValueError`, שהיא ענף אחר בהיררכיה."
+  optionExplanations:
+    "1": "`isinstance` בודק גם מחלקות בסיס, לא רק את הסוג המדויק."
+    "2": "ירושה היא טרנזיטיבית: אם `AppError` יורשת מ-`Exception`, גם `AuthError` יורשת ממנה."
+    "3": "`ValueError` לא נמצאת בשרשרת הירושה של `AuthError`. שתיהן חריגות, אבל אחת לא יורשת מהשנייה."

@@ -1,0 +1,345 @@
+- id: cs.control-flow.loop-control.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    for (int i = 1; i <= 10; i++)
+    {
+        if (i == 4)
+            break;
+        Console.Write(i);
+    }
+  options: ["1234", "123", "12345678910", "1235678910"]
+  answer: 1
+  explanation: "`break` מסיים את הלולאה מיד. כש-`i` הוא 4, ה-`break` רץ לפני ההדפסה, והלולאה נגמרת בלי לחזור אליה."
+  optionExplanations:
+    "0": "`break` נמצא לפני `Console.Write`, ולכן 4 לא מודפס."
+    "3": "דילוג על 4 בלבד והמשך הלולאה הוא מה ש-`continue` עושה, לא `break`."
+
+- id: cs.control-flow.loop-control.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    for (int i = 1; i <= 6; i++)
+    {
+        if (i % 3 == 0)
+            continue;
+        Console.Write(i);
+    }
+  options: ["12", "36", "1245", "123456"]
+  answer: 2
+  explanation: "`continue` מדלג על שאר הגוף בסיבוב הנוכחי וממשיך לסיבוב הבא. עבור 3 ו-6, שמתחלקים ב-3, ההדפסה מדולגת, ושאר המספרים מודפסים."
+  optionExplanations:
+    "0": "12 הוא מה שהיה מודפס עם `break`, שעוצר את הלולאה כולה כש-`i` הוא 3."
+    "1": "36 הם בדיוק המספרים שמדולגים. התנאי קובע מתי לדלג, לא מה להדפיס."
+
+- id: cs.control-flow.loop-control.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= 3; j++)
+        {
+            if (j == 2)
+                break;
+            Console.Write($"{i}{j} ");
+        }
+    }
+  options: ["11", "11 21 31", "11 13 21 23 31 33", "11 12 21 22 31 32"]
+  answer: 1
+  explanation: "`break` יוצא רק מהלולאה הפנימית ביותר שבה הוא נמצא. בכל סיבוב של `i` הלולאה הפנימית מדפיסה את `j = 1` ונעצרת ב-`j = 2`, ואז הלולאה החיצונית ממשיכה ל-`i` הבא."
+  optionExplanations:
+    "0": "התשובה הזו מניחה ש-`break` יוצא מכל הלולאות המקוננות. הוא יוצא רק מהפנימית."
+    "2": "זה הפלט עם `continue`, שמדלג רק על `j = 2` וממשיך ל-`j = 3`."
+    "3": "ה-`break` רץ כש-`j == 2`, לפני ההדפסה, ולכן `j = 2` לא מודפס."
+
+- id: cs.control-flow.loop-control.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for (int i = 0; i < 4; i++)
+    {
+        switch (i)
+        {
+            case 2:
+                break;
+            default:
+                Console.Write(i);
+                break;
+        }
+    }
+  options: ["013", "01", "0123", "2"]
+  answer: 0
+  explanation: "`break` יוצא מהמבנה הפנימי ביותר שעוטף אותו, ובתוך `switch` זה ה-`switch` ולא הלולאה. עבור `i = 2` ה-`break` רק מסיים את ה-`switch` בלי להדפיס, והלולאה ממשיכה ל-3. כדי לצאת מהלולאה מתוך `switch` משתמשים בדגל, ב-`return`, או בשרשרת `if` במקום `switch`."
+  optionExplanations:
+    "1": "01 מניח שה-`break` ב-`case 2` יוצא מהלולאה. הוא יוצא רק מה-`switch`."
+    "2": "עבור 2 נבחר `case 2`, שבו אין הדפסה. `default` רץ רק לערכים שאין להם `case`."
+
+- id: cs.control-flow.loop-control.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    bool found = false;
+    for (int i = 1; i <= 3 && !found; i++)
+    {
+        for (int j = 1; j <= 3; j++)
+        {
+            if (i * j == 4)
+            {
+                found = true;
+                break;
+            }
+        }
+        Console.Write(i);
+    }
+  options: ["1", "12", "123", "2"]
+  answer: 1
+  explanation: "כש-`i = 2` ו-`j = 2` המכפלה היא 4: הדגל (Flag) `found` נדלק וה-`break` יוצא רק מהלולאה הפנימית. לכן `Console.Write(i)` עדיין רץ ומדפיס 2. היציאה מהלולאה החיצונית קורית רק בבדיקת התנאי הבא, כש-`!found` הוא `false`. זו דרך מקובלת לעצור לולאות מקוננות."
+  optionExplanations:
+    "0": "1 מניח שה-`break` עוצר מיד גם את הלולאה החיצונית, לפני ההדפסה של 2."
+    "2": "123 מתעלם מכך שתנאי העצירה של הלולאה החיצונית כולל גם את `!found`."
+    "3": "בסיבוב `i = 1` אף מכפלה אינה 4, והלולאה הפנימית מסתיימת כרגיל, ולכן 1 מודפס."
+
+- id: cs.control-flow.loop-control.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int n = 1;
+    while (true)
+    {
+        n *= 3;
+        if (n > 50)
+            break;
+    }
+    Console.WriteLine(n);
+  options: ["27", "50", "243", "81"]
+  answer: 3
+  explanation: "`while (true)` לא נעצרת מעצמה: תנאי העצירה נמצא בתוך הגוף. `n` עובר את הערכים 3, 9, 27 ו-81, ורק 81 גדול מ-50, ואז `break` יוצא מהלולאה. הבדיקה באה אחרי ההכפלה, ולכן מודפס הערך הראשון שעבר את הגבול."
+  optionExplanations:
+    "0": "27 הוא הערך האחרון שלא עבר את 50. ההכפלה ל-81 קורית לפני הבדיקה שמפעילה את `break`."
+    "1": "50 הוא הגבול בתנאי, לא ערך ש-`n` מקבל. `n` הוא תמיד חזקה של 3."
+    "2": "אחרי `break` הלולאה נגמרת מיד, ולכן אין הכפלה נוספת ל-243."
+
+- id: cs.control-flow.loop-control.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string FindPair(int target)
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            for (int j = i; j <= 5; j++)
+            {
+                if (i + j == target)
+                    return $"{i}+{j}";
+            }
+        }
+        return "none";
+    }
+
+    Console.WriteLine(FindPair(7));
+  options: ["3+4", "2+5", "2+5\n3+4", "none"]
+  answer: 1
+  explanation: "`return` יוצא מהמתודה כולה, ולכן הוא עוצר בבת אחת את שתי הלולאות. הזוג הראשון בסדר המעבר שסכומו 7 הוא `2+5` (כש-`i = 2` ו-`j = 5`), עוד לפני ש-`i` מגיע ל-3. העברת לולאות מקוננות למתודה ויציאה עם `return` היא הדרך הנקייה לצאת מכמה לולאות יחד."
+  optionExplanations:
+    "0": "`3+4` היה נמצא רק אחרי `2+5`, כי הלולאה החיצונית מגיעה ל-`i = 3` מאוחר יותר."
+    "2": "`return` לא רק יוצא מהלולאה, אלא מסיים את המתודה, ולכן מוחזרת תוצאה אחת בלבד."
+    "3": "`none` מוחזר רק אם הלולאות הסתיימו בלי למצוא זוג, וכאן נמצא זוג."
+
+- id: cs.control-flow.loop-control.008
+  type: single
+  difficulty: 1
+  prompt: "מה עושה `continue` בתוך לולאה?"
+  options:
+    - "מדלג על שאר הגוף בסיבוב הנוכחי ועובר לסיבוב הבא"
+    - "יוצא מהלולאה וממשיך לקוד שאחריה"
+    - "מתחיל את הלולאה מחדש מהסיבוב הראשון"
+    - "ממשיך לסיבוב הבא בלי לבדוק את תנאי הלולאה"
+  answer: 0
+  explanation: "`continue` מסיים רק את הסיבוב הנוכחי. הלולאה ממשיכה כרגיל: בלולאת `for` מתבצע הקידום ואז נבדק התנאי, וב-`while` נבדק התנאי. כדי לצאת מהלולאה כולה משתמשים ב-`break`."
+  optionExplanations:
+    "1": "זה התיאור של `break`."
+    "2": "`continue` לא מאפס את הלולאה. המונה ממשיך מהמקום שבו היה."
+    "3": "התנאי נבדק כרגיל לפני הסיבוב הבא, ואם הוא שקר הלולאה נגמרת."
+
+- id: cs.control-flow.loop-control.009
+  type: single
+  difficulty: 2
+  prompt: כתבתם שתי לולאות מקוננות, ואתם רוצים לצאת משתיהן ברגע שנמצא ערך מסוים. איזו דרך עובדת ב-C#?
+  options:
+    - "לכתוב `break 2;` כדי לצאת משתי רמות"
+    - "לתת תווית ללולאה החיצונית ולכתוב `break outer;`, כמו ב-Java"
+    - "להעביר את הלולאות למתודה נפרדת ולצאת ממנה עם `return`"
+    - "לכתוב `break;` פעמיים ברצף"
+  answer: 2
+  explanation: "ב-C# `break` יוצא תמיד מלולאה אחת בלבד, ואין `break` עם מספר או עם תווית. הדרכים המקובלות הן `return` מתוך מתודה, או דגל בוליאני שנבדק בתנאי של הלולאה החיצונית."
+  optionExplanations:
+    "0": "`break 2` קיים ב-PHP. ב-C# זו שגיאת קומפילציה."
+    "1": "ל-C# אין `break` עם תווית. יש `goto`, אבל הוא נחשב לסגנון גרוע."
+    "3": "ה-`break` הראשון יוצא מהלולאה הפנימית, והשני לא ירוץ אף פעם, כי זה קוד שאי אפשר להגיע אליו (Unreachable Code)."
+
+- id: cs.control-flow.loop-control.010
+  type: truefalse
+  difficulty: 1
+  prompt: "`break` בתוך לולאה פנימית יוצא מכל הלולאות המקוננות שעוטפות אותו."
+  answer: false
+  explanation: "`break` יוצא רק מהלולאה (או מה-`switch`) הפנימית ביותר שעוטפת אותו. הלולאה החיצונית ממשיכה לסיבוב הבא שלה. כדי לצאת מכמה לולאות משתמשים בדגל או ב-`return`."
+
+- id: cs.control-flow.loop-control.011
+  type: truefalse
+  difficulty: 2
+  prompt: "בלולאת `for`, אחרי `continue` עדיין מתבצע חלק הקידום (למשל `i++`), ורק אז נבדק התנאי."
+  answer: true
+  explanation: "`continue` מדלג רק על שאר הגוף. בלולאת `for` הוא קופץ לחלק הקידום, ולכן הלולאה לא נתקעת. בלולאת `while` אין חלק קידום נפרד: אם `i++` כתוב בסוף הגוף, `continue` שלפניו ידלג גם עליו, והלולאה עלולה להפוך לאינסופית."
+
+- id: cs.control-flow.loop-control.012
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור להדפיס את כל המספרים שאינם שליליים, ולדלג רק על השליליים. באיזו שורה הבאג?
+  code: |
+    int[] values = { 4, -1, 7, -3, 9 };
+    foreach (int v in values)
+    {
+        if (v < 0)
+            break;
+        Console.WriteLine(v);
+    }
+  answer: 5
+  explanation: "`break` עוצר את הלולאה כולה במספר השלילי הראשון, ולכן רק 4 מודפס. כדי לדלג על איבר אחד ולהמשיך לבאים צריך `continue`."
+  fixed: |
+    int[] values = { 4, -1, 7, -3, 9 };
+    foreach (int v in values)
+    {
+        if (v < 0)
+            continue;
+        Console.WriteLine(v);
+    }
+
+- id: cs.control-flow.loop-control.013
+  type: bug
+  difficulty: 2
+  prompt: הקוד אמור להדפיס לוח כפל בגודל 3 על 3. באיזו שורה הבאג?
+  code: |
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= 3; i++)
+        {
+            Console.Write(i * j + " ");
+        }
+        Console.WriteLine();
+    }
+  answer: 3
+  explanation: "הלולאה הפנימית מקדמת את `i` במקום את `j`. לכן `j` נשאר 1, התנאי `j <= 3` תמיד אמת, והלולאה הפנימית לא נעצרת לעולם. בלולאות מקוננות, כל לולאה צריכה לקדם את המשתנה שלה. זו טעות העתק־הדבק נפוצה."
+  fixed: |
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= 3; j++)
+        {
+            Console.Write(i * j + " ");
+        }
+        Console.WriteLine();
+    }
+
+- id: cs.control-flow.loop-control.014
+  type: bug
+  difficulty: 3
+  prompt: "המתודה אמורה לבדוק אם `n` הוא מספר ראשוני. באיזו שורה הבאג?"
+  code: |
+    bool IsPrime(int n)
+    {
+        if (n < 2)
+            return false;
+        for (int d = 2; d * d < n; d++)
+        {
+            if (n % d == 0)
+                return false;
+        }
+        return true;
+    }
+  answer: 5
+  explanation: "מספיק לבדוק מחלקים עד השורש של `n`, אבל את השורש עצמו חייבים לבדוק. עם `d * d < n`, עבור `n = 9` הלולאה לא בודקת את `d = 3`, כי `9 < 9` שקר, ו-9 מוחזר כראשוני (וכך גם 4, 25 ו-49). תנאי העצירה הנכון הוא `d * d <= n`."
+  fixed: |
+    bool IsPrime(int n)
+    {
+        if (n < 2)
+            return false;
+        for (int d = 2; d * d <= n; d++)
+        {
+            if (n % d == 0)
+                return false;
+        }
+        return true;
+    }
+
+- id: cs.control-flow.loop-control.015
+  type: cleaner
+  difficulty: 2
+  prompt: שלוש הגרסאות בודקות אם `target` נמצא במערך. איזו נקייה יותר?
+  options:
+    - |
+      bool Contains(int[] values, int target)
+      {
+          bool found = false;
+          for (int i = 0; i < values.Length; i++)
+          {
+              if (values[i] == target)
+                  found = true;
+          }
+          return found;
+      }
+    - |
+      bool Contains(int[] values, int target)
+      {
+          bool found = false;
+          int i = 0;
+          while (i < values.Length && !found)
+          {
+              if (values[i] == target)
+                  found = true;
+              i++;
+          }
+          return found;
+      }
+    - |
+      bool Contains(int[] values, int target)
+      {
+          foreach (int value in values)
+          {
+              if (value == target)
+                  return true;
+          }
+          return false;
+      }
+  answer: 2
+  explanation: "`return true` ברגע שהערך נמצא עוצר את החיפוש ומחזיר את התשובה בבת אחת, בלי משתנה דגל ובלי אינדקס. אם הלולאה הסתיימה, הערך לא נמצא. זו יציאה מוקדמת (Early Return), הדרך הקריאה ביותר לעצור לולאת חיפוש."
+  optionExplanations:
+    "0": "הגרסה ממשיכה לעבור על כל המערך גם אחרי שהערך נמצא, ומשתנה הדגל מוסיף מצב שהקורא צריך לעקוב אחריו."
+    "1": "תנאי עצירה כפול, דגל ואינדקס ידני משיגים את מה ש-`return` עושה בשורה אחת."
+
+- id: cs.control-flow.loop-control.016
+  type: single
+  difficulty: 3
+  prompt: מה הבעיה בלולאה הבאה?
+  code: |
+    for (double x = 0; x != 1.0; x += 0.1)
+    {
+        Console.WriteLine(x);
+    }
+  options:
+    - "הלולאה תרוץ 10 פעמים בדיוק ותיעצר כש-`x` יהיה `1.0`"
+    - "הלולאה לא תיעצר, כי בגלל שגיאות עיגול `x` לעולם לא יהיה שווה בדיוק ל-`1.0`"
+    - "שגיאת קומפילציה, כי משתנה של לולאת `for` חייב להיות מטיפוס `int`"
+    - "הלולאה תרוץ 11 פעמים, כי היא כוללת גם את `1.0`"
+  answer: 1
+  explanation: "`0.1` לא ניתן לייצוג מדויק ב-`double`. אחרי עשר הוספות `x` הוא `0.9999999999999999` ולא `1.0`, ובסיבוב הבא הוא כבר גדול מ-1, כך ש-`x != 1.0` נשאר אמת לתמיד. תנאי עצירה עם `!=` על מספרים עשרוניים מסוכן: משתמשים ב-`x < 1.0`, או במונה שלם."
+  optionExplanations:
+    "0": "זה היה נכון בחשבון מדויק, אבל `double` צובר שגיאות עיגול, ו-`x` מדלג מעל `1.0` בלי להיות שווה לו."
+    "2": "משתנה לולאה יכול להיות מכל טיפוס, גם `double`."
+    "3": "`x` אף פעם לא שווה ל-`1.0`, ובכל מקרה תנאי `!=` לא היה מריץ סיבוב עם `x == 1.0`."

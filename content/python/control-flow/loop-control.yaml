@@ -1,0 +1,286 @@
+- id: py.control-flow.loop-control.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    for n in range(1, 10):
+        if n == 4:
+            break
+        print(n)
+  options: ["1\n2\n3", "1\n2\n3\n4", "1\n2\n3\n5\n6\n7\n8\n9", "4"]
+  answer: 0
+  explanation: "`break` יוצא מהלולאה מיד ולגמרי. כש-`n` הוא 4 הלולאה נעצרת לפני ה-`print`, ולכן 4 לא מודפס, וגם אף מספר אחריו."
+  optionExplanations:
+    "1": "ה-`break` מתבצע לפני ה-`print` באותו סיבוב, ולכן 4 לא מודפס."
+    "2": "זו ההתנהגות של `continue`, שמדלג רק על הסיבוב הנוכחי. `break` עוצר את הלולאה כולה."
+
+- id: py.control-flow.loop-control.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    for n in range(1, 6):
+        if n % 2 == 0:
+            continue
+        print(n)
+  options: ["1\n3\n5", "2\n4", "1", "1\n2\n3\n4\n5"]
+  answer: 0
+  explanation: "`continue` מדלג על שאר הגוף של הסיבוב הנוכחי וממשיך ישר לסיבוב הבא. עבור מספרים זוגיים ה-`print` מדולג, ולכן מודפסים רק האי-זוגיים."
+  optionExplanations:
+    "1": "`continue` מדלג דווקא על הזוגיים, כי הוא מתבצע כשהתנאי `n % 2 == 0` מתקיים."
+    "2": "`continue` לא עוצר את הלולאה. זו ההתנהגות של `break`."
+
+- id: py.control-flow.loop-control.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for n in [3, 5, 7]:
+        if n % 2 == 0:
+            print("found even")
+            break
+    else:
+        print("all odd")
+  options: ["all odd", "all odd\nall odd\nall odd", "found even", "found even\nall odd"]
+  answer: 0
+  explanation: "ה-`else` כאן שייך ללולאה ולא ל-`if`: ההזחה שלו זהה לזו של ה-`for`. `else` של לולאה רץ פעם אחת, אחרי שהלולאה הסתיימה כרגיל בלי `break`. אף מספר אינו זוגי, ה-`break` לא התבצע, ולכן מודפס `all odd`."
+  optionExplanations:
+    "1": "זה היה קורה אם ה-`else` היה שייך ל-`if` שבתוך הלולאה. `else` של לולאה רץ פעם אחת, בסופה."
+    "2": "אין ברשימה מספר זוגי, ולכן התנאי לא מתקיים אף פעם."
+
+- id: py.control-flow.loop-control.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for n in [3, 4, 7]:
+        if n % 2 == 0:
+            print("found", n)
+            break
+    else:
+        print("all odd")
+    print("end")
+  options: ["found 4\nend", "found 4\nall odd\nend", "all odd\nend", "found 4"]
+  answer: 0
+  explanation: "כשהלולאה נעצרת באמצעות `break`, בלוק ה-`else` שלה מדולג. הקוד שאחרי הלולאה ממשיך לרוץ כרגיל, ולכן מודפס גם `end`. כך `else` משמש לטיפול במקרה של \"חיפשנו ולא מצאנו\"."
+  optionExplanations:
+    "1": "`else` של לולאה רץ רק אם לא היה `break`. כאן היה `break` כש-`n` היה 4."
+    "3": "`break` יוצא רק מהלולאה, והתוכנית ממשיכה לשורה שאחריה."
+
+- id: py.control-flow.loop-control.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    for i in range(3):
+        for j in range(3):
+            if j == 1:
+                break
+            print(i, j)
+  options: ["0 0\n1 0\n2 0", "0 0", "0 0\n0 2\n1 0\n1 2\n2 0\n2 2", "0 0\n1 0"]
+  answer: 0
+  explanation: "`break` יוצא רק מהלולאה הפנימית ביותר שמכילה אותו. בכל סיבוב של `i` הלולאה הפנימית מדפיסה `j = 0`, ונקטעת כש-`j` הוא 1. הלולאה החיצונית ממשיכה כרגיל לכל שלושת הערכים של `i`."
+  optionExplanations:
+    "1": "`break` לא יוצא מכל הלולאות. הלולאה החיצונית ממשיכה לסיבוב הבא."
+    "2": "זו ההתנהגות של `continue`, שמדלג רק על `j = 1`. `break` עוצר את הלולאה הפנימית לגמרי."
+    "3": "`range(3)` של הלולאה החיצונית כולל גם את 2, ולכן יש שלושה סיבובים."
+
+- id: py.control-flow.loop-control.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    n = 0
+    while n < 5:
+        n += 1
+        if n == 3:
+            continue
+        print(n)
+    else:
+        print("done")
+  options: ["1\n2\n4\n5\ndone", "1\n2\n4\n5", "1\n2\ndone", "1\n2\n3\n4\n5\ndone"]
+  answer: 0
+  explanation: "גם ללולאת `while` יכול להיות `else`, והוא רץ כשהתנאי נכשל בלי שהיה `break`. `continue` מדלג רק על ההדפסה של 3, ולא נחשב ליציאה מהלולאה. לכן הלולאה מסתיימת כרגיל ו-`done` מודפס."
+  optionExplanations:
+    "1": "`continue` איננו `break`. הלולאה הסתיימה כי התנאי נכשל, ולכן ה-`else` רץ."
+    "2": "`continue` ממשיך לסיבוב הבא, ולא יוצא מהלולאה כמו `break`."
+    "3": "כש-`n` הוא 3, `continue` מדלג על ה-`print` של אותו סיבוב."
+
+- id: py.control-flow.loop-control.007
+  type: single
+  difficulty: 2
+  prompt: מה יקרה כשהקוד ירוץ?
+  code: |
+    n = 0
+    while n < 5:
+        if n == 2:
+            continue
+        n += 1
+    print(n)
+  options:
+    - "התוכנית תיתקע בלולאה אינסופית כש-`n` יגיע ל-2"
+    - "יודפס `5`"
+    - "יודפס `4`"
+    - "יודפס `2`"
+  answer: 0
+  explanation: "`continue` קופץ ישר לבדיקת התנאי ומדלג על כל מה שאחריו בגוף, כולל `n += 1`. כש-`n` הוא 2 הוא כבר לא משתנה: התנאי מתקיים, `continue` מתבצע שוב, וחוזר חלילה. ב-`while` חשוב לקדם את המונה לפני כל `continue`."
+  optionExplanations:
+    "1": "זה מה שהיה קורה אם `n += 1` היה מופיע לפני ה-`continue`. כאן הקידום עצמו מדולג."
+    "2": "זה מניח ש-`continue` מדלג פעם אחת ואז הלולאה מתקדמת, אבל בלי קידום `n` לא מגיע ל-3 לעולם."
+    "3": "`2` היה מודפס רק אם `continue` היה יוצא מהלולאה כמו `break`."
+
+- id: py.control-flow.loop-control.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    total = 0
+    for x in [4, -1, 6, 0, 8]:
+        if x < 0:
+            continue
+        if x == 0:
+            break
+        total += x
+    print(total)
+  options: ["10", "18", "9", "4"]
+  answer: 0
+  explanation: "המספר השלילי מדולג באמצעות `continue`, ו-0 עוצר את הלולאה לגמרי באמצעות `break`. לכן נסכמים רק 4 ו-6. ה-8 שאחרי ה-0 לא נבדק בכלל."
+  optionExplanations:
+    "1": "`break` עוצר את הלולאה כולה, ולכן 8 לא מגיע לחישוב."
+    "2": "`continue` מדלג על `total += x`, ולכן -1 לא נוסף לסכום."
+    "3": "`continue` לא עוצר את הלולאה, ולכן גם 6 נסכם."
+
+- id: py.control-flow.loop-control.009
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס רק את המספר השלילי הראשון ברשימה. באיזו שורה הבאג?"
+  code: |
+    numbers = [5, 8, -2, 7, -9]
+    for n in numbers:
+        if n < 0:
+            print("first negative:", n)
+            continue
+  answer: 5
+  explanation: "`continue` רק עובר לסיבוב הבא, ולכן הלולאה ממשיכה ומדפיסה גם את `-9`. כדי לעצור אחרי שמצאנו את הראשון צריך `break`."
+  fixed: |
+    numbers = [5, 8, -2, 7, -9]
+    for n in numbers:
+        if n < 0:
+            print("first negative:", n)
+            break
+
+- id: py.control-flow.loop-control.010
+  type: bug
+  difficulty: 3
+  prompt: "הפונקציה אמורה להדפיס `found` אם `target` נמצא ב-`items`, ו-`not found` פעם אחת בלבד אם הוא לא נמצא. באיזו שורה הבאג?"
+  code: |
+    def report(items, target):
+        for item in items:
+            if item == target:
+                print("found")
+                break
+            else:
+                print("not found")
+  answer: 6
+  explanation: "ה-`else` מוזח כחלק מה-`if`, ולכן `not found` מודפס עבור כל איבר שאינו שווה ל-`target`. הכוונה הייתה ל-`else` של הלולאה, שרץ פעם אחת ורק אם לא היה `break`. לשם כך הוא צריך להיות באותה הזחה של ה-`for`."
+  fixed: |
+    def report(items, target):
+        for item in items:
+            if item == target:
+                print("found")
+                break
+        else:
+            print("not found")
+
+- id: py.control-flow.loop-control.011
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס רק את השמות שאינם ריקים. באיזו שורה הבאג?"
+  code: |
+    names = ["Dana", "", "Avi"]
+    for name in names:
+        if name == "":
+            pass
+        print(name)
+  answer: 4
+  explanation: "`pass` לא עושה דבר, ולכן הביצוע ממשיך ל-`print` גם עבור המחרוזת הריקה, ומודפסת שורה ריקה. כדי לדלג על שאר הגוף בסיבוב הזה צריך `continue`."
+  fixed: |
+    names = ["Dana", "", "Avi"]
+    for name in names:
+        if name == "":
+            continue
+        print(name)
+
+- id: py.control-flow.loop-control.012
+  type: single
+  difficulty: 1
+  prompt: "מה עושה הפקודה `pass`?"
+  options:
+    - "לא עושה כלום. היא ממלאת מקום בבלוק שחייב להכיל לפחות פקודה אחת"
+    - "מדלגת לסיבוב הבא של הלולאה"
+    - "יוצאת מהלולאה"
+    - "מסיימת את התוכנית בלי שגיאה"
+  answer: 0
+  explanation: "בפייתון בלוק אחרי נקודתיים לא יכול להיות ריק. `pass` היא פקודה שלא עושה דבר, ומשמשת כממלא מקום (Placeholder), למשל בקוד שעוד לא נכתב. היא לא משפיעה על זרימת הלולאה."
+  optionExplanations:
+    "1": "זה התפקיד של `continue`."
+    "2": "זה התפקיד של `break`."
+
+- id: py.control-flow.loop-control.013
+  type: single
+  difficulty: 2
+  prompt: "מתי רץ בלוק `else` שמחובר ללולאת `for` או `while`?"
+  options:
+    - "כשהלולאה הסתיימה בלי שבוצע `break`"
+    - "רק כשהלולאה לא רצה אף פעם"
+    - "רק כשבוצע `break`"
+    - "תמיד, אחרי שהלולאה מסתיימת"
+  answer: 0
+  explanation: "`else` של לולאה רץ כשהלולאה הגיעה לסופה הטבעי: ב-`for` כשנגמרו האיברים, וב-`while` כשהתנאי נכשל. אם הלולאה נקטעה ב-`break`, הוא מדולג. השם מבלבל, ולכן כדאי לחשוב עליו כ\"לא היה break\"."
+  optionExplanations:
+    "1": "גם לולאה שלא רצה אף פעם מסתיימת בלי `break`, ולכן ה-`else` רץ. אבל הוא רץ גם אחרי לולאה שרצה כרגיל."
+    "2": "זה ההפך: `break` הוא בדיוק המצב שבו ה-`else` מדולג."
+    "3": "אם כך, לא היה בו טעם. ה-`else` מדולג כשהיה `break`."
+
+- id: py.control-flow.loop-control.014
+  type: truefalse
+  difficulty: 1
+  prompt: "`break` בתוך לולאה פנימית יוצא גם מהלולאה החיצונית."
+  answer: false
+  explanation: "`break` יוצא רק מהלולאה הקרובה ביותר שמכילה אותו. הלולאה החיצונית ממשיכה לסיבוב הבא שלה. כדי לצאת משתיהן צריך מנגנון נוסף, למשל משתנה דגל שנבדק בלולאה החיצונית."
+
+- id: py.control-flow.loop-control.015
+  type: truefalse
+  difficulty: 2
+  prompt: "בלולאת `for` על רשימה ריקה שיש לה בלוק `else`, בלוק ה-`else` ירוץ."
+  answer: true
+  explanation: "לולאה על רשימה ריקה לא מבצעת אף סיבוב, ולכן גם לא מבצעת `break`. היא מסתיימת כרגיל, וה-`else` רץ. זה הגיוני במקרה של חיפוש: ברשימה ריקה הערך בוודאי לא נמצא."
+
+- id: py.control-flow.loop-control.016
+  type: cleaner
+  difficulty: 2
+  prompt: "שלוש הגרסאות מדפיסות את השורות שב-`lines` עד השורה `\"END\"` (לא כולל). איזו נקייה יותר?"
+  options:
+    - |
+      for line in lines:
+          if line == "END":
+              break
+          print(line)
+    - |
+      done = False
+      for line in lines:
+          if not done:
+              if line == "END":
+                  done = True
+              else:
+                  print(line)
+    - |
+      i = 0
+      while i < len(lines) and lines[i] != "END":
+          print(lines[i])
+          i += 1
+  answer: 0
+  explanation: "`break` אומר במפורש \"כאן מפסיקים\", ולולאת `for` עוברת על השורות עצמן בלי אינדקסים. הקוד קצר, שטוח, ולא ממשיך לעבור על שורות אחרי שכבר הוחלט לעצור."
+  optionExplanations:
+    "1": "משתנה דגל (Flag) וקינון מחליפים `break` אחד. הלולאה גם ממשיכה לרוץ על כל השורות שאחרי `END` בלי סיבה."
+    "2": "מונה ידני וגישה לפי אינדקס מסבכים מעבר פשוט על רצף, ושכחה של `i += 1` תיצור לולאה אינסופית."

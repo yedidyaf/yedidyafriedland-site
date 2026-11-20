@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import { href } from '../../lib/url';
+import { SITE } from '../../site';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: SITE.name_en,
+    alternateName: SITE.name_he,
+    jobTitle: 'Programming Teacher',
+    email: `mailto:${SITE.email}`,
+    sameAs: [SITE.linkedin],
+  },
+];
+---
+<Base title={`אודות - ${SITE.name_he}`} description={`${SITE.name_he} (${SITE.name_en}), מורה לתכנות. לימוד Python ו-C# דרך מבחנים עם הסברים.`} jsonLd={jsonLd}>
+  <div class="container prose">
+    <h1 style="margin-top:24px">אודות - About</h1>
+    <p class="lead">
+      שלום, אני <strong>{SITE.name_he}</strong> <span class="muted" dir="ltr">({SITE.name_en})</span>, מורה לתכנות.
+    </p>
+    <p>
+      בניתי את האתר הזה מתוך אמונה שהדרך הטובה ביותר ללמוד תכנות היא לבדוק את עצמכם שוב ושוב: לחזות מה הקוד ידפיס, למצוא את הבאג, לבחור את הגרסה הנקייה יותר
+      ולהחליט איפה כל פונקציה צריכה לשבת. כל שאלה באתר מגיעה עם הסבר שמלמד את העיקרון ואת הטעות הנפוצה שמאחורי התשובות השגויות.
+    </p>
+    <h2>מה יש באתר</h2>
+    <ul>
+      <li>מבחנים ב-Python וב-C#, מהיסודות ועד תכנות מונחה עצמים (OOP), קוד נקי (Clean Code) וארכיטקטורה.</li>
+      <li>שאלות ארכיטקטורה: מקבלים דרישה, חתימות מלאות ושמות קבצים, ומרכיבים את המבנה.</li>
+      <li>מבחני סימולציה עם שעון, ומד מוכנות שמראה מה עוד צריך לתרגל.</li>
+      <li>כל קטע קוד נבדק אוטומטית בהרצה או בקומפילציה לפני שהוא עולה לאתר.</li>
+    </ul>
+    <h2>פרטיות</h2>
+    <p>
+      אין הרשמה ואין איסוף מידע אישי. ההתקדמות נשמרת רק בדפדפן שלכם, ואפשר לגבות, להעביר או למחוק אותה ב<a href={href('/settings/')}>עמוד ההגדרות</a>.
+      לספירת מבקרים האתר משתמש בכלי סטטיסטיקה בלי עוגיות, שלא מזהה אתכם.
+    </p>
+    <h2>יצירת קשר</h2>
+    <div class="row-actions">
+      <a class="btn" href={SITE.linkedin} rel="me noopener" target="_blank">LinkedIn</a>
+      <a class="btn secondary" href={`mailto:${SITE.email}`} dir="ltr">{SITE.email}</a>
+    </div>
+    <p class="muted" style="margin-top:16px">מצאתם טעות בשאלה? כתבו לי במייל עם מזהה השאלה, ואתקן.</p>
+  </div>
+</Base>

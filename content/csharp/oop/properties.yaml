@@ -1,0 +1,382 @@
+- id: cs.oop.properties.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var product = new Product();
+    Console.WriteLine(product.Price);
+    product.Price = 9.5m;
+    Console.WriteLine(product.Price);
+
+    class Product
+    {
+        public decimal Price { get; set; }
+    }
+  options: ["0\n9.5", "null\n9.5", "0.0\n9.5", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`{ get; set; }` הוא מאפיין אוטומטי (Auto-Property): הקומפיילר יוצר בשבילו שדה נסתר. כמו כל שדה, ערך ההתחלה שלו הוא ברירת המחדל של הטיפוס, `0` עבור `decimal`. אחר כך `set` מציב 9.5 ו-`get` מחזיר אותו."
+  optionExplanations:
+    "1": "`decimal` הוא טיפוס ערך ולא יכול להיות `null`. ברירת המחדל שלו היא 0."
+    "2": "הערך `0` מסוג `decimal` מודפס `0`, בלי ספרות אחרי הנקודה."
+
+- id: cs.oop.properties.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var account = new Account();
+    account.Deposit(100);
+    account.Deposit(50);
+    Console.WriteLine(account.Balance);
+
+    class Account
+    {
+        public int Balance { get; private set; }
+
+        public void Deposit(int amount) => Balance += amount;
+    }
+  options: ["150", "0", "50", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`private set` אומר שרק קוד בתוך `Account` יכול לשנות את `Balance`. המתודה `Deposit` נמצאת בתוך המחלקה, ולכן מותר לה. מבחוץ אפשר רק לקרוא את הערך. כך המחלקה שולטת בכל שינוי של היתרה."
+  optionExplanations:
+    "1": "`private set` לא חוסם שינוי לגמרי. הוא חוסם רק שינוי מחוץ למחלקה."
+    "3": "`Balance += amount` נמצא בתוך המחלקה, ולכן הגישה ל-`set` הפרטי חוקית."
+
+- id: cs.oop.properties.003
+  type: cleaner
+  difficulty: 1
+  prompt: איזו גרסה נקייה יותר?
+  options:
+    - |
+      class Customer
+      {
+          public string Email { get; set; }
+      }
+    - |
+      class Customer
+      {
+          private string email;
+
+          public string GetEmail() { return email; }
+
+          public void SetEmail(string value) { email = value; }
+      }
+    - |
+      class Customer
+      {
+          private string email;
+
+          public string Email
+          {
+              get { return email; }
+              set { email = value; }
+          }
+      }
+  answer: 0
+  explanation: "כשאין לוגיקה בקריאה או בכתיבה, מאפיין אוטומטי עושה בדיוק את אותה עבודה בשורה אחת. אם בעתיד יידרש אימות, אפשר להפוך אותו למאפיין מלא בלי לשנות את הקוד שמשתמש בו."
+  optionExplanations:
+    "1": "זוג מתודות `GetEmail`/`SetEmail` הוא סגנון של Java. ב-C# המאפיין (Property) הוא הדרך המקובלת לחשוף נתון."
+    "2": "שדה גיבוי (Backing Field) מפורש בלי שום לוגיקה הוא קוד מיותר. מאפיין אוטומטי יוצר אותו בשבילכם."
+
+- id: cs.oop.properties.004
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס `Dana Levi`, אבל מדפיס `Dana Dana`. באיזו שורה הבאג?"
+  code: |
+    var p = new Person { FirstName = "Dana", LastName = "Levi" };
+    Console.WriteLine($"{p.FirstName} {p.LastName}");
+
+    class Person
+    {
+        private string firstName;
+        private string lastName;
+
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => firstName; set => lastName = value; }
+    }
+  answer: 10
+  fixed: |
+    var p = new Person { FirstName = "Dana", LastName = "Levi" };
+    Console.WriteLine($"{p.FirstName} {p.LastName}");
+
+    class Person
+    {
+        private string firstName;
+        private string lastName;
+
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => lastName; set => lastName = value; }
+    }
+  explanation: "ה-`get` של `LastName` מחזיר את `firstName` במקום את `lastName`. זו טעות העתקה נפוצה במאפיינים עם שדה גיבוי ידני. מאפיינים אוטומטיים (`{ get; set; }`) מונעים אותה לגמרי."
+
+- id: cs.oop.properties.005
+  type: truefalse
+  difficulty: 1
+  prompt: "במאפיין אוטומטי `public int Age { get; set; }` צריך להגדיר בעצמנו שדה פרטי שבו יישמר הערך."
+  answer: false
+  explanation: "במאפיין אוטומטי (Auto-Property) הקומפיילר יוצר את שדה הגיבוי (Backing Field) בעצמו, ואין אליו גישה ישירה בקוד. שדה פרטי מגדירים רק במאפיין מלא, כשרוצים לוגיקה ב-`get` או ב-`set`."
+
+- id: cs.oop.properties.006
+  type: single
+  difficulty: 1
+  prompt: "מה המשמעות של מאפיין אוטומטי עם `get` בלבד, למשל `public string Id { get; }`?"
+  options:
+    - "אפשר לקבוע את ערכו רק באתחול המאפיין או בבנאי, ואחר כך הוא לקריאה בלבד"
+    - "אפשר לקרוא ולכתוב אותו מכל מקום בתוכנית"
+    - "הוא תמיד מחזיר את ערך ברירת המחדל של הטיפוס"
+    - "אפשר לכתוב אליו רק מתוך מחלקות יורשות"
+  answer: 0
+  explanation: "מאפיין לקריאה בלבד (Read-only Property) מקבל ערך באתחול (`{ get; } = ...`) או בבנאי של המחלקה. אחרי שהאובייקט נבנה, אף קוד, גם לא מתודה של המחלקה עצמה, לא יכול לשנות אותו."
+  optionExplanations:
+    "1": "בלי `set` או `init` אין דרך לכתוב למאפיין מבחוץ."
+    "2": "הבנאי יכול להציב בו ערך, ולכן הוא לא תקוע על ברירת המחדל."
+    "3": "כתיבה ממחלקה יורשת דורשת `protected set`, ולא קשורה למאפיין עם `get` בלבד."
+
+- id: cs.oop.properties.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var t = new Temperature();
+    t.Celsius = 30;
+    t.Celsius = -500;
+    Console.WriteLine(t.Celsius);
+
+    class Temperature
+    {
+        private double celsius;
+
+        public double Celsius
+        {
+            get => celsius;
+            set
+            {
+                if (value >= -273.15)
+                    celsius = value;
+            }
+        }
+    }
+  options: ["30", "-500", "-273.15", "0"]
+  answer: 0
+  explanation: "בתוך `set`, המילה `value` היא הערך שמנסים להציב. ‎-500 נמוך מהאפס המוחלט, ולכן התנאי נכשל והשדה נשאר 30. זה היתרון של מאפיין על שדה ציבורי: אפשר לאכוף כללים בכל השמה."
+  optionExplanations:
+    "1": "ה-`set` לא מציב את הערך כשהתנאי נכשל, ולכן ‎-500 לא נשמר."
+    "2": "הקוד לא מתקן את הערך לגבול. הוא פשוט מתעלם מהשמה לא חוקית."
+    "3": "ההשמה הראשונה, 30, עברה את הבדיקה ונשמרה בשדה."
+
+- id: cs.oop.properties.008
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var user = new User { Name = "Noa" };
+    user.Name = "Tal";
+    Console.WriteLine(user.Name);
+
+    class User
+    {
+        public string Name { get; init; }
+    }
+  options: ["Tal", "Noa", "שגיאת קומפילציה", "שגיאה בזמן ריצה"]
+  answer: 2
+  explanation: "`init` מאפשר להציב ערך רק בזמן יצירת האובייקט: בבנאי או ב-Object Initializer (`new User { Name = \"Noa\" }`). ההשמה בשורה השנייה מתרחשת אחרי שהאובייקט נבנה, והקומפיילר חוסם אותה."
+  optionExplanations:
+    "0": "אחרי היצירה, מאפיין `init` הוא לקריאה בלבד, ולכן אי אפשר לשנות אותו ל-`Tal`."
+    "1": "הקומפיילר לא מתעלם מההשמה האסורה. הוא מסרב לבנות את התוכנית."
+    "3": "ההגבלה של `init` נבדקת בזמן קומפילציה, לא בזמן ריצה."
+
+- id: cs.oop.properties.009
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var circle = new Circle(2);
+    circle.Grow();
+    Console.WriteLine(circle.Radius);
+
+    class Circle
+    {
+        public double Radius { get; }
+
+        public Circle(double radius) => Radius = radius;
+
+        public void Grow() => Radius *= 2;
+    }
+  options: ["4", "2", "שגיאת קומפילציה", "0"]
+  answer: 2
+  explanation: "למאפיין עם `get` בלבד מותר להציב ערך רק בבנאי (או באתחול). המתודה `Grow` היא מתודה רגילה, גם אם היא בתוך המחלקה, ולכן `Radius *= 2` הוא שגיאת קומפילציה. אם רוצים לשנות מבפנים, צריך `{ get; private set; }`."
+  optionExplanations:
+    "0": "כך היה קורה עם `private set`. עם `get` בלבד, גם המחלקה עצמה לא יכולה לשנות את הערך אחרי הבנאי."
+    "1": "הקוד לא מגיע לריצה, כי ההשמה ב-`Grow` לא מתקמפלת."
+
+- id: cs.oop.properties.010
+  type: single
+  difficulty: 2
+  prompt: "מה ההבדל בין `{ get; init; }` לבין `{ get; private set; }`?"
+  options:
+    - "`init` מאפשר הצבה גם מחוץ למחלקה, אבל רק בזמן יצירת האובייקט; `private set` מאפשר שינוי בכל זמן, אבל רק מתוך המחלקה"
+    - "אין הבדל: בשניהם אפשר להציב ערך רק בבנאי"
+    - "`init` מאפשר שינוי מכל מקום ובכל זמן, ו-`private set` רק בבנאי"
+    - "`private set` מאפשר הצבה מחוץ למחלקה דרך Object Initializer, ו-`init` לא"
+  answer: 0
+  explanation: "`init` נועד לאובייקטים שלא משתנים אחרי היצירה: `new User { Name = \"Noa\" }` חוקי מכל מקום, אבל שינוי מאוחר לא. `private set` מתאים לערך שמשתנה לאורך חיי האובייקט, אבל רק דרך מתודות של המחלקה, כמו `Deposit`."
+  optionExplanations:
+    "1": "`init` מאפשר גם Object Initializer מבחוץ, ו-`private set` מאפשר שינוי גם במתודות רגילות של המחלקה."
+    "2": "ההפך: `init` נועל את הערך אחרי היצירה, ו-`private set` מאפשר שינוי מתוך המחלקה בכל זמן."
+    "3": "Object Initializer מבחוץ נחשב גישה מחוץ למחלקה, ולכן `private set` חוסם אותו. דווקא `init` מאפשר אותו."
+
+- id: cs.oop.properties.011
+  type: truefalse
+  difficulty: 2
+  prompt: "מאפיין מחושב כמו `public int Area => Width * Height;` מחשב את הערך מחדש בכל פעם שקוראים אותו."
+  answer: true
+  explanation: "`=>` כאן מגדיר את גוף ה-`get`. אין שדה ששומר תוצאה, ולכן כל קריאה של `Area` מריצה את החישוב עם הערכים הנוכחיים של `Width` ו-`Height`. אם `Width` השתנה, `Area` יחזיר ערך מעודכן."
+
+- id: cs.oop.properties.012
+  type: bug
+  difficulty: 2
+  prompt: "המאפיין `Price` אמור לדחות מחיר שלילי ולזרוק `ArgumentException`, אבל הקוד מדפיס `-5`. באיזו שורה הבאג?"
+  code: |
+    var p = new Product();
+    p.Price = -5;
+    Console.WriteLine(p.Price);
+
+    class Product
+    {
+        private decimal price;
+
+        public decimal Price
+        {
+            get => price;
+            set
+            {
+                if (price < 0)
+                    throw new ArgumentException("Price cannot be negative");
+                price = value;
+            }
+        }
+    }
+  answer: 14
+  fixed: |
+    var p = new Product();
+    p.Price = -5;
+    Console.WriteLine(p.Price);
+
+    class Product
+    {
+        private decimal price;
+
+        public decimal Price
+        {
+            get => price;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("Price cannot be negative");
+                price = value;
+            }
+        }
+    }
+  explanation: "התנאי בודק את `price`, הערך הישן שבשדה (0), ולא את `value`, הערך החדש שמנסים להציב. בתוך `set` צריך לבדוק תמיד את `value`."
+
+- id: cs.oop.properties.013
+  type: single
+  difficulty: 2
+  prompt: "מה היתרון המהותי של מאפיין `public int Age { get; set; }` על שדה ציבורי `public int Age;`?"
+  options:
+    - "מאפיין הוא בעצם זוג מתודות, ולכן אפשר להוסיף לו בדיקות או לוגיקה בהמשך בלי לשנות את הקוד שמשתמש בו"
+    - "שדה ציבורי לא שומר ערך בין קריאות, ומאפיין כן"
+    - "מאפיין אוטומטי נשמר במילון פנימי ולכן חוסך זיכרון"
+    - "רק מאפיין אפשר לקרוא מחוץ למחלקה"
+  answer: 0
+  explanation: "מאפיין (Property) מתקמפל למתודות `get_Age` ו-`set_Age`. מבחוץ משתמשים בו כמו בשדה, אבל המחלקה יכולה בכל רגע להוסיף אימות, חישוב או הגבלת כתיבה. עם שדה ציבורי, כל מי שמשתמש במחלקה יכול להציב בו כל ערך."
+  optionExplanations:
+    "1": "שדה שומר את ערכו כל זמן שהאובייקט קיים, בדיוק כמו מאפיין."
+    "2": "מאפיין אוטומטי נשמר בשדה רגיל שהקומפיילר יוצר, לא במילון."
+    "3": "שדה `public` נגיש מבחוץ בדיוק כמו מאפיין `public`."
+
+- id: cs.oop.properties.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var c = new Counter();
+    Console.WriteLine(c.Next);
+    Console.WriteLine(c.Next + c.Next);
+
+    class Counter
+    {
+        private int n;
+
+        public int Next => ++n;
+    }
+  options: ["1\n5", "1\n2", "1\n4", "1\n3"]
+  answer: 0
+  explanation: "כל קריאה של `Next` מריצה את ה-`get` מחדש, ו-`++n` משנה את השדה. הקריאה הראשונה מחזירה 1, ובשורה השנייה שתי קריאות נוספות מחזירות 2 ו-3, והסכום 5. זו גם הסיבה שלא כותבים `get` עם תופעות לוואי: מי שקורא מאפיין לא מצפה שהוא ישתנה."
+  optionExplanations:
+    "1": "`c.Next + c.Next` קורא למאפיין פעמיים, ולכל קריאה יש ערך אחר."
+    "2": "הערך לא נשמר בין שתי הקריאות באותה שורה: הראשונה מחזירה 2 והשנייה 3."
+    "3": "3 היה נכון רק לקריאה אחת. כאן יש שתי קריאות שמתחברות."
+
+- id: cs.oop.properties.015
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var book = new Book("Draft") { Title = "Final" };
+    Console.WriteLine(book.Title);
+
+    class Book
+    {
+        public string Title { get; init; }
+
+        public Book(string title)
+        {
+            Title = title;
+        }
+    }
+  options: ["Final", "Draft", "שגיאת קומפילציה", "DraftFinal"]
+  answer: 0
+  explanation: "Object Initializer רץ אחרי הבנאי. הבנאי מציב `Draft`, ואז `{ Title = \"Final\" }` מציב `Final`. שתי ההשמות חוקיות ל-`init`, כי שתיהן קורות בזמן יצירת האובייקט."
+  optionExplanations:
+    "1": "הבנאי רץ ראשון, והאתחול בסוגריים המסולסלים רץ אחריו ודורס את הערך."
+    "2": "`init` לא אומר \"הצבה אחת בלבד\". הוא מאפשר הצבות כל עוד האובייקט בשלב היצירה."
+
+- id: cs.oop.properties.016
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `Avi`, אבל התוכנית קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  code: |
+    var s = new Student();
+    s.Name = "Avi";
+    Console.WriteLine(s.Name);
+
+    class Student
+    {
+        private string name;
+
+        public string Name
+        {
+            get => name;
+            set => Name = value;
+        }
+    }
+  answer: 12
+  fixed: |
+    var s = new Student();
+    s.Name = "Avi";
+    Console.WriteLine(s.Name);
+
+    class Student
+    {
+        private string name;
+
+        public string Name
+        {
+            get => name;
+            set => name = value;
+        }
+    }
+  explanation: "`Name = value` בתוך ה-`set` של `Name` קורא שוב ל-`set` של אותו מאפיין, וכך שוב ושוב, עד שהמחסנית מתמלאת. צריך להציב בשדה הגיבוי `name` (באות קטנה). ההבדל של אות אחת הופך השמה לרקורסיה אינסופית."

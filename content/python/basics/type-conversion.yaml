@@ -1,0 +1,213 @@
+- id: py.basics.type-conversion.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print(int("42") + 1)
+  options: ["43", "421", "TypeError", "42 1"]
+  answer: 0
+  explanation: "`int(\"42\")` ממירה את המחרוזת למספר השלם `42` (המרת טיפוסים - Type Conversion), ואז מתבצע חיבור מספרי רגיל."
+  optionExplanations:
+    "1": "`421` היה מתקבל משרשור מחרוזות. אחרי ההמרה זה כבר מספר, ו-`+` מחבר."
+    "2": "החיבור הוא בין שני מספרים שלמים, כי ההמרה מתבצעת לפני החיבור."
+
+- id: py.basics.type-conversion.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print(str(5) + str(5))
+  options: ["55", "10", "5 5", "TypeError"]
+  answer: 0
+  explanation: "`str(5)` ממירה את המספר למחרוזת `\"5\"`. האופרטור `+` בין שתי מחרוזות משרשר (Concatenation) אותן, ולכן מתקבל `55`."
+  optionExplanations:
+    "1": "אחרי `str` אלה כבר מחרוזות, ו-`+` על מחרוזות לא מחשב סכום."
+    "2": "שרשור מחרוזות לא מוסיף רווח ביניהן."
+    "3": "שני הצדדים הם `str`, ולכן החיבור חוקי."
+
+- id: py.basics.type-conversion.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print(int(3.99), int(-3.99))
+  options: ["3 -3", "4 -4", "3 -4", "4 -3"]
+  answer: 0
+  explanation: "`int` על `float` לא מעגלת, אלא חותכת את החלק העשרוני (Truncation), כלומר מתקרבת לאפס. לכן `3.99` הופך ל-`3` ו-`-3.99` הופך ל-`-3`."
+  optionExplanations:
+    "1": "זה עיגול לשלם הקרוב, מה ש-`round` עושה. `int` רק זורקת את החלק העשרוני."
+    "2": "זה עיגול כלפי מטה, כמו `//` או `math.floor`. `int` חותכת לכיוון אפס, ולכן `-3.99` הופך ל-`-3`."
+
+- id: py.basics.type-conversion.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    text = "3.5"
+    number = float(text)
+    print(int(number), str(number) + "0")
+  options: ["3 3.50", "4 3.50", "3 3.5", "3 3.50.0"]
+  answer: 0
+  explanation: "`float(\"3.5\")` נותן את המספר `3.5`. `int` חותכת אותו ל-`3`, ו-`str(number)` מחזירה את המחרוזת `\"3.5\"`, שאליה משורשר `\"0\"`."
+  optionExplanations:
+    "1": "`int` לא מעגלת למעלה. היא חותכת את החלק העשרוני."
+    "2": "`str(number) + \"0\"` הוא שרשור מחרוזות, ולכן ה-`0` מתווסף בסוף הטקסט."
+    "3": "`str(3.5)` הוא `\"3.5\"` בדיוק, בלי `.0` נוסף."
+
+- id: py.basics.type-conversion.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print(bool("0"), bool(0), bool(-1), bool(None))
+  options: ["True False True False", "False False True False", "True False False False", "False False False False"]
+  answer: 0
+  explanation: "ערכים שקריים (Falsy) הם `0`, `0.0`, `\"\"`, `None` ואוספים ריקים. כל השאר אמיתיים (Truthy). `\"0\"` היא מחרוזת לא ריקה, ולכן `True`, וגם `-1` שונה מאפס ולכן `True`."
+  optionExplanations:
+    "1": "`bool` על מחרוזת בודקת רק אם היא ריקה, ולא מה כתוב בה. `\"0\"` אינה ריקה."
+    "2": "רק אפס הוא מספר שקרי. כל מספר אחר, גם שלילי, הוא `True`."
+
+- id: py.basics.type-conversion.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print(int(" 7 ") + 1)
+    print(int("7.0"))
+  options: ["8\nValueError", "ValueError", "8\n7", "8\n7.0"]
+  answer: 0
+  explanation: "`int` על מחרוזת מתעלמת מרווחים בקצוות, ולכן `int(\" 7 \")` הוא `7`. אבל היא מקבלת רק ספרות של מספר שלם: `\"7.0\"` אינה מחרוזת של `int`, ונזרקת `ValueError`. כדי להמיר אותה צריך `int(float(\"7.0\"))`."
+  optionExplanations:
+    "1": "רווחים בתחילת המחרוזת ובסופה מותרים ב-`int`, ולכן השורה הראשונה מצליחה."
+    "2": "`int` על מחרוזת לא מפרשת נקודה עשרונית, גם כשהחלק העשרוני הוא אפס."
+    "3": "`int` מחזירה מספר שלם, ולעולם לא `7.0`. כאן היא בכלל נכשלת."
+
+- id: py.basics.type-conversion.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    a = "5"
+    b = 2
+    print(int(a) + b, a + str(b))
+  options: ["7 52", "7 7", "52 52", "TypeError"]
+  answer: 0
+  explanation: "הטיפוס של שני הצדדים קובע מה `+` עושה. `int(a) + b` הוא חיבור של שני מספרים, `7`. `a + str(b)` הוא שרשור של שתי מחרוזות, `\"52\"`."
+  optionExplanations:
+    "1": "`a + str(b)` מחבר שתי מחרוזות, ולכן מתקבל שרשור ולא סכום."
+    "2": "`int(a)` ממירה את `a` למספר, ולכן הביטוי הראשון הוא חיבור מספרי."
+    "3": "בשני הביטויים הצדדים כבר מאותו טיפוס, ולכן אין שגיאה."
+
+- id: py.basics.type-conversion.008
+  type: single
+  difficulty: 1
+  prompt: איזו מההמרות הבאות זורקת `ValueError`?
+  options: ["`int(\"abc\")`", "`str(123)`", "`float(\"3\")`", "`bool(\"abc\")`"]
+  answer: 0
+  explanation: "`ValueError` נזרקת כשהטיפוס מתאים אבל התוכן לא: `int` מקבלת מחרוזת, אבל `\"abc\"` אינה מייצגת מספר."
+  optionExplanations:
+    "1": "כל ערך אפשר להמיר למחרוזת, ולכן `str` כמעט אף פעם לא נכשלת."
+    "2": "`float` מקבלת גם מחרוזת של מספר שלם ומחזירה `3.0`."
+    "3": "`bool` לא מפרשת את התוכן. כל מחרוזת לא ריקה היא `True`."
+
+- id: py.basics.type-conversion.009
+  type: single
+  difficulty: 2
+  prompt: איזה מהערכים הבאים נחשב שקרי (Falsy)?
+  options: ["`[]`", "`\"0\"`", "`\" \"`", "`-1`"]
+  answer: 0
+  explanation: "רשימה ריקה היא ערך שקרי, כמו כל אוסף ריק, `0`, `\"\"` ו-`None`. לכן `bool([])` הוא `False`."
+  optionExplanations:
+    "1": "`\"0\"` היא מחרוזת עם תו אחד, ולכן היא אמיתית. רק המספר `0` שקרי."
+    "2": "מחרוזת שמכילה רווח אינה ריקה, ולכן היא אמיתית."
+    "3": "כל מספר ששונה מאפס הוא אמיתי, גם שלילי."
+
+- id: py.basics.type-conversion.010
+  type: single
+  difficulty: 3
+  prompt: "איזה מהביטויים הבאים זורק `TypeError` ולא `ValueError`?"
+  options: ["`int(None)`", "`int(\"\")`", "`float(\"abc\")`", "`int(\"4.0\")`"]
+  answer: 0
+  explanation: "`TypeError` נזרקת כשהטיפוס עצמו לא נתמך: `int` לא יודעת להמיר `None` בכלל. `ValueError` נזרקת כשהטיפוס נתמך, למשל מחרוזת, אבל התוכן שלה לא מייצג מספר מתאים."
+  optionExplanations:
+    "1": "מחרוזת היא טיפוס ש-`int` מקבלת. המחרוזת הריקה פשוט לא מכילה מספר, ולכן זו `ValueError`."
+    "2": "`float` מקבלת מחרוזות, ו-`\"abc\"` היא תוכן לא תקין, ולכן `ValueError`."
+    "3": "`\"4.0\"` היא מחרוזת, טיפוס נתמך, אבל לא של מספר שלם, ולכן `ValueError`."
+
+- id: py.basics.type-conversion.011
+  type: truefalse
+  difficulty: 1
+  prompt: "`str(3.0)` מחזירה את המחרוזת `\"3\"`."
+  answer: false
+  explanation: "`str` על `float` שומרת את הצורה של `float`, ולכן `str(3.0)` מחזירה `\"3.0\"`. כדי לקבל `\"3\"` צריך קודם להמיר ל-`int`: `str(int(3.0))`."
+
+- id: py.basics.type-conversion.012
+  type: truefalse
+  difficulty: 2
+  prompt: "`int(2.7)` מחזירה `2`, ואילו `round(2.7)` מחזירה `3`."
+  answer: true
+  explanation: "`int` חותכת את החלק העשרוני ולא מעגלת. `round` מעגלת לשלם הקרוב. כשרוצים עיגול, `int` היא בחירה שגויה."
+
+- id: py.basics.type-conversion.013
+  type: bug
+  difficulty: 2
+  prompt: "המחיר והכמות מגיעים מטופס כטקסט. הקוד אמור להדפיס את המחיר הכולל, `50.0`. באיזו שורה הבאג?"
+  code: |
+    price = "12.50"
+    quantity = "4"
+    total = float(price) * quantity
+    print(total)
+  answer: 3
+  explanation: "`quantity` עדיין מחרוזת, ובשורה 3 מנסים לכפול `float` במחרוזת, ולכן נזרקת `TypeError`. צריך להמיר גם אותה: `float(price) * int(quantity)`."
+  fixed: |
+    price = "12.50"
+    quantity = "4"
+    total = float(price) * int(quantity)
+    print(total)
+
+- id: py.basics.type-conversion.014
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס, למשל, `You are 26 years old`. באיזו שורה הבאג?"
+  code: |
+    birth_year = input("Birth year: ")
+    age = 2026 - int(birth_year)
+    message = "You are " + age + " years old"
+    print(message)
+  answer: 3
+  explanation: "`age` הוא `int`, ואי אפשר לחבר מחרוזת עם מספר בעזרת `+`. שורה 3 זורקת `TypeError`. צריך להמיר את המספר למחרוזת: `\"You are \" + str(age) + \" years old\"`."
+  fixed: |
+    birth_year = input("Birth year: ")
+    age = 2026 - int(birth_year)
+    message = "You are " + str(age) + " years old"
+    print(message)
+
+- id: py.basics.type-conversion.015
+  type: bug
+  difficulty: 3
+  prompt: "הטקסט `answer` מגיע מקובץ הגדרות ומכיל `\"True\"` או `\"False\"`. הקוד אמור להדפיס `Subscribed: False` כשהטקסט הוא `\"False\"`. באיזו שורה הבאג?"
+  code: |
+    answer = "False"
+    is_subscribed = bool(answer)
+    print("Subscribed:", is_subscribed)
+  answer: 2
+  explanation: "`bool` על מחרוזת לא קוראת את המילה שבתוכה. היא בודקת רק אם המחרוזת ריקה, ו-`\"False\"` אינה ריקה, ולכן מתקבל `True`. כדי לפרש את הטקסט צריך להשוות אותו: `answer == \"True\"`."
+  fixed: |
+    answer = "False"
+    is_subscribed = answer == "True"
+    print("Subscribed:", is_subscribed)
+
+- id: py.basics.type-conversion.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    x = 0.0
+    y = "0.0"
+    print(bool(x), bool(y), bool(float(y)))
+  options: ["False True False", "False False False", "True True True", "False True True"]
+  answer: 0
+  explanation: "`0.0` הוא אפס, ולכן שקרי. `\"0.0\"` היא מחרוזת לא ריקה, ולכן אמיתית. אחרי `float(y)` מתקבל שוב המספר `0.0`, והוא שקרי. האמיתיות נקבעת לפי הטיפוס והערך בפועל, לא לפי איך שהערך נראה."
+  optionExplanations:
+    "1": "`bool` על מחרוזת בודקת אם היא ריקה, ולא אם היא נראית כמו אפס."
+    "3": "אחרי `float(y)` הערך הוא המספר `0.0`, ואפס הוא שקרי בכל טיפוס מספרי."

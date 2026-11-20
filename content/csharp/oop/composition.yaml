@@ -1,0 +1,438 @@
+- id: cs.oop.composition.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    var car = new Car();
+    car.Start();
+
+    class Engine
+    {
+        public void Ignite() => Console.WriteLine("Engine started");
+    }
+
+    class Car
+    {
+        private readonly Engine engine = new Engine();
+
+        public void Start()
+        {
+            engine.Ignite();
+            Console.WriteLine("Car ready");
+        }
+    }
+  options: ["Engine started\nCar ready", "Car ready", "Car ready\nEngine started", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "זו הרכבה (Composition): ל-`Car` יש `Engine` כשדה פרטי, והיא מאצילה (Delegation) לו חלק מהעבודה. `Start` קוראת קודם ל-`engine.Ignite()` ורק אחר כך מדפיסה. מי שמשתמש ב-`Car` לא צריך לדעת שיש בה מנוע."
+  optionExplanations:
+    "1": "`Start` קוראת ל-`Ignite` של המנוע, ולכן גם השורה שלו מודפסת."
+    "2": "הקריאה ל-`engine.Ignite()` מופיעה לפני ה-`WriteLine` של `Car`, ולכן היא מודפסת ראשונה."
+    "3": "`Car` לא צריכה לרשת מ-`Engine` כדי להשתמש בה. מספיק שדה מטיפוס `Engine`."
+
+- id: cs.oop.composition.002
+  type: hierarchy
+  difficulty: 1
+  prompt: לכל זוג מחלקות, בחרו את סוג היחס הנכון ביניהן.
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "Student ו-Person"
+      answer: is-a
+      why: סטודנט הוא סוג של אדם.
+    - label: "Course ו-Student"
+      answer: has-a
+      why: בקורס יש סטודנטים. סטודנט הוא לא סוג של קורס.
+    - label: "Laptop ו-Battery"
+      answer: has-a
+      why: למחשב נייד יש סוללה.
+    - label: "Triangle ו-Shape"
+      answer: is-a
+      why: משולש הוא סוג של צורה.
+    - label: "Playlist ו-Song"
+      answer: has-a
+      why: רשימת השמעה מכילה שירים.
+  explanation: "המבחן: אם נכון לומר «X הוא סוג של Y», מתאימה ירושה (is-a, `class X : Y`). אם נכון לומר «ל-X יש Y», ה-Y הוא שדה בתוך X (has-a). בספק, העדיפו הרכבה."
+
+- id: cs.oop.composition.003
+  type: single
+  difficulty: 1
+  prompt: "מה פירוש העיקרון «העדיפו הרכבה על פני ירושה» (Composition over Inheritance)?"
+  options:
+    - "לבנות התנהגות מאובייקטים קטנים שהמחלקה מחזיקה ומשתמשת בהם, במקום לרשת ממחלקה רק כדי להשתמש בקוד שלה"
+    - "לעולם לא להשתמש בירושה ב-C#"
+    - "לרשת מכמה מחלקות כדי לאסוף את כל היכולות הדרושות"
+    - "להעתיק את הקוד של המחלקה האחרת לתוך המחלקה החדשה"
+  answer: 0
+  explanation: "ירושה קושרת את המחלקה לכל הפרטים של הבסיס, ונכונה רק כשיש יחס is-a אמיתי. כשהמטרה היא שימוש חוזר בקוד, עדיף להחזיק אובייקט עם היכולת ולהאציל אליו. כך החלקים נשארים נפרדים, ואפשר להחליף אותם."
+  optionExplanations:
+    "1": "העיקרון אומר \"העדיפו\", לא \"אסרו\". ירושה עדיין נכונה כשיש יחס is-a אמיתי."
+    "2": "ב-C# אי אפשר לרשת מכמה מחלקות, וזה גם ההפך מהרכבה."
+    "3": "העתקת קוד היא שכפול (Duplicated Code), לא הרכבה. בהרכבה מחזיקים אובייקט וקוראים לו."
+
+- id: cs.oop.composition.004
+  type: single
+  difficulty: 1
+  prompt: "איזו הגדרה מבטאת יחס has-a בין `Library` לבין `Book`?"
+  options:
+    - "`class Library { private List<Book> books = new(); }`"
+    - "`class Library : Book { }`"
+    - "`class Book : Library { }`"
+    - "`class Library : List<Book> { }`"
+  answer: 0
+  explanation: "בספרייה יש ספרים, ולכן הספרים הם שדה בתוך `Library`. שלוש האפשרויות האחרות הן ירושה (is-a), שאומרת שאחת המחלקות היא סוג של השנייה."
+  optionExplanations:
+    "1": "ספרייה היא לא סוג של ספר. ירושה כזו הייתה נותנת לספרייה מחבר ו-ISBN."
+    "2": "ספר הוא לא סוג של ספרייה."
+    "3": "כאן הספרייה היא רשימה (is-a) וחושפת את כל המתודות של `List`, כמו `Clear`. החזקת רשימה כשדה היא has-a."
+
+- id: cs.oop.composition.005
+  type: truefalse
+  difficulty: 1
+  prompt: "מחלקה `Car` שמחזיקה שדה פרטי מטיפוס `Engine` היא דוגמה ליחס is-a בין `Car` ל-`Engine`."
+  answer: false
+  explanation: "שדה מטיפוס `Engine` הוא יחס has-a: לרכב יש מנוע. is-a היה דורש ירושה, `class Car : Engine`, כלומר שרכב הוא סוג של מנוע, וזה לא נכון."
+
+- id: cs.oop.composition.006
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var duck = new Duck();
+    duck.Fly();
+
+    class Flyer
+    {
+        public void Fly() => Console.WriteLine("Fly");
+    }
+
+    class Swimmer
+    {
+        public void Swim() => Console.WriteLine("Swim");
+    }
+
+    class Duck : Flyer, Swimmer { }
+  options: ["Fly", "שגיאת קומפילציה", "Fly\nSwim", "שגיאה בזמן ריצה"]
+  answer: 1
+  explanation: "ב-C# למחלקה יכולה להיות רק מחלקת בסיס אחת, ו-`Swimmer` היא מחלקה ולא ממשק. כשצריך יכולות מכמה מקורות, משתמשים בהרכבה: `Duck` מחזיקה `Flyer` ו-`Swimmer` כשדות ומאצילה אליהם, או מממשת ממשקים."
+  optionExplanations:
+    "0": "ירושה מרובה של מחלקות לא קיימת ב-C#, ולכן התוכנית לא נבנית בכלל."
+    "3": "המגבלה נאכפת בזמן קומפילציה."
+
+- id: cs.oop.composition.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var duck = new Duck { Mover = new Wings() };
+    duck.Move();
+    duck.Mover = new Legs();
+    duck.Move();
+
+    interface IMover { string Move(); }
+    class Wings : IMover { public string Move() => "fly"; }
+    class Legs : IMover { public string Move() => "walk"; }
+
+    class Duck
+    {
+        public IMover Mover { get; set; }
+        public void Move() => Console.WriteLine($"Duck can {Mover.Move()}");
+    }
+  options: ["Duck can fly\nDuck can walk", "Duck can fly\nDuck can fly", "Duck can walk\nDuck can walk", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`Duck` מחזיקה רכיב מטיפוס `IMover` ומאצילה אליו את התנועה. החלפת הרכיב בזמן ריצה משנה את ההתנהגות של אותו אובייקט. עם ירושה (`class FlyingDuck : Duck`) ההתנהגות נקבעת כשיוצרים את האובייקט ולא משתנה."
+  optionExplanations:
+    "1": "השמה חדשה ל-`Mover` מחליפה את הרכיב, והקריאה השנייה עוברת לאובייקט `Legs`."
+    "2": "הקריאה הראשונה מתבצעת לפני ההחלפה, כשהרכיב עדיין `Wings`."
+    "3": "מאפיין מטיפוס ממשק יכול להחזיק כל מחלקה שמממשת אותו."
+
+- id: cs.oop.composition.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var engine = new Engine();
+    var first = new Car(engine);
+    var second = new Car(engine);
+    first.Drive(100);
+    second.Drive(50);
+    Console.WriteLine(engine.Km);
+
+    class Engine { public int Km; }
+
+    class Car
+    {
+        private readonly Engine engine;
+        public Car(Engine engine) => this.engine = engine;
+        public void Drive(int km) => engine.Km += km;
+    }
+  options: ["150", "100", "50", "0"]
+  answer: 0
+  explanation: "בהרכבה, השדה מחזיק הפניה לאובייקט, לא עותק שלו. שני הרכבים קיבלו את אותו `Engine`, ולכן שניהם מוסיפים לאותו מונה. כשכל רכב צריך רכיב משלו, יוצרים `new Engine()` לכל אחד."
+  optionExplanations:
+    "1": "`second` לא קיבל מנוע משלו. הוא מחזיק את אותו אובייקט שהודפס בסוף."
+    "2": "גם `first` נסע עם אותו מנוע, ו-100 הקילומטרים שלו נשמרו בו."
+    "3": "`Drive` משנה את האובייקט המשותף, ו-`engine` בשורה האחרונה מצביע עליו."
+
+- id: cs.oop.composition.009
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס `True` אחרי שהרכב הותנע, אבל מדפיס `False`. באיזו שורה הבאג?"
+  code: |
+    var car = new Car();
+    car.Start();
+    Console.WriteLine(car.IsRunning);
+
+    class Engine
+    {
+        public bool Running { get; private set; }
+        public void Start() => Running = true;
+    }
+
+    class Car
+    {
+        private readonly Engine engine = new Engine();
+
+        public void Start() => new Engine().Start();
+
+        public bool IsRunning => engine.Running;
+    }
+  answer: 15
+  fixed: |
+    var car = new Car();
+    car.Start();
+    Console.WriteLine(car.IsRunning);
+
+    class Engine
+    {
+        public bool Running { get; private set; }
+        public void Start() => Running = true;
+    }
+
+    class Car
+    {
+        private readonly Engine engine = new Engine();
+
+        public void Start() => engine.Start();
+
+        public bool IsRunning => engine.Running;
+    }
+  explanation: "`Start` מתניעה מנוע חדש וזמני שנזרק מיד, במקום את המנוע שהרכב מחזיק בשדה `engine`. `IsRunning` בודקת את המנוע של הרכב, שאף פעם לא הותנע. בהרכבה צריך להאציל לרכיב שהאובייקט מחזיק, לא ליצור רכיב חדש."
+
+- id: cs.oop.composition.010
+  type: single
+  difficulty: 2
+  prompt: מה הבעיה העיקרית בעיצוב הזה של מחסנית?
+  code: |
+    class IntStack : List<int>
+    {
+        public void Push(int value) => Add(value);
+
+        public int Pop()
+        {
+            int last = this[Count - 1];
+            RemoveAt(Count - 1);
+            return last;
+        }
+    }
+  options:
+    - "`IntStack` חושפת את כל המתודות של `List<int>`, כמו `Insert` ו-`RemoveAt(0)`, ומי שמשתמש בה יכול לשבור את סדר ה-LIFO; עדיף להחזיק `List<int>` כשדה פרטי"
+    - "אי אפשר לרשת ממחלקה גנרית כמו `List<int>`"
+    - "`Pop` תזרוק תמיד חריגה, כי `Count` לא נגיש ממחלקה יורשת"
+    - "ירושה מ-`List<int>` הופכת כל פעולה לאיטית יותר מאשר בהרכבה"
+  answer: 0
+  explanation: "מחסנית היא לא סוג של רשימה: היא משתמשת ברשימה לאחסון. הירושה מעניקה לה ממשק ציבורי שלם של `List<int>`, ולכן `stack.Insert(0, 5)` חוקי ושובר את החוקים שלה. עם שדה `private readonly List<int> items` המחסנית חושפת רק `Push` ו-`Pop`."
+  optionExplanations:
+    "1": "הקוד מתקמפל: מותר לרשת מ-`List<int>`. הבעיה היא עיצובית, לא תחבירית."
+    "2": "`Count` הוא מאפיין ציבורי של `List<int>`, ולכן נגיש למחלקה היורשת."
+    "3": "ההבדל בין ירושה להרכבה כאן הוא בעיצוב ובכימוס, לא בביצועים."
+
+- id: cs.oop.composition.011
+  type: truefalse
+  difficulty: 2
+  prompt: "בהרכבה אפשר להחליף בזמן ריצה רכיב שהאובייקט מחזיק, וכך לשנות את ההתנהגות שלו; בירושה, המחלקה של אובייקט נקבעת כשיוצרים אותו ולא משתנה."
+  answer: true
+  explanation: "אובייקט שנוצר עם `new FlyingDuck()` יישאר `FlyingDuck` כל חייו. אובייקט שמחזיק `IMover` יכול לקבל רכיב אחר בכל רגע, למשל `duck.Mover = new Legs()`. זו אחת הסיבות העיקריות להעדיף הרכבה."
+
+- id: cs.oop.composition.012
+  type: hierarchy
+  difficulty: 2
+  prompt: לפי הקוד, בחרו לכל זוג את היחס ביניהם.
+  code: |
+    class Address { }
+
+    class Person
+    {
+        public Address Home { get; set; }
+    }
+
+    class Customer : Person { }
+
+    class EmailSender
+    {
+        public void Send(string to, string text) { }
+    }
+
+    class OrderService
+    {
+        public void Confirm(Customer customer, EmailSender sender) =>
+            sender.Send("customer@example.com", "Order confirmed");
+    }
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+    - id: uses
+      desc: שימוש - Dependency
+  items:
+    - label: "Customer ו-Person"
+      answer: is-a
+    - label: "Person ו-Address"
+      answer: has-a
+      why: לכל אדם יש כתובת, שנשמרת כמאפיין שלו.
+    - label: "OrderService ו-EmailSender"
+      answer: uses
+      why: OrderService מקבלת EmailSender כפרמטר ומשתמשת בו, אבל לא שומרת אותו כשדה.
+    - label: "OrderService ו-Customer"
+      answer: uses
+      why: הלקוח מגיע כפרמטר לקריאה אחת, ואינו חלק ממצב השירות.
+  explanation: "ההבדל בין has-a ל-uses הוא בזמן החיים: has-a הוא שדה או מאפיין שנשאר עם האובייקט, ו-uses הוא תלות זמנית, כמו פרמטר או משתנה מקומי בתוך מתודה. is-a מופיע תמיד אחרי הנקודתיים בהצהרת המחלקה."
+
+- id: cs.oop.composition.013
+  type: smell
+  difficulty: 2
+  prompt: איזה ריח קוד בולט כאן?
+  code: |
+    class Bird
+    {
+        public virtual void Eat() => Console.WriteLine("Eating");
+        public virtual void Fly() => Console.WriteLine("Flying");
+    }
+
+    class Penguin : Bird
+    {
+        public override void Fly() => throw new NotSupportedException("Penguins can't fly");
+    }
+  options:
+    - "ירושה שנדחית - Refused Bequest"
+    - "מספר קסם - Magic Number"
+    - "קוד מת - Dead Code"
+    - "שם לא ברור - Unclear Name"
+  answer: 0
+  explanation: "`Penguin` יורשת יכולת שהיא לא רוצה, ודוחה אותה בזריקת חריגה. קוד שעובד עם `Bird` ויקרא ל-`Fly` ייכשל דווקא עם פינגווין. התיקון: להוציא את התעופה מ-`Bird` לממשק `IFlyer` או לרכיב שרק ציפורים מעופפות מחזיקות."
+  optionExplanations:
+    "1": "אין בקוד מספרים ללא שם."
+    "2": "כל המתודות נקראות או נדרסות. הבעיה היא ירושה של התנהגות שלא מתאימה."
+    "3": "השמות ברורים. הבעיה בהיררכיה, לא בשמות."
+
+- id: cs.oop.composition.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var list = new CountingList();
+    list.AddRange(new[] { 1, 2, 3 });
+    Console.WriteLine(list.AddCount);
+
+    class BaseList
+    {
+        private readonly List<int> items = new();
+
+        public virtual void Add(int x) => items.Add(x);
+
+        public virtual void AddRange(int[] xs)
+        {
+            foreach (var x in xs)
+                Add(x);
+        }
+    }
+
+    class CountingList : BaseList
+    {
+        public int AddCount { get; private set; }
+
+        public override void Add(int x) { AddCount++; base.Add(x); }
+
+        public override void AddRange(int[] xs) { AddCount += xs.Length; base.AddRange(xs); }
+    }
+  options: ["6", "3", "0", "9"]
+  answer: 0
+  explanation: "`AddRange` של `CountingList` מוסיפה 3, ואז `base.AddRange` קוראת ל-`Add` עבור כל איבר. `Add` וירטואלית, ולכן רצה הגרסה של `CountingList`, שמוסיפה עוד 1 שלוש פעמים. זו בעיית מחלקת הבסיס השבירה (Fragile Base Class): היורשת תלויה בפרטי מימוש של הבסיס. עם הרכבה, שמחזיקה `List<int>` ומאצילה אליה, הבעיה לא קיימת."
+  optionExplanations:
+    "1": "`base.AddRange` לא מוסיפה ישירות לרשימה. היא קוראת ל-`Add` הווירטואלית, והגרסה הדרוסה סופרת שוב."
+    "2": "שתי המתודות הדרוסות מגדילות את `AddCount`."
+    "3": "`Add` נקראת שלוש פעמים בלבד, מתוך `base.AddRange`."
+
+- id: cs.oop.composition.015
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `Order A-17 placed`, אבל נזרקת `NullReferenceException`. באיזו שורה הבאג?"
+  code: |
+    var logger = new ConsoleLogger();
+    var service = new OrderService(logger);
+    service.Place("A-17");
+
+    class ConsoleLogger
+    {
+        public void Log(string message) => Console.WriteLine(message);
+    }
+
+    class OrderService
+    {
+        private readonly ConsoleLogger logger;
+
+        public OrderService(ConsoleLogger logger) => logger = this.logger;
+
+        public void Place(string id) => logger.Log($"Order {id} placed");
+    }
+  answer: 14
+  fixed: |
+    var logger = new ConsoleLogger();
+    var service = new OrderService(logger);
+    service.Place("A-17");
+
+    class ConsoleLogger
+    {
+        public void Log(string message) => Console.WriteLine(message);
+    }
+
+    class OrderService
+    {
+        private readonly ConsoleLogger logger;
+
+        public OrderService(ConsoleLogger logger) => this.logger = logger;
+
+        public void Place(string id) => logger.Log($"Order {id} placed");
+    }
+  explanation: "ההשמה הפוכה: `logger = this.logger` מציבה בפרמטר את ערך השדה, שהוא עדיין `null`. השדה לא מקבל את הרכיב, ו-`Place` קוראת ל-`Log` על `null`. ברכיב שמגיע דרך הבנאי, השדה תמיד בצד שמאל: `this.logger = logger`."
+
+- id: cs.oop.composition.016
+  type: hierarchy
+  difficulty: 3
+  prompt: "לכל זוג, בחרו את היחס הנכון. שימו לב: חלק מהזוגות מפתים לבחור בירושה."
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "Stack ו-List (מחסנית ששומרת את האיברים ברשימה)"
+      answer: has-a
+      why: מחסנית משתמשת ברשימה לאחסון, אבל לא צריכה לחשוף את Insert או Sort. היא לא סוג של רשימה.
+    - label: "Window ו-Rectangle (חלון שיש לו מידות ומיקום)"
+      answer: has-a
+      why: לחלון יש גבולות מלבניים, אבל הוא לא צורה גאומטרית. ירושה הייתה מכניסה לו מתודות של צורה.
+    - label: "Logger ו-FileWriter (לוגר שכותב לקובץ)"
+      answer: has-a
+      why: הלוגר משתמש בכותב קבצים. כך אפשר להחליף אותו בכותב אחר, למשל לקונסול.
+    - label: "ElectricCar ו-Car"
+      answer: is-a
+      why: מכונית חשמלית היא סוג של מכונית, ומתאימה לכל מקום שבו מצופה Car.
+    - label: "SavingsAccount ו-BankAccount"
+      answer: is-a
+      why: חשבון חיסכון הוא סוג של חשבון בנק, ומתאים לכל מקום שבו מצופה BankAccount.
+  explanation: "ירושה מתאימה רק כשהמחלקה היורשת יכולה לשמש בכל מקום שבו מצופה הבסיס, ובאמת היא סוג שלו. כשמחלקה רוצה רק להשתמש בקוד של מחלקה אחרת, כמו מחסנית שמשתמשת ברשימה, נכון להחזיק אותה כשדה."

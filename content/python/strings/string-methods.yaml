@@ -1,0 +1,231 @@
+- id: py.strings.string-methods.001
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "Hello"
+    s.upper()
+    print(s)
+  options: ["Hello", "HELLO", "hello", "None"]
+  answer: 0
+  explanation: "מחרוזת אינה ניתנת לשינוי (Immutable), ולכן `upper` לא משנה את `s`. היא מחזירה מחרוזת חדשה, וכאן הערך שהוחזר לא נשמר בשום מקום. כדי לשנות את `s` כותבים `s = s.upper()`."
+  optionExplanations:
+    "1": "`HELLO` הוא הערך ש-`upper` מחזירה, אבל הוא לא נשמר. `s` עצמה לא השתנתה."
+    "2": "`hello` הוא תוצאה של `lower`, וגם היא לא הייתה משנה את `s`."
+    "3": "`upper` מחזירה מחרוזת חדשה ולא `None`. וממילא מודפסת `s`, שלא קיבלה ערך חדש."
+
+- id: py.strings.string-methods.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    name = "  Dana  "
+    print("[" + name.strip() + "]")
+  options: ["[Dana]", "[  Dana  ]", "[Dana  ]", "[  Dana]"]
+  answer: 0
+  explanation: "`strip` מחזירה מחרוזת חדשה בלי רווחים לבנים (Whitespace) בהתחלה ובסוף. לכן `name.strip()` הוא `\"Dana\"`, והסוגריים המרובעים מראים שלא נשאר אף רווח."
+  optionExplanations:
+    "1": "זו התוצאה בלי `strip` בכלל. `strip` מסירה את הרווחים משני הצדדים."
+    "2": "`[Dana  ]` היה מתקבל עם `lstrip`, שמסירה רק מההתחלה. `strip` מסירה משני הצדדים."
+    "3": "`[  Dana]` היה מתקבל עם `rstrip`, שמסירה רק מהסוף. `strip` מסירה משני הצדדים."
+
+- id: py.strings.string-methods.003
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    line = "red,green,blue"
+    print(line.split(","))
+  options: ["['red', 'green', 'blue']", "red green blue", "['red,green,blue']", "('red', 'green', 'blue')"]
+  answer: 0
+  explanation: "`split` מפרקת מחרוזת לפי מפריד ומחזירה רשימה (list) של מחרוזות. המפריד עצמו לא נכלל בחלקים."
+  optionExplanations:
+    "1": "`split` לא מחזירה מחרוזת עם רווחים. היא מחזירה רשימה, ו-`print` מציג אותה עם סוגריים מרובעים."
+    "2": "רשימה עם איבר אחד הייתה מתקבלת אילו המפריד לא היה מופיע במחרוזת. כאן `,` מופיע פעמיים."
+    "3": "`split` מחזירה רשימה, לא טאפל, ולכן הסוגריים מרובעים."
+
+- id: py.strings.string-methods.004
+  type: single
+  difficulty: 1
+  prompt: "`parts = [\"2024\", \"01\", \"15\"]`. איזה ביטוי מחזיר `\"2024-01-15\"`?"
+  options:
+    - "`\"-\".join(parts)`"
+    - "`parts.join(\"-\")`"
+    - "`join(\"-\", parts)`"
+    - "`\"-\".split(parts)`"
+  answer: 0
+  explanation: "`join` היא מתודה של המחרוזת המפרידה. היא מקבלת רשימה של מחרוזות ומחברת אותן, עם המפריד ביניהן בלבד, לא בהתחלה ולא בסוף."
+  optionExplanations:
+    "1": "לרשימה אין מתודה `join`, ולכן נקבל `AttributeError`. המתודה שייכת למחרוזת המפרידה."
+    "2": "אין פונקציה מובנית בשם `join`. זו מתודה שקוראים לה על מחרוזת."
+    "3": "`split` עושה את הפעולה ההפוכה: מפרקת מחרוזת לרשימה."
+
+- id: py.strings.string-methods.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    word = "banana"
+    print(word.replace("a", "o", 2))
+  options: ["bonona", "bonono", "banono", "bonana"]
+  answer: 0
+  explanation: "`replace(old, new, count)` מחליפה רק את `count` המופעים הראשונים, משמאל לימין. שני ה-`a` הראשונים מוחלפים, והאחרון נשאר. בלי `count`, `replace` מחליפה את כל המופעים."
+  optionExplanations:
+    "1": "`bonono` היא החלפה של כל המופעים, כמו בלי הארגומנט השלישי."
+    "2": "ההחלפה מתחילה מתחילת המחרוזת, לא מסופה."
+    "3": "הארגומנט השלישי הוא מספר ההחלפות, לא האינדקס של המופע להחליף."
+
+- id: py.strings.string-methods.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    s = "banana"
+    print(s.find("n"), s.find("x"))
+  options: ["2 -1", "3 -1", "2 None", "ValueError"]
+  answer: 0
+  explanation: "`find` מחזירה את האינדקס של המופע הראשון. ה-`n` הראשון נמצא באינדקס 2. כשתת-המחרוזת לא נמצאת, `find` מחזירה `-1` ולא זורקת שגיאה."
+  optionExplanations:
+    "1": "3 מתקבל אם סופרים מ-1. אינדקסים מתחילים מ-0."
+    "2": "`find` מחזירה תמיד מספר שלם. הערך המיוחד ל\"לא נמצא\" הוא `-1`, לא `None`."
+    "3": "`ValueError` נזרק מ-`index`, לא מ-`find`. זה ההבדל העיקרי ביניהן."
+
+- id: py.strings.string-methods.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print("banana".count("a"))
+    print("2024".isdigit(), "20.5".isdigit())
+  options: ["3\nTrue False", "3\nTrue True", "2\nTrue False", "3\nFalse False"]
+  answer: 0
+  explanation: "`count` סופרת מופעים של תת-מחרוזת: ב-`banana` יש שלושה `a`. `isdigit` מחזירה `True` רק אם כל התווים ספרות, ולכן `\"20.5\"` מחזירה `False` בגלל הנקודה."
+  optionExplanations:
+    "1": "`isdigit` לא בודקת אם המחרוזת מייצגת מספר, אלא אם כל תו בה הוא ספרה. נקודה אינה ספרה."
+    "2": "יש ב-`banana` שלושה `a`: באינדקסים 1, 3 ו-5."
+    "3": "`\"2024\"` מכילה ספרות בלבד, ולכן `isdigit` מחזירה עליה `True`."
+
+- id: py.strings.string-methods.008
+  type: single
+  difficulty: 1
+  prompt: איזו מהמתודות הבאות מחזירה רשימה?
+  options: ["`split`", "`strip`", "`join`", "`replace`"]
+  answer: 0
+  explanation: "`split` מפרקת מחרוזת לחלקים ומחזירה רשימה של מחרוזות. `strip`, `join` ו-`replace` מחזירות כולן מחרוזת חדשה."
+  optionExplanations:
+    "1": "`strip` מחזירה מחרוזת אחת, בלי הרווחים שבקצוות."
+    "2": "`join` מקבלת רשימה, אבל מחזירה מחרוזת אחת."
+    "3": "`replace` מחזירה מחרוזת חדשה עם ההחלפות."
+
+- id: py.strings.string-methods.009
+  type: single
+  difficulty: 2
+  prompt: "מה ההבדל בין `s.find(x)` לבין `s.index(x)` כאשר `x` לא נמצאת ב-`s`?"
+  options:
+    - "`find` מחזירה `-1`, ו-`index` זורקת `ValueError`"
+    - "`find` זורקת `ValueError`, ו-`index` מחזירה `-1`"
+    - "שתיהן מחזירות `-1`"
+    - "`find` מחזירה `None`, ו-`index` מחזירה `-1`"
+  answer: 0
+  explanation: "כשתת-המחרוזת נמצאת, שתיהן מחזירות את אותו אינדקס. ההבדל רק כשהיא חסרה: `find` מחזירה `-1`, ו-`index` זורקת `ValueError`. משתמשים ב-`index` כשהיעדר הערך הוא שגיאה אמיתית."
+  optionExplanations:
+    "1": "זה הפוך. `find` היא זו שלא זורקת שגיאה."
+    "2": "אילו שתיהן היו מחזירות `-1`, לא היה טעם בשתי מתודות. `index` זורקת שגיאה."
+    "3": "`find` לא מחזירה `None` אף פעם. היא תמיד מחזירה מספר שלם."
+
+- id: py.strings.string-methods.010
+  type: bug
+  difficulty: 2
+  prompt: "הפונקציה אמורה להחזיר כתובת דוא\"ל בלי רווחים בקצוות ובאותיות קטנות. באיזו שורה הבאג?"
+  code: |
+    def normalize_email(email):
+        email.strip()
+        return email.lower()
+  answer: 2
+  explanation: "`strip` לא משנה את `email`, כי מחרוזות אינן ניתנות לשינוי. היא מחזירה מחרוזת חדשה, וכאן הערך הזה נזרק. צריך לשמור אותו: `email = email.strip()`."
+  fixed: |
+    def normalize_email(email):
+        email = email.strip()
+        return email.lower()
+
+- id: py.strings.string-methods.011
+  type: bug
+  difficulty: 3
+  prompt: הפונקציה אמורה לבדוק אם המילה `word` מופיעה בטקסט, בלי תלות באותיות גדולות וקטנות. באיזו שורה הבאג?
+  code: |
+    def contains_word(text, word):
+        text = text.lower()
+        return text.find(word.lower()) > 0
+  answer: 3
+  explanation: "`find` מחזירה 0 כשהמילה נמצאת בתחילת הטקסט, ו-`-1` רק כשהיא לא נמצאת בכלל. התנאי `> 0` מפספס את אינדקס 0. התנאי הנכון הוא `!= -1`, או בפשטות `word.lower() in text`."
+  fixed: |
+    def contains_word(text, word):
+        text = text.lower()
+        return text.find(word.lower()) != -1
+
+- id: py.strings.string-methods.012
+  type: bug
+  difficulty: 3
+  prompt: הפונקציה אמורה לספור את המילים בשורה, גם כשבין המילים יש יותר מרווח אחד. באיזו שורה הבאג?
+  code: |
+    def word_count(line):
+        words = line.split(" ")
+        return len(words)
+  answer: 2
+  explanation: "`split(\" \")` מפרידה בדיוק לפי רווח אחד, ולכן שני רווחים רצופים יוצרים מחרוזת ריקה ברשימה, והיא נספרת כמילה. `split()` בלי ארגומנט מפרידה לפי כל רצף של רווחים לבנים ומתעלמת מרווחים בקצוות."
+  fixed: |
+    def word_count(line):
+        words = line.split()
+        return len(words)
+
+- id: py.strings.string-methods.013
+  type: truefalse
+  difficulty: 1
+  prompt: "`\"Hello\".startswith(\"h\")` מחזיר `True`."
+  answer: false
+  explanation: "`startswith` משווה תווים בדיוק, והיא רגישה לאותיות גדולות וקטנות (Case-Sensitive). `\"H\"` ו-`\"h\"` הם תווים שונים, ולכן התוצאה `False`. כדי להשוות בלי תלות בגודל אותיות, ממירים קודם: `s.lower().startswith(\"h\")`."
+
+- id: py.strings.string-methods.014
+  type: truefalse
+  difficulty: 2
+  prompt: "`\"xxhixx\".strip(\"x\")` מחזיר `\"hi\"`."
+  answer: true
+  explanation: "בלי ארגומנט, `strip` מסירה רווחים לבנים. עם ארגומנט, היא מסירה מהקצוות כל תו שמופיע בו, שוב ושוב, עד שמגיעה לתו שלא מופיע בו. כאן כל ה-`x` שבקצוות מוסרים, ונשאר `hi`."
+
+- id: py.strings.string-methods.015
+  type: cleaner
+  difficulty: 2
+  prompt: כל הגרסאות בודקות אם שם הקובץ מסתיים ב-`.py`. איזו גרסה נקייה יותר?
+  options:
+    - |
+      def is_python_file(filename):
+          return filename.endswith(".py")
+    - |
+      def is_python_file(filename):
+          return filename[-3:] == ".py"
+    - |
+      def is_python_file(filename):
+          if filename.endswith(".py"):
+              return True
+          return False
+  answer: 0
+  explanation: "`endswith` אומרת את הכוונה במילה אחת. היא מחזירה ערך בוליאני ישירות, ואין צורך לספור תווים או לעטוף אותה ב-`if`."
+  optionExplanations:
+    "1": "החיתוך עובד, אבל המספר 3 קשור לאורך הסיומת. שינוי הסיומת דורש לזכור לעדכן גם אותו."
+    "2": "`endswith` כבר מחזירה `True` או `False`. `if` שמחזיר אותם רק מאריך את הקוד."
+
+- id: py.strings.string-methods.016
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    s = "  Hello World  "
+    t = s.strip().lower().replace("o", "0")
+    print(t, len(s))
+  options: ["hell0 w0rld 15", "hell0 w0rld 11", "hell0 world 15", "Hell0 W0rld 15"]
+  answer: 0
+  explanation: "שרשור מתודות (Method Chaining) פועל משמאל לימין: כל מתודה פועלת על המחרוזת החדשה שהקודמת החזירה. `t` הוא `hell0 w0rld`. `s` לא השתנתה, ולכן אורכה עדיין 15: 11 תווים ועוד 2 רווחים בכל צד."
+  optionExplanations:
+    "1": "11 הוא אורך המחרוזת אחרי `strip`. אבל `strip` לא שינתה את `s`, היא החזירה מחרוזת חדשה."
+    "2": "`replace` בלי ארגומנט שלישי מחליפה את כל המופעים, לא רק את הראשון."
+    "3": "`lower` הופכת את כל האותיות לקטנות, כולל `H` ו-`W`."

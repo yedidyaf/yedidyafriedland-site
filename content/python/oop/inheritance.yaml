@@ -1,0 +1,407 @@
+- id: py.oop.inheritance.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Animal:
+        def __init__(self, name):
+            self.name = name
+
+        def describe(self):
+            return f"I am {self.name}"
+
+    class Cat(Animal):
+        pass
+
+    print(Cat("Tom").describe())
+  options: ["AttributeError", "I am Tom", "TypeError", "I am Cat"]
+  answer: 1
+  explanation: "`Cat` יורשת (Inheritance) מ-`Animal` ולא מגדירה דבר משלה. כשפייתון לא מוצאת `__init__` או `describe` ב-`Cat`, היא ממשיכה לחפש במחלקת הבסיס (Base Class) ומשתמשת בהן. לכן `Cat(\"Tom\")` מאותחל עם השם `Tom`."
+  optionExplanations:
+    "0": "מחלקה יורשת מקבלת את כל המתודות של מחלקת הבסיס, גם בלי להגדיר אותן מחדש."
+    "2": "גם `__init__` עוברת בירושה, ולכן `Cat` מקבלת את הפרמטר `name`."
+    "3": "`self.name` הוא הערך שהועבר, `Tom`, ולא שם המחלקה."
+
+- id: py.oop.inheritance.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    class Animal:
+        def sound(self):
+            return "..."
+
+    class Dog(Animal):
+        def sound(self):
+            return "Woof"
+
+    a = Animal()
+    d = Dog()
+    print(a.sound(), d.sound())
+  options: ["Woof Woof", "... ...", "... Woof", "Woof ..."]
+  answer: 2
+  explanation: "`Dog` דורסת (Override) את `sound`: היא מגדירה מתודה באותו שם, והחיפוש מוצא אותה ב-`Dog` לפני `Animal`. הדריסה משפיעה רק על מופעים של `Dog`, ומופע של `Animal` ממשיך להשתמש בגרסה המקורית."
+  optionExplanations:
+    "0": "דריסה במחלקה היורשת לא משנה את מחלקת הבסיס. `Animal` עדיין מחזירה `...`."
+    "1": "`d` הוא מופע של `Dog`, ולכן הגרסה של `Dog` נמצאת ראשונה ורצה."
+
+- id: py.oop.inheritance.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Employee:
+        def __init__(self, name):
+            self.name = name
+
+    class Manager(Employee):
+        def __init__(self, name, team):
+            self.team = team
+
+    m = Manager("Noa", "R&D")
+    print(m.team)
+    print(m.name)
+  options: ["R&D\nNoa", "AttributeError", "R&D\nNone", "R&D\nAttributeError"]
+  answer: 3
+  explanation: "`Manager` דורסת את `__init__`, ולכן ה-`__init__` של `Employee` לא רץ בכלל, ו-`self.name` לא נוצר. `m.team` מודפס, ואז `m.name` זורקת `AttributeError`. התיקון: לקרוא ל-`super().__init__(name)` בתחילת `__init__` של `Manager`."
+  optionExplanations:
+    "0": "פייתון לא קוראת אוטומטית ל-`__init__` של מחלקת הבסיס כשהמחלקה היורשת מגדירה `__init__` משלה."
+    "1": "`self.team` נוצר כרגיל, ולכן השורה הראשונה מודפסת לפני השגיאה."
+    "2": "תכונה שלא הוגדרה לא מקבלת `None`. גישה אליה זורקת `AttributeError`."
+
+- id: py.oop.inheritance.004
+  type: bug
+  difficulty: 2
+  prompt: "`Motorcycle` אמורה לאתחל את מספר הגלגלים (2) דרך מחלקת הבסיס, ואז לשמור את המותג. הקוד אמור להדפיס `2`. באיזו שורה הבאג?"
+  code: |
+    class Vehicle:
+        def __init__(self, wheels):
+            self.wheels = wheels
+
+    class Motorcycle(Vehicle):
+        def __init__(self, brand):
+            super().__init__(self, 2)
+            self.brand = brand
+
+    m = Motorcycle("Yamaha")
+    print(m.wheels)
+  answer: 7
+  explanation: "`super().__init__` כבר קשורה לאובייקט הנוכחי ומעבירה את `self` לבד. העברה נוספת של `self` שולחת שני ארגומנטים ל-`__init__(self, wheels)` שמצפה לאחד, ולכן נזרקת `TypeError`. הקריאה הנכונה: `super().__init__(2)`."
+  fixed: |
+    class Vehicle:
+        def __init__(self, wheels):
+            self.wheels = wheels
+
+    class Motorcycle(Vehicle):
+        def __init__(self, brand):
+            super().__init__(2)
+            self.brand = brand
+
+    m = Motorcycle("Yamaha")
+    print(m.wheels)
+
+- id: py.oop.inheritance.005
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Report:
+        def header(self):
+            return "Report"
+
+    class SalesReport(Report):
+        def header(self):
+            return super().header() + " - Sales"
+
+    print(SalesReport().header())
+  options: ["Report - Sales", "Report", "- Sales", "RecursionError"]
+  answer: 0
+  explanation: "`super().header()` קוראת לגרסה של מחלקת הבסיס, ולא לגרסה הנוכחית. כך מתודה דורסת יכולה להרחיב את ההתנהגות המקורית במקום להחליף אותה: `Report` ועוד ` - Sales`."
+  optionExplanations:
+    "1": "הגרסה של `SalesReport` היא שרצה, והיא מוסיפה טקסט למה שמחלקת הבסיס מחזירה."
+    "2": "`super().header()` מחזירה `Report`, וזה החלק הראשון של המחרוזת."
+    "3": "`super()` מדלגת על המחלקה הנוכחית ומתחילה לחפש בבסיס, ולכן אין כאן קריאה של המתודה לעצמה."
+
+- id: py.oop.inheritance.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class A:
+        def hello(self):
+            return "A"
+
+    class B(A):
+        def hello(self):
+            return "B"
+
+    class C(A):
+        def hello(self):
+            return "C"
+
+    class D(B, C):
+        pass
+
+    print(D().hello())
+  options: ["A", "C", "TypeError", "B"]
+  answer: 3
+  explanation: "בירושה מרובה (Multiple Inheritance) פייתון מחפשת לפי סדר חיפוש המתודות (MRO): `D`, `B`, `C`, `A`, `object`. מחלקות הבסיס נבדקות לפי הסדר שבו נכתבו בסוגריים, ולכן `hello` נמצאת קודם ב-`B`."
+  optionExplanations:
+    "0": "`A` נבדקת רק אחרי `B` ו-`C`, שתיהן יורשות ממנה. החיפוש עוצר כבר ב-`B`."
+    "1": "`B` נכתבה לפני `C` ב-`class D(B, C)`, ולכן היא נבדקת ראשונה."
+    "2": "פייתון לא זורקת שגיאה כשכמה מחלקות בסיס מגדירות אותה מתודה. ה-MRO מכריע מי רצה."
+
+- id: py.oop.inheritance.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class A:
+        def go(self):
+            return "A"
+
+    class B(A):
+        def go(self):
+            return "B" + super().go()
+
+    class C(A):
+        def go(self):
+            return "C" + super().go()
+
+    class D(B, C):
+        def go(self):
+            return "D" + super().go()
+
+    print(D().go())
+  options: ["DBA", "DBCA", "DBACA", "DCBA"]
+  answer: 1
+  explanation: "`super()` לא קוראת בהכרח להורה הישיר. היא קוראת למחלקה הבאה ב-MRO של האובייקט, כאן `D`, `B`, `C`, `A`. לכן `super()` בתוך `B` מגיעה ל-`C`, ורק `C` מגיעה ל-`A`. כל מחלקה רצה פעם אחת בדיוק."
+  optionExplanations:
+    "0": "זה נכון רק אם `super()` ב-`B` הייתה קוראת להורה הישיר `A`. עבור מופע של `D`, המחלקה הבאה אחרי `B` היא `C`."
+    "2": "ה-MRO מכיל כל מחלקה פעם אחת, ולכן `A` לא רצה פעמיים."
+    "3": "`B` נכתבה לפני `C` בהגדרת `D`, ולכן היא באה לפניה ב-MRO."
+
+- id: py.oop.inheritance.008
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Shape:
+        pass
+
+    class Square(Shape):
+        pass
+
+    s = Square()
+    print(isinstance(s, Shape), type(s) == Shape, issubclass(Shape, Square))
+  options: ["True True False", "True False False", "False False False", "True False True"]
+  answer: 1
+  explanation: "`isinstance` מתחשבת בירושה: ריבוע הוא סוג של צורה, ולכן `True`. `type(s)` מחזיר את המחלקה המדויקת, `Square`, ולכן ההשוואה ל-`Shape` היא `False`. `issubclass(Shape, Square)` שואל אם `Shape` יורשת מ-`Square`, וזה הפוך מהקוד, ולכן `False`."
+  optionExplanations:
+    "0": "`type` לא מתחשבת בירושה. היא מחזירה בדיוק את המחלקה שממנה נוצר האובייקט."
+    "2": "`isinstance` מחזירה `True` גם עבור מחלקות בסיס, לא רק עבור המחלקה המדויקת."
+    "3": "הכיוון חשוב: `Square` יורשת מ-`Shape`, ולא להפך."
+
+- id: py.oop.inheritance.009
+  type: hierarchy
+  difficulty: 2
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה?"
+  code: |
+    class Account:
+        def __init__(self, owner):
+            self.owner = owner
+
+    class SavingsAccount(Account): ...
+    class CheckingAccount(Account): ...
+    class StudentChecking(CheckingAccount): ...
+
+    class Statement:
+        def __init__(self, account: Account):
+            self.account = account
+  targets:
+    - id: Account
+    - id: CheckingAccount
+    - id: SavingsAccount
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: Account
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "`Account` לא מציינת מחלקת בסיס, ולכן היא יורשת ישירות מ-`object`."
+    - label: SavingsAccount
+      answer: Account
+    - label: StudentChecking
+      answer: CheckingAccount
+      why: "מחלקת הבסיס הישירה היא זו שבסוגריים. `StudentChecking` היא גם סוג של `Account`, אבל דרך `CheckingAccount`."
+    - label: Statement
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: "`Statement` מקבלת חשבון ומחזיקה אותו כתכונה (has-a), אבל לא יורשת ממנו."
+  explanation: "מחלקת הבסיס הישירה נקבעת רק לפי מה שכתוב בסוגריים בהגדרת המחלקה. type hint כמו `account: Account` או שמירת אובייקט בתכונה הם הרכבה, לא ירושה."
+
+- id: py.oop.inheritance.010
+  type: hierarchy
+  difficulty: 2
+  prompt: "במערכת ניהול עובדים כבר קיימות שלוש מחלקות. לכל מחלקה חדשה, בחרו מאיזו מחלקה קיימת נכון שתירש."
+  code: |
+    class Person:
+        def __init__(self, name): ...
+
+    class Employee(Person):
+        def __init__(self, name, salary): ...
+
+    class Address:
+        def __init__(self, city, street): ...
+  targets:
+    - id: Person
+    - id: Employee
+    - id: Address
+  items:
+    - label: "Manager - עובד שמנהל צוות"
+      answer: Employee
+      why: "מנהל הוא סוג של עובד: יש לו שכר, ועוד צוות."
+    - label: "Customer - לקוח של החברה, לא עובד"
+      answer: Person
+      why: "לקוח הוא אדם, אבל לא עובד. ירושה מ-`Employee` הייתה נותנת לו שכר בלי סיבה."
+    - label: "Intern - מתמחה שמקבל שכר"
+      answer: Employee
+    - label: "BillingAddress - כתובת לשליחת חשבוניות"
+      answer: Address
+      why: "כתובת לחיוב היא סוג של כתובת, ולא סוג של אדם."
+  explanation: "בוחרים את מחלקת הבסיס הספציפית ביותר שהמחלקה החדשה היא באמת סוג שלה (is-a). כך היא מקבלת בדיוק את התכונות שמתאימות לה, לא פחות ולא יותר."
+
+- id: py.oop.inheritance.011
+  type: hierarchy
+  difficulty: 3
+  prompt: "`duck` הוא מופע של `Duck`. לפי סדר חיפוש המתודות (MRO), באיזו מחלקה תימצא המתודה שרצה בכל קריאה?"
+  code: |
+    class Animal:
+        def eat(self): ...
+        def move(self): ...
+        def sleep(self): ...
+
+    class Flyer:
+        def move(self): ...
+        def land(self): ...
+
+    class Swimmer:
+        def move(self): ...
+        def dive(self): ...
+
+    class Duck(Flyer, Swimmer, Animal):
+        def eat(self): ...
+  targets:
+    - id: Duck
+    - id: Flyer
+    - id: Swimmer
+    - id: Animal
+  items:
+    - label: "duck.eat()"
+      answer: Duck
+      why: "החיפוש מתחיל במחלקה של האובייקט עצמו, ו-`Duck` דורסת את `eat`."
+    - label: "duck.move()"
+      answer: Flyer
+      why: "שלוש מחלקות בסיס מגדירות `move`. `Flyer` כתובה ראשונה בסוגריים, ולכן נמצאת ראשונה."
+    - label: "duck.dive()"
+      answer: Swimmer
+    - label: "duck.sleep()"
+      answer: Animal
+      why: "רק `Animal` מגדירה `sleep`, ולכן החיפוש מגיע אליה אחרי שלא מצא את המתודה ב-`Duck`, `Flyer` ו-`Swimmer`."
+  explanation: "ה-MRO של `Duck` הוא `Duck`, `Flyer`, `Swimmer`, `Animal`, `object`. פייתון עוברת עליו לפי הסדר ומריצה את המתודה הראשונה שנמצאה בשם המבוקש."
+
+- id: py.oop.inheritance.012
+  type: single
+  difficulty: 1
+  prompt: "איזו שורה מגדירה מחלקה `Truck` שיורשת מ-`Vehicle`?"
+  options:
+    - "`class Truck extends Vehicle:`"
+    - "`class Vehicle(Truck):`"
+    - "`class Truck(Vehicle):`"
+    - "`class Truck: Vehicle`"
+  answer: 2
+  explanation: "בפייתון כותבים את מחלקת הבסיס בסוגריים אחרי שם המחלקה החדשה: `class Truck(Vehicle):`. המחלקה שבסוגריים היא ההורה, והמחלקה שמוגדרת היא היורשת."
+  optionExplanations:
+    "0": "`extends` היא מילה של Java ו-JavaScript. בפייתון היא שגיאת תחביר."
+    "1": "הכיוון הפוך: כאן `Vehicle` היא שיורשת מ-`Truck`."
+    "3": "זה לא תחביר של ירושה. הנקודתיים מסיימות את שורת ההגדרה."
+
+- id: py.oop.inheritance.013
+  type: truefalse
+  difficulty: 2
+  prompt: "כשמחלקה יורשת מגדירה `__init__` משלה, פייתון קוראת אוטומטית גם ל-`__init__` של מחלקת הבסיס."
+  answer: false
+  explanation: "`__init__` של המחלקה היורשת דורסת את זו של הבסיס, ופייתון מריצה רק אותה. כדי שגם החלק של מחלקת הבסיס יאותחל, צריך לקרוא במפורש ל-`super().__init__(...)`. אחרת התכונות שהבסיס יוצר פשוט לא יהיו קיימות."
+
+- id: py.oop.inheritance.014
+  type: single
+  difficulty: 2
+  prompt: "מה עושה `super().__init__(name)` בתוך `__init__` של מחלקה יורשת?"
+  options:
+    - "יוצרת אובייקט חדש ונפרד של מחלקת הבסיס ושומרת אותו בתכונה"
+    - "קוראת ל-`__init__` של המחלקה הבאה ב-MRO, כדי לאתחל את החלק של האובייקט שמגיע ממחלקת הבסיס"
+    - "מעתיקה את כל המתודות של מחלקת הבסיס אל המחלקה היורשת"
+    - "מוחקת את `__init__` של מחלקת הבסיס כדי שלא תרוץ שוב"
+  answer: 1
+  explanation: "`super()` מחזירה אובייקט עזר שמפנה את הקריאה למחלקה הבאה בסדר החיפוש. `__init__` של הבסיס רצה על אותו `self`, ומוסיפה לו את התכונות שלה. לא נוצר אובייקט נוסף."
+  optionExplanations:
+    "0": "יש אובייקט אחד בלבד. `__init__` של הבסיס מאתחלת את אותו `self`."
+    "2": "המתודות זמינות כבר מכוח הירושה, דרך החיפוש במחלקת הבסיס. `super()` לא מעתיקה כלום."
+    "3": "`super()` לא משנה מחלקות. היא רק מריצה את המתודה של מחלקת הבסיס."
+
+- id: py.oop.inheritance.015
+  type: bug
+  difficulty: 3
+  prompt: "מנהל אמור לקבל שכר שנתי של 12 משכורות ועוד בונוס. הקוד אמור להדפיס `125000`, אבל נזרקת שגיאה. באיזו שורה הבאג?"
+  code: |
+    class Employee:
+        def __init__(self, salary):
+            self.salary = salary
+
+        def yearly_pay(self):
+            return self.salary * 12
+
+    class Manager(Employee):
+        def __init__(self, salary, bonus):
+            super().__init__(salary)
+            self.bonus = bonus
+
+        def yearly_pay(self):
+            return self.yearly_pay() + self.bonus
+
+    print(Manager(10000, 5000).yearly_pay())
+  answer: 14
+  explanation: "`self.yearly_pay()` מוצאת שוב את הגרסה של `Manager`, כי החיפוש מתחיל במחלקה של האובייקט. המתודה קוראת לעצמה בלי סוף, ונזרקת `RecursionError`. כדי לקרוא לגרסה של מחלקת הבסיס צריך `super().yearly_pay()`."
+  fixed: |
+    class Employee:
+        def __init__(self, salary):
+            self.salary = salary
+
+        def yearly_pay(self):
+            return self.salary * 12
+
+    class Manager(Employee):
+        def __init__(self, salary, bonus):
+            super().__init__(salary)
+            self.bonus = bonus
+
+        def yearly_pay(self):
+            return super().yearly_pay() + self.bonus
+
+    print(Manager(10000, 5000).yearly_pay())
+
+- id: py.oop.inheritance.016
+  type: single
+  difficulty: 3
+  prompt: "בהינתן הקוד, איזו מההגדרות הבאות של `C` תזרוק `TypeError` כבר בזמן הגדרת המחלקה?"
+  code: |
+    class A: ...
+    class B(A): ...
+  options:
+    - "`class C(B, A): ...`"
+    - "`class C(A, B): ...`"
+    - "`class C(B): ...`"
+    - "`class C(A): ...`"
+  answer: 1
+  explanation: "ה-MRO חייב לשמור על שני כללים: מחלקה באה לפני מחלקות הבסיס שלה, ומחלקות הבסיס נשמרות בסדר שבו נכתבו. ב-`class C(A, B)` נדרש ש-`A` תבוא לפני `B`, אבל `B` יורשת מ-`A` ולכן חייבת לבוא לפניה. אין סדר שמקיים את שניהם, ופייתון זורקת `TypeError`."
+  optionExplanations:
+    "0": "`B` לפני `A` מתאים לכך ש-`B` יורשת מ-`A`. ה-MRO הוא `C`, `B`, `A`, `object`, והגדרה כזאת חוקית (אם כי מיותרת)."
+    "2": "ירושה פשוטה מ-`B` תמיד חוקית. `C` מקבלת גם את `A` דרך `B`."
+    "3": "ירושה פשוטה מ-`A` חוקית, גם אם יש מחלקות אחרות שיורשות ממנה."

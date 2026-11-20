@@ -1,0 +1,231 @@
+- id: py.basics.input-output.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print("a", "b", "c")
+  options: ["a b c", "abc", "a,b,c", "('a', 'b', 'c')"]
+  answer: 0
+  explanation: "כשמעבירים ל-`print` כמה ערכים, היא מדפיסה אותם בשורה אחת עם רווח ביניהם. הרווח הוא ברירת המחדל של הפרמטר `sep` (Separator)."
+  optionExplanations:
+    "1": "`print` לא מחברת את הערכים צמודים. בין ערך לערך היא מוסיפה את `sep`, שהוא רווח כברירת מחדל."
+    "2": "הפסיקים בקוד מפרידים בין הארגומנטים ולא מודפסים."
+    "3": "`print` מדפיסה כל ערך בנפרד, ולא טאפל של כל הערכים."
+
+- id: py.basics.input-output.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print("a", "b", sep="-")
+  options: ["a-b", "a b", "a-b-", "a - b"]
+  answer: 0
+  explanation: "הפרמטר `sep` קובע מה מודפס בין הערכים, במקום הרווח שהוא ברירת המחדל. הוא מופיע רק בין ערכים, לא לפני הראשון ולא אחרי האחרון."
+  optionExplanations:
+    "1": "`sep=\"-\"` מחליף את הרווח, ולכן הרווח כבר לא מודפס."
+    "2": "`sep` מופיע רק בין ערכים, ולא אחרי הערך האחרון."
+    "3": "`sep` מחליף את הרווח ולא נוסף אליו."
+
+- id: py.basics.input-output.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    print("Hello", end="")
+    print("World")
+  options: ["HelloWorld", "Hello\nWorld", "Hello World", "Hello"]
+  answer: 0
+  explanation: "הפרמטר `end` קובע מה מודפס אחרי כל הערכים. ברירת המחדל היא ירידת שורה (`\"\\n\"`). עם `end=\"\"` הקריאה הבאה ל-`print` ממשיכה באותה שורה, בצמוד."
+  optionExplanations:
+    "1": "זו ההתנהגות בלי `end`. כאן ירידת השורה הוחלפה במחרוזת ריקה."
+    "2": "`end=\"\"` לא מוסיף רווח. ה-`sep` מופיע רק בין ערכים של אותה קריאה."
+
+- id: py.basics.input-output.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print(1, 2, 3, sep=", ", end=".\n")
+    print("done")
+  options: ["1, 2, 3.\ndone", "1, 2, 3, .\ndone", "1 2 3.\ndone", "1, 2, 3.done"]
+  answer: 0
+  explanation: "`sep` מודפס רק בין הערכים, ו-`end` מודפס פעם אחת אחרי הערך האחרון. כאן `end` כולל `\\n`, ולכן `done` מופיע בשורה חדשה."
+  optionExplanations:
+    "1": "`sep` לא מודפס אחרי הערך האחרון. אחריו בא רק `end`."
+    "2": "כשמעבירים `sep`, הוא מחליף את הרווח שהוא ברירת המחדל."
+    "3": "ה-`end` שהוגדר כולל `\\n` בסופו, ולכן יש ירידת שורה."
+
+- id: py.basics.input-output.005
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    print("a")
+    print()
+    print("b")
+  options: ["a\n\nb", "a\nb", "a\n()\nb", "a\nNone\nb"]
+  answer: 0
+  explanation: "`print()` בלי ארגומנטים מדפיסה רק את `end`, כלומר ירידת שורה. התוצאה היא שורה ריקה בין `a` ל-`b`."
+  optionExplanations:
+    "1": "`print()` כן מדפיסה משהו: את ירידת השורה של `end`."
+    "2": "הסוגריים הם קריאה לפונקציה, לא ערך להדפסה."
+    "3": "אין כאן ערך `None` להדפסה. `print()` בלי ארגומנטים מדפיסה שורה ריקה."
+
+- id: py.basics.input-output.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print("x", sep="***")
+    print("y", "z", sep="")
+  options: ["x\nyz", "***x***\nyz", "x***\nyz", "x\ny z"]
+  answer: 0
+  explanation: "`sep` מודפס רק בין ערכים. בקריאה הראשונה יש ערך אחד בלבד, ולכן ה-`sep` לא מופיע בכלל. בקריאה השנייה `sep=\"\"` מצמיד את `y` ל-`z`."
+  optionExplanations:
+    "1": "`sep` אינו מסגרת סביב הערכים. הוא מופיע רק בין שני ערכים."
+    "2": "אחרי הערך האחרון מודפס `end`, ולא `sep`."
+    "3": "`sep=\"\"` מחליף את הרווח במחרוזת ריקה, ולכן אין רווח בין `y` ל-`z`."
+
+- id: py.basics.input-output.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    age = 30
+    print("Age:", age)
+    print("Age: " + age)
+  options: ["Age: 30\nTypeError", "Age: 30\nAge: 30", "TypeError", "Age: 30\nAge:30"]
+  answer: 0
+  explanation: "כשמעבירים ל-`print` כמה ערכים מופרדים בפסיק, היא ממירה כל אחד מהם לטקסט בעצמה. האופרטור `+` לעומת זאת לא יודע לחבר `str` עם `int`, ולכן השורה השלישית זורקת `TypeError` אחרי שהשורה השנייה כבר הודפסה."
+  optionExplanations:
+    "1": "`+` בין מחרוזת למספר לא ממיר אוטומטית. צריך `str(age)`."
+    "2": "השורה השנייה תקינה ורצה לפני השגיאה, ולכן הפלט שלה מופיע."
+    "3": "החיבור לא מתבצע בכלל, כי הוא נכשל עם `TypeError`."
+
+- id: py.basics.input-output.008
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    print("a", "b", end="!")
+    print("c", end="!")
+    print()
+    print("d")
+  options: ["a b!c!\nd", "a b!\nc!\n\nd", "ab!c!\nd", "a b!c!\n\nd"]
+  answer: 0
+  explanation: "שתי הקריאות הראשונות מסתיימות ב-`!` במקום ירידת שורה, ולכן הכול נשאר באותה שורה. `print()` מוסיפה את ירידת השורה היחידה, ו-`d` מודפס בשורה הבאה."
+  optionExplanations:
+    "1": "`end=\"!\"` מחליף את ירידת השורה, ולא נוסף לפניה."
+    "2": "`end` לא משפיע על `sep`. בין `a` ל-`b` עדיין מודפס רווח."
+    "3": "`print()` מסיימת את השורה הנוכחית שעדיין פתוחה. היא לא יוצרת שורה ריקה נוספת."
+
+- id: py.basics.input-output.009
+  type: single
+  difficulty: 1
+  prompt: "מה הטיפוס של הערך ש-`input()` מחזירה?"
+  options:
+    - "תמיד `str`"
+    - "`int` אם הוקלדו ספרות, אחרת `str`"
+    - "הטיפוס שמתאים למה שהמשתמש הקליד"
+    - "`str`, או `None` אם המשתמש לחץ Enter בלי להקליד"
+  answer: 0
+  explanation: "`input` מחזירה תמיד מחרוזת, גם כשהמשתמש הקליד ספרות. כדי לחשב עם הקלט צריך להמיר אותו, למשל `int(input())`."
+  optionExplanations:
+    "1": "`input` לא מנחשת טיפוסים. הקלט `42` מתקבל כמחרוזת `\"42\"`."
+    "2": "אין זיהוי אוטומטי של טיפוס. ההמרה היא באחריות המתכנתים."
+    "3": "Enter בלי הקלדה מחזיר מחרוזת ריקה, `\"\"`, ולא `None`."
+
+- id: py.basics.input-output.010
+  type: single
+  difficulty: 1
+  prompt: "מה התפקיד של המחרוזת `\"Name: \"` בשורה `name = input(\"Name: \")`?"
+  options:
+    - "היא מוצגת למשתמש כהנחיה לפני שהוא מקליד"
+    - "היא ערך ברירת המחדל אם המשתמש לא הקליד דבר"
+    - "היא מתווספת לתחילת הערך שנשמר ב-`name`"
+    - "היא קובעת את הטיפוס של הקלט"
+  answer: 0
+  explanation: "הארגומנט של `input` הוא הנחיה (Prompt): הוא מודפס למסך, והתוכנית ממתינה לקלט. הערך שנשמר ב-`name` הוא רק מה שהמשתמש הקליד."
+  optionExplanations:
+    "1": "ל-`input` אין ערך ברירת מחדל. Enter בלי הקלדה מחזיר מחרוזת ריקה."
+    "2": "ההנחיה רק מוצגת על המסך, ולא נכללת בערך המוחזר."
+    "3": "`input` מחזירה תמיד `str`, בלי קשר להנחיה."
+
+- id: py.basics.input-output.011
+  type: single
+  difficulty: 3
+  prompt: "המשתמש הקליד `5` ולחץ Enter בכל אחת משתי הקריאות ל-`input`. מה יודפס?"
+  code: |
+    a = input()
+    b = input()
+    print(a * 2, a + b)
+  options: ["`55 55`", "`10 10`", "`10 55`", "`TypeError`"]
+  answer: 0
+  explanation: "`a` ו-`b` הן המחרוזת `\"5\"`, לא המספר 5. כפל מחרוזת במספר משכפל אותה, ולכן `a * 2` הוא `\"55\"`. חיבור שתי מחרוזות משרשר אותן, ולכן גם `a + b` הוא `\"55\"`."
+  optionExplanations:
+    "1": "זו התוצאה אילו `input` הייתה מחזירה מספר. היא מחזירה תמיד `str`."
+    "2": "גם `a * 2` פועל על מחרוזת: הכפלה של `\"5\"` פעמיים, ולא חישוב מספרי."
+    "3": "כפל `str` ב-`int` וחיבור של שתי מחרוזות הם פעולות חוקיות."
+
+- id: py.basics.input-output.012
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור לקרוא שני מספרים שלמים ולהדפיס את הסכום שלהם. באיזו שורה הבאג?"
+  code: |
+    a = int(input("First: "))
+    b = input("Second: ")
+    print("Sum:", a + b)
+  answer: 2
+  explanation: "בשורה 2 הקלט לא מומר, ולכן `b` הוא מחרוזת. בשורה 3 `a + b` מנסה לחבר `int` עם `str` ונזרקת `TypeError`. צריך להמיר כמו בשורה 1: `int(input(\"Second: \"))`, כך שהמשתנה `b` יכיל מספר מהרגע שנקרא."
+  fixed: |
+    a = int(input("First: "))
+    b = int(input("Second: "))
+    print("Sum:", a + b)
+
+- id: py.basics.input-output.013
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את התאריך בצורה `19/11/2026`. באיזו שורה הבאג?"
+  code: |
+    day = 19
+    month = 11
+    year = 2026
+    print(day, month, year, end="/")
+  answer: 4
+  explanation: "המפריד בין ערכים נקבע ב-`sep`, ולא ב-`end`. הקוד מדפיס `19 11 2026/`: רווחים בין הערכים ולוכסן בסוף. צריך `sep=\"/\"`."
+  fixed: |
+    day = 19
+    month = 11
+    year = 2026
+    print(day, month, year, sep="/")
+
+- id: py.basics.input-output.014
+  type: truefalse
+  difficulty: 1
+  prompt: "`print(\"a\", \"b\")` ו-`print(\"a\" + \" \" + \"b\")` מדפיסות את אותה שורה בדיוק."
+  answer: true
+  explanation: "בראשונה `print` מוסיפה בעצמה רווח בין שני הערכים, כי זה ה-`sep` כברירת מחדל. בשנייה הרווח נבנה ידנית בתוך מחרוזת אחת. בשני המקרים מודפס `a b`."
+
+- id: py.basics.input-output.015
+  type: truefalse
+  difficulty: 2
+  prompt: "הערך של `sep` מודפס גם אחרי הערך האחרון בקריאה ל-`print`."
+  answer: false
+  explanation: "`sep` מודפס רק בין ערכים. אחרי הערך האחרון מודפס `end`, שהוא ירידת שורה כברירת מחדל. לכן `print(1, 2, sep=\"-\")` מדפיסה `1-2` ולא `1-2-`."
+
+- id: py.basics.input-output.016
+  type: cleaner
+  difficulty: 2
+  prompt: "שלוש השורות מדפיסות `Total: 120 NIS` כש-`total` הוא `120`. איזו כתובה בצורה הנקייה ביותר?"
+  options:
+    - |
+      print("Total:", total, "NIS")
+    - |
+      print("Total: " + str(total) + " NIS")
+    - |
+      print("Total:" + " " + str(total) + " " + "NIS")
+  answer: 0
+  explanation: "כשמעבירים ל-`print` כמה ערכים, היא ממירה כל אחד לטקסט ומוסיפה רווחים בעצמה. אין צורך בהמרה ידנית עם `str` ובחיבור מחרוזות."
+  optionExplanations:
+    "1": "`str` ו-`+` עושים ידנית את מה ש-`print` עושה ממילא, וקל לשכוח רווח בתוך המחרוזות."
+    "2": "פירוק הרווחים למחרוזות נפרדות מוסיף רעש בלי שום תועלת."

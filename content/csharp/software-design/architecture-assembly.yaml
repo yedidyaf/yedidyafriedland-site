@@ -1,0 +1,568 @@
+- id: cs.software-design.architecture-assembly.001
+  type: architecture
+  difficulty: 1
+  prompt: "שבצו כל חתימה של החנות המקוונת בקובץ שאליו היא שייכת."
+  requirement: "חנות מקוונת: לקוח שולח את סל הקניות, המערכת מחשבת את הסכום, שומרת את ההזמנה במסד הנתונים ומחזירה לדפדפן את מספר ההזמנה."
+  targets:
+    - id: Models/Order.cs
+      desc: מחלקת הנתונים של הזמנה
+    - id: Data/OrderRepository.cs
+      desc: שמירה ושליפה של הזמנות ממסד הנתונים
+    - id: Services/OrderService.cs
+      desc: הכללים העסקיים של ביצוע הזמנה
+    - id: Controllers/OrdersController.cs
+      desc: מקבל בקשות HTTP ומחזיר תשובות
+  items:
+    - label: "public class Order"
+      answer: Models/Order.cs
+      why: "מחלקת הנתונים שכל השכבות מעבירות ביניהן."
+    - label: "public Order PlaceOrder(int customerId, IReadOnlyList<CartItem> items)"
+      answer: Services/OrderService.cs
+      why: "התהליך העסקי: יוצר הזמנה מהסל, מחשב סכום ושומר דרך ה-Repository."
+    - label: "private decimal CalculateTotal(IReadOnlyList<CartItem> items)"
+      answer: Services/OrderService.cs
+      why: "מתודת עזר פרטית של ההזמנה, שמחשבת את הסכום מפריטי הסל."
+    - label: "public void Save(Order order)"
+      answer: Data/OrderRepository.cs
+      why: "כתיבה למסד היא אחריות שכבת הנתונים."
+    - label: "public Order GetById(int orderId)"
+      answer: Data/OrderRepository.cs
+      why: "שליפה לפי מזהה, בלי שום החלטה עסקית."
+    - label: "public IActionResult Checkout(CheckoutRequest request)"
+      answer: Controllers/OrdersController.cs
+      why: "`IActionResult` הוא תשובת HTTP, ולכן המתודה שייכת ל-Controller. היא קוראת לשירות ומחזירה את מספר ההזמנה."
+  explanation: "בארכיטקטורת שכבות: Controller מתרגם HTTP לקריאה לשירות, Service מכיל את הכללים, Repository מדבר עם המסד ו-Models מחזיקים נתונים. רמזים בחתימה עוזרים לשבץ: `IActionResult` מצביע על Controller, `Save` ו-`GetById` על Repository."
+
+- id: cs.software-design.architecture-assembly.002
+  type: architecture
+  difficulty: 1
+  prompt: "שבצו כל חתימה של מערכת ההשאלות בספרייה העירונית בקובץ המתאים."
+  requirement: "ספרייה עירונית: חבר ספרייה שואל ספר לפי ISBN. מותר להחזיק עד שלושה ספרים בבת אחת, ושכבת השירות מכירה את מסד הנתונים רק דרך ממשק."
+  targets:
+    - id: Models/Book.cs
+      desc: מחלקת הנתונים של ספר
+    - id: Interfaces/IBookRepository.cs
+      desc: החוזה של הגישה לנתוני ספרים והשאלות
+    - id: Data/BookRepository.cs
+      desc: מימוש הגישה לנתונים עם Entity Framework
+    - id: Services/LoanService.cs
+      desc: כללי ההשאלה
+  items:
+    - label: "public class Book"
+      answer: Models/Book.cs
+      why: "מחלקת הנתונים של ספר."
+    - label: "Book FindByIsbn(string isbn)"
+      answer: Interfaces/IBookRepository.cs
+      why: "בלי משנה גישה ובלי גוף: חבר ממשק."
+    - label: "int CountActiveLoans(int memberId)"
+      answer: Interfaces/IBookRepository.cs
+      why: "שאילתה שהשירות צריך, מוצהרת בחוזה."
+    - label: "public BookRepository(LibraryDbContext db)"
+      answer: Data/BookRepository.cs
+      why: "רק המימוש מכיר את `DbContext` של Entity Framework."
+    - label: "public Loan Borrow(int memberId, string isbn)"
+      answer: Services/LoanService.cs
+      why: "בודק את המגבלה, מוודא שהספר זמין ויוצר השאלה."
+    - label: "private const int MaxActiveLoans = 3"
+      answer: Services/LoanService.cs
+      why: "המגבלה היא כלל עסקי, ולכן הקבוע נמצא ליד הקוד שאוכף אותו."
+  explanation: "השירות תלוי ב-`IBookRepository` ולא ב-`BookRepository`, ולכן אפשר לבדוק את כלל שלושת הספרים בלי מסד נתונים. חברי ממשק נכתבים בלי משנה גישה, ומימושים ומחלקות נכתבים עם `public`."
+
+- id: cs.software-design.architecture-assembly.003
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של העברת הכספים בבנק בקובץ המתאים."
+  requirement: "בנק: לקוח מעביר כסף מחשבון לחשבון. קודם בודקים שהבקשה תקינה (סכום חיובי, שני חשבונות שונים). אחר כך מוודאים שיש מספיק יתרה בחשבון המקור, ושומרים את שני החשבונות יחד."
+  targets:
+    - id: Models/Account.cs
+      desc: חשבון בנק והכללים על היתרה שלו
+    - id: Validators/TransferRequestValidator.cs
+      desc: בדיקת תקינות של הקלט לפני שמתחילים
+    - id: Services/TransferService.cs
+      desc: ניהול ההעברה בין שני חשבונות
+    - id: Data/AccountRepository.cs
+      desc: טעינה ושמירה של חשבונות
+    - id: Controllers/TransfersController.cs
+      desc: נקודת הכניסה של בקשות HTTP
+  items:
+    - label: "public void Withdraw(decimal amount)"
+      answer: Models/Account.cs
+      why: "מתודת מופע שמשנה את היתרה של החשבון וזורקת חריגה אם אין מספיק כסף. החשבון שומר על הכללים של עצמו."
+    - label: "public void Deposit(decimal amount)"
+      answer: Models/Account.cs
+      why: "גם הפקדה משנה את המצב של החשבון עצמו."
+    - label: "public ValidationResult Validate(TransferRequest request)"
+      answer: Validators/TransferRequestValidator.cs
+      why: "בודקת את הקלט בלבד, בלי מסד נתונים: סכום חיובי וחשבונות שונים."
+    - label: "public void Transfer(int fromAccountId, int toAccountId, decimal amount)"
+      answer: Services/TransferService.cs
+      why: "מתאמת את התהליך: טוענת שני חשבונות, מושכת, מפקידה ושומרת."
+    - label: "public Account GetById(int accountId)"
+      answer: Data/AccountRepository.cs
+      why: "טעינת חשבון מהמסד."
+    - label: "public void SaveAll(params Account[] accounts)"
+      answer: Data/AccountRepository.cs
+      why: "שמירה של כמה חשבונות יחד, בפעולה אחת מול המסד."
+    - label: "[HttpPost] public IActionResult Post(TransferRequest request)"
+      answer: Controllers/TransfersController.cs
+      why: "מקבל את הבקשה, מפעיל את ה-Validator ואת השירות ומחזיר תשובת HTTP."
+  explanation: "יש כאן שלושה סוגי בדיקות, ולכל אחד מקום משלו: תקינות קלט ב-Validator, כלל היתרה בישות `Account`, ותיאום ההעברה ב-Service. ה-Repository רק טוען ושומר, וה-Controller רק מתרגם HTTP."
+
+- id: cs.software-design.architecture-assembly.004
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של אתר המתכונים (ASP.NET Core MVC) בקובץ המתאים."
+  requirement: "אתר מתכונים: דף מתכון מציג את זמן ההכנה בפורמט קריא («שעה ו-20 דקות»), מאפשר לשנות את מספר המנות כך שהכמויות מתעדכנות, ומאפשר לדרג את המתכון מ-1 עד 5."
+  targets:
+    - id: Controllers/RecipesController.cs
+      desc: מקבל בקשות HTTP ובוחר View
+    - id: Models/Recipe.cs
+      desc: ישות המתכון והחישובים על הנתונים שלה
+    - id: ViewModels/RecipeDetailsViewModel.cs
+      desc: נתונים מוכנים לתצוגה של דף המתכון
+    - id: Services/RecipeService.cs
+      desc: כללים עסקיים ושמירה
+    - id: Views/Recipes/Details.cshtml
+      desc: תבנית Razor של דף המתכון
+  items:
+    - label: "public IActionResult Details(int id)"
+      answer: Controllers/RecipesController.cs
+      why: "פעולת GET שמחזירה View."
+    - label: "[HttpPost] public IActionResult Rate(int id, int stars)"
+      answer: Controllers/RecipesController.cs
+      why: "מקבלת את הטופס ומחזירה תשובת HTTP."
+    - label: "public Recipe ScaleTo(int servings)"
+      answer: Models/Recipe.cs
+      why: "מתודת מופע שמחשבת מתכון חדש מהכמויות של המתכון עצמו."
+    - label: "public void AddRating(int recipeId, int stars)"
+      answer: Services/RecipeService.cs
+      why: "בודקת שהדירוג בין 1 ל-5, טוענת את המתכון ושומרת."
+    - label: "public string CookingTimeText { get; init; }"
+      answer: ViewModels/RecipeDetailsViewModel.cs
+      why: "טקסט מעוצב לתצוגה שייך ל-ViewModel. הישות שומרת את הזמן כנתון גולמי."
+    - label: "@model RecipeDetailsViewModel"
+      answer: Views/Recipes/Details.cshtml
+      why: "הצהרת המודל בראש תבנית Razor."
+  explanation: "ב-MVC ה-Controller מתאם בין הבקשה, השירות וה-View. חישוב שתלוי רק בנתוני המתכון יכול להיות בישות, כלל עסקי עם שמירה הולך לשירות, וטקסט לתצוגה הולך ל-ViewModel שה-View מקבל."
+
+- id: cs.software-design.architecture-assembly.005
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מנהל המשימות (Clean Architecture) בקובץ המתאים."
+  requirement: "מנהל משימות בארכיטקטורה נקייה (Clean Architecture): משתמש מסמן משימה כבוצעה. אסור לסמן משימה פעמיים, ושעת הסיום נשמרת. השכבות הפנימיות לא מכירות את EF Core ולא את ASP.NET Core."
+  targets:
+    - id: Domain/TodoItem.cs
+      desc: ישות המשימה והכללים שלה, בלי תלות בשכבה אחרת
+    - id: Application/Interfaces/ITodoRepository.cs
+      desc: הממשק שהשכבה האפליקטיבית צריכה לאחסון
+    - id: Application/Todos/CompleteTodo.cs
+      desc: "מקרה השימוש «סימון כבוצעה»: הפקודה וה-Handler שלה"
+    - id: Infrastructure/Persistence/EfTodoRepository.cs
+      desc: מימוש האחסון עם Entity Framework Core
+    - id: Api/Controllers/TodosController.cs
+      desc: נקודת הכניסה של בקשות HTTP
+  items:
+    - label: "public void MarkCompleted(DateTime completedAt)"
+      answer: Domain/TodoItem.cs
+      why: "הכלל «אסור לסמן פעמיים» שומר על המצב של הישות עצמה, ולכן הוא בשכבת ה-Domain."
+    - label: "Task<TodoItem> GetByIdAsync(Guid id, CancellationToken ct)"
+      answer: Application/Interfaces/ITodoRepository.cs
+      why: "חבר ממשק שהשכבה האפליקטיבית מגדירה, והתשתית מממשת."
+    - label: "public record CompleteTodoCommand(Guid TodoId)"
+      answer: Application/Todos/CompleteTodo.cs
+      why: "הפקודה היא הקלט של מקרה השימוש."
+    - label: "public async Task Handle(CompleteTodoCommand command, CancellationToken ct)"
+      answer: Application/Todos/CompleteTodo.cs
+      why: "ה-Handler טוען את המשימה דרך הממשק, קורא ל-`MarkCompleted` ושומר."
+    - label: "public EfTodoRepository(AppDbContext dbContext)"
+      answer: Infrastructure/Persistence/EfTodoRepository.cs
+      why: "רק שכבת התשתית מכירה את `DbContext`."
+    - label: '[HttpPost("{id}/complete")] public async Task<IActionResult> Complete(Guid id)'
+      answer: Api/Controllers/TodosController.cs
+      why: "נתיב HTTP ו-`IActionResult` שייכים לשכבת ה-Api, שרק שולחת פקודה."
+  explanation: "בארכיטקטורה נקייה התלויות מצביעות פנימה: Api ו-Infrastructure תלויות ב-Application, ו-Application תלויה ב-Domain. ה-Domain מחזיק את הכללים של הישות, ה-Application מתאמת מקרי שימוש ומגדירה ממשקים, והתשתית מממשת אותם."
+
+- id: cs.software-design.architecture-assembly.006
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של מערכת הזמנת החדרים במלון בקובץ המתאים."
+  requirement: "מלון בארכיטקטורה נקייה: אורח מזמין חדר לטווח תאריכים אם החדר פנוי, ויכול לבטל בחינם עד 48 שעות לפני ההגעה. הליבה לא מכירה SQL ולא HTTP, וה-API בנוי ב-Minimal API."
+  targets:
+    - id: Domain/Reservation.cs
+      desc: ישות ההזמנה וכללי הביטול שלה
+    - id: Application/Abstractions/IRoomCalendar.cs
+      desc: ממשק לבדיקת זמינות של חדרים
+    - id: Application/Bookings/BookRoom.cs
+      desc: "מקרה השימוש «הזמנת חדר»: הפקודה וה-Handler שלה"
+    - id: Infrastructure/SqlRoomCalendar.cs
+      desc: בדיקת זמינות מול מסד הנתונים
+    - id: Api/BookingEndpoints.cs
+      desc: מיפוי נתיבי HTTP
+  items:
+    - label: "public void Cancel(DateTime now)"
+      answer: Domain/Reservation.cs
+      why: "כלל 48 השעות תלוי רק בתאריך ההגעה של ההזמנה עצמה, ולכן הישות אוכפת אותו."
+    - label: "Task<bool> IsRoomFreeAsync(int roomId, DateOnly from, DateOnly to)"
+      answer: Application/Abstractions/IRoomCalendar.cs
+      why: "בלי משנה גישה ובלי גוף: ההצהרה בממשק."
+    - label: "public async Task<bool> IsRoomFreeAsync(int roomId, DateOnly from, DateOnly to)"
+      answer: Infrastructure/SqlRoomCalendar.cs
+      why: "אותה חתימה עם `public async`: למתודה יש גוף שמריץ שאילתה, ולכן זה המימוש בתשתית."
+    - label: "public record BookRoomCommand(int RoomId, Guid GuestId, DateOnly From, DateOnly To)"
+      answer: Application/Bookings/BookRoom.cs
+      why: "הקלט של מקרה השימוש."
+    - label: "public async Task<Guid> Handle(BookRoomCommand command, CancellationToken ct)"
+      answer: Application/Bookings/BookRoom.cs
+      why: "בודק זמינות דרך `IRoomCalendar`, יוצר `Reservation` ושומר."
+    - label: "public static void MapBookingEndpoints(this IEndpointRouteBuilder app)"
+      answer: Api/BookingEndpoints.cs
+      why: "`IEndpointRouteBuilder` הוא טיפוס של ASP.NET Core, ולכן רק שכבת ה-Api מכירה אותו."
+  explanation: "כלל התלות (Dependency Rule): הליבה (Domain ו-Application) לא מכירה אף טיפוס של SQL או HTTP. היא מגדירה את `IRoomCalendar`, והתשתית מממשת אותו. שתי חתימות כמעט זהות מבדילות בין הצהרה בממשק (בלי `public async`) לבין המימוש."
+
+- id: cs.software-design.architecture-assembly.007
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של אפליקציית הצ'אט (Vertical Slices) בקובץ של הפיצ'ר המתאים."
+  requirement: "אפליקציית צ'אט שמאורגנת לפי פיצ'רים (Vertical Slices) ולא לפי שכבות: כל פעולה של המשתמש נמצאת בקובץ אחד עם הבקשה והלוגיקה שלה. משתמש יכול לשלוח הודעה לחדר, ליצור חדר ולחסום משתמש אחר."
+  targets:
+    - id: Features/Messages/SendMessage.cs
+      desc: שליחת הודעה לחדר
+    - id: Features/Rooms/CreateRoom.cs
+      desc: יצירת חדר צ'אט
+    - id: Features/Users/BlockUser.cs
+      desc: חסימת משתמש
+    - id: Shared/ChatDbContext.cs
+      desc: גישה למסד הנתונים, משותפת לכל הפיצ'רים
+  items:
+    - label: "public record SendMessageRequest(Guid RoomId, string Text)"
+      answer: Features/Messages/SendMessage.cs
+      why: "הבקשה של פיצ'ר השליחה נמצאת באותו קובץ עם הלוגיקה שלו."
+    - label: "public async Task<MessageDto> Handle(SendMessageRequest request, Guid senderId)"
+      answer: Features/Messages/SendMessage.cs
+      why: "מקבל `SendMessageRequest`, ולכן הוא ה-Handler של שליחת הודעה."
+    - label: "public record CreateRoomRequest(string Name, bool IsPrivate)"
+      answer: Features/Rooms/CreateRoom.cs
+      why: "הבקשה של יצירת חדר."
+    - label: "public async Task<RoomDto> Handle(CreateRoomRequest request, Guid ownerId)"
+      answer: Features/Rooms/CreateRoom.cs
+      why: "מקבל `CreateRoomRequest` ומחזיר את החדר שנוצר."
+    - label: "public async Task Handle(BlockUserRequest request, Guid blockerId)"
+      answer: Features/Users/BlockUser.cs
+      why: "מקבל `BlockUserRequest`."
+    - label: "public DbSet<Message> Messages { get; set; }"
+      answer: Shared/ChatDbContext.cs
+      why: "טבלת ההודעות היא חלק מה-`DbContext` המשותף שכל הפיצ'רים משתמשים בו."
+  explanation: "בארגון לפי פיצ'רים (Vertical Slices) שינוי בפעולה אחת נוגע בקובץ אחד, במקום ב-Controller, ב-Service וב-Repository נפרדים. כל המתודות נקראות `Handle`, וטיפוס הבקשה הוא שקובע לאיזה פיצ'ר כל אחת שייכת. רק תשתית שכולם צריכים, כמו ה-`DbContext`, נמצאת בתיקייה משותפת."
+
+- id: cs.software-design.architecture-assembly.008
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת הרישום לקורסים, שמבוססת על אירועים, בקובץ המתאים."
+  requirement: "פלטפורמת קורסים: אחרי שסטודנט נרשם לקורס, שירות הרישום מפרסם אירוע (Event). מטפלים נפרדים מגיבים לאירוע: אחד שולח מייל פתיחה ואחד פותח גישה לשיעורים. שירות הרישום לא מכיר את המטפלים."
+  targets:
+    - id: Events/StudentEnrolled.cs
+      desc: "נתוני האירוע «סטודנט נרשם לקורס»"
+    - id: Events/IEventHandler.cs
+      desc: "החוזה הגנרי של מטפל באירוע, `IEventHandler<TEvent>`"
+    - id: Enrollment/EnrollmentService.cs
+      desc: רישום לקורס ופרסום האירוע
+    - id: Handlers/SendWelcomeEmailHandler.cs
+      desc: שולח מייל פתיחה
+    - id: Handlers/GrantCourseAccessHandler.cs
+      desc: פותח לסטודנט גישה לשיעורים
+  items:
+    - label: "public record StudentEnrolled(int StudentId, int CourseId, DateTime EnrolledAt)"
+      answer: Events/StudentEnrolled.cs
+      why: "האירוע הוא נתונים בלבד: מה קרה ומתי."
+    - label: "Task HandleAsync(TEvent domainEvent)"
+      answer: Events/IEventHandler.cs
+      why: "חבר ממשק גנרי (בלי משנה גישה ובלי גוף) שכל מטפל מממש."
+    - label: "public async Task EnrollAsync(int studentId, int courseId)"
+      answer: Enrollment/EnrollmentService.cs
+      why: "שומר את הרישום ומפרסם `StudentEnrolled`, בלי לדעת מי יטפל בו."
+    - label: "private string BuildWelcomeText(string studentName, string courseTitle)"
+      answer: Handlers/SendWelcomeEmailHandler.cs
+      why: "ניסוח המייל הוא פרט של מטפל המייל בלבד."
+    - label: "private Task UnlockLessonsAsync(int studentId, int courseId)"
+      answer: Handlers/GrantCourseAccessHandler.cs
+      why: "פתיחת השיעורים היא התגובה של מטפל הגישה."
+  explanation: "באירועים (Events) מי שמפרסם לא מכיר את מי שמגיב. כל מטפל מממש `IEventHandler<StudentEnrolled>`, ולכן תגובה חדשה, למשל עדכון סטטיסטיקות, היא מחלקה חדשה בלי שינוי ב-`EnrollmentService`."
+
+- id: cs.software-design.architecture-assembly.009
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של רישום מטופל חדש במרפאה בקובץ המתאים."
+  requirement: "רישום מטופל חדש: בודקים שתעודת הזהות תקינה (כולל ספרת ביקורת), שמספר הטלפון בפורמט נכון ושהמטופל לא רשום כבר במערכת. בקשה לא תקינה מחזירה למשתמש את רשימת השגיאות."
+  targets:
+    - id: Controllers/PatientsController.cs
+      desc: נקודת הכניסה של בקשות HTTP
+    - id: Validators/RegisterPatientValidator.cs
+      desc: בדיקת תקינות של שדות הבקשה, בלי מסד נתונים
+    - id: Validators/ValidationResult.cs
+      desc: "תוצאת בדיקה: תקין, או רשימת שגיאות"
+    - id: Services/PatientService.cs
+      desc: "רישום מטופל: מניעת כפילות ושמירה"
+    - id: Models/Patient.cs
+      desc: ישות המטופל
+  items:
+    - label: "public ValidationResult Validate(RegisterPatientRequest request)"
+      answer: Validators/RegisterPatientValidator.cs
+      why: "מקבלת את הבקשה ומחזירה תוצאת בדיקה: זו המתודה הראשית של ה-Validator."
+    - label: "private static bool HasValidCheckDigit(string idNumber)"
+      answer: Validators/RegisterPatientValidator.cs
+      why: "חישוב ספרת ביקורת הוא בדיקת פורמט של שדה, בלי מסד נתונים."
+    - label: "public IReadOnlyList<string> Errors { get; }"
+      answer: Validators/ValidationResult.cs
+      why: "רשימת השגיאות היא התוכן של תוצאת הבדיקה."
+    - label: "public bool IsValid => Errors.Count == 0"
+      answer: Validators/ValidationResult.cs
+      why: "מאפיין שמחושב מ-`Errors`, ולכן הוא באותה מחלקה."
+    - label: "public Patient Register(RegisterPatientRequest request)"
+      answer: Services/PatientService.cs
+      why: "מחזירה `Patient`: בודקת שהמטופל לא קיים (דורש מסד נתונים) ושומרת."
+    - label: "[HttpPost] public IActionResult Register(RegisterPatientRequest request)"
+      answer: Controllers/PatientsController.cs
+      why: "אותו שם, אבל מחזירה `IActionResult`: מפעילה את ה-Validator, ואם יש שגיאות מחזירה אותן ללקוח."
+    - label: "public class Patient"
+      answer: Models/Patient.cs
+      why: "הישות עצמה."
+  explanation: "בדיקת קלט (פורמט, ספרת ביקורת) לא צריכה מסד נתונים, ולכן היא ב-Validator נפרד שקל לבדוק. בדיקת כפילות צריכה את המסד, ולכן היא בשירות. שתי מתודות `Register` נבדלות בטיפוס ההחזרה: `IActionResult` ל-Controller, ו-`Patient` לשירות."
+
+- id: cs.software-design.architecture-assembly.010
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של עגלת הקניות ושל הבדיקות שלה בקובץ המתאים."
+  requirement: "עגלת קניות: אפשר להוסיף מוצר (הוספה חוזרת מגדילה את הכמות), לחשב סכום, ולהחיל קופון הנחה שיש לו תאריך תפוגה. לכל מחלקה יש קובץ בדיקות משלה, ובבדיקות משתמשים בקטלוג מוצרים מדומה."
+  targets:
+    - id: Services/ShoppingCart.cs
+      desc: "העגלה: פריטים, כמויות וסכום"
+    - id: Services/DiscountCalculator.cs
+      desc: חישוב הנחה לפי קופון
+    - id: Tests/ShoppingCartTests.cs
+      desc: בדיקות היחידה של העגלה
+    - id: Tests/DiscountCalculatorTests.cs
+      desc: בדיקות היחידה של חישוב ההנחה
+    - id: Tests/Fakes/FakeProductCatalog.cs
+      desc: קטלוג מוצרים מדומה לבדיקות
+  items:
+    - label: "public void AddItem(int productId, int quantity)"
+      answer: Services/ShoppingCart.cs
+      why: "פעולה על העגלה."
+    - label: "public decimal Total()"
+      answer: Services/ShoppingCart.cs
+      why: "סכום העגלה מחושב מהפריטים שבה."
+    - label: "public decimal Calculate(decimal subtotal, Coupon coupon, DateOnly today)"
+      answer: Services/DiscountCalculator.cs
+      why: "חישוב ההנחה מקבל את התאריך כפרמטר, כדי שאפשר יהיה לבדוק קופון שפג תוקפו."
+    - label: "[Fact] public void AddItem_SameProductTwice_IncreasesQuantity()"
+      answer: Tests/ShoppingCartTests.cs
+      why: "בודקת את `AddItem` של העגלה."
+    - label: "[Fact] public void Total_EmptyCart_ReturnsZero()"
+      answer: Tests/ShoppingCartTests.cs
+      why: "בודקת את `Total` של העגלה."
+    - label: "[Fact] public void Calculate_ExpiredCoupon_ReturnsZero()"
+      answer: Tests/DiscountCalculatorTests.cs
+      why: "בודקת את `Calculate` של מחשבון ההנחה."
+    - label: "public FakeProductCatalog(params Product[] products)"
+      answer: Tests/Fakes/FakeProductCatalog.cs
+      why: "הבנאי של הקטלוג המדומה מקבל את המוצרים שהבדיקה צריכה."
+  explanation: "מתודות בדיקה מסומנות ב-`[Fact]`, ושמן בתבנית מתודה_מצב_תוצאה אומר בדיוק איזו מתודה הן בודקות, ולכן גם לאיזה קובץ בדיקות הן שייכות. מימושים מדומים (Fakes) נמצאים בפרויקט הבדיקות, לא בקוד האפליקציה."
+
+- id: cs.software-design.architecture-assembly.011
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של החניון החכם (Ports and Adapters) בקובץ המתאים."
+  requirement: "חניון חכם בארכיטקטורת Ports and Adapters: מצלמה בשער מזהה את מספר הרכב, וביציאה הליבה מחשבת תשלום לפי זמן החניה. הליבה מגדירה פורטים (ממשקים) ולא יודעת איזו מצלמה או איזה מסד נתונים מחוברים אליה."
+  targets:
+    - id: Core/Ports/IPlateRecognizer.cs
+      desc: "פורט: זיהוי מספר רכב מתמונה"
+    - id: Core/Ports/IParkingSessionStore.cs
+      desc: "פורט: שמירה ושליפה של חניות"
+    - id: Core/ParkingService.cs
+      desc: "הליבה: כניסה, יציאה וחישוב תשלום"
+    - id: Adapters/CameraPlateRecognizer.cs
+      desc: אדפטר למצלמה של יצרן מסוים
+    - id: Adapters/PostgresSessionStore.cs
+      desc: אדפטר למסד PostgreSQL
+  items:
+    - label: "string Recognize(byte[] image)"
+      answer: Core/Ports/IPlateRecognizer.cs
+      why: "חבר ממשק: מה הליבה צריכה, בלי לדעת איך זה נעשה."
+    - label: "ParkingSession FindOpenSession(string plateNumber)"
+      answer: Core/Ports/IParkingSessionStore.cs
+      why: "חבר ממשק לשליפת החניה הפתוחה של רכב."
+    - label: "void Save(ParkingSession session)"
+      answer: Core/Ports/IParkingSessionStore.cs
+      why: "חבר ממשק לשמירה."
+    - label: "public decimal HandleExit(byte[] gateImage, DateTime exitTime)"
+      answer: Core/ParkingService.cs
+      why: "תהליך היציאה: מזהה רכב דרך הפורט, מוצא את החניה, מחשב תשלום ושומר."
+    - label: "private static decimal CalculateFee(TimeSpan duration)"
+      answer: Core/ParkingService.cs
+      why: "תעריף החניה הוא כלל עסקי של הליבה."
+    - label: "private byte[] CropPlateArea(byte[] image)"
+      answer: Adapters/CameraPlateRecognizer.cs
+      why: "עיבוד התמונה של מצלמה מסוימת הוא פרט טכני של האדפטר."
+    - label: "private NpgsqlCommand BuildInsertCommand(ParkingSession session)"
+      answer: Adapters/PostgresSessionStore.cs
+      why: "`NpgsqlCommand` הוא טיפוס של ספריית PostgreSQL, ולכן רק האדפטר מכיר אותו."
+  explanation: "בארכיטקטורת Ports and Adapters (נקראת גם Hexagonal) הליבה מגדירה פורטים, ואדפטרים מחברים אליהם טכנולוגיות ספציפיות. כל טיפוס חיצוני, כמו `NpgsqlCommand`, נשאר באדפטר. החלפת מצלמה או מסד נתונים היא אדפטר חדש, והליבה לא משתנה."
+
+- id: cs.software-design.architecture-assembly.012
+  type: architecture
+  difficulty: 2
+  prompt: "שבצו כל חתימה של מערכת המלאי במחסן בקובץ המתאים."
+  requirement: "מחסן: מזמינים שריון של כמות מפריט, ואסור שהכמות הזמינה תרד מתחת לאפס. מנהל המחסן מקבל דוח של פריטים שהמלאי שלהם נמוך מסף מסוים. ה-API מחזיר ללקוח רק את קוד הפריט (SKU) ואת הכמות הזמינה."
+  targets:
+    - id: Models/StockItem.cs
+      desc: פריט מלאי והכללים על הכמות שלו
+    - id: Dtos/StockLevelDto.cs
+      desc: מבנה הנתונים שחוזר ללקוח של ה-API
+    - id: Data/StockRepository.cs
+      desc: "טעינה ושמירה של ישויות `StockItem`"
+    - id: Services/InventoryService.cs
+      desc: פעולות מלאי ודוחות
+    - id: Controllers/StockController.cs
+      desc: נקודת הכניסה של בקשות HTTP
+  items:
+    - label: "public void Reserve(int quantity)"
+      answer: Models/StockItem.cs
+      why: "מתודת מופע שמקטינה את הכמות של הפריט עצמו ואוכפת שהיא לא תרד מתחת לאפס."
+    - label: "public void ReserveStock(string sku, int quantity)"
+      answer: Services/InventoryService.cs
+      why: "מקבלת קוד פריט: טוענת אותו מה-Repository, קוראת ל-`Reserve` ושומרת."
+    - label: "public record StockLevelDto(string Sku, int Available)"
+      answer: Dtos/StockLevelDto.cs
+      why: "רק השדות שה-API חושף, בלי שאר הנתונים של הישות."
+    - label: "public StockItem FindBySku(string sku)"
+      answer: Data/StockRepository.cs
+      why: "שליפה מהמסד לפי מפתח."
+    - label: "public void Update(StockItem item)"
+      answer: Data/StockRepository.cs
+      why: "שמירת השינוי במסד."
+    - label: "public IReadOnlyList<StockLevelDto> GetLowStockReport(int threshold)"
+      answer: Services/InventoryService.cs
+      why: "מחזירה DTO שמיועד ל-API, וה-Repository מחזיר רק ישויות. השירות מחליט אילו פריטים נמוכים מהסף וממיר אותם ל-DTO."
+    - label: "public ActionResult<StockLevelDto> GetLevel(string sku)"
+      answer: Controllers/StockController.cs
+      why: "`ActionResult<T>` הוא תשובת HTTP, ולכן המתודה שייכת ל-Controller."
+  explanation: "שתי מתודות שריון נבדלות בחתימה: `Reserve(int)` פועלת על פריט שכבר נטען ושומרת על הכלל שלו, ו-`ReserveStock(string, int)` מתאמת טעינה, שינוי ושמירה. DTO מגדיר את מה שיוצא החוצה, כך ששינוי פנימי בישות לא שובר את הלקוחות של ה-API."
+
+- id: cs.software-design.architecture-assembly.013
+  type: architecture
+  difficulty: 3
+  prompt: "שבצו כל חתימה של מערכת הציונים בבית הספר בקובץ המתאים."
+  requirement: "בית ספר: מורה מזין ציון בין 0 ל-100. אם הציון נכשל (מתחת ל-55), נשלחת הודעה להורים. בסוף המחצית מחושב ממוצע משוקלל של התלמיד בכל מקצוע. שירות הציונים מכיר את ערוץ ההודעות רק דרך ממשק."
+  targets:
+    - id: Models/Grade.cs
+      desc: "ישות הציון: הנתונים שלו והכללים שתלויים רק בו"
+    - id: Interfaces/IParentNotifier.cs
+      desc: החוזה לשליחת הודעה להורים
+    - id: Notifications/EmailParentNotifier.cs
+      desc: שליחת ההודעה במייל
+    - id: Data/GradeRepository.cs
+      desc: שמירה ושליפה של ציונים
+    - id: Services/GradeService.cs
+      desc: הכללים העסקיים של ציונים
+    - id: Controllers/GradesController.cs
+      desc: נקודת הכניסה של המורה
+  items:
+    - label: "public bool IsFailing => Score < 55"
+      answer: Models/Grade.cs
+      why: "מאפיין מחושב שקורא ל-`Score` של המופע, ולכן הוא מתקמפל רק בתוך `Grade`. הסף 55 הוא כלל קבוע של הציון עצמו, ולא צריך לשם כך מסד נתונים או ערוץ הודעות."
+    - label: "public void RecordGrade(int studentId, int examId, int score)"
+      answer: Services/GradeService.cs
+      why: "יוצרת `Grade`, שומרת דרך ה-Repository, ואם `IsFailing` קוראת ל-`IParentNotifier`. זה תיאום בין כמה רכיבים, ולכן הוא בשירות."
+    - label: "public double WeightedAverage(int studentId, string subject)"
+      answer: Services/GradeService.cs
+      why: "חישוב עסקי על ציונים שנשלפו מה-Repository."
+    - label: "void NotifyFailure(int studentId, string subject, int score)"
+      answer: Interfaces/IParentNotifier.cs
+      why: "חבר ממשק: השירות יודע רק שאפשר להודיע, לא איך."
+    - label: "private MailMessage BuildMessage(string parentEmail, string text)"
+      answer: Notifications/EmailParentNotifier.cs
+      why: "`MailMessage` הוא פרט של ערוץ המייל בלבד."
+    - label: "public IReadOnlyList<Grade> GetByStudent(int studentId, string subject)"
+      answer: Data/GradeRepository.cs
+      why: "שליפה מהמסד."
+    - label: "public void Add(Grade grade)"
+      answer: Data/GradeRepository.cs
+      why: "שמירה במסד."
+    - label: "[HttpPost] public IActionResult Submit(GradeInput input)"
+      answer: Controllers/GradesController.cs
+      why: "מקבל את הטופס של המורה ומחזיר תשובת HTTP."
+  explanation: "השירות מתאם שלושה דברים: הכלל של הציון (דרך `Grade.IsFailing`), השמירה (דרך ה-Repository) וההודעה (דרך `IParentNotifier`). כל פרט טכני, כמו מייל ומסד נתונים, נמצא מאחורי מחלקה משלו, ולכן מעבר מהודעות במייל ל-SMS הוא מימוש חדש של הממשק בלבד."
+
+- id: cs.software-design.architecture-assembly.014
+  type: architecture
+  difficulty: 1
+  prompt: "שבצו כל חתימה של אפליקציית מזג האוויר בקובץ המתאים."
+  requirement: "אפליקציית מזג אוויר: המשתמש מבקש תחזית לעיר ומקבל גם המלצה אם לקחת מטרייה. הנתונים מגיעים כ-JSON משירות חיצוני דרך HTTP."
+  targets:
+    - id: Clients/WeatherApiClient.cs
+      desc: קריאות HTTP לשירות מזג האוויר החיצוני
+    - id: Services/ForecastService.cs
+      desc: "הלוגיקה: התחזית וההמלצות"
+    - id: Models/DailyForecast.cs
+      desc: נתוני התחזית ליום אחד
+    - id: Controllers/ForecastController.cs
+      desc: נקודת הכניסה של בקשות HTTP מהאפליקציה
+  items:
+    - label: "public async Task<string> FetchForecastJsonAsync(string city, int days)"
+      answer: Clients/WeatherApiClient.cs
+      why: "מחזירה JSON גולמי מהשירות החיצוני: זו קריאת HTTP בלבד."
+    - label: "public int RainChancePercent { get; init; }"
+      answer: Models/DailyForecast.cs
+      why: "נתון של תחזית יומית."
+    - label: "public bool ShouldTakeUmbrella(DailyForecast forecast)"
+      answer: Services/ForecastService.cs
+      why: "ההמלצה היא כלל עסקי, למשל סיכוי לגשם מעל 40%."
+    - label: '[HttpGet("{city}")] public async Task<IActionResult> Get(string city)'
+      answer: Controllers/ForecastController.cs
+      why: "נתיב HTTP ו-`IActionResult` שייכים ל-Controller."
+    - label: "public class DailyForecast"
+      answer: Models/DailyForecast.cs
+      why: "מחלקת הנתונים עצמה."
+  explanation: "לקוח HTTP (Client) עוטף את השירות החיצוני ויודע רק לשלוח בקשות ולקבל תשובות. השירות מחליט מה עושים עם הנתונים, וה-Controller מחזיר את התוצאה לאפליקציה. כך שינוי ספק מזג האוויר נוגע רק ב-Client."
+
+- id: cs.software-design.architecture-assembly.015
+  type: single
+  difficulty: 1
+  prompt: "איזו מתודה לא שייכת למחלקה `OrderRepository`?"
+  code: |
+    public class Order
+    {
+        public int Id { get; set; }
+        public string CustomerEmail { get; set; }
+    }
+
+    public class OrderRepository
+    {
+        private readonly Dictionary<int, Order> _orders = new();
+
+        public void Add(Order order) => _orders[order.Id] = order;
+
+        public Order FindById(int id) =>
+            _orders.TryGetValue(id, out var order) ? order : null;
+
+        public void SendConfirmationEmail(Order order) =>
+            Console.WriteLine($"Sending confirmation to {order.CustomerEmail}");
+    }
+  options:
+    - "`Add(Order order)`"
+    - "`FindById(int id)`"
+    - "`SendConfirmationEmail(Order order)`"
+    - "השדה `_orders`"
+  answer: 2
+  explanation: "Repository אחראי רק על שמירה ושליפה. שליחת מייל היא תגובה עסקית להזמנה, ולכן היא צריכה להיות ב-Service או במחלקה נפרדת כמו `OrderEmailSender`. כשמשבצים חתימות, שואלים על כל אחת «מה האחריות שלה?» ולא רק «על איזה אובייקט היא עובדת?»."
+  optionExplanations:
+    "0": "הוספה לאחסון היא בדיוק תפקיד ה-Repository."
+    "1": "שליפה לפי מזהה היא תפקיד ה-Repository."
+    "3": "השדה הוא האחסון עצמו."
+
+- id: cs.software-design.architecture-assembly.016
+  type: truefalse
+  difficulty: 1
+  prompt: "בארכיטקטורת שכבות, מתודה שמחזירה `IActionResult` שייכת לשכבת ה-Services."
+  answer: false
+  explanation: "`IActionResult` מייצג תשובת HTTP (סטטוס, View או JSON), ולכן מתודה שמחזירה אותו שייכת ל-Controller. מתודה של Service מחזירה נתונים עסקיים, כמו `Order` או `decimal`, כדי שאפשר יהיה להשתמש בה גם בלי HTTP."

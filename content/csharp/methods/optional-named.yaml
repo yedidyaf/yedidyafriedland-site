@@ -1,0 +1,306 @@
+- id: cs.methods.optional-named.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Greet("Dana");
+    Greet("Yossi", "Hi");
+
+    static void Greet(string name, string greeting = "Hello")
+    {
+        Console.WriteLine($"{greeting}, {name}!");
+    }
+  options:
+    - "Hello, Dana!\nHi, Yossi!"
+    - "Hello, Dana!\nHello, Yossi!"
+    - "Dana, Hello!\nYossi, Hi!"
+    - "שגיאת קומפילציה"
+  answer: 0
+  explanation: "`greeting` הוא פרמטר אופציונלי (Optional parameter) עם ערך ברירת מחדל `\"Hello\"`. כשלא מעבירים אותו, הקומפיילר משלים את ברירת המחדל. כשמעבירים ערך, הוא מחליף אותה."
+  optionExplanations:
+    "1": "ברירת המחדל משמשת רק כשלא מעבירים ארגומנט. בקריאה השנייה הועבר `\"Hi\"`."
+    "2": "הסדר בהדפסה נקבע במחרוזת `$\"{greeting}, {name}!\"`, לא בסדר הפרמטרים."
+    "3": "מותר לקרוא בלי הפרמטר האופציונלי, כי יש לו ערך ברירת מחדל."
+
+- id: cs.methods.optional-named.002
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Describe(age: 30, name: "Noa");
+
+    static void Describe(string name, int age)
+    {
+        Console.WriteLine($"{name} is {age}");
+    }
+  options: ["Noa is 30", "30 is Noa", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "ארגומנטים שמיים (Named arguments) מתאימים לפרמטר לפי השם ולא לפי המיקום. לכן `age: 30` מגיע ל-`age` גם כשהוא כתוב ראשון."
+  optionExplanations:
+    "1": "עם שמות, המיקום בקריאה לא קובע לאיזה פרמטר הולך הערך."
+    "2": "כשכל הארגומנטים מועברים לפי שם, מותר לכתוב אותם בכל סדר."
+
+- id: cs.methods.optional-named.003
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    Box(5, , 2);
+
+    static void Box(int width, int height = 1, int depth = 1)
+    {
+        Console.WriteLine($"{width}x{height}x{depth}");
+    }
+  options: ["שגיאת קומפילציה", "5x1x2", "5x0x2"]
+  answer: 0
+  explanation: "ב-C# אי אפשר לדלג על ארגומנט באמצע עם פסיק ריק. כדי להשאיר את `height` עם ברירת המחדל ולהעביר רק את `depth`, כותבים ארגומנט שמי: `Box(5, depth: 2)`."
+  optionExplanations:
+    "1": "זו התוצאה של `Box(5, depth: 2)`. פסיק ריק אינו תחביר חוקי."
+    "2": "אין ערך אפס אוטומטי לארגומנט חסר. הקוד לא מתקמפל."
+
+- id: cs.methods.optional-named.004
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    Order("pizza");
+
+    static void Order(int quantity = 1, string item)
+    {
+        Console.WriteLine($"{quantity} {item}");
+    }
+  options: ["שגיאת קומפילציה", "1 pizza", "0 pizza"]
+  answer: 0
+  explanation: "פרמטרים אופציונליים חייבים לבוא אחרי כל הפרמטרים הנדרשים. כאן `quantity` האופציונלי מופיע לפני `item` הנדרש, ולכן ההגדרה עצמה היא שגיאת קומפילציה. התיקון: `Order(string item, int quantity = 1)`."
+  optionExplanations:
+    "1": "הקומפיילר לא מדלג על פרמטר אופציונלי כדי להתאים ארגומנט לפרמטר שאחריו. ההגדרה פסולה מראש."
+    "2": "אין כאן ערך ברירת מחדל של אפס. הקוד לא מתקמפל."
+
+- id: cs.methods.optional-named.005
+  type: single
+  difficulty: 2
+  prompt: איזו הגדרה מתקמפלת?
+  options:
+    - "`static void Log(string msg, int level = 1)`"
+    - "`static void Log(string msg, DateTime time = DateTime.Now)`"
+    - "`static void Log(string msg, List<string> tags = new List<string>())`"
+    - "`static void Log(string msg = \"\", int level)`"
+  answer: 0
+  explanation: "ערך ברירת מחדל חייב להיות קבוע שידוע בזמן קומפילציה (Compile-time constant), כמו מספר, מחרוזת, `null` או `default`, והפרמטר האופציונלי חייב לבוא אחרי הנדרשים. כשצריך ברירת מחדל דינמית, משתמשים ב-`null` ובודקים אותו בתוך המתודה."
+  optionExplanations:
+    "1": "`DateTime.Now` מחושב בזמן ריצה, ולכן הוא לא יכול להיות ערך ברירת מחדל."
+    "2": "יצירת אובייקט עם `new` עבור טיפוס הפניה אינה קבוע של זמן קומפילציה."
+    "3": "פרמטר אופציונלי לא יכול לבוא לפני פרמטר נדרש."
+
+- id: cs.methods.optional-named.006
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Show(b: Next("B"), a: Next("A"));
+
+    static string Next(string s)
+    {
+        Console.Write(s);
+        return s;
+    }
+
+    static void Show(string a, string b) => Console.WriteLine($"-{a}{b}");
+  options: ["BA-AB", "AB-AB", "BA-BA", "AB-BA"]
+  answer: 0
+  explanation: "הארגומנטים מחושבים לפי הסדר שבו הם כתובים בקריאה, משמאל לימין, ולא לפי סדר הפרמטרים במתודה. לכן `Next(\"B\")` רץ ראשון ומדפיס `B`, ואחריו `A`. בתוך `Show` כל ערך הגיע לפרמטר שלו לפי השם: `a` הוא `A` ו-`b` הוא `B`."
+  optionExplanations:
+    "1": "סדר החישוב הוא סדר הכתיבה בקריאה. `b:` כתוב ראשון, ולכן `B` מודפס ראשון."
+    "2": "השמות קובעים את השיוך: `a` קיבל את `\"A\"`, ולכן בתוך `Show` מודפס `AB`."
+    "3": "גם סדר החישוב וגם השיוך הפוכים כאן."
+
+- id: cs.methods.optional-named.007
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Calc.Run(5);
+
+    static class Calc
+    {
+        public static void Run(int x) => Console.WriteLine("A");
+        public static void Run(int x, int y = 0) => Console.WriteLine("B");
+    }
+  options: ["A", "B", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "שתי הגרסאות מתאימות לקריאה `Run(5)`. כלל ההכרעה מעדיף גרסה שכל הפרמטרים שלה קיבלו ארגומנט על פני גרסה שצריך להשלים בה ערך ברירת מחדל. לכן נבחרת `Run(int x)`."
+  optionExplanations:
+    "1": "גרסה שדורשת השלמה של ברירת מחדל מפסידה לגרסה שמתאימה בלי השלמה."
+    "2": "יש כלל הכרעה מפורש למצב הזה, ולכן הקריאה אינה דו־משמעית."
+
+- id: cs.methods.optional-named.008
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את המחיר של 3 יחידות במחיר 50 עם הנחה של 10%, כלומר `135`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(Price(50, 10, 3));
+
+    static int Price(int unitPrice, int quantity = 1, int discountPercent = 0)
+    {
+        int total = unitPrice * quantity;
+        return total - total * discountPercent / 100;
+    }
+  answer: 1
+  explanation: "הארגומנטים מועברים לפי מיקום, ולכן `10` הולך ל-`quantity` ו-`3` ל-`discountPercent`, ומודפס `485`. כשיש כמה פרמטרים מאותו טיפוס, ארגומנטים שמיים מונעים בלבול כזה: `Price(50, quantity: 3, discountPercent: 10)`."
+  fixed: |
+    Console.WriteLine(Price(50, quantity: 3, discountPercent: 10));
+
+    static int Price(int unitPrice, int quantity = 1, int discountPercent = 0)
+    {
+        int total = unitPrice * quantity;
+        return total - total * discountPercent / 100;
+    }
+
+- id: cs.methods.optional-named.009
+  type: bug
+  difficulty: 1
+  prompt: "`Power(5)` אמורה להחזיר את הריבוע של 5, כלומר `25`, ו-`Power(2, 10)` אמורה להחזיר `1024`. באיזו שורה הבאג?"
+  code: |
+    Console.WriteLine(Power(5));
+    Console.WriteLine(Power(2, 10));
+
+    static int Power(int baseValue, int exponent = 1)
+    {
+        int result = 1;
+        for (int i = 0; i < exponent; i++)
+            result *= baseValue;
+        return result;
+    }
+  answer: 4
+  explanation: "הלולאה נכונה, אבל ערך ברירת המחדל של `exponent` הוא 1, ולכן `Power(5)` מחזירה `5`. ברירת המחדל צריכה להתאים לשימוש הנפוץ שהמתודה מבטיחה: `int exponent = 2`."
+  fixed: |
+    Console.WriteLine(Power(5));
+    Console.WriteLine(Power(2, 10));
+
+    static int Power(int baseValue, int exponent = 2)
+    {
+        int result = 1;
+        for (int i = 0; i < exponent; i++)
+            result *= baseValue;
+        return result;
+    }
+
+- id: cs.methods.optional-named.010
+  type: single
+  difficulty: 3
+  prompt: "נתונה המתודה `static void Book(string guest, int nights, bool breakfast = false)`. איזו קריאה לא תתקמפל?"
+  options:
+    - "`Book(nights: 2, \"Dana\")`"
+    - "`Book(\"Dana\", nights: 2)`"
+    - "`Book(guest: \"Dana\", 2)`"
+    - "`Book(breakfast: true, nights: 2, guest: \"Dana\")`"
+  answer: 0
+  explanation: "מותר לערבב ארגומנטים לפי מיקום ולפי שם, אבל ארגומנט לפי מיקום שבא אחרי ארגומנט שמי מותר רק אם הארגומנט השמי נמצא במקום הנכון שלו. ב-`Book(nights: 2, \"Dana\")` הארגומנט `nights` נמצא במקום הראשון, שהוא של `guest`, ולכן הקומפיילר לא יודע לאן שייך `\"Dana\"`."
+  optionExplanations:
+    "1": "ארגומנט לפי מיקום ואחריו ארגומנט שמי הוא השילוב הרגיל והחוקי."
+    "2": "`guest:` נמצא במקום הראשון, שהוא המקום שלו, ולכן מותר להמשיך אחריו לפי מיקום."
+    "3": "כשכל הארגומנטים שמיים, הסדר חופשי, ומותר גם להעביר ערך לפרמטר אופציונלי."
+
+- id: cs.methods.optional-named.011
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Print(1);
+    Print(1, 2);
+    Print(1, c: 3);
+
+    static void Print(int a, int b = 10, int c = 20) => Console.WriteLine(a + b + c);
+  options: ["31\n23\n14", "31\n23\n24", "1\n3\n4", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "בכל קריאה, פרמטר שלא קיבל ארגומנט מקבל את ברירת המחדל שלו. בקריאה האחרונה `c: 3` מדלג על `b`, ולכן `b` נשאר 10: 1 + 10 + 3 = 14."
+  optionExplanations:
+    "1": "`24` מניח ש-`3` הגיע ל-`b`. הארגומנט השמי `c:` מגיע רק ל-`c`, ו-`b` מקבל את ברירת המחדל."
+    "2": "פרמטרים שלא הועברו מקבלים את ערך ברירת המחדל שלהם, לא אפס."
+    "3": "מותר לדלג על פרמטר אופציונלי באמצע בעזרת ארגומנט שמי."
+
+- id: cs.methods.optional-named.012
+  type: truefalse
+  difficulty: 1
+  prompt: "ארגומנטים שמיים (Named arguments) חייבים להופיע בקריאה באותו סדר שבו הפרמטרים מוגדרים במתודה."
+  answer: false
+  explanation: "ארגומנט שמי מתאים לפרמטר לפי השם, ולכן כשכל הארגומנטים שמיים, הסדר חופשי ולא משנה את השיוך. `Describe(age: 30, name: \"Noa\")` ו-`Describe(name: \"Noa\", age: 30)` מעבירות את אותם ערכים."
+
+- id: cs.methods.optional-named.013
+  type: truefalse
+  difficulty: 3
+  prompt: "ערך ברירת המחדל של פרמטר אופציונלי נכתב לתוך הקוד של הקורא בזמן הקומפילציה. לכן אם ספרייה משנה את ברירת המחדל, קוד שקומפל מול הגרסה הישנה ימשיך להעביר את הערך הישן עד שיקומפל מחדש."
+  answer: true
+  explanation: "כשהקורא לא מעביר ארגומנט, הקומפיילר משלים את ערך ברירת המחדל במקום הקריאה (Call site), כאילו נכתב שם במפורש. לכן שינוי ברירת מחדל בספרייה ציבורית הוא שינוי שעלול לשבור או להפתיע קוד קיים. זו גם הסיבה שהערך חייב להיות קבוע של זמן קומפילציה."
+
+- id: cs.methods.optional-named.014
+  type: single
+  difficulty: 1
+  prompt: "נתונה המתודה `static void Greet(string name, string greeting = \"Hello\")`. איזו קריאה לא תתקמפל?"
+  options:
+    - "`Greet()`"
+    - "`Greet(\"Dana\")`"
+    - "`Greet(\"Dana\", \"Hi\")`"
+    - "`Greet(greeting: \"Hi\", name: \"Dana\")`"
+  answer: 0
+  explanation: "`name` הוא פרמטר נדרש, כי אין לו ערך ברירת מחדל. קריאה בלי ארגומנט עבורו היא שגיאת קומפילציה. רק `greeting` אופציונלי."
+  optionExplanations:
+    "1": "`greeting` אופציונלי, ולכן מספיק להעביר את `name`."
+    "2": "מותר להעביר ערך גם לפרמטר אופציונלי, והוא מחליף את ברירת המחדל."
+    "3": "כשכל הארגומנטים שמיים, הסדר חופשי."
+
+- id: cs.methods.optional-named.015
+  type: cleaner
+  difficulty: 2
+  prompt: איזו קריאה נקייה יותר?
+  options:
+    - |
+      SaveFile("report.txt", overwrite: true, createBackup: false);
+
+      static void SaveFile(string path, bool overwrite, bool createBackup)
+      {
+          Console.WriteLine($"{path} {overwrite} {createBackup}");
+      }
+    - |
+      SaveFile("report.txt", true, false);
+
+      static void SaveFile(string path, bool overwrite, bool createBackup)
+      {
+          Console.WriteLine($"{path} {overwrite} {createBackup}");
+      }
+    - |
+      SaveFile("report.txt", /* overwrite */ true, /* createBackup */ false);
+
+      static void SaveFile(string path, bool overwrite, bool createBackup)
+      {
+          Console.WriteLine($"{path} {overwrite} {createBackup}");
+      }
+  answer: 0
+  explanation: "ליטרלים `true` ו-`false` בקריאה לא אומרים לקורא כלום. ארגומנטים שמיים מתעדים את הכוונה בקריאה עצמה, והקומפיילר בודק שהשמות קיימים ומתאימים לפרמטרים."
+  optionExplanations:
+    "1": "`true, false` מחייב את הקורא לפתוח את הגדרת המתודה כדי להבין מה כל ערך עושה, וקל להחליף ביניהם."
+    "2": "הערות לא נבדקות בידי הקומפיילר. אם סדר הפרמטרים ישתנה, ההערות ימשיכו לשקר. ארגומנט שמי עושה את אותו הדבר ונבדק."
+
+- id: cs.methods.optional-named.016
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    AddItem("a");
+    AddItem("b");
+
+    static void AddItem(string item, List<string> list = null)
+    {
+        list ??= new List<string>();
+        list.Add(item);
+        Console.WriteLine(list.Count);
+    }
+  options: ["1\n1", "1\n2", "שגיאת קומפילציה", "NullReferenceException"]
+  answer: 0
+  explanation: "אי אפשר לכתוב `new List<string>()` כערך ברירת מחדל, ולכן הדפוס המקובל הוא ברירת מחדל `null` ויצירת אובייקט בתוך המתודה. כל קריאה בלי ארגומנט מקבלת `null` ויוצרת רשימה חדשה, ולכן בכל פעם מודפס 1."
+  optionExplanations:
+    "1": "זו מלכודת של Python, שבה רשימה כברירת מחדל נוצרת פעם אחת ומשותפת לכל הקריאות. כאן כל קריאה מקבלת `null` מחדש ויוצרת רשימה חדשה."
+    "2": "`null` הוא ערך ברירת מחדל חוקי לפרמטר מטיפוס הפניה."
+    "3": "`??=` מציב רשימה חדשה כש-`list` הוא `null`, ולכן `Add` לא נקרא על `null`."
