@@ -419,7 +419,7 @@
     - id: Dtos/StockLevelDto.cs
       desc: מבנה הנתונים שחוזר ללקוח של ה-API
     - id: Data/StockRepository.cs
-      desc: גישה למסד הנתונים
+      desc: "טעינה ושמירה של ישויות `StockItem`"
     - id: Services/InventoryService.cs
       desc: פעולות מלאי ודוחות
     - id: Controllers/StockController.cs
@@ -442,7 +442,7 @@
       why: "שמירת השינוי במסד."
     - label: "public IReadOnlyList<StockLevelDto> GetLowStockReport(int threshold)"
       answer: Services/InventoryService.cs
-      why: "הדוח מחליט אילו פריטים נמוכים מהסף וממיר אותם ל-DTO."
+      why: "מחזירה DTO שמיועד ל-API, וה-Repository מחזיר רק ישויות. השירות מחליט אילו פריטים נמוכים מהסף וממיר אותם ל-DTO."
     - label: "public ActionResult<StockLevelDto> GetLevel(string sku)"
       answer: Controllers/StockController.cs
       why: "`ActionResult<T>` הוא תשובת HTTP, ולכן המתודה שייכת ל-Controller."
@@ -455,7 +455,7 @@
   requirement: "בית ספר: מורה מזין ציון בין 0 ל-100. אם הציון נכשל (מתחת ל-55), נשלחת הודעה להורים. בסוף המחצית מחושב ממוצע משוקלל של התלמיד בכל מקצוע. שירות הציונים מכיר את ערוץ ההודעות רק דרך ממשק."
   targets:
     - id: Models/Grade.cs
-      desc: ציון של תלמיד במבחן
+      desc: "ישות הציון: הנתונים שלו והכללים שתלויים רק בו"
     - id: Interfaces/IParentNotifier.cs
       desc: החוזה לשליחת הודעה להורים
     - id: Notifications/EmailParentNotifier.cs
@@ -469,10 +469,10 @@
   items:
     - label: "public bool IsFailing => Score < 55"
       answer: Models/Grade.cs
-      why: "מאפיין מחושב שקורא ל-`Score` של הציון עצמו, ולכן הוא חלק מהמחלקה `Grade`."
+      why: "מאפיין מחושב שקורא ל-`Score` של המופע, ולכן הוא מתקמפל רק בתוך `Grade`. הסף 55 הוא כלל קבוע של הציון עצמו, ולא צריך לשם כך מסד נתונים או ערוץ הודעות."
     - label: "public void RecordGrade(int studentId, int examId, int score)"
       answer: Services/GradeService.cs
-      why: "בודקת את הטווח, שומרת, ואם הציון נכשל קוראת ל-`IParentNotifier`."
+      why: "יוצרת `Grade`, שומרת דרך ה-Repository, ואם `IsFailing` קוראת ל-`IParentNotifier`. זה תיאום בין כמה רכיבים, ולכן הוא בשירות."
     - label: "public double WeightedAverage(int studentId, string subject)"
       answer: Services/GradeService.cs
       why: "חישוב עסקי על ציונים שנשלפו מה-Repository."

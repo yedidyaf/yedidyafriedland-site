@@ -151,12 +151,12 @@
   difficulty: 3
   prompt: "`ReportCache` נרשם כ-Singleton ומקבל בבנאי את `ShopDbContext`, שנרשם כ-Scoped. מה הבעיה?"
   options:
-    - "ה-Singleton «לוכד» את מופע ה-`DbContext` שקיבל בפעם הראשונה ומשתמש בו בכל הבקשות, גם אחרי שה-Scope שלו הסתיים"
+    - "ה-Singleton «לוכד» את מופע ה-`DbContext` שקיבל בפעם הראשונה ומשתמש בו בכל הבקשות, הרבה מעבר לבקשה אחת שהוא נועד לה"
     - "אין בעיה: הקונטיינר ייצור `ShopDbContext` חדש בכל פעם ש-`ReportCache` ניגש לשדה"
     - "הקונטיינר יהפוך אוטומטית את `ReportCache` ל-Scoped"
     - "הבעיה היחידה היא ביצועים: כל בקשה תיצור `ReportCache` חדש"
   answer: 0
-  explanation: "זו תלות שבויה (Captive Dependency): שירות שחי זמן ארוך מחזיק שירות שאמור לחיות זמן קצר. ה-`DbContext` ישותף בין בקשות במקביל וימשיך לשמש גם אחרי שה-Scope שלו שוחרר. ASP.NET Core בסביבת פיתוח מזהה זאת וזורק חריגה. כלל אצבע: שירות יכול להיות תלוי רק בשירותים שחיים לפחות כמוהו."
+  explanation: "זו תלות שבויה (Captive Dependency): שירות שחי זמן ארוך מחזיק שירות שאמור לחיות זמן קצר. ה-`DbContext` ישותף בין בקשות במקביל ויחיה כל חיי האפליקציה, עם השינויים שנצברו בו. ASP.NET Core בסביבת פיתוח (Scope Validation) מזהה זאת וזורק חריגה. כלל אצבע: שירות יכול להיות תלוי רק בשירותים שחיים לפחות כמוהו."
   optionExplanations:
     "1": "הבנאי של Singleton רץ פעם אחת, ולכן השדה מקבל מופע אחד ולא משתנה."
     "2": "הקונטיינר לא משנה את משך החיים שנרשם."
@@ -301,7 +301,7 @@
     - label: "void Send(string phoneNumber, string text)"
       answer: Interfaces/ISmsSender.cs
       why: "חבר ממשק בלי משנה גישה ובלי גוף."
-    - label: "public HttpSmsSender(HttpClient httpClient, SmsOptions options)"
+    - label: "public HttpSmsSender(HttpClient httpClient, IOptions<SmsOptions> options)"
       answer: Infrastructure/HttpSmsSender.cs
       why: "`HttpClient` והגדרות הספק הם פרטים טכניים של המימוש האמיתי."
     - label: "public int SendRemindersFor(DateOnly day)"
@@ -356,7 +356,7 @@
   type: architecture
   difficulty: 3
   prompt: "שבצו כל מחלקה במשך החיים (Lifetime) המתאים לה ברישום לקונטיינר."
-  requirement: "אתר הזמנות ב-ASP.NET Core. לכל מחלקה מתואר איך היא מחזיקה מצב (State). בחרו משך חיים שלא ישתף מצב במקום שאסור, ולא ייצור מופעים מיותרים."
+  requirement: "אתר הזמנות ב-ASP.NET Core. לכל מחלקה מתואר איך היא מחזיקה מצב (State). בחרו לכל מחלקה את משך החיים הארוך ביותר שעדיין לא משתף מצב במקום שאסור."
   targets:
     - id: AddSingleton
       desc: מופע אחד לכל חיי האפליקציה
@@ -368,9 +368,9 @@
     - label: "public class ExchangeRateCache (מטמון שערי מטבע שמשותף לכל המשתמשים ובטוח לשימוש מקביל)"
       answer: AddSingleton
       why: "המטמון צריך להיות משותף לכולם, ואם היה נוצר מחדש הוא היה מאבד את מה שנשמר בו."
-    - label: "public class FeatureFlags (נטען פעם אחת מקובץ ההגדרות בעליית האפליקציה ולא משתנה)"
+    - label: "public class FeatureFlags (נטען פעם אחת מקובץ ההגדרות בעליית האפליקציה, לקריאה בלבד ולא משתנה עד הפעלה מחדש)"
       answer: AddSingleton
-      why: "מצב שלא משתנה ובטוח לשיתוף. יצירה מחדש בכל בקשה הייתה קוראת את הקובץ שוב ושוב בלי סיבה."
+      why: "מצב לקריאה בלבד בטוח לשיתוף בין כל הבקשות, ולכן משך החיים הארוך ביותר מתאים. Scoped היה קורא את הקובץ מחדש בכל בקשה בלי שום תועלת, כי הערכים לא משתנים."
     - label: "public class ShopDbContext : DbContext (עוקב אחרי השינויים של בקשה אחת ואינו בטוח לשימוש מקביל)"
       answer: AddScoped
       why: "כל בקשה צריכה עותק משלה, וכל השירותים באותה בקשה צריכים לחלוק אותו."
@@ -380,7 +380,7 @@
     - label: "public class InvoicePdfBuilder (צובר שורות לתוך מסמך אחד, וכל שימוש חייב להתחיל ממסמך ריק)"
       answer: AddTransient
       why: "אם שני שירותים באותה בקשה היו חולקים מופע, השורות שלהם היו מתערבבות. לכן כל צרכן מקבל מופע חדש."
-  explanation: "משך החיים נקבע לפי המצב שהמחלקה מחזיקה. מצב משותף ובטוח לכולם: Singleton. מצב של בקשה אחת: Scoped. מצב שאסור לשתף אפילו בתוך בקשה: Transient. בחירה שגויה גורמת לערבוב נתונים בין משתמשים או בין שירותים."
+  explanation: "משך החיים נקבע לפי המצב שהמחלקה מחזיקה, ובוחרים את הארוך ביותר שבטוח. מצב משותף ובטוח לכולם: Singleton. מצב של בקשה אחת: Scoped. מצב שאסור לשתף אפילו בתוך בקשה: Transient. בחירה שגויה גורמת לערבוב נתונים בין משתמשים או בין שירותים."
 
 - id: cs.software-design.dependency-injection.013
   type: single

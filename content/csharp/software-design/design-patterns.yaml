@@ -295,10 +295,10 @@
   type: architecture
   difficulty: 2
   prompt: "שבצו כל חתימה של מערכת התורים במרפאה בקובץ המתאים."
-  requirement: "מרפאה: מטופל קובע תור לרופא, ואסור ששני תורים של אותו רופא יחפפו. שכבת השירות ניגשת לתורים רק דרך תבנית Repository, ולכן היא לא מכירה SQL."
+  requirement: "מרפאה: מטופל קובע תור של 20 דקות לרופא, ואסור ששני תורים של אותו רופא יחפפו. שכבת השירות ניגשת לתורים רק דרך תבנית Repository, ולכן היא לא מכירה SQL."
   targets:
     - id: Models/Appointment.cs
-      desc: ישות התור
+      desc: ישות התור והכללים שתלויים רק בזמנים שלו
     - id: Interfaces/IAppointmentRepository.cs
       desc: החוזה של מאגר התורים
     - id: Data/SqlAppointmentRepository.cs
@@ -311,7 +311,7 @@
       why: "הישות עצמה."
     - label: "public bool OverlapsWith(Appointment other)"
       answer: Models/Appointment.cs
-      why: "מתודת מופע שמשווה את זמני התור הנוכחי לתור אחר. היא עובדת רק על הנתונים של התורים עצמם."
+      why: "מתודת מופע: «התור הזה חופף לתור אחר». היא משווה רק את זמני שני התורים, בלי מסד נתונים, ולכן שייכת לישות. השירות קורא לה על התורים שנשלפו."
     - label: "IReadOnlyList<Appointment> GetByDoctor(int doctorId, DateOnly day)"
       answer: Interfaces/IAppointmentRepository.cs
       why: "חבר ממשק (בלי משנה גישה ובלי גוף) לשליפת תורים."

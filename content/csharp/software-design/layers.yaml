@@ -229,14 +229,14 @@
   type: architecture
   difficulty: 3
   prompt: "שבצו כל חתימה של הבלוג (ASP.NET Core MVC) בקובץ המתאים."
-  requirement: "בלוג שבו קוראים רואים פוסט עם התגובות שלו ויכולים להוסיף תגובה. הדף מציג את תאריך הפרסום בפורמט קריא, ותגובה ריקה או ארוכה מדי נדחית. הנתונים נשמרים במסד הנתונים."
+  requirement: "בלוג שבו קוראים רואים פוסט עם התגובות שלו ויכולים להוסיף תגובה. הדף מציג את תאריך הפרסום בפורמט קריא, ותגובה ריקה או ארוכה מדי נדחית. הנתונים נשמרים במסד הנתונים, וה-View לא מעצב נתונים בעצמו: כל טקסט מגיע אליו מוכן ב-ViewModel."
   targets:
     - id: Controllers/PostsController.cs
       desc: מקבל בקשות HTTP ובוחר View
     - id: Models/Post.cs
-      desc: ישות הפוסט כפי שהיא נשמרת במסד
+      desc: ישות הפוסט ונתוני המקור שלו כפי שהם נשמרים במסד
     - id: ViewModels/PostPageViewModel.cs
-      desc: נתונים מוכנים לתצוגה של דף אחד
+      desc: טקסטים מוכנים לתצוגה של דף אחד, לקריאה בלבד
     - id: Services/CommentService.cs
       desc: כללי הוספת תגובה
     - id: Views/Posts/Show.cshtml
@@ -250,7 +250,7 @@
       why: "מקבלת את הטופס, מעבירה לשירות ומחזירה תשובת HTTP."
     - label: "public DateTime PublishedAt { get; set; }"
       answer: Models/Post.cs
-      why: "תאריך הפרסום כנתון גולמי הוא חלק מהישות שנשמרת במסד."
+      why: "`DateTime` גולמי עם `set` הוא נתון המקור שנשמר במסד. ה-ViewModel לא צריך אותו, כי הוא מקבל את התאריך כבר כטקסט מעוצב."
     - label: "public string PublishedText { get; init; }"
       answer: ViewModels/PostPageViewModel.cs
       why: "טקסט מעוצב לתצוגה («לפני שעתיים») שייך ל-ViewModel, לא לישות שנשמרת."
