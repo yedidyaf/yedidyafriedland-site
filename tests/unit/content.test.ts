@@ -21,3 +21,9 @@ describe('text', () => {
     expect(bilingual('סי שארפ', 'C#')).toBe('סי שארפ - C#‎');
   });
 });
+
+describe('negative numbers', () => {
+  it('isolates a minus sign in RTL prose', () => {
+    expect(inline('מחזיר -1 כש')).toBe('מחזיר <bdi dir="ltr">-1</bdi> כש');
+  });
+});

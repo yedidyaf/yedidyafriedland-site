@@ -8,7 +8,10 @@ export function inline(s: string): string {
   return parts
     .map((p) => {
       if (p.length > 1 && p.startsWith('`') && p.endsWith('`')) return `<code class="ic" dir="ltr">${escapeHtml(p.slice(1, -1))}</code>`;
-      return bidi(escapeHtml(p)).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      return bidi(escapeHtml(p))
+        // negative numbers in Hebrew prose: keep the minus sign on the left of the digits
+        .replace(/(^|[\s(])(-\d[\d.,]*)/g, '$1<bdi dir="ltr">$2</bdi>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     })
     .join('');
 }
