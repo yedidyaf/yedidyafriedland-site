@@ -1,0 +1,301 @@
+- id: cs.advanced.nullable.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int? age = null;
+    Console.WriteLine(age.HasValue);
+    Console.WriteLine(age ?? -1);
+    age = 30;
+    Console.WriteLine(age.Value + 1);
+  options: ["False\n-1\n31", "False\n0\n31", "True\n-1\n31", "null\n-1\n31"]
+  answer: 0
+  explanation: "`int?` הוא טיפוס ערך שמאפשר null (Nullable Value Type). `HasValue` מחזיר `False` כשאין ערך, והאופרטור `??` (Null-Coalescing) מחזיר את הצד הימני כשהשמאלי הוא `null`. אחרי ההשמה יש ערך, ו-`Value` מחזיר אותו: 31."
+  optionExplanations:
+    "1": "`??` מחזיר את הערך החלופי שכתבנו, `-1`, ולא את ברירת המחדל של `int`."
+    "2": "`HasValue` הוא `true` רק כשיש ערך. כאן `age` הוא `null`."
+    "3": "`HasValue` מחזיר `bool`, ולכן מודפס `False` ולא `null`."
+
+- id: cs.advanced.nullable.002
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int? a = 5;
+    int? b = null;
+    int? sum = a + b;
+    Console.WriteLine(sum == null);
+    Console.WriteLine($"[{sum}]");
+  options: ["True\n[]", "False\n[5]", "True\n[0]", "True\n[null]"]
+  answer: 0
+  explanation: "אופרטורים חשבוניים על `int?` הם אופרטורים מורחבים (Lifted Operators): אם אחד הצדדים `null`, התוצאה `null`. `null` לא מתנהג כמו 0. באינטרפולציה ערך `null` הופך למחרוזת ריקה, ולכן מודפס `[]`."
+  optionExplanations:
+    "1": "`null` לא נחשב 0 בחיבור. מספיק צד אחד `null` כדי שכל התוצאה תהיה `null`."
+    "2": "`sum` הוא `null`, ולא 0. אינטרפולציה של `null` לא מדפיסה 0."
+    "3": "אינטרפולציה מדפיסה `null` כמחרוזת ריקה, ולא כמילה `null`."
+
+- id: cs.advanced.nullable.003
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int? x = null;
+    Console.WriteLine(x > 0);
+    Console.WriteLine(x < 0);
+    Console.WriteLine(x == null);
+  options: ["False\nFalse\nTrue", "False\nTrue\nTrue", "null\nnull\nTrue", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "השוואות `<`, `>`, `<=` ו-`>=` על `int?` מחזירות `false` כשאחד הצדדים `null`, ולכן גם `x > 0` וגם `x < 0` שקריים. רק `==` ו-`!=` מתייחסים ל-`null` כערך ממשי, ו-`x == null` הוא `true`."
+  optionExplanations:
+    "1": "`null` לא נחשב קטן מ-0 או מכל מספר אחר. כל השוואת סדר מול `null` מחזירה `false`."
+    "2": "השוואה מחזירה `bool` ולא `bool?`, ולכן אין כאן `null`."
+    "3": "מותר להשוות `int?` ל-`int`. האופרטורים מורחבים לטיפוס ה-Nullable."
+
+- id: cs.advanced.nullable.004
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string name = null;
+    Console.WriteLine(name?.Length ?? 0);
+    Console.WriteLine((name ?? "guest").ToUpper());
+    name = "Dana";
+    Console.WriteLine(name?.Length ?? 0);
+  options: ["0\nGUEST\n4", "NullReferenceException", "null\nGUEST\n4", "0\nguest\n4"]
+  answer: 0
+  explanation: "האופרטור `?.` (Null-Conditional) מחזיר `null` במקום לגשת לחבר של אובייקט `null`, ולכן אין חריגה. `??` מחליף את ה-`null` ב-0. בשורה 3 `??` מחזיר `\"guest\"`, ועליו נקרא `ToUpper`. אחרי ההשמה `name` אינו `null`, ו-`?.` ניגש ל-`Length` כרגיל."
+  optionExplanations:
+    "1": "`?.` בודק `null` לפני הגישה ל-`Length`, ולכן לא נזרקת חריגה."
+    "2": "`??` מחליף את ה-`null` ב-0 לפני ההדפסה."
+    "3": "הסוגריים קובעים ש-`ToUpper` נקרא על התוצאה של `??`, כלומר על `\"guest\"`."
+
+- id: cs.advanced.nullable.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var order = new Order();
+    Console.WriteLine(order.Customer?.Name.ToUpper() ?? "unknown");
+    order.Customer = new Customer();
+    Console.WriteLine(order.Customer?.Name?.ToUpper() ?? "no name");
+
+    class Order
+    {
+        public Customer Customer { get; set; }
+    }
+
+    class Customer
+    {
+        public string Name { get; set; }
+    }
+  options: ["unknown\nno name", "NullReferenceException", "unknown\nNullReferenceException", "unknown\nunknown"]
+  answer: 0
+  explanation: "`?.` מקצר את כל השרשרת (Short-Circuit): כש-`Customer` הוא `null`, גם `.Name.ToUpper()` לא מחושבים, והתוצאה `null`. בשורה 4 `Customer` קיים אבל `Name` הוא `null`, וה-`?.` השני עוצר שם. כל אחד מה-`??` מחליף את ה-`null` בטקסט שלו."
+  optionExplanations:
+    "1": "`?.` הראשון עוצר את כל השרשרת, ולכן `.Name.ToUpper()` לא רץ על `null`."
+    "2": "בשורה 4 יש `?.` גם לפני `ToUpper`, ולכן `Name` שהוא `null` לא גורם לחריגה."
+    "3": "בשורה 4 `Customer` כבר קיים, ולכן ה-`null` מגיע מ-`Name` והטקסט החלופי הוא `no name`."
+
+- id: cs.advanced.nullable.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    List<string> log = null;
+    log ??= new List<string>();
+    log.Add("a");
+    log ??= new List<string> { "x" };
+    log.Add("b");
+    Console.WriteLine(string.Join(",", log));
+  options: ["a,b", "x,b", "b", "a,x,b"]
+  answer: 0
+  explanation: "`??=` (Null-Coalescing Assignment) מציב ערך רק אם המשתנה הוא `null`. בפעם הראשונה `log` הוא `null` ומקבל רשימה חדשה. בפעם השנייה הרשימה כבר קיימת, ולכן ההשמה לא מתבצעת והרשימה עם `x` לא נוצרת בכלל."
+  optionExplanations:
+    "1": "`??=` השני לא מחליף את הרשימה, כי `log` כבר אינו `null`."
+    "2": "הרשימה הקיימת נשמרת, כולל `a` שנוסף אליה קודם."
+    "3": "`??=` לא ממזג רשימות. הצד הימני נבנה ומוצב רק כשהמשתנה `null`."
+
+- id: cs.advanced.nullable.007
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int count = null;
+    Console.WriteLine(count);
+  options: ["0", "שגיאת קומפילציה", "null", "NullReferenceException"]
+  answer: 1
+  explanation: "`int` הוא טיפוס ערך ולא יכול להכיל `null`, ולכן זו שגיאת קומפילציה. כדי לייצג \"אין ערך\" משתמשים ב-`int?`, שהוא קיצור של `Nullable<int>`."
+  optionExplanations:
+    "0": "הקומפיילר לא ממיר `null` ל-0. הוא דוחה את ההשמה."
+    "2": "רק `int?` יכול להכיל `null`. `int` רגיל לא."
+    "3": "הבעיה נתפסת כבר בקומפילציה, ולא מגיעה לזמן ריצה."
+
+- id: cs.advanced.nullable.008
+  type: single
+  difficulty: 1
+  prompt: "מה זה `int?`?"
+  options:
+    - "קיצור של `Nullable<int>`: טיפוס ערך שיכול להכיל מספר שלם או `null`"
+    - "`int` שעטוף באובייקט בזיכרון ה-Heap, כמו `object`"
+    - "`int` שערך ברירת המחדל שלו הוא `-1`"
+    - "סימון לקומפיילר בלבד, שאין לו שום השפעה בזמן ריצה"
+  answer: 0
+  explanation: "`int?` הוא `Nullable<int>`: מבנה (struct) שמחזיק `int` ודגל `HasValue`. הוא עדיין טיפוס ערך, אבל יכול לייצג גם \"אין ערך\". שימושי למשל לשדה אופציונלי ממסד נתונים."
+  optionExplanations:
+    "1": "`Nullable<int>` הוא struct, כלומר טיפוס ערך, ולא אובייקט ב-Heap."
+    "2": "ערך ברירת המחדל של `int?` הוא `null`."
+    "3": "זה נכון ל-`string?` בטיפוסי הפניה. `int?` הוא טיפוס אחר בזמן ריצה: `Nullable<int>`."
+
+- id: cs.advanced.nullable.009
+  type: single
+  difficulty: 2
+  prompt: "בקוד הבא מופעלים טיפוסי הפניה שמאפשרים null (Nullable Reference Types). באילו שורות הקומפיילר יציג אזהרה?"
+  code: |
+    #nullable enable
+    string name = "Dana";
+    string? nickname = null;
+    int a = name.Length;
+    int b = nickname.Length;
+    name = null;
+  options:
+    - "בשורות 5 ו-6"
+    - "רק בשורה 5"
+    - "רק בשורה 3"
+    - "בשורות 3 ו-5"
+  answer: 0
+  explanation: "כשהתכונה מופעלת, `string` פירושו \"לא אמור להיות null\" ו-`string?` פירושו \"יכול להיות null\". שורה 5 ניגשת ל-`Length` של משתנה שעשוי להיות `null` (אזהרה CS8602), ושורה 6 מציבה `null` במשתנה שהוצהר כלא־null (אזהרה CS8600). שורה 3 תקינה, כי `string?` מותר להכיל `null`."
+  optionExplanations:
+    "1": "גם שורה 6 מקבלת אזהרה: `name` הוצהר כ-`string` בלי `?`, ומציבים בו `null`."
+    "2": "`string?` מצהיר במפורש שמותר `null`, ולכן ההשמה בשורה 3 תקינה."
+    "3": "שורה 3 תקינה, ובנוסף חסרה שורה 6, שמציבה `null` ב-`string` רגיל."
+
+- id: cs.advanced.nullable.010
+  type: truefalse
+  difficulty: 2
+  prompt: "כש-Nullable Reference Types מופעלים, הצבת `null` למשתנה מטיפוס `string` (בלי `?`) היא שגיאת קומפילציה."
+  answer: false
+  explanation: "הקומפיילר מציג אזהרה (Warning) ולא שגיאה, והקוד מתקמפל ורץ. מטרת התכונה היא להתריע מראש על `NullReferenceException` אפשרי. צוותים רבים מגדירים `TreatWarningsAsErrors` כדי להפוך את האזהרות האלה לשגיאות."
+
+- id: cs.advanced.nullable.011
+  type: truefalse
+  difficulty: 2
+  prompt: "`string` ו-`string?` הם אותו טיפוס בזמן ריצה. סימן השאלה על טיפוס הפניה משפיע רק על הבדיקות של הקומפיילר."
+  answer: true
+  explanation: "בטיפוסי הפניה `?` הוא הערה (Annotation) לניתוח הסטטי של הקומפיילר, ובזמן ריצה שניהם `System.String`. זה שונה מ-`int?`, שהוא באמת טיפוס אחר: `Nullable<int>`."
+
+- id: cs.advanced.nullable.012
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה. לקוח בלי הנחה משלם 100. כאן הוא קורס. באיזו שורה הבאג?"
+  code: |
+    int? discount = GetDiscount("guest");
+    int toPay = 100 - discount.Value;
+    Console.WriteLine(toPay);
+
+    static int? GetDiscount(string customer) => customer == "vip" ? 20 : null;
+  answer: 2
+  explanation: "`Value` על `int?` שאין בו ערך זורק `InvalidOperationException`. כאן אין הנחה ללקוח `guest`, ולכן צריך לקבוע ערך חלופי: `discount ?? 0` (או `discount.GetValueOrDefault()`)."
+  fixed: |
+    int? discount = GetDiscount("guest");
+    int toPay = 100 - (discount ?? 0);
+    Console.WriteLine(toPay);
+
+    static int? GetDiscount(string customer) => customer == "vip" ? 20 : null;
+
+- id: cs.advanced.nullable.013
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס 1000 (משכורת בלי בונוס), אבל מודפס 0. באיזו שורה הבאג?"
+  code: |
+    int? bonus = null;
+    int salary = 1000;
+    int total = salary + bonus ?? 0;
+    Console.WriteLine(total);
+  answer: 3
+  explanation: "לאופרטור `??` קדימות (Precedence) נמוכה מ-`+`, ולכן הביטוי מחושב כ-`(salary + bonus) ?? 0`. החיבור עם `null` נותן `null`, ו-`??` מחליף את כל התוצאה ב-0. הסוגריים `salary + (bonus ?? 0)` מחליפים רק את הבונוס."
+  fixed: |
+    int? bonus = null;
+    int salary = 1000;
+    int total = salary + (bonus ?? 0);
+    Console.WriteLine(total);
+
+- id: cs.advanced.nullable.014
+  type: single
+  difficulty: 2
+  prompt: "מה הטיפוס של `age`?"
+  code: |
+    Customer customer = null;
+    var age = customer?.Age;
+    Console.WriteLine(age.HasValue);
+
+    record Customer(string Name, int Age);
+  options:
+    - "`int?`"
+    - "`int`"
+    - "`object`"
+    - "אין טיפוס: זו שגיאת קומפילציה, כי `Age` הוא `int` ולא יכול להיות `null`"
+  answer: 0
+  explanation: "`?.` עשוי להחזיר `null`, ולכן כשהחבר הוא טיפוס ערך כמו `int`, הקומפיילר הופך את טיפוס התוצאה ל-`int?`. כך יש מקום לייצג את המקרה ש-`customer` הוא `null`. כאן יודפס `False`."
+  optionExplanations:
+    "1": "`int` רגיל לא יכול לייצג את המקרה ש-`customer` הוא `null`, ולכן הטיפוס מורחב ל-`int?`."
+    "2": "אין כאן Boxing. התוצאה היא טיפוס ערך מסוג `Nullable<int>`."
+    "3": "הקומפיילר לא דוחה את הקוד. הוא פשוט עוטף את `int` ב-`int?`."
+
+- id: cs.advanced.nullable.015
+  type: cleaner
+  difficulty: 1
+  prompt: שני הקטעים מדפיסים `unknown`. איזה מהם נקי יותר?
+  options:
+    - |
+      User user = null;
+      string city = user?.Address?.City ?? "unknown";
+      Console.WriteLine(city);
+
+      class User
+      {
+          public Address Address { get; set; }
+      }
+
+      class Address
+      {
+          public string City { get; set; }
+      }
+    - |
+      User user = null;
+      string city;
+      if (user != null && user.Address != null && user.Address.City != null)
+          city = user.Address.City;
+      else
+          city = "unknown";
+      Console.WriteLine(city);
+
+      class User
+      {
+          public Address Address { get; set; }
+      }
+
+      class Address
+      {
+          public string City { get; set; }
+      }
+  answer: 0
+  explanation: "`?.` ו-`??` מבטאים בשורה אחת \"קחו את העיר אם כל השרשרת קיימת, אחרת `unknown`\". אין חזרה על `user.Address` ואין הסתעפות שצריך לקרוא בעיון."
+  optionExplanations:
+    "1": "שרשרת בדיקות `null` ידנית שחוזרת על אותם ביטויים. הקוד ארוך יותר וקל לשכוח בו בדיקה אחת."
+
+- id: cs.advanced.nullable.016
+  type: single
+  difficulty: 3
+  prompt: "כש-Nullable Reference Types מופעלים, מה עושה `!` בביטוי `name!.Length`?"
+  options:
+    - "משתיק את אזהרת הקומפיילר בלבד. אם `name` הוא `null` בזמן ריצה, תיזרק `NullReferenceException`"
+    - "בודק בזמן ריצה ש-`name` אינו `null`, וזורק `ArgumentNullException` אם הוא כן"
+    - "מחזיר `null` במקום לגשת ל-`Length` אם `name` הוא `null`"
+    - "הופך לוגית את הערך של `name` לפני הגישה ל-`Length`"
+  answer: 0
+  explanation: "`!` הוא אופרטור הסלחנות ל-null (Null-Forgiving Operator): הכותב מבטיח לקומפיילר שהערך אינו `null`, והאזהרה נעלמת. בזמן ריצה הוא לא עושה כלום, ולכן הבטחה שגויה מסתיימת ב-`NullReferenceException`. משתמשים בו רק כשבאמת יודעים יותר מהקומפיילר."
+  optionExplanations:
+    "1": "`!` לא מוסיף שום בדיקה בזמן ריצה. בדיקה כזו כותבים במפורש, למשל עם `ArgumentNullException.ThrowIfNull`."
+    "2": "זה מה ש-`?.` עושה. `!` לא משנה את ההתנהגות בזמן ריצה."
+    "3": "`!` כאן הוא אופרטור postfix על טיפוס הפניה, ולא שלילה לוגית של `bool`."

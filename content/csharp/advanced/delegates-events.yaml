@@ -1,0 +1,316 @@
+- id: cs.advanced.delegates-events.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Func<int, int, int> add = (a, b) => a + b;
+    Func<int, int> square = x => x * x;
+    Console.WriteLine(add(2, 3));
+    Console.WriteLine(square(add(1, 2)));
+  options: ["5\n9", "5\n5", "5\n3", "23\n9"]
+  answer: 0
+  explanation: "`Func<int, int, int>` הוא נציג (Delegate) של פונקציה שמקבלת שני `int` ומחזירה `int`, וביטוי למבדא (Lambda Expression) נותן לו גוף. `add(1, 2)` מחזיר 3, ו-`square(3)` מחזיר 9."
+  optionExplanations:
+    "1": "`square` מקבלת את התוצאה של `add(1, 2)`, כלומר 3, ומעלה אותה בריבוע."
+    "2": "3 הוא רק תוצאת הביניים. הקריאה החיצונית ל-`square` מעלה אותה בריבוע."
+    "3": "הפרמטרים הם `int`, ולכן `+` הוא חיבור מספרי ולא שרשור."
+
+- id: cs.advanced.delegates-events.002
+  type: single
+  difficulty: 1
+  prompt: "מה מתאר הטיפוס `Func<int, string>`?"
+  options:
+    - "מתודה שמקבלת `int` ומחזירה `string`"
+    - "מתודה שמקבלת `string` ומחזירה `int`"
+    - "מתודה שמקבלת `int` ו-`string` ולא מחזירה דבר"
+    - "מתודה שמקבלת `int` ומחזירה `void`"
+  answer: 0
+  explanation: "ב-`Func` הפרמטר הגנרי האחרון הוא תמיד טיפוס ההחזרה, וכל מה שלפניו הם טיפוסי הפרמטרים. למתודה שלא מחזירה דבר משתמשים ב-`Action`, למשל `Action<int, string>`."
+  optionExplanations:
+    "1": "הסדר הפוך: ב-`Func` טיפוס ההחזרה נכתב אחרון."
+    "2": "זה `Action<int, string>`. `Func` תמיד מחזירה ערך."
+    "3": "`Func` לא יכולה להחזיר `void`. בשביל זה קיים `Action<int>`."
+
+- id: cs.advanced.delegates-events.003
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Action log = First;
+    log += Second;
+    log += First;
+    log -= First;
+    log();
+
+    static void First() => Console.Write("1");
+    static void Second() => Console.Write("2");
+  options: ["12", "2", "21", "121"]
+  answer: 0
+  explanation: "נציג מרובה (Multicast Delegate) מחזיק רשימת קריאה (Invocation List) לפי סדר ההוספה: `First, Second, First`. האופרטור `-=` מסיר רק את המופע האחרון של `First` ברשימה, ולכן נשאר `First, Second` ומודפס `12`."
+  optionExplanations:
+    "1": "`-=` מסיר מופע אחד בלבד, לא את כל המופעים של אותה מתודה."
+    "2": "ההסרה מתחילה מסוף הרשימה, ולכן נמחק ה-`First` השני ולא הראשון."
+    "3": "`-=` כן מסיר מופע: הוא מוצא את `First` ברשימה כי זו אותה מתודה."
+
+- id: cs.advanced.delegates-events.004
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Func<int> get = () => 1;
+    get += () => 2;
+    get += () => 3;
+    Console.WriteLine(get());
+  options: ["3", "1", "6", "1\n2\n3"]
+  answer: 0
+  explanation: "כשמפעילים `Func` מרובה, כל המתודות ברשימה רצות לפי הסדר, אבל ערך ההחזרה הוא רק של האחרונה. 1 ו-2 מחושבים ונזרקים. לכן נציג מרובה שימושי בעיקר עם `Action` ואירועים, שלא מחזירים ערך."
+  optionExplanations:
+    "1": "כל המתודות רצות, ולא רק הראשונה. הערך שמוחזר הוא של האחרונה."
+    "2": "התוצאות לא מסוכמות. כל תוצאה חוץ מהאחרונה פשוט הולכת לאיבוד."
+    "3": "יש קריאה אחת ל-`Console.WriteLine`, עם ערך אחד שמוחזר מהנציג."
+
+- id: cs.advanced.delegates-events.005
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    var actions = new List<Action>();
+    for (int i = 0; i < 3; i++)
+        actions.Add(() => Console.Write(i));
+    foreach (var action in actions)
+        action();
+  options: ["333", "012", "222", "000"]
+  answer: 0
+  explanation: "למבדא לוכדת (Capture) את המשתנה עצמו ולא את הערך שלו ברגע היצירה. בלולאת `for` יש משתנה `i` אחד לכל הלולאה, וכשהלמבדות רצות הלולאה כבר הסתיימה ו-`i` שווה 3. כדי לקבל `012` מעתיקים לתוך הלולאה: `int copy = i;` ולוכדים את `copy`."
+  optionExplanations:
+    "1": "`012` היה מודפס אם כל למבדא הייתה שומרת עותק של הערך. היא לוכדת את המשתנה המשותף."
+    "2": "הלולאה נעצרת רק כש-`i < 3` שקרי, כלומר כש-`i` כבר 3."
+    "3": "הלמבדות רצות אחרי הלולאה, ורואות את הערך האחרון של `i`."
+
+- id: cs.advanced.delegates-events.006
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Apply(5, x => x * 2));
+    Console.WriteLine(Apply(5, x => x - 1));
+
+    static int Apply(int value, Func<int, int> op)
+    {
+        return op(op(value));
+    }
+  options: ["20\n3", "10\n4", "20\n4", "10\n3"]
+  answer: 0
+  explanation: "`Apply` מקבלת פונקציה כפרמטר ומפעילה אותה פעמיים. בקריאה הראשונה: 5 ← 10 ← 20. בשנייה: 5 ← 4 ← 3. העברת למבדא כפרמטר מסוג `Func` מאפשרת לאותה מתודה לבצע פעולות שונות."
+  optionExplanations:
+    "1": "`op(op(value))` מפעיל את הפונקציה פעמיים, לא פעם אחת."
+    "2": "שתי הקריאות מפעילות את הפונקציה פעמיים: גם `x - 1` מופעל פעמיים ומגיע ל-3."
+    "3": "גם `x * 2` מופעל פעמיים: 5 ← 10 ← 20."
+
+- id: cs.advanced.delegates-events.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var button = new Button();
+    Action save = () => Console.Write("S");
+    button.Clicked += save;
+    button.Clicked += () => Console.Write("L");
+    button.Click();
+    button.Clicked -= save;
+    button.Click();
+
+    class Button
+    {
+        public event Action Clicked;
+
+        public void Click() => Clicked?.Invoke();
+    }
+  options: ["SLL", "SLSL", "SL", "SLS"]
+  answer: 0
+  explanation: "לאירוע (Event) נרשמו שני מטפלים (Handlers), ולכן הלחיצה הראשונה מדפיסה `SL`. `-= save` מסיר את המטפל שנשמר במשתנה, כי זה אותו מופע של נציג. בלחיצה השנייה נשאר רק `L`."
+  optionExplanations:
+    "1": "`-= save` מצליח, כי `save` הוא בדיוק הנציג שנרשם. רק `L` נשאר רשום."
+    "2": "יש שתי קריאות ל-`Click`, ובשנייה עדיין רשום המטפל שמדפיס `L`."
+    "3": "ההסרה הייתה של `save`, שמדפיס `S`. המטפל שנשאר מדפיס `L`."
+
+- id: cs.advanced.delegates-events.008
+  type: single
+  difficulty: 2
+  prompt: "מה המילה `event` מוסיפה לעומת שדה ציבורי רגיל מטיפוס `Action`?"
+  options:
+    - "מחוץ למחלקה מותר רק להירשם ולבטל רישום עם `+=` ו-`-=`, ואסור להפעיל את האירוע או לדרוס אותו עם `=`"
+    - "המטפלים של `event` רצים במקביל, כל אחד בתהליכון (Thread) משלו"
+    - "`event` מאפשר לרשום רק מטפל אחד בכל רגע"
+    - "`event` מוודא שהמטפלים ירוצו גם אם אחד מהם זורק חריגה"
+  answer: 0
+  explanation: "`event` הוא הגנה על נציג: רק המחלקה שמגדירה אותו יכולה להפעיל אותו או להחליף את כל הרשימה. קוד חיצוני יכול רק להירשם ולבטל רישום. כך אף מנוי לא יכול למחוק בטעות את שאר המנויים עם `=` או להפעיל את האירוע בשם המחלקה."
+  optionExplanations:
+    "1": "המטפלים רצים ברצף, אחד אחרי השני, על אותו תהליכון."
+    "2": "אירוע הוא נציג מרובה, ואפשר לרשום אליו כמה מטפלים שרוצים."
+    "3": "חריגה במטפל עוצרת את ההפעלה, והמטפלים שאחריו לא רצים. `event` לא משנה זאת."
+
+- id: cs.advanced.delegates-events.009
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    var button = new Button();
+    button.Clicked += () => Console.WriteLine("hi");
+    button.Clicked();
+
+    class Button
+    {
+        public event Action Clicked;
+    }
+  options: ["hi", "שגיאת קומפילציה", "NullReferenceException", "לא יודפס כלום"]
+  answer: 1
+  explanation: "מחוץ למחלקה שמגדירה אירוע מותר רק `+=` ו-`-=`. הקריאה `button.Clicked()` מחוץ ל-`Button` היא שגיאת קומפילציה. כדי להפעיל אירוע מבחוץ, המחלקה צריכה לחשוף מתודה כמו `Click()` שמפעילה אותו מבפנים."
+  optionExplanations:
+    "0": "זה היה קורה עם שדה `Action` רגיל. `event` חוסם הפעלה מחוץ למחלקה."
+    "2": "יש מטפל רשום, אז הנציג לא `null`, וממילא הקוד לא מתקמפל."
+
+- id: cs.advanced.delegates-events.010
+  type: bug
+  difficulty: 2
+  prompt: "`Read` אמורה להדפיס את הערך ולהודיע למנויים, אם יש כאלה. הקוד קורס כשאין מנויים. באיזו שורה הבאג?"
+  code: |
+    var sensor = new Sensor();
+    sensor.Read(42);
+
+    class Sensor
+    {
+        public event Action<int> ValueChanged;
+
+        public void Read(int value)
+        {
+            Console.WriteLine($"read {value}");
+            ValueChanged(value);
+        }
+    }
+  answer: 11
+  explanation: "אירוע בלי מנויים הוא `null`, והפעלה שלו זורקת `NullReferenceException`. הדרך המקובלת היא `ValueChanged?.Invoke(value)`, שמפעילה את האירוע רק אם נרשם אליו מישהו."
+  fixed: |
+    var sensor = new Sensor();
+    sensor.Read(42);
+
+    class Sensor
+    {
+        public event Action<int> ValueChanged;
+
+        public void Read(int value)
+        {
+            Console.WriteLine($"read {value}");
+            ValueChanged?.Invoke(value);
+        }
+    }
+
+- id: cs.advanced.delegates-events.011
+  type: bug
+  difficulty: 1
+  prompt: הקוד אמור לשלוח את ההודעה גם במייל וגם ב-SMS. באיזו שורה הבאג?
+  code: |
+    Action<string> notify = s => Console.WriteLine($"email: {s}");
+    notify = s => Console.WriteLine($"sms: {s}");
+    notify("order shipped");
+  answer: 2
+  explanation: "`=` מחליף את כל הנציג, ולכן המטפל של המייל נמחק ורק `sms` מודפס. כדי להוסיף מטפל לרשימה של נציג מרובה (Multicast Delegate) משתמשים ב-`+=`."
+  fixed: |
+    Action<string> notify = s => Console.WriteLine($"email: {s}");
+    notify += s => Console.WriteLine($"sms: {s}");
+    notify("order shipped");
+
+- id: cs.advanced.delegates-events.012
+  type: truefalse
+  difficulty: 1
+  prompt: "`Action<int>` מתאר מתודה שמקבלת `int` ומחזירה `int`."
+  answer: false
+  explanation: "`Action` מתאר תמיד מתודה שלא מחזירה ערך (`void`). `Action<int>` מקבלת `int` ולא מחזירה דבר. למתודה שמקבלת `int` ומחזירה `int` משתמשים ב-`Func<int, int>`."
+
+- id: cs.advanced.delegates-events.013
+  type: truefalse
+  difficulty: 2
+  prompt: אם אחד המטפלים של נציג מרובה זורק חריגה, שאר המטפלים ברשימה עדיין ירוצו.
+  answer: false
+  explanation: "המטפלים רצים ברצף. חריגה באחד מהם יוצאת מהקריאה לנציג מיד, והמטפלים שאחריו ברשימה לא רצים בכלל. מי שצריך שכל מטפל ירוץ, עובר על `GetInvocationList()` ועוטף כל קריאה ב-`try`."
+
+- id: cs.advanced.delegates-events.014
+  type: single
+  difficulty: 3
+  prompt: "מה הטיפוס ש-`var` מסיק עבור `check`?"
+  code: |
+    var check = (string s) => s.Length > 3;
+    Console.WriteLine(check("hello"));
+  options:
+    - "`Func<string, bool>`"
+    - "`Predicate<string>`"
+    - "`Action<string, bool>`"
+    - "`Func<bool, string>`"
+  answer: 0
+  explanation: "מאז C# 10 ללמבדא עם פרמטרים מוצהרים יש טיפוס טבעי (Natural Type): `Func` או `Action` מתאים. הלמבדא מקבלת `string` ומחזירה `bool`, ולכן הטיפוס הוא `Func<string, bool>`. אפשר להמיר אותה גם ל-`Predicate<string>`, אבל רק אם כותבים את הטיפוס במפורש."
+  optionExplanations:
+    "1": "`Predicate<string>` תואם בחתימה, אבל `var` בוחר תמיד ב-`Func` או `Action`."
+    "2": "`Action` לא מחזיר ערך, והלמבדא מחזירה `bool`."
+    "3": "ב-`Func` טיפוס ההחזרה נכתב אחרון: כאן הוא `bool`, והפרמטר הוא `string`."
+
+- id: cs.advanced.delegates-events.015
+  type: cleaner
+  difficulty: 1
+  prompt: שני הקטעים מדפיסים את אותו פלט. איזה מהם נקי יותר?
+  options:
+    - |
+      var nums = new List<int> { 1, 2, 3, 4, 5, 6 };
+      Console.WriteLine(string.Join(",", Filter(nums, n => n % 2 == 0)));
+      Console.WriteLine(string.Join(",", Filter(nums, n => n > 4)));
+
+      static List<int> Filter(List<int> items, Func<int, bool> keep)
+      {
+          var result = new List<int>();
+          foreach (int n in items)
+              if (keep(n))
+                  result.Add(n);
+          return result;
+      }
+    - |
+      var nums = new List<int> { 1, 2, 3, 4, 5, 6 };
+      Console.WriteLine(string.Join(",", FilterEven(nums)));
+      Console.WriteLine(string.Join(",", FilterAboveFour(nums)));
+
+      static List<int> FilterEven(List<int> items)
+      {
+          var result = new List<int>();
+          foreach (int n in items)
+              if (n % 2 == 0)
+                  result.Add(n);
+          return result;
+      }
+
+      static List<int> FilterAboveFour(List<int> items)
+      {
+          var result = new List<int>();
+          foreach (int n in items)
+              if (n > 4)
+                  result.Add(n);
+          return result;
+      }
+  answer: 0
+  explanation: "כשרק התנאי משתנה, מעבירים אותו כפרמטר מסוג `Func<int, bool>`. כך יש לולאה אחת, וכל סינון חדש הוא למבדא של שורה אחת ולא מתודה שלמה."
+  optionExplanations:
+    "1": "שכפול קוד - Duplicated Code: שתי מתודות זהות שנבדלות רק בתנאי, וכל סינון חדש ידרוש עותק נוסף."
+
+- id: cs.advanced.delegates-events.016
+  type: single
+  difficulty: 3
+  prompt: "אובייקט קצר־חיים נרשם לאירוע של אובייקט שחי לאורך כל התוכנית, ולעולם לא מבטל את הרישום. מה התוצאה?"
+  options:
+    - "המפרסם מחזיק הפניה למנוי דרך הנציג, ולכן המנוי לא משתחרר מהזיכרון והמטפל שלו ממשיך לרוץ"
+    - "אוסף הזבל (Garbage Collector) משחרר את המנוי ומבטל את הרישום אוטומטית"
+    - "האירוע זורק חריגה בהפעלה הבאה, כי המנוי כבר לא בשימוש"
+    - "אין שום השפעה, כי אירועים מחזיקים רק הפניות חלשות (Weak References)"
+  answer: 0
+  explanation: "נציג שמצביע על מתודת מופע מחזיק הפניה לאובייקט עצמו. כל עוד המפרסם חי, הוא שומר את המנוי בחיים: זו דליפת זיכרון (Memory Leak) קלאסית, והמטפל ממשיך לפעול על אובייקט שאמור היה להיעלם. לכן מבטלים רישום עם `-=` כשהמנוי מסיים את תפקידו."
+  optionExplanations:
+    "1": "אוסף הזבל לא משחרר אובייקט שיש אליו הפניה, והנציג של המפרסם הוא הפניה כזו."
+    "2": "המנוי עדיין קיים בזיכרון, ולכן המטפל פשוט רץ כרגיל."
+    "3": "אירועים רגילים ב-C# מחזיקים הפניות חזקות."

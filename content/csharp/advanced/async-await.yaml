@@ -1,0 +1,366 @@
+- id: cs.advanced.async-await.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int result = await AddAsync(2, 3);
+    Console.WriteLine(result);
+
+    async Task<int> AddAsync(int a, int b)
+    {
+        await Task.Delay(10);
+        return a + b;
+    }
+  options: ["5", "0", "System.Threading.Tasks.Task`1[System.Int32]", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מתודה אסינכרונית (Async Method) שמחזירה `Task<int>` מבטיחה `int` בעתיד. `await` ממתין לסיום המשימה (Task) ופורק ממנה את הערך, ולכן `result` הוא `int` רגיל עם הערך 5."
+  optionExplanations:
+    "1": "`await` ממתין עד שהמשימה מסתיימת, ולכן הערך כבר מחושב כשמדפיסים אותו."
+    "2": "בזכות `await` מקבלים את הערך שבתוך המשימה, ולא את אובייקט ה-`Task` עצמו."
+    "3": "מותר להשתמש ב-`await` ישירות בהוראות ברמה העליונה (Top-level Statements)."
+
+- id: cs.advanced.async-await.002
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("A");
+    Task<int> task = GetAsync();
+    Console.WriteLine("C");
+    int x = await task;
+    Console.WriteLine(x);
+
+    async Task<int> GetAsync()
+    {
+        Console.WriteLine("B");
+        await Task.Delay(50);
+        return 42;
+    }
+  options: ["A\nB\nC\n42", "A\nC\nB\n42", "A\nB\n42\nC", "A\nC\n42"]
+  answer: 0
+  explanation: "מתודה אסינכרונית רצה באופן סינכרוני, על אותו תהליכון, עד ה-`await` הראשון על משימה שעוד לא הסתיימה. לכן `B` מודפס מיד בקריאה. ב-`await Task.Delay` המתודה מחזירה משימה שלא הושלמה, והקוד שקרא לה ממשיך ומדפיס `C`. רק `await task` ממתין לתוצאה 42."
+  optionExplanations:
+    "1": "קריאה למתודה אסינכרונית לא מעבירה אותה לרקע. היא רצה מיד עד ה-`await` הראשון, כולל ההדפסה של `B`."
+    "2": "המתודה חוזרת לקוד הקורא כבר ב-`await Task.Delay`, ולכן `C` מודפס לפני שמתקבל 42."
+    "3": "`B` מודפס בתוך `GetAsync`, שנקראה בשורה 2, עוד לפני ה-`await` שבתוכה."
+
+- id: cs.advanced.async-await.003
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var first = LengthAsync("hello");
+    var second = LengthAsync("hi");
+    int[] results = await Task.WhenAll(first, second);
+    Console.WriteLine(string.Join(",", results));
+    Console.WriteLine(results.Sum());
+
+    async Task<int> LengthAsync(string s)
+    {
+        await Task.Delay(s.Length * 10);
+        return s.Length;
+    }
+  options: ["5,2\n7", "2,5\n7", "5\n5", "7\n7"]
+  answer: 0
+  explanation: "שתי המשימות מתחילות לפני ההמתנה ורצות במקביל. `Task.WhenAll` ממתין לכולן ומחזיר מערך של התוצאות לפי סדר המשימות שהועברו אליו, לא לפי סדר הסיום. לכן `5` ראשון, אף על פי ש-`hi` מסתיימת מוקדם יותר."
+  optionExplanations:
+    "1": "`hi` אמנם מסתיימת ראשונה, אבל סדר המערך הוא סדר הארגומנטים של `WhenAll`."
+    "2": "`WhenAll` ממתין לכל המשימות ומחזיר את כל התוצאות, לא רק את הראשונה."
+    "3": "`results` הוא מערך של שתי תוצאות, ו-`string.Join` מדפיס את שתיהן."
+
+- id: cs.advanced.async-await.004
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Task task = FailAsync();
+    Console.WriteLine("after call");
+    try
+    {
+        await task;
+    }
+    catch (InvalidOperationException e)
+    {
+        Console.WriteLine($"caught {e.Message}");
+    }
+
+    async Task FailAsync()
+    {
+        Console.WriteLine("start");
+        throw new InvalidOperationException("boom");
+    }
+  options:
+    - "start\nafter call\ncaught boom"
+    - "start\nInvalidOperationException"
+    - "after call\nstart\ncaught boom"
+    - "start\ncaught boom"
+  answer: 0
+  explanation: "חריגה שנזרקת בתוך מתודת `async Task` לא יוצאת מהקריאה עצמה. היא נשמרת בתוך המשימה, והמשימה מסומנת כנכשלת (Faulted). החריגה נזרקת שוב רק ב-`await task`, ושם ה-`catch` תופס אותה. לכן `after call` מודפס לפני שהחריגה מטופלת."
+  optionExplanations:
+    "1": "ב-`async Task` החריגה לא נזרקת בקריאה. היא נשמרת במשימה, וה-`catch` תופס אותה ב-`await`."
+    "2": "המתודה רצה מיד עם הקריאה, ולכן `start` מודפס לפני `after call`."
+    "3": "החריגה לא קוטעת את הקוד הקורא. היא מחכה במשימה עד ה-`await`, ולכן `after call` מודפס."
+
+- id: cs.advanced.async-await.005
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    int value = GetValueAsync();
+    Console.WriteLine(value);
+
+    async Task<int> GetValueAsync()
+    {
+        await Task.Delay(10);
+        return 7;
+    }
+  options: ["7", "0", "שגיאת קומפילציה", "System.Threading.Tasks.Task`1[System.Int32]"]
+  answer: 2
+  explanation: "`GetValueAsync` מחזירה `Task<int>` ולא `int`, ואין המרה מרומזת ביניהם. כדי לקבל את הערך צריך `int value = await GetValueAsync();`. ה-`return 7` שבתוך המתודה עוטף את הערך במשימה."
+  optionExplanations:
+    "0": "בלי `await` מקבלים את המשימה עצמה, שהיא לא `int`, ולכן הקוד לא מתקמפל."
+    "3": "זה היה קורה עם `var value`, שמקבל את המשימה כ-`Task<int>`. ההשמה ל-`int` לא מתקמפלת."
+
+- id: cs.advanced.async-await.006
+  type: single
+  difficulty: 1
+  prompt: "מה עושה `await task` כשהמשימה עדיין לא הסתיימה?"
+  options:
+    - "משהה את המתודה בלי לחסום את התהליכון (Thread), וממשיך ממנה כשהמשימה מסתיימת"
+    - "חוסם את התהליכון הנוכחי עד שהמשימה מסתיימת, כמו `task.Wait()`"
+    - "יוצר תהליכון חדש ומריץ עליו את המשך המתודה מיד"
+    - "מדלג על המשימה וממשיך לשורה הבאה בלי לחכות"
+  answer: 0
+  explanation: "`await` רושם את המשך המתודה כהמשך (Continuation) ומחזיר את השליטה לקוד שקרא לה. התהליכון פנוי לעבודה אחרת בזמן ההמתנה, וכשהמשימה מסתיימת המתודה ממשיכה מאותה נקודה. זה ההבדל המרכזי מ-`Wait()` ו-`.Result`, שחוסמים."
+  optionExplanations:
+    "1": "זה בדיוק מה ש-`await` נועד למנוע: `Wait()` חוסם, ו-`await` משחרר את התהליכון."
+    "2": "`await` לא יוצר תהליכון. ההמשך רץ רק אחרי שהמשימה מסתיימת."
+    "3": "השורה הבאה רצה רק אחרי שהמשימה מסתיימת. זו כל המטרה של ההמתנה."
+
+- id: cs.advanced.async-await.007
+  type: single
+  difficulty: 2
+  prompt: "למה נמנעים ממתודות `async void`, חוץ ממטפלי אירועים (Event Handlers)?"
+  options:
+    - "אי אפשר לחכות להן עם `await`, וחריגה שנזרקת בהן לא מגיעה ל-`try` של הקוד הקורא ועלולה להפיל את התוכנית"
+    - "הן רצות לאט יותר מ-`async Task`, כי כל קריאה יוצרת תהליכון חדש"
+    - "הקומפיילר לא מאפשר להשתמש ב-`await` בתוך מתודה שמחזירה `void`"
+    - "הן תמיד רצות באופן סינכרוני, כאילו לא נכתב `async`"
+  answer: 0
+  explanation: "`async void` לא מחזירה משימה, ולכן לקוד הקורא אין מה להמתין לו ואין דרך לדעת מתי היא הסתיימה. חריגה בתוכה לא נשמרת במשימה, אלא נזרקת ישירות ועלולה להפיל את התהליך. לכן כותבים `async Task`, ומשאירים `async void` רק למטפלי אירועים שהחתימה שלהם מחייבת `void`."
+  optionExplanations:
+    "1": "הבעיה היא לא ביצועים. `async void` לא יוצרת תהליכון, בדיוק כמו `async Task`."
+    "2": "`await` מותר בתוך `async void`. הבעיה היא אצל הקוד הקורא, שלא יכול להמתין לה."
+    "3": "היא רצה כמו כל מתודה אסינכרונית, עד ה-`await` הראשון וממנו ממשיכה מאוחר יותר."
+
+- id: cs.advanced.async-await.008
+  type: bug
+  difficulty: 2
+  prompt: "המתודה אמורה להמתין שנייה בלי לחסום את התהליכון. באיזו שורה הבאג?"
+  code: |
+    await RetryAsync();
+    Console.WriteLine("done");
+
+    async Task RetryAsync()
+    {
+        Console.WriteLine("waiting");
+        Thread.Sleep(1000);
+        Console.WriteLine("retrying");
+    }
+  answer: 7
+  explanation: "`Thread.Sleep` חוסם את התהליכון לשנייה שלמה, גם בתוך מתודה אסינכרונית, ואז המתודה רצה כולה באופן סינכרוני. `await Task.Delay(1000)` ממתין אותו זמן, אבל משחרר את התהליכון בזמן ההמתנה."
+  fixed: |
+    await RetryAsync();
+    Console.WriteLine("done");
+
+    async Task RetryAsync()
+    {
+        Console.WriteLine("waiting");
+        await Task.Delay(1000);
+        Console.WriteLine("retrying");
+    }
+
+- id: cs.advanced.async-await.009
+  type: bug
+  difficulty: 3
+  prompt: "הקוד אמור להדפיס `send failed` כשהשליחה נכשלת, אבל מודפס `sent`. באיזו שורה הבאג?"
+  code: |
+    try
+    {
+        SendAsync("");
+        Console.WriteLine("sent");
+    }
+    catch (ArgumentException)
+    {
+        Console.WriteLine("send failed");
+    }
+
+    async Task SendAsync(string message)
+    {
+        await Task.Delay(10);
+        if (message == "")
+            throw new ArgumentException("empty message");
+    }
+  answer: 3
+  explanation: "בלי `await` המשימה מתחילה, אבל אף אחד לא ממתין לה. החריגה נשמרת במשימה ולא מגיעה ל-`try`, ולכן `sent` מודפס והכישלון נבלע בשקט. `await SendAsync(\"\")` ממתין לסיום, זורק את החריגה מחדש בתוך ה-`try`, וה-`catch` תופס אותה."
+  fixed: |
+    try
+    {
+        await SendAsync("");
+        Console.WriteLine("sent");
+    }
+    catch (ArgumentException)
+    {
+        Console.WriteLine("send failed");
+    }
+
+    async Task SendAsync(string message)
+    {
+        await Task.Delay(10);
+        if (message == "")
+            throw new ArgumentException("empty message");
+    }
+
+- id: cs.advanced.async-await.010
+  type: single
+  difficulty: 2
+  prompt: "`DownloadAsync` לוקחת כשנייה. כמה זמן בערך לוקח כל קטע?"
+  code: |
+    class Downloads
+    {
+        // Version 1
+        public async Task OneByOneAsync()
+        {
+            await DownloadAsync("a");
+            await DownloadAsync("b");
+        }
+
+        // Version 2
+        public async Task TogetherAsync()
+        {
+            Task a = DownloadAsync("a");
+            Task b = DownloadAsync("b");
+            await Task.WhenAll(a, b);
+        }
+
+        private Task DownloadAsync(string name) => Task.Delay(1000);
+    }
+  options:
+    - "גרסה 1 כשתי שניות, גרסה 2 כשנייה"
+    - "שתי הגרסאות כשנייה, כי `await` תמיד מריץ במקביל"
+    - "שתי הגרסאות כשתי שניות, כי `WhenAll` ממתין לכל המשימות"
+    - "גרסה 1 כשנייה, גרסה 2 כשתי שניות"
+  answer: 0
+  explanation: "בגרסה 1 ההורדה השנייה מתחילה רק אחרי שהראשונה הסתיימה, ולכן הזמנים מצטברים. בגרסה 2 שתי המשימות מתחילות מיד, ו-`Task.WhenAll` ממתין לשתיהן יחד, ולכן הזמן הוא בערך של הארוכה מביניהן."
+  optionExplanations:
+    "1": "`await` ממתין לסיום לפני השורה הבאה, ולכן שני `await` ברצף רצים בזה אחר זה."
+    "2": "`WhenAll` אכן ממתין לכולן, אבל הן רצות במקביל, ולכן ההמתנות לא מצטברות."
+    "3": "זה הפוך: דווקא ההמתנה ברצף היא האיטית."
+
+- id: cs.advanced.async-await.011
+  type: truefalse
+  difficulty: 1
+  prompt: "המילה `async` גורמת למתודה לרוץ אוטומטית על תהליכון (Thread) חדש."
+  answer: false
+  explanation: "`async` רק מתיר להשתמש ב-`await` בתוך המתודה, והקומפיילר הופך אותה למכונת מצבים (State Machine). המתודה מתחילה לרוץ על התהליכון של מי שקרא לה. כדי להריץ עבודה על תהליכון אחר במפורש משתמשים ב-`Task.Run`."
+
+- id: cs.advanced.async-await.012
+  type: truefalse
+  difficulty: 2
+  prompt: "`await Task.WhenAll(t1, t2)` ממשיך לשורה הבאה ברגע שהמשימה הראשונה מבין השתיים מסתיימת."
+  answer: false
+  explanation: "`WhenAll` מסתיימת רק כשכל המשימות הסתיימו. מי שרוצה להמשיך כבר אחרי הראשונה שמסתיימת משתמש ב-`Task.WhenAny`, שמחזירה את המשימה שסיימה ראשונה."
+
+- id: cs.advanced.async-await.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Task slow = SlowAsync();
+    Task bad = BadAsync();
+    try
+    {
+        await Task.WhenAll(slow, bad);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.GetType().Name);
+    }
+    Console.WriteLine(slow.IsCompleted);
+
+    async Task SlowAsync() => await Task.Delay(50);
+    async Task BadAsync()
+    {
+        await Task.Delay(10);
+        throw new TimeoutException();
+    }
+  options: ["TimeoutException\nTrue", "AggregateException\nTrue", "TimeoutException\nFalse", "AggregateException\nFalse"]
+  answer: 0
+  explanation: "`Task.WhenAll` מסתיימת רק אחרי שכל המשימות הסתיימו, גם אם אחת מהן נכשלה מוקדם, ולכן `slow` כבר הושלמה. `await` על משימה שנכשלה זורק את החריגה המקורית הראשונה, ולא את `AggregateException` שעוטפת אותה."
+  optionExplanations:
+    "1": "`AggregateException` מתקבלת עם `.Wait()` או `.Result`. `await` פורק אותה וזורק את החריגה המקורית."
+    "2": "`WhenAll` לא נעצרת בכישלון הראשון. היא ממתינה גם ל-`slow` לפני שהיא נכשלת."
+    "3": "גם סוג החריגה שגוי וגם המצב של `slow`: `await` זורק את החריגה המקורית, ו-`WhenAll` מחכה לכולן."
+
+- id: cs.advanced.async-await.014
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    foreach (int n in new[] { 3, 1, 2 })
+    {
+        await Task.Delay(n * 10);
+        Console.Write(n);
+    }
+  options: ["312", "123", "321", "3"]
+  answer: 0
+  explanation: "כל `await` ממתין עד שההמתנה הנוכחית מסתיימת, ורק אז הלולאה ממשיכה לאיבר הבא. ההמתנות רצות אחת אחרי השנייה ולא במקביל, ולכן הסדר הוא סדר המערך, ואורך ההמתנה לא משנה אותו."
+  optionExplanations:
+    "1": "`123` מניח שכל ההמתנות רצות במקביל ומי שמסיים ראשון מודפס ראשון. `await` בתוך לולאה רץ ברצף."
+    "2": "אין כאן מיון. האיברים מודפסים לפי הסדר שבו הם מופיעים במערך."
+    "3": "`await` לא עוצר את הלולאה לתמיד. אחרי כל המתנה היא ממשיכה לאיבר הבא."
+
+- id: cs.advanced.async-await.015
+  type: cleaner
+  difficulty: 2
+  prompt: שני הקטעים מדפיסים `4`. איזה מהם נכון ונקי יותר?
+  options:
+    - |
+      string text = await LoadAsync();
+      Console.WriteLine(text.Length);
+
+      async Task<string> LoadAsync()
+      {
+          await Task.Delay(10);
+          return "data";
+      }
+    - |
+      string text = LoadAsync().Result;
+      Console.WriteLine(text.Length);
+
+      async Task<string> LoadAsync()
+      {
+          await Task.Delay(10);
+          return "data";
+      }
+  answer: 0
+  explanation: "`await` ממתין בלי לחסום את התהליכון, וזורק את החריגה המקורית אם הטעינה נכשלת. הכלל הוא async לכל אורך הדרך (Async All the Way): קוד שקורא לקוד אסינכרוני צריך להיות אסינכרוני בעצמו."
+  optionExplanations:
+    "1": "`.Result` חוסם את התהליכון (Sync over Async), עוטף חריגות ב-`AggregateException`, ובאפליקציות עם ממשק משתמש עלול לגרום לקיפאון (Deadlock)."
+
+- id: cs.advanced.async-await.016
+  type: single
+  difficulty: 1
+  prompt: "מה צריך להיות טיפוס ההחזרה של מתודה אסינכרונית שלא מחזירה ערך (ואינה מטפל אירוע)?"
+  options:
+    - "`Task`"
+    - "`void`"
+    - "`Task<void>`"
+    - "`object`"
+  answer: 0
+  explanation: "`Task` מייצג פעולה אסינכרונית בלי ערך החזרה, והקוד הקורא יכול לחכות לה עם `await` ולתפוס את החריגות שלה. למתודה שמחזירה ערך משתמשים ב-`Task<T>`."
+  optionExplanations:
+    "1": "`async void` מתאים רק למטפלי אירועים: אי אפשר להמתין לו או לתפוס את החריגות שלו."
+    "2": "`void` לא יכול להיות ארגומנט גנרי, ולכן `Task<void>` לא קיים. בשביל זה יש `Task`."
+    "3": "מתודה עם `async` חייבת להחזיר `Task`, `Task<T>`, `void` או טיפוס דמוי משימה. `object` לא מותר."
