@@ -1,0 +1,453 @@
+- id: cs.oop.abstract-classes.001
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Report report = new SalesReport();
+    report.Print();
+
+    abstract class Report
+    {
+        public void Print() => Console.WriteLine($"[{Title()}] printed");
+
+        protected abstract string Title();
+    }
+
+    class SalesReport : Report
+    {
+        protected override string Title() => "Sales";
+    }
+  options: ["[Sales] printed", "[] printed", "[Title] printed", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מחלקה מופשטת (Abstract Class) יכולה לשלב מימוש מלא (`Print`) עם מתודה מופשטת בלי גוף (`Title`). `Print` קוראת ל-`Title`, ובזמן ריצה רצה הגרסה של `SalesReport`. כך הבסיס קובע את מבנה הפעולה, והיורשת משלימה את החלק החסר."
+  optionExplanations:
+    "1": "ל-`Title` אין גרסה ריקה בבסיס. הקריאה מגיעה תמיד למימוש של המחלקה היורשת."
+    "2": "`Title()` היא קריאה למתודה, לא טקסט. הערך שלה הוא מה ש-`SalesReport` מחזירה."
+    "3": "מחלקה מופשטת יכולה להכיל מתודות רגילות עם גוף לצד מתודות מופשטות."
+
+- id: cs.oop.abstract-classes.002
+  type: output
+  difficulty: 1
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    Shape shape = new Shape();
+    Console.WriteLine(shape.Area());
+
+    abstract class Shape
+    {
+        public abstract double Area();
+    }
+  options: ["0", "שגיאת קומפילציה", "NullReferenceException", "NotImplementedException"]
+  answer: 1
+  explanation: "אי אפשר ליצור מופע של מחלקה מופשטת עם `new`. היא מושג כללי שחסרים בו חלקים, למשל כאן אין מימוש ל-`Area`. יוצרים אובייקט של מחלקה יורשת שאינה מופשטת, ומציבים אותו במשתנה מטיפוס `Shape`."
+  optionExplanations:
+    "0": "למתודה מופשטת אין מימוש ברירת מחדל שמחזיר 0. הקומפיילר עוצר כבר ב-`new Shape()`."
+    "3": "הבעיה מתגלה בזמן קומפילציה, לא בזמן ריצה, ולכן לא נזרקת שום חריגה."
+
+- id: cs.oop.abstract-classes.003
+  type: single
+  difficulty: 1
+  prompt: "מה ההבדל בין מתודה `abstract` לבין מתודה `virtual`?"
+  options:
+    - "למתודה `abstract` אין גוף, ומחלקה יורשת שאינה מופשטת חייבת לדרוס אותה; למתודה `virtual` יש מימוש, והדריסה רשות"
+    - "מתודה `virtual` חייבת להידרס, ומתודה `abstract` לא"
+    - "מתודה `abstract` אפשר להגדיר בכל מחלקה, גם בלי `abstract` על המחלקה"
+    - "אין הבדל: שתיהן מאפשרות `override` ושתיהן מחייבות אותו"
+  answer: 0
+  explanation: "`virtual` אומר: יש מימוש ברירת מחדל, ומותר להחליף אותו. `abstract` אומר: אין מימוש, וכל מחלקה יורשת שאפשר ליצור ממנה חייבת לספק אחד. מתודה `abstract` מותרת רק בתוך מחלקה `abstract`."
+  optionExplanations:
+    "1": "ההפך: דריסה של `virtual` היא רשות, ושל `abstract` היא חובה."
+    "2": "מחלקה שיש בה מתודה `abstract` חייבת להיות מוגדרת `abstract` בעצמה."
+    "3": "`virtual` לא מחייבת דריסה, כי כבר יש לה מימוש."
+
+- id: cs.oop.abstract-classes.004
+  type: truefalse
+  difficulty: 1
+  prompt: "מחלקה מופשטת יכולה להכיל גם מתודות רגילות עם מימוש מלא, ולא רק מתודות `abstract`."
+  answer: true
+  explanation: "מחלקה מופשטת מאפשרת מימוש חלקי: חלק מהמתודות מלאות ומשותפות לכל היורשות, וחלק מופשטות וכל יורשת ממלאת אותן. זה ההבדל המרכזי בינה לבין מחלקה שכולה חוזה."
+
+- id: cs.oop.abstract-classes.005
+  type: hierarchy
+  difficulty: 1
+  prompt: "לפי הקוד, ממי יורשת כל מחלקה ישירות?"
+  code: |
+    abstract class Vehicle
+    {
+        public abstract int Wheels { get; }
+    }
+
+    abstract class MotorVehicle : Vehicle { }
+
+    class Car : MotorVehicle { public override int Wheels => 4; }
+    class Motorcycle : MotorVehicle { public override int Wheels => 2; }
+    class Bicycle : Vehicle { public override int Wheels => 2; }
+
+    class Garage
+    {
+        private List<Vehicle> vehicles = new();
+    }
+  targets:
+    - id: Vehicle
+    - id: MotorVehicle
+    - id: "object (אין מחלקת בסיס מפורשת)"
+  items:
+    - label: MotorVehicle
+      answer: Vehicle
+      why: גם מחלקה מופשטת יכולה לרשת ממחלקה מופשטת אחרת.
+    - label: Car
+      answer: MotorVehicle
+    - label: Motorcycle
+      answer: MotorVehicle
+    - label: Bicycle
+      answer: Vehicle
+      why: אופניים הם כלי רכב, אבל לא כלי רכב ממונע.
+    - label: Garage
+      answer: "object (אין מחלקת בסיס מפורשת)"
+      why: מוסך מחזיק כלי רכב (has-a), הוא לא סוג של כלי רכב.
+  explanation: "מחלקות מופשטות יוצרות את רמות ההכללה בהיררכיה: `Vehicle` ו-`MotorVehicle`. המחלקות הקונקרטיות בתחתית הן אלה שמממשות את `Wheels` ושאפשר ליצור מהן אובייקטים."
+
+- id: cs.oop.abstract-classes.006
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    Shape shape = new Square(2);
+    Console.WriteLine(shape.Area());
+
+    abstract class Shape
+    {
+        public abstract double Area();
+        public abstract double Perimeter();
+    }
+
+    class Square : Shape
+    {
+        private readonly double side;
+        public Square(double side) => this.side = side;
+        public override double Area() => side * side;
+    }
+  options: ["4", "שגיאת קומפילציה", "0", "NotImplementedException"]
+  answer: 1
+  explanation: "`Square` אינה מופשטת, ולכן היא חייבת לממש את כל המתודות המופשטות שירשה. היא מימשה את `Area` אבל לא את `Perimeter`, וזו שגיאת קומפילציה, גם אם הקוד אף פעם לא קורא ל-`Perimeter`."
+  optionExplanations:
+    "0": "הקומפיילר בודק שהמחלקה שלמה, לא רק את המתודות שנקראות בפועל."
+    "3": "מתודה מופשטת חסרה נתפסת בקומפילציה. אין מימוש אוטומטי שזורק חריגה."
+
+- id: cs.oop.abstract-classes.007
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    var dog = new Dog("Rex");
+    Console.WriteLine(dog.Intro());
+
+    abstract class Animal
+    {
+        private readonly string name;
+
+        protected Animal(string name)
+        {
+            this.name = name;
+            Console.WriteLine("Animal ctor");
+        }
+
+        public string Intro() => $"{name} says {Sound()}";
+
+        protected abstract string Sound();
+    }
+
+    class Dog : Animal
+    {
+        public Dog(string name) : base(name) { }
+
+        protected override string Sound() => "Woof";
+    }
+  options: ["Animal ctor\nRex says Woof", "Rex says Woof", "שגיאת קומפילציה", "Animal ctor\nRex says"]
+  answer: 0
+  explanation: "אי אפשר ליצור מופע ישיר של מחלקה מופשטת, אבל יש לה בנאי, והוא רץ כשנוצר אובייקט של מחלקה יורשת. `Dog` מעבירה את השם עם `base(name)`, הבנאי של `Animal` שומר אותו ומדפיס, ו-`Intro` משלבת שדה של הבסיס עם `Sound` של היורשת."
+  optionExplanations:
+    "1": "לבנאי של מחלקה מופשטת יש גוף, והוא רץ כחלק מבניית `Dog`."
+    "2": "מחלקה מופשטת יכולה להגדיר בנאי. מקובל לסמן אותו `protected`, כי רק יורשות קוראות לו."
+    "3": "`Sound()` נקראת בזמן ריצה ומפעילה את הגרסה של `Dog`."
+
+- id: cs.oop.abstract-classes.008
+  type: bug
+  difficulty: 2
+  prompt: "`Discount` אמורה להחזיר את סכום ההנחה. לסטודנט יש 10% הנחה, ולכן המחיר הסופי של 200 צריך להיות 180, אבל מתקבל 20. באיזו שורה הבאג?"
+  code: |
+    PriceCalculator calc = new StudentPrice();
+    Console.WriteLine(calc.Final(200));
+
+    abstract class PriceCalculator
+    {
+        public decimal Final(decimal price) => price - Discount(price);
+
+        protected abstract decimal Discount(decimal price);
+    }
+
+    class StudentPrice : PriceCalculator
+    {
+        protected override decimal Discount(decimal price) => price * 0.9m;
+    }
+  answer: 13
+  fixed: |
+    PriceCalculator calc = new StudentPrice();
+    Console.WriteLine(calc.Final(200));
+
+    abstract class PriceCalculator
+    {
+        public decimal Final(decimal price) => price - Discount(price);
+
+        protected abstract decimal Discount(decimal price);
+    }
+
+    class StudentPrice : PriceCalculator
+    {
+        protected override decimal Discount(decimal price) => price * 0.1m;
+    }
+  explanation: "המחלקה המופשטת מגדירה את החוזה: `Final` מחסירה את מה ש-`Discount` מחזירה. המימוש ב-`StudentPrice` מחזיר את המחיר אחרי ההנחה (90%) במקום את סכום ההנחה (10%). כשמממשים מתודה מופשטת, צריך לכבד את המשמעות שהבסיס מצפה לה, לא רק את החתימה."
+
+- id: cs.oop.abstract-classes.009
+  type: bug
+  difficulty: 2
+  prompt: "דמי הניהול של חשבון חיסכון אמורים להיות 1% מהיתרה, כלומר 10 עבור יתרה של 1000, אבל עבור חשבון החיסכון מודפס אפס. באיזו שורה הבאג?"
+  code: |
+    var accounts = new List<Account> { new Checking(1000), new Savings(1000) };
+    foreach (var account in accounts)
+        Console.WriteLine(account.MonthlyFee());
+
+    abstract class Account
+    {
+        protected decimal Balance { get; }
+        protected Account(decimal balance) => Balance = balance;
+        public abstract decimal MonthlyFee();
+    }
+
+    class Checking : Account
+    {
+        public Checking(decimal balance) : base(balance) { }
+        public override decimal MonthlyFee() => 5;
+    }
+
+    class Savings : Account
+    {
+        public Savings(decimal balance) : base(0) { }
+        public override decimal MonthlyFee() => Balance * 0.01m;
+    }
+  answer: 20
+  fixed: |
+    var accounts = new List<Account> { new Checking(1000), new Savings(1000) };
+    foreach (var account in accounts)
+        Console.WriteLine(account.MonthlyFee());
+
+    abstract class Account
+    {
+        protected decimal Balance { get; }
+        protected Account(decimal balance) => Balance = balance;
+        public abstract decimal MonthlyFee();
+    }
+
+    class Checking : Account
+    {
+        public Checking(decimal balance) : base(balance) { }
+        public override decimal MonthlyFee() => 5;
+    }
+
+    class Savings : Account
+    {
+        public Savings(decimal balance) : base(balance) { }
+        public override decimal MonthlyFee() => Balance * 0.01m;
+    }
+  explanation: "היתרה נשמרת בחלק המשותף, במחלקה המופשטת, ומגיעה אליה רק דרך `base(...)`. הבנאי של `Savings` מעביר `0` במקום את `balance`, ולכן `Balance` הוא 0 והעמלה 0. הנוסחה ב-`MonthlyFee` נכונה; הנתון שהיא מקבלת שגוי."
+
+- id: cs.oop.abstract-classes.010
+  type: single
+  difficulty: 2
+  prompt: "למחלקות `PdfExport` ו-`CsvExport` יש קוד משותף: פתיחת קובץ, כתיבת כותרת וסגירה. רק אופן כתיבת השורות שונה. מה העיצוב המתאים?"
+  options:
+    - "מחלקה מופשטת עם הקוד המשותף ומתודה `abstract` לכתיבת השורות, ששתי המחלקות יורשות ממנה"
+    - "ממשק עם מתודה `Export`, ולהעתיק את הקוד המשותף לכל אחת מהמחלקות"
+    - "מחלקה אחת עם `if` שבודק את סוג הייצוא בכל שלב"
+    - "מחלקה `static` עם כל הקוד, ששתי המחלקות קוראות לה בלי ירושה"
+  answer: 0
+  explanation: "כשיש קוד משותף אמיתי ויחס is-a ברור (ייצוא PDF הוא סוג של ייצוא), מחלקה מופשטת מחזיקה את המימוש המשותף פעם אחת ומשאירה למחלקות היורשות רק את מה ששונה. זה מימוש חלקי, ומחלקה מופשטת נועדה בדיוק לזה."
+  optionExplanations:
+    "1": "ממשק לא מחזיק את הקוד המשותף, ולכן הוא ישוכפל בכל מחלקה."
+    "2": "`if` על סוג הייצוא מתפזר בכל הקוד, וכל סוג חדש מחייב לשנות את המחלקה."
+    "3": "מחלקה `static` לא יכולה להכריח את המחלקות לספק את השלב השונה, וכל אחת תצטרך לזכור לקרוא לחלקים בסדר הנכון."
+
+- id: cs.oop.abstract-classes.011
+  type: truefalse
+  difficulty: 2
+  prompt: "אפשר להגדיר מתודה `abstract` בתוך מחלקה שאינה מוגדרת `abstract`."
+  answer: false
+  explanation: "מתודה `abstract` אין לה גוף, ולכן אובייקט של המחלקה היה נשאר עם מתודה שאי אפשר להריץ. הקומפיילר מחייב שמחלקה שמכילה מתודה מופשטת תהיה מופשטת בעצמה, וכך אי אפשר ליצור ממנה מופע."
+
+- id: cs.oop.abstract-classes.012
+  type: hierarchy
+  difficulty: 2
+  prompt: לפי הקוד, בחרו לכל זוג את היחס ביניהם.
+  code: |
+    interface IDrawable { void Draw(); }
+
+    abstract class Shape : IDrawable
+    {
+        public abstract double Area();
+        public void Draw() => Console.WriteLine($"Area {Area()}");
+    }
+
+    class Circle : Shape
+    {
+        public double Radius { get; init; }
+        public override double Area() => Math.PI * Radius * Radius;
+    }
+
+    class Theme { }
+
+    class Canvas
+    {
+        private readonly List<Shape> shapes = new();
+        private readonly Theme theme = new();
+    }
+  targets:
+    - id: is-a
+      desc: ירושה - Inheritance
+    - id: implements
+      desc: מימוש ממשק - Implements
+    - id: has-a
+      desc: הרכבה - Composition
+  items:
+    - label: "Circle ו-Shape"
+      answer: is-a
+      why: Shape היא מחלקה מופשטת, ו-Circle יורשת ממנה ומשלימה את Area.
+    - label: "Shape ו-IDrawable"
+      answer: implements
+      why: גם מחלקה מופשטת יכולה לממש ממשק, ואפילו להשאיר חלק מהעבודה ליורשות.
+    - label: "Canvas ו-Shape"
+      answer: has-a
+    - label: "Canvas ו-Theme"
+      answer: has-a
+  explanation: "מחלקה מופשטת משתתפת ביחסים כמו כל מחלקה: יורשים ממנה (is-a), היא יכולה לממש ממשקים (implements), ואחרים יכולים להחזיק הפניות לטיפוס שלה (has-a). `Canvas` מחזיקה `List<Shape>`, ובפועל יהיו בה אובייקטים כמו `Circle`."
+
+- id: cs.oop.abstract-classes.013
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Employee e = new Intern();
+    Console.WriteLine(e.Pay());
+
+    abstract class Employee
+    {
+        public abstract int BaseSalary();
+        public virtual int Bonus() => 100;
+        public int Pay() => BaseSalary() + Bonus();
+    }
+
+    abstract class Trainee : Employee
+    {
+        public override int Bonus() => 0;
+    }
+
+    class Intern : Trainee
+    {
+        public override int BaseSalary() => 3000;
+    }
+  options: ["3000", "3100", "שגיאת קומפילציה", "100"]
+  answer: 0
+  explanation: "מחלקה מופשטת שיורשת ממחלקה מופשטת לא חייבת לממש את המתודות המופשטות. `Trainee` מימשה רק את `Bonus`, ו-`Intern`, המחלקה הקונקרטית, משלימה את `BaseSalary`. `Pay` מחברת 3000 עם הבונוס של `Trainee`, שהוא 0."
+  optionExplanations:
+    "1": "`Trainee` דרסה את `Bonus` ל-0, ו-`Intern` יורשת את הדריסה הזו, לא את הגרסה של `Employee`."
+    "2": "החובה לממש מתודה מופשטת חלה רק על מחלקה שאינה מופשטת, ו-`Intern` אכן מממשת."
+    "3": "`BaseSalary` מחזירה 3000, והיא חלק מהחישוב ב-`Pay`."
+
+- id: cs.oop.abstract-classes.014
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Shape[] shapes = new Shape[2];
+    Console.WriteLine(shapes.Length);
+    Console.WriteLine(shapes[0] == null);
+
+    abstract class Shape
+    {
+        public abstract double Area();
+    }
+  options: ["2\nTrue", "שגיאת קומפילציה", "2\nFalse", "0\nTrue"]
+  answer: 0
+  explanation: "`new Shape[2]` יוצר מערך של שתי הפניות, לא שני אובייקטים מטיפוס `Shape`. לכן זה חוקי גם כש-`Shape` מופשטת. כל תא מתחיל ב-`null`, ואפשר להציב בו אחר כך כל אובייקט של מחלקה יורשת קונקרטית."
+  optionExplanations:
+    "1": "האיסור הוא על `new Shape()`. יצירת מערך מטיפוס מופשט לא יוצרת שום אובייקט `Shape`."
+    "2": "לא נוצר אובייקט באף תא. תאים של מערך מטיפוס הפניה מתחילים ב-`null`."
+    "3": "גודל המערך נקבע ביצירה, 2, גם אם התאים ריקים."
+
+- id: cs.oop.abstract-classes.015
+  type: single
+  difficulty: 3
+  prompt: "מה אפשר להגדיר במחלקה מופשטת, ואי אפשר להגדיר בממשק (C# 12)?"
+  options:
+    - "שדות מופע ובנאי מופע (Instance Constructors)"
+    - "מתודות עם מימוש"
+    - "מאפיינים"
+    - "מתודות שכל מחלקה יורשת חייבת לממש"
+  answer: 0
+  explanation: "מחלקה מופשטת יכולה להחזיק מצב (שדות מופע) ולאתחל אותו בבנאי, וממשק לא. מנגד, מחלקה יורשת ממחלקה מופשטת אחת בלבד, אבל יכולה לממש כמה ממשקים. אם צריך מצב וקוד משותף לקבוצה קרובה של מחלקות, בוחרים מחלקה מופשטת; אם צריך יכולת שמחלקות לא קשורות יחלקו, בוחרים ממשק."
+  optionExplanations:
+    "1": "מאז C# 8 ממשק יכול להכיל מתודות עם מימוש ברירת מחדל, ולכן זה כבר לא הבדל."
+    "2": "גם ממשק יכול להגדיר מאפיינים, למשל `decimal Price { get; }`."
+    "3": "גם חברי ממשק בלי מימוש מחייבים כל מחלקה שמממשת אותו לספק להם מימוש."
+
+- id: cs.oop.abstract-classes.016
+  type: hierarchy
+  difficulty: 3
+  prompt: "לכל מחלקה, בחרו אם אפשר ליצור ממנה אובייקט עם `new`."
+  code: |
+    abstract class Shape
+    {
+        public abstract double Area();
+    }
+
+    abstract class Polygon : Shape
+    {
+        public int Sides { get; init; }
+    }
+
+    class Triangle : Polygon
+    {
+        public double Base { get; init; }
+        public double Height { get; init; }
+        public override double Area() => Base * Height / 2;
+    }
+
+    abstract class Logger
+    {
+        public void Log(string message) => Console.WriteLine(message);
+    }
+
+    class Circle : Shape
+    {
+        public double Radius { get; init; }
+        public override double Area() => Math.PI * Radius * Radius;
+    }
+  targets:
+    - id: "אפשר ליצור עם new"
+    - id: "אי אפשר ליצור עם new"
+  items:
+    - label: Shape
+      answer: "אי אפשר ליצור עם new"
+    - label: Polygon
+      answer: "אי אפשר ליצור עם new"
+      why: Polygon מוגדרת abstract ולא מממשת את Area. מותר לה, כי היא מופשטת בעצמה.
+    - label: Triangle
+      answer: "אפשר ליצור עם new"
+      why: Triangle קונקרטית ומשלימה את Area שעברה אליה דרך Polygon.
+    - label: Logger
+      answer: "אי אפשר ליצור עם new"
+      why: אין ב-Logger אף מתודה מופשטת, אבל היא מוגדרת abstract, וזה מספיק כדי לאסור new.
+    - label: Circle
+      answer: "אפשר ליצור עם new"
+  explanation: "המילה `abstract` על המחלקה היא שקובעת אם אפשר ליצור ממנה מופע, לא מספר המתודות החסרות. מחלקה קונקרטית בתחתית ההיררכיה חייבת לממש כל מתודה מופשטת שלא מומשה בדרך, גם כזו שהוגדרה שתי רמות מעליה."
