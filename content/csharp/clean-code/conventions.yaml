@@ -1,7 +1,7 @@
 - id: cs.clean-code.conventions.001
   type: single
   difficulty: 1
-  prompt: איך נכון לקרוא לקבוע ציבורי שמחזיק את מספר הניסיונות המרבי, לפי מוסכמות C#?
+  prompt: איך נכון לקרוא לקבוע ציבורי שמחזיק את מספר הניסיונות המרבי, לפי מוסכמות השמות של מיקרוסופט ל-C#?
   options:
     - "MAX_RETRIES"
     - "maxRetries"
@@ -43,7 +43,7 @@
 - id: cs.clean-code.conventions.003
   type: cleaner
   difficulty: 2
-  prompt: איזו גרסה נקייה יותר?
+  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
   options:
     - |
       class ProfileService
@@ -129,7 +129,7 @@
 - id: cs.clean-code.conventions.007
   type: cleaner
   difficulty: 1
-  prompt: איזו גרסה נקייה יותר?
+  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
   options:
     - |
       int width = 4, height = 3; int area = width * height; Console.WriteLine(area);
@@ -223,7 +223,7 @@
 - id: cs.clean-code.conventions.011
   type: cleaner
   difficulty: 1
-  prompt: איזו גרסה נקייה יותר?
+  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
   options:
     - |
       class PageCounter
@@ -310,7 +310,7 @@
 - id: cs.clean-code.conventions.014
   type: cleaner
   difficulty: 1
-  prompt: איזו גרסה נקייה יותר?
+  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
   options:
     - |
       string name = "Dana";
@@ -353,7 +353,7 @@
     - "Hot and rainy"
     - "שגיאת קומפילציה"
   answer: 1
-  explanation: "ההזחה מטעה: `else` שייך תמיד ל-`if` הקרוב ביותר, כלומר ל-`if (isRaining)`. לכן ביום חם ויבש מודפס `Cold`. זו בדיוק הסיבה שמוסכמות C# ממליצות להשתמש תמיד בסוגריים מסולסלים בתנאים מקוננים: הם קובעים את המבנה במפורש, וההזחה לא יכולה לשקר."
+  explanation: "ההזחה מטעה: `else` שייך תמיד ל-`if` הקרוב ביותר, כלומר ל-`if (isRaining)`. לכן ביום חם ויבש מודפס `Cold`. זו הסיבה שמומלץ להשתמש בסוגריים מסולסלים בתנאים מקוננים: הם קובעים את המבנה במפורש, וההזחה לא יכולה לשקר."
   optionExplanations:
     "0": "זה מה שההזחה מרמזת, אבל הקומפיילר מתעלם מהזחה ומצמיד את `else` ל-`if` הפנימי."
     "2": "`isRaining` הוא `false`, ולכן ההשמה הזו לא מתבצעת."

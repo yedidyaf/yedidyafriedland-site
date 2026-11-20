@@ -259,7 +259,7 @@
 - id: cs.oop.interfaces.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס מחיר אחרי 20% הנחה לסטודנט (80), אבל מדפיס 100. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס מחיר אחרי 20% הנחה לסטודנט, אבל מדפיס את המחיר המלא, 100. באיזו שורה הבאג?"
   code: |
     IDiscount discount = new StudentDiscount();
     Console.WriteLine(discount.Apply(100));

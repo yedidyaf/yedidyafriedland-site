@@ -413,18 +413,16 @@
   fixed: |
     class Subscription
     {
-        private const int TrialDays = 14;
+        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= 14;
 
-        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= TrialDays;
-
-        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, TrialDays - daysSinceSignup);
+        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, 14 - daysSinceSignup);
     }
   explanation: "`TrialDaysLeft` מחשבת לפי 30 ימים, ולכן אחרי 20 ימים הניסיון נגמר אבל המשתמש רואה שנשארו לו 10. התיקון המינימלי הוא להחליף את `30` ב-`14`; התיקון הנכון באמת הוא קבוע אחד `TrialDays`, כדי שמספרי קסם לא יוכלו להתרחק זה מזה."
 
 - id: cs.clean-code.code-smells.014
   type: bug
   difficulty: 3
-  prompt: "המתודה עברה רפקטורינג מקינון עמוק לסעיפי שמירה (Guard Clauses). היא אמורה לזרוק חריגה רק כשאין מספיק מלאי. באיזו שורה הבאג?"
+  prompt: "המתודה עברה רפקטורינג מקינון עמוק לסעיפי שמירה (Guard Clauses). היא אמורה לזרוק `InvalidOperationException` רק כשאין מספיק מלאי. באיזו שורה הבאג?"
   code: |
     class Inventory
     {

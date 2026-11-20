@@ -51,7 +51,7 @@
 - id: cs.clean-code.naming.003
   type: single
   difficulty: 1
-  prompt: "איזה שם מתאים לממשק (Interface) של רכיב ששולח התראות, לפי מוסכמות C#?"
+  prompt: "איזה שם מתאים לממשק (Interface) של רכיב ששולח התראות, לפי מוסכמות השמות של מיקרוסופט?"
   options:
     - "NotificationSenderInterface"
     - "iNotificationSender"
@@ -378,13 +378,13 @@
   fixed: |
     class Counter
     {
-        private int _count;
+        private int count;
 
         public Counter(int count)
         {
-            _count = count;
+            this.count = count;
         }
 
-        public int Value => _count;
+        public int Value => count;
     }
-  explanation: "בתוך הבנאי, `count` מתייחס לפרמטר, שמסתיר (Shadowing) את השדה בעל אותו שם. לכן `count = count` משים את הפרמטר לעצמו, והשדה נשאר `0`. תיקון מינימלי הוא `this.count = count`, אבל המוסכמה של שדה פרטי עם קו תחתון (`_count`) מונעת את הבלבול מראש."
+  explanation: "בתוך הבנאי, `count` מתייחס לפרמטר, שמסתיר (Shadowing) את השדה בעל אותו שם. לכן `count = count` משים את הפרמטר לעצמו, והשדה נשאר `0`. התיקון הוא `this.count = count`, אבל המוסכמה של שדה פרטי עם קו תחתון (`_count`) מונעת את הבלבול מראש."
