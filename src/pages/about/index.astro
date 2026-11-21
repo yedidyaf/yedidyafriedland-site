@@ -8,21 +8,24 @@ const jsonLd = [
     '@type': 'Person',
     name: SITE.name_en,
     alternateName: SITE.name_he,
-    jobTitle: 'Programming Teacher',
+    jobTitle: 'Software Developer and Programming Lecturer',
     email: `mailto:${SITE.email}`,
     sameAs: [SITE.linkedin],
   },
 ];
 ---
-<Base title={`אודות - ${SITE.name_he}`} description={`${SITE.name_he} (${SITE.name_en}), מורה לתכנות. לימוד Python ו-C# דרך מבחנים עם הסברים.`} jsonLd={jsonLd}>
+<Base title={`אודות - ${SITE.name_he}`} description={`${SITE.name_he} (${SITE.name_en}), מפתח תוכנה ומרצה לתכנות. תרגול Python ו-C# דרך מבחנים עם הסברים.`} jsonLd={jsonLd}>
   <div class="container prose">
     <h1 style="margin-top:24px">אודות - About</h1>
     <p class="lead">
-      שלום, אני <strong>{SITE.name_he}</strong> <span class="muted" dir="ltr">({SITE.name_en})</span>, מורה לתכנות.
+      שלום, אני <strong>{SITE.name_he}</strong> <span class="muted" dir="ltr">({SITE.name_en})</span>, מפתח תוכנה ומרצה לתכנות.
     </p>
     <p>
-      בניתי את האתר הזה מתוך אמונה שהדרך הטובה ביותר ללמוד תכנות היא לבדוק את עצמכם שוב ושוב: לחזות מה הקוד ידפיס, למצוא את הבאג, לבחור את הגרסה הנקייה יותר
+      בניתי את האתר הזה כי מבחנים הם אחת הדרכים הטובות לתרגל: לחזות מה הקוד ידפיס, למצוא את הבאג, לבחור את הגרסה הנקייה יותר
       ולהחליט איפה כל פונקציה צריכה לשבת. כל שאלה באתר מגיעה עם הסבר שמלמד את העיקרון ואת הטעות הנפוצה שמאחורי התשובות השגויות.
+    </p>
+    <p>
+      האתר לא מחליף לימוד מסודר. הוא נועד להשלים אותו: לצד קורס, ספר או הרצאות, כדי לחזק את מה שלמדתם ולגלות מה עוד צריך לחזק.
     </p>
     <h2>מה יש באתר</h2>
     <ul>
