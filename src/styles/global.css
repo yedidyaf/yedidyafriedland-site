@@ -357,3 +357,17 @@ legend { font-weight: 600; padding: 0 6px; }
 .text-danger { color: var(--danger); }
 .text-success { color: var(--success); }
 .match .sig.plain { font-family: var(--font); font-size: 1rem; font-weight: 550; text-align: start; white-space: normal; }
+
+/* wide code inside options must scroll inside the option, never widen the page */
+.options { grid-template-columns: minmax(0, 1fr); }
+.options.tf { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.options > .opt { min-width: 0; }
+.qcard, .exam, .review-list > * { min-width: 0; max-width: 100%; }
+.code-options .opt .code { max-width: 100%; }
+.match .items { grid-template-columns: minmax(0, 1fr); }
+.match .item, .match .sig { min-width: 0; max-width: 100%; }
+.match .targets .target { min-width: 0; overflow-wrap: anywhere; }
+.match .chips { min-width: 0; }
+.chip { max-width: 100%; overflow-wrap: anywhere; text-align: start; }
+/* long identifiers in prose must wrap instead of widening the page */
+.qcard .otext, .qprompt, .explain, .wrongwhy, .why, .requirement, code.ic { overflow-wrap: anywhere; }

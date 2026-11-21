@@ -83,7 +83,7 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
       const idx = order ?? q.options.map((_, i) => i);
       const chosen = answer?.kind === 'choice' ? answer.index : undefined;
       return (
-        <div class={`options${q.type === 'cleaner' ? ' code-options' : ''}`} role="radiogroup" aria-label="תשובות">
+        <div class={`options${q.optionsHtml ? ' code-options' : ''}`} role="radiogroup" aria-label="תשובות">
           {idx.map((oi, pos) => {
             const isChosen = chosen === oi;
             const state = locked ? (oi === q.answer ? 'right' : isChosen ? 'wrong' : '') : isChosen ? 'chosen' : '';
@@ -102,7 +102,7 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
                 <span class="otext">
                   {q.type === 'output' ? (
                     <pre class="out">{q.options[oi]}</pre>
-                  ) : q.type === 'cleaner' && q.optionsHtml ? (
+                  ) : q.optionsHtml?.[oi]?.length ? (
                     <CodeBlock lines={q.optionsHtml[oi]} label={`גרסה ${LETTERS[pos]}`} />
                   ) : (
                     <Html html={inline(q.options[oi])} />
