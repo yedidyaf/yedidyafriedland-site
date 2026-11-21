@@ -43,23 +43,27 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
       </div>
     </div>
 
-    <h2>הפרקים</h2>
-    <div class="grid cols-2">
+    <h2>הפרקים - Chapters</h2>
+    <ol class="toc">
       {lang.chapters.map((c, i) => (
-        <section class="card chapter-card">
-          <h3><a href={href(`/${lang.id}/${c.id}/`)}>{i + 1}. {bilingual(c.title_he, c.title_en)}</a></h3>
-          <p class="muted small" style="margin:0">{c.description_he}</p>
+        <li>
+          <div class="toc-head">
+            <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
+            <h3><a href={href(`/${lang.id}/${c.id}/`)}>{bilingual(c.title_he, c.title_en)}</a></h3>
+          </div>
+          <p class="toc-desc muted">{c.description_he}</p>
           <ul class="topic-list">
             {c.topics.map((t) => (
               <li>
                 <a href={href(`/${lang.id}/${c.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a>
+                <span class="leader" aria-hidden="true"></span>
                 <span class="badge none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
               </li>
             ))}
           </ul>
-        </section>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
   <script type="application/json" id="lang-data" set:html={JSON.stringify({ id: lang.id, blueprint: sim.blueprint, chapters: lang.chapters.map((c) => ({ id: c.id, topics: c.topics.map((t) => ({ id: t.id })) })), topicKeys })} />
 </Base>

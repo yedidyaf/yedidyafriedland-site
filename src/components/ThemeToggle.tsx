@@ -33,7 +33,7 @@ export default function ThemeToggle() {
   return (
     <button type="button" class="theme-btn" onClick={click} aria-label={LABEL[theme]} title={LABEL[theme]}>
       <span aria-hidden="true">{ICON[theme]}</span>
-      <style>{`.theme-btn{font:inherit;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:8px;width:36px;height:36px;cursor:pointer;display:inline-grid;place-items:center}.theme-btn:hover{border-color:var(--primary);color:var(--primary)}`}</style>
+      <style>{`.theme-btn{font:inherit;background:transparent;border:1.5px solid var(--text);color:var(--text);border-radius:50%;width:40px;height:40px;cursor:pointer;display:inline-grid;place-items:center}.theme-btn:hover{border-color:var(--pen);color:var(--pen)}`}</style>
     </button>
   );
 }

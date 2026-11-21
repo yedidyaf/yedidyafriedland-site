@@ -23,19 +23,22 @@ const title = `${bilingual(chapter.title_he, chapter.title_en)} | ${lang.title_e
       <a class="btn" href={href(`/exam/?lang=${lang.id}&mode=chapter&chapter=${chapter.id}`)}>מבחן על כל הפרק (15 שאלות)</a>
       <a class="btn secondary" href={href(`/${lang.id}/new/?ch=${chapter.id}`)}>מבחן מותאם</a>
     </div>
-    <div class="grid cols-2">
-      {chapter.topics.map((t) => (
-        <section class="card chapter-card">
-          <h2 style="font-size:1.15rem;margin:0"><a href={href(`/${lang.id}/${chapter.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a></h2>
-          <p class="muted small" style="margin:0">{t.summary_he}</p>
-          <div class="row-actions">
+    <ol class="toc">
+      {chapter.topics.map((t, i) => (
+        <li>
+          <div class="toc-head">
+            <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
+            <h2><a href={href(`/${lang.id}/${chapter.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a></h2>
+          </div>
+          <p class="toc-desc muted">{t.summary_he}</p>
+          <div class="toc-row">
             <a class="btn sm" href={href(`/exam/?lang=${lang.id}&mode=topic&chapter=${chapter.id}&topic=${t.id}`)}>לתרגל</a>
             <span class="badge none" data-topic={`${lang.id}/${chapter.id}/${t.id}`}>לא התחלתם</span>
             <span class="muted small">{t.questions.length} שאלות</span>
           </div>
-        </section>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
 </Base>
 <script>
