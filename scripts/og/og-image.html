@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<!-- Source of public/og.png (1200x630). Re-render with: node scripts/og/render-og.cjs -->
+<style>
+@font-face { font-family: FRL; font-weight: 900; src: url(../../node_modules/@fontsource/frank-ruhl-libre/files/frank-ruhl-libre-hebrew-900-normal.woff2); unicode-range: U+0590-05FF, U+FB1D-FB4F; }
+@font-face { font-family: FRL; font-weight: 900; src: url(../../node_modules/@fontsource/frank-ruhl-libre/files/frank-ruhl-libre-latin-900-normal.woff2); }
+@font-face { font-family: FRL; font-weight: 700; src: url(../../node_modules/@fontsource/frank-ruhl-libre/files/frank-ruhl-libre-hebrew-700-normal.woff2); unicode-range: U+0590-05FF, U+FB1D-FB4F; }
+@font-face { font-family: FRL; font-weight: 700; src: url(../../node_modules/@fontsource/frank-ruhl-libre/files/frank-ruhl-libre-latin-700-normal.woff2); }
+@font-face { font-family: AS; font-weight: 200 800; src: url(../../node_modules/@fontsource-variable/assistant/files/assistant-hebrew-wght-normal.woff2); unicode-range: U+0590-05FF, U+FB1D-FB4F; }
+@font-face { font-family: AS; font-weight: 200 800; src: url(../../node_modules/@fontsource-variable/assistant/files/assistant-latin-wght-normal.woff2); }
+@font-face { font-family: PM; src: url(../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2); }
+html, body { margin: 0; }
+body { width: 1200px; height: 630px; overflow: hidden; position: relative; color: #1b2a41; font-family: AS, sans-serif;
+  background-color: #f3efe6; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 41px, #ddd5c4 41px, #ddd5c4 42px); }
+.margin { position: absolute; top: 0; bottom: 0; right: 96px; width: 3px; background: #d98b84; }
+.top { position: absolute; top: 0; left: 0; right: 0; height: 14px; background: #1b2a41; }
+.wrap { position: absolute; top: 72px; right: 140px; left: 72px; display: flex; gap: 56px; align-items: flex-start; }
+.text { flex: 1; }
+.name { font-family: FRL; font-weight: 900; font-size: 46px; line-height: 1; }
+.en { font-family: PM; font-size: 22px; color: #545d6c; letter-spacing: .08em; margin-top: 10px; direction: ltr; text-align: right; }
+h1 { font-family: FRL; font-weight: 900; font-size: 80px; line-height: 1.08; margin: 64px 0 0; }
+.circled { position: relative; display: inline-block; }
+.circled svg { position: absolute; inset: -18px -26px -12px -26px; width: calc(100% + 52px); height: calc(100% + 30px); overflow: visible; }
+.circled path { fill: none; stroke: #b3261e; stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sub { font-family: FRL; font-weight: 700; font-size: 34px; color: #3a4556; margin-top: 30px; }
+.sheet { width: 300px; margin-top: 140px; background: #fbf9f4; border: 3px solid #1b2a41; box-shadow: 9px 9px 0 #1b2a41; padding: 26px 26px 22px; transform: rotate(-2deg); }
+.sheet .t { font-family: FRL; font-weight: 700; font-size: 28px; border-bottom: 2px dashed #1b2a41; padding-bottom: 12px; }
+.facts { display: flex; justify-content: space-between; text-align: center; margin-top: 16px; }
+.facts b { display: block; font-family: FRL; font-weight: 900; font-size: 54px; line-height: 1.05; }
+.facts span { font-size: 20px; color: #545d6c; }
+.facts .pass b { color: #b3261e; }
+.url { position: absolute; bottom: 34px; left: 72px; font-family: PM; font-size: 22px; color: #545d6c; }
+</style>
+</head>
+<body>
+<div class="top"></div>
+<div class="margin"></div>
+<div class="wrap">
+  <div class="text">
+    <div class="name">ידידיה פרידלנד</div>
+    <div class="en">Yedidya Friedland</div>
+    <h1>לומדים תכנות<br>דרך <span class="circled">מבחנים<svg viewBox="0 0 200 70" preserveAspectRatio="none"><path d="M12 38 C 20 8, 180 4, 190 32 C 198 58, 30 66, 14 44 C 8 34, 40 20, 70 16"/></svg></span></h1>
+    <div class="sub">פייתון ו-<bdi dir="ltr">C#</bdi>, עם הסבר אחרי כל שאלה</div>
+  </div>
+  <div class="sheet">
+    <div class="t">מבחן סימולציה</div>
+    <div class="facts">
+      <div><b>30</b><span>שאלות</span></div>
+      <div><b>40</b><span>דקות</span></div>
+      <div class="pass"><b>85</b><span>ציון עובר</span></div>
+    </div>
+  </div>
+</div>
+<div class="url">yedidyafriedland.com</div>
+</body>
+</html>
