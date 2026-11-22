@@ -81,7 +81,7 @@
 - id: cs.oop.properties.004
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור להדפיס `Dana Levi`, אבל מדפיס `Dana Dana`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `Dana Levi`, אבל מדפיס `Dana Dana`. איזו שורה צריך לתקן?"
   code: |
     var p = new Person { FirstName = "Dana", LastName = "Levi" };
     Console.WriteLine($"{p.FirstName} {p.LastName}");
@@ -237,7 +237,7 @@
 - id: cs.oop.properties.012
   type: bug
   difficulty: 2
-  prompt: "המאפיין `Price` אמור לדחות מחיר שלילי ולזרוק `ArgumentException`, אבל הקוד מדפיס `-5`. באיזו שורה הבאג?"
+  prompt: "המאפיין `Price` אמור לדחות מחיר שלילי ולזרוק `ArgumentException`, אבל הקוד מדפיס `-5`. איזו שורה צריך לתקן?"
   code: |
     var p = new Product();
     p.Price = -5;
@@ -347,7 +347,7 @@
 - id: cs.oop.properties.016
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס `Avi`, אבל התוכנית קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `Avi`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
     var s = new Student();
     s.Name = "Avi";

@@ -170,7 +170,7 @@
 - id: py.basics.input-output.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לקרוא שני מספרים שלמים ולהדפיס את הסכום שלהם. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לקרוא שני מספרים שלמים ולהדפיס את הסכום שלהם. איזו שורה צריך לתקן?"
   code: |
     a = int(input("First: "))
     b = input("Second: ")
@@ -185,7 +185,7 @@
 - id: py.basics.input-output.013
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את התאריך בצורה `19/11/2026`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את התאריך בצורה `19/11/2026`. איזו שורה צריך לתקן?"
   code: |
     day = 19
     month = 11

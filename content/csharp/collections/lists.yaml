@@ -157,7 +157,7 @@
 - id: cs.collections.lists.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לשרת את הלקוח הראשון בתור, להסיר אותו מהרשימה ולהדפיס `Served 7, 2 left`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לשרת את הלקוח הראשון בתור, להסיר אותו מהרשימה ולהדפיס `Served 7, 2 left`. איזו שורה צריך לתקן?"
   code: |
     var queue = new List<int> { 7, 3, 9 };
     int first = queue[0];
@@ -174,7 +174,7 @@
 - id: cs.collections.lists.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לשמור עותק של עגלת הקניות לפני שמרוקנים אותה, ולהדפיס `2`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לשמור עותק של עגלת הקניות לפני שמרוקנים אותה, ולהדפיס `2`. איזו שורה צריך לתקן?"
   code: |
     var cart = new List<string> { "milk", "bread" };
     var saved = cart;

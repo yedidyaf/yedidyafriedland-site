@@ -258,7 +258,7 @@
 - id: cs.control-flow.switch.013
   type: bug
   difficulty: 1
-  prompt: "המתודה אמורה להחזיר `C` לציונים 70 עד 79, כולל 70. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר `C` לציונים 70 עד 79, כולל 70. איזו שורה צריך לתקן?"
   code: |
     string Grade(int score) => score switch
     {
@@ -281,7 +281,7 @@
 - id: cs.control-flow.switch.014
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה לזהות פקודות בלי תלות באותיות גדולות או קטנות, כך ש-`START`, `Start` ו-`start` יחזירו כולן `Starting`. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לזהות פקודות בלי תלות באותיות גדולות או קטנות, כך ש-`START`, `Start` ו-`start` יחזירו כולן `Starting`. איזו שורה צריך לתקן?"
   code: |
     string Handle(string command)
     {
@@ -314,7 +314,7 @@
 - id: cs.control-flow.switch.015
   type: bug
   difficulty: 3
-  prompt: "המתודה מקבלת מספר חודש (1 עד 12) ואמורה להחזיר את הרבעון שלו: חודשים 1 עד 3 הם `Q1`, חודשים 4 עד 6 הם `Q2`, וכן הלאה. באיזו שורה הבאג?"
+  prompt: "המתודה מקבלת מספר חודש (1 עד 12) ואמורה להחזיר את הרבעון שלו: חודשים 1 עד 3 הם `Q1`, חודשים 4 עד 6 הם `Q2`, וכן הלאה. איזו שורה צריך לתקן?"
   code: |
     string Quarter(int month)
     {

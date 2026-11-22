@@ -136,7 +136,7 @@
 - id: py.strings.string-methods.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר כתובת דוא\"ל בלי רווחים בקצוות ובאותיות קטנות. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר כתובת דוא\"ל בלי רווחים בקצוות ובאותיות קטנות. איזו שורה צריך לתקן?"
   code: |
     def normalize_email(email):
         email.strip()
@@ -151,7 +151,7 @@
 - id: py.strings.string-methods.011
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה לבדוק אם המילה `word` מופיעה בטקסט, בלי תלות באותיות גדולות וקטנות. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לבדוק אם המילה `word` מופיעה בטקסט, בלי תלות באותיות גדולות וקטנות. איזו שורה צריך לתקן?
   code: |
     def contains_word(text, word):
         text = text.lower()
@@ -166,7 +166,7 @@
 - id: py.strings.string-methods.012
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה לספור את המילים בשורה, גם כשבין המילים יש יותר מרווח אחד. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לספור את המילים בשורה, גם כשבין המילים יש יותר מרווח אחד. איזו שורה צריך לתקן?
   code: |
     def word_count(line):
         words = line.split(" ")

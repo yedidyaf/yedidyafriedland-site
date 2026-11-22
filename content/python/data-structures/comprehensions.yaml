@@ -190,7 +190,7 @@
 - id: py.data-structures.comprehensions.013
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור לשמור את כל הציונים העוברים, כלומר 60 ומעלה. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לשמור את כל הציונים העוברים, כלומר 60 ומעלה. איזו שורה צריך לתקן?"
   code: |
     grades = [55, 80, 60, 42, 91]
     passed = [g for g in grades if g > 60]
@@ -205,7 +205,7 @@
 - id: py.data-structures.comprehensions.014
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור ליצור לוח 3 על 3 של אפסים, עם שורות עצמאיות, ולשים 1 רק במרכז. באיזו שורה הבאג?"
+  prompt: "הקוד אמור ליצור לוח 3 על 3 של אפסים, עם שורות עצמאיות, ולשים 1 רק במרכז. איזו שורה צריך לתקן?"
   code: |
     board = [[0] * 3] * 3
     board[1][1] = 1

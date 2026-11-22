@@ -180,7 +180,7 @@
 - id: cs.oop.composition.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס `True` אחרי שהרכב הותנע, אבל מדפיס `False`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `True` אחרי שהרכב הותנע, אבל מדפיס `False`. איזו שורה צריך לתקן?"
   code: |
     var car = new Car();
     car.Start();
@@ -370,7 +370,7 @@
 - id: cs.oop.composition.015
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס `Order A-17 placed`, אבל נזרקת `NullReferenceException`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `Order A-17 placed`, אבל נזרקת `NullReferenceException`. איזו שורה צריך לתקן?"
   code: |
     var logger = new ConsoleLogger();
     var service = new OrderService(logger);

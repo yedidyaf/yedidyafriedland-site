@@ -137,7 +137,7 @@
 - id: py.control-flow.for-loops.010
   type: bug
   difficulty: 1
-  prompt: "הפונקציה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. איזו שורה צריך לתקן?"
   code: |
     def sum_to(n):
         total = 0
@@ -156,7 +156,7 @@
 - id: py.control-flow.for-loops.011
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה לספור בכמה מקומות `answers` ו-`key` זהים. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה לספור בכמה מקומות `answers` ו-`key` זהים. איזו שורה צריך לתקן?"
   code: |
     def count_matches(answers, key):
         matches = 0
@@ -177,7 +177,7 @@
 - id: py.control-flow.for-loops.012
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה להחזיר את האינדקס של הערך הגדול ביותר ברשימה לא ריקה. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר את האינדקס של הערך הגדול ביותר ברשימה לא ריקה. איזו שורה צריך לתקן?"
   code: |
     def index_of_max(values):
         best_index = 0

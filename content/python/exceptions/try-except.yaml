@@ -201,7 +201,7 @@
 - id: py.exceptions.try-except.011
   type: bug
   difficulty: 1
-  prompt: הפונקציה אמורה להחזיר את תוצאת החילוק, או `None` כשמחלקים באפס. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להחזיר את תוצאת החילוק, או `None` כשמחלקים באפס. איזו שורה צריך לתקן?
   code: |
     def safe_divide(a, b):
         try:
@@ -220,7 +220,7 @@
 - id: py.exceptions.try-except.012
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להדפיס `finished` בכל מקרה, גם כשהסכום הצליח וגם כשנכשל. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להדפיס `finished` בכל מקרה, גם כשהסכום הצליח וגם כשנכשל. איזו שורה צריך לתקן?
   code: |
     def total(items):
         try:
@@ -247,7 +247,7 @@
 - id: py.exceptions.try-except.013
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה להחזיר את החריגה האחרונה שנזרקה בהמרת המחרוזות, או `None` אם כל ההמרות הצליחו. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להחזיר את החריגה האחרונה שנזרקה בהמרת המחרוזות, או `None` אם כל ההמרות הצליחו. איזו שורה צריך לתקן?
   code: |
     def last_error(texts):
         error = None

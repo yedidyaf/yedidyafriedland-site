@@ -250,7 +250,7 @@
 - id: cs.oop.polymorphism.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס עמלה לכל אמצעי תשלום. עבור תשלום במזומן העמלה צריכה להיות 1, אבל מודפס 0. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס עמלה לכל אמצעי תשלום. עבור תשלום במזומן העמלה צריכה להיות 1, אבל מודפס 0. איזו שורה צריך לתקן?"
   code: |
     var payments = new List<Payment> { new CardPayment(), new CashPayment() };
     foreach (var p in payments)
@@ -458,7 +458,7 @@
 - id: cs.oop.polymorphism.016
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס `Pen: 5`, אבל מודפס שם המחלקה במקום זה. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `Pen: 5`, אבל מודפס שם המחלקה במקום זה. איזו שורה צריך לתקן?"
   code: |
     var product = new Product("Pen", 5);
     Console.WriteLine(product);

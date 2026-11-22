@@ -174,7 +174,7 @@
 - id: cs.advanced.delegates-events.010
   type: bug
   difficulty: 2
-  prompt: "`Read` אמורה להדפיס את הערך ולהודיע למנויים, אם יש כאלה. הקוד קורס כשאין מנויים. באיזו שורה הבאג?"
+  prompt: "`Read` אמורה להדפיס את הערך ולהודיע למנויים, אם יש כאלה. הקוד קורס כשאין מנויים. איזו שורה צריך לתקן?"
   code: |
     var sensor = new Sensor();
     sensor.Read(42);
@@ -209,7 +209,7 @@
 - id: cs.advanced.delegates-events.011
   type: bug
   difficulty: 1
-  prompt: הקוד אמור לשלוח את ההודעה גם במייל וגם ב-SMS. באיזו שורה הבאג?
+  prompt: הקוד אמור לשלוח את ההודעה גם במייל וגם ב-SMS. איזו שורה צריך לתקן?
   code: |
     Action<string> notify = s => Console.WriteLine($"email: {s}");
     notify = s => Console.WriteLine($"sms: {s}");

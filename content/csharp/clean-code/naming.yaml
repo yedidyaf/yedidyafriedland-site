@@ -152,7 +152,7 @@
 - id: cs.clean-code.naming.008
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס את המחיר לתשלום אחרי ההנחה. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את המחיר לתשלום אחרי ההנחה. איזו שורה צריך לתקן?
   code: |
     decimal priceBeforeDiscount = 200m;
     decimal discountRate = 0.1m;
@@ -361,7 +361,7 @@
 - id: cs.clean-code.naming.016
   type: bug
   difficulty: 3
-  prompt: המחלקה אמורה לשמור את הערך ההתחלתי שמועבר לבנאי. באיזו שורה הבאג?
+  prompt: המחלקה אמורה לשמור את הערך ההתחלתי שמועבר לבנאי. איזו שורה צריך לתקן?
   code: |
     class Counter
     {

@@ -173,7 +173,7 @@
 - id: py.basics.data-types.014
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס `HELLO`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `HELLO`. איזו שורה צריך לתקן?"
   code: |
     text = "hello"
     text.upper()
@@ -188,7 +188,7 @@
 - id: py.basics.data-types.015
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס את הרשימה ממוינת: `[1, 2, 3]`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את הרשימה ממוינת: `[1, 2, 3]`. איזו שורה צריך לתקן?"
   code: |
     items = [3, 1, 2]
     items = items.sort()

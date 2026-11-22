@@ -142,7 +142,7 @@
 - id: py.control-flow.conditions.009
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר דמי משלוח: `0` מ-200 ומעלה, `20` מ-100 עד 199, ו-`35` מתחת ל-100. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר דמי משלוח: `0` מ-200 ומעלה, `20` מ-100 עד 199, ו-`35` מתחת ל-100. איזו שורה צריך לתקן?"
   code: |
     def shipping_cost(total):
         if total >= 200:
@@ -167,7 +167,7 @@
 - id: py.control-flow.conditions.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר `True` רק עבור `\"Friday\"` או `\"Saturday\"`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר `True` רק עבור `\"Friday\"` או `\"Saturday\"`. איזו שורה צריך לתקן?"
   code: |
     def is_weekend(day):
         if day == "Saturday" or "Friday":
@@ -184,7 +184,7 @@
 - id: py.control-flow.conditions.011
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר `False` עבור מספר חודש שאינו בין 1 ל-12, ו-`True` אחרת. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר `False` עבור מספר חודש שאינו בין 1 ל-12, ו-`True` אחרת. איזו שורה צריך לתקן?"
   code: |
     def is_valid_month(month):
         if month < 1 and month > 12:

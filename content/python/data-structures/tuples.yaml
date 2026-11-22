@@ -188,7 +188,7 @@
 - id: py.data-structures.tuples.014
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר גם את הסכום וגם את הממוצע של הרשימה, כדי שהשורה האחרונה תעבוד. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר גם את הסכום וגם את הממוצע של הרשימה, כדי שהשורה האחרונה תעבוד. איזו שורה צריך לתקן?"
   code: |
     def stats(nums):
         total = sum(nums)
@@ -211,7 +211,7 @@
 - id: py.data-structures.tuples.015
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור לתת גישה רק אם `role` שווה בדיוק לאחד התפקידים המורשים. בפועל הוא מדפיס `access granted` עבור `\"min\"`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לתת גישה רק אם `role` שווה בדיוק לאחד התפקידים המורשים. בפועל הוא מדפיס `access granted` עבור `\"min\"`. איזו שורה צריך לתקן?"
   code: |
     allowed = ("admin")
     role = "min"

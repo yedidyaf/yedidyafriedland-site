@@ -135,7 +135,7 @@
 - id: cs.methods.recursion.007
   type: bug
   difficulty: 1
-  prompt: "`SumTo(5)` אמורה להחזיר 1 + 2 + 3 + 4 + 5 = `15`, אבל התוכנית קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  prompt: "`SumTo(5)` אמורה להחזיר 1 + 2 + 3 + 4 + 5 = `15`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(SumTo(5));
 
@@ -160,7 +160,7 @@
 - id: cs.methods.recursion.008
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה לתמוך גם ב-`0` (לפי ההגדרה, `0! = 1`), אבל `Factorial(0)` קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לתמוך גם ב-`0` (לפי ההגדרה, `0! = 1`), אבל `Factorial(0)` קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(Factorial(0));
 

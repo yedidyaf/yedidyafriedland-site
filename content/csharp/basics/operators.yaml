@@ -132,7 +132,7 @@
 - id: cs.basics.operators.010
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס `True` כי 3- הוא מספר אי־זוגי. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `True` כי 3- הוא מספר אי־זוגי. איזו שורה צריך לתקן?"
   code: |
     int temperature = -3;
     bool isOdd = temperature % 2 == 1;
@@ -147,7 +147,7 @@
 - id: cs.basics.operators.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את אחוז התשובות הנכונות, `90`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את אחוז התשובות הנכונות, `90`. איזו שורה צריך לתקן?"
   code: |
     int correct = 45;
     int total = 50;
@@ -164,7 +164,7 @@
 - id: cs.basics.operators.012
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור לספור שני מבקרים ולהדפיס `2`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לספור שני מבקרים ולהדפיס `2`. איזו שורה צריך לתקן?"
   code: |
     int visitors = 0;
     visitors++;

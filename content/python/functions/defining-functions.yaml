@@ -132,7 +132,7 @@
 - id: py.functions.defining-functions.008
   type: bug
   difficulty: 2
-  prompt: הקוד אמור להדפיס את ממוצע הציונים, `90.0`. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את ממוצע הציונים, `90.0`. איזו שורה צריך לתקן?
   code: |
     def average(nums):
         total = sum(nums)
@@ -153,7 +153,7 @@
 - id: py.functions.defining-functions.009
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה להחזיר כמה מספרים חיוביים יש ברשימה. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להחזיר כמה מספרים חיוביים יש ברשימה. איזו שורה צריך לתקן?
   code: |
     def count_positives(nums):
         count = 0

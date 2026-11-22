@@ -203,7 +203,7 @@
 - id: cs.oop.inheritance.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס `User (admin)`, אבל התוכנית קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `User (admin)`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
     var admin = new Admin();
     Console.WriteLine(admin.Describe());
@@ -236,7 +236,7 @@
 - id: cs.oop.inheritance.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס 16, השטח של ריבוע שצלעו 4, אבל מדפיס 4. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס 16, השטח של ריבוע שצלעו 4, אבל מדפיס 4. איזו שורה צריך לתקן?"
   code: |
     var square = new Square(4);
     Console.WriteLine(square.Area());

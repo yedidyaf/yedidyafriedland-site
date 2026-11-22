@@ -331,7 +331,7 @@
 - id: py.oop.composition.014
   type: bug
   difficulty: 2
-  prompt: "`MusicApp` אמורה להחזיק פלייליסטים לפי שם. `create_playlist` אמורה ליצור פלייליסט חדש בשם הנתון ולשמור אותו, והקוד אמור להדפיס `['Imagine']`. באיזו שורה הבאג?"
+  prompt: "`MusicApp` אמורה להחזיק פלייליסטים לפי שם. `create_playlist` אמורה ליצור פלייליסט חדש בשם הנתון ולשמור אותו, והקוד אמור להדפיס `['Imagine']`. איזו שורה צריך לתקן?"
   code: |
     class Playlist:
         def __init__(self, name):
@@ -378,7 +378,7 @@
 - id: py.oop.composition.015
   type: bug
   difficulty: 1
-  prompt: "לאופניים יש שני גלגלים נפרדים. `inflate` אמורה להוסיף לחץ לשני הגלגלים. באיזו שורה הבאג?"
+  prompt: "לאופניים יש שני גלגלים נפרדים. `inflate` אמורה להוסיף לחץ לשני הגלגלים. איזו שורה צריך לתקן?"
   code: |
     class Wheel:
         def __init__(self):

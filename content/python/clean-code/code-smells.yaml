@@ -299,7 +299,7 @@
 - id: py.clean-code.code-smells.014
   type: bug
   difficulty: 2
-  prompt: "בחדר משחק יש מקום לעד 4 שחקנים. `is_full` אמורה להחזיר `True` בדיוק כש-`can_join` מחזירה `False`. באיזו שורה הבאג?"
+  prompt: "בחדר משחק יש מקום לעד 4 שחקנים. `is_full` אמורה להחזיר `True` בדיוק כש-`can_join` מחזירה `False`. איזו שורה צריך לתקן?"
   code: |
     MAX_PLAYERS = 4
 
@@ -326,7 +326,7 @@
 - id: py.clean-code.code-smells.015
   type: bug
   difficulty: 2
-  prompt: "הפונקציה נכתבה מחדש עם תנאי שמירה (Guard Clauses) במקום קינון עמוק. היא אמורה להחזיר הודעת שגיאה מתאימה, או `None` כשההתחברות תקינה. באיזו שורה הבאג?"
+  prompt: "הפונקציה נכתבה מחדש עם תנאי שמירה (Guard Clauses) במקום קינון עמוק. היא אמורה להחזיר הודעת שגיאה מתאימה, או `None` כשההתחברות תקינה. איזו שורה צריך לתקן?"
   code: |
     def login_error(user, password):
         if user is None:

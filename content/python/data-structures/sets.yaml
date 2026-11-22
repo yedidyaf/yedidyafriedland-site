@@ -196,7 +196,7 @@
 - id: py.data-structures.sets.014
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס את התלמידים שרשומים לשני הקורסים גם יחד. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את התלמידים שרשומים לשני הקורסים גם יחד. איזו שורה צריך לתקן?
   code: |
     python_course = {"Dana", "Avi", "Noa"}
     java_course = {"Avi", "Noa", "Tal"}
@@ -213,7 +213,7 @@
 - id: py.data-structures.sets.015
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להחזיר קבוצה של המילים השונות בטקסט. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להחזיר קבוצה של המילים השונות בטקסט. איזו שורה צריך לתקן?
   code: |
     def unique_words(text):
         seen = {}

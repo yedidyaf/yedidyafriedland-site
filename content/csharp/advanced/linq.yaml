@@ -185,7 +185,7 @@
 - id: cs.advanced.linq.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את הקריאה השלילית הראשונה, או `none` אם אין כזו. כאן הוא קורס. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את הקריאה השלילית הראשונה, או `none` אם אין כזו. כאן הוא קורס. איזו שורה צריך לתקן?"
   code: |
     var readings = new List<int> { 3, 7, 1 };
     int firstNegative = readings.First(r => r < 0);
@@ -200,7 +200,7 @@
 - id: cs.advanced.linq.012
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור למחוק מהרשימה את כל המחרוזות הריקות ולהדפיס 2, אבל הוא זורק `InvalidOperationException`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור למחוק מהרשימה את כל המחרוזות הריקות ולהדפיס 2, אבל הוא זורק `InvalidOperationException`. איזו שורה צריך לתקן?"
   code: |
     var names = new List<string> { "dan", "", "noa", "" };
     foreach (var name in names.Where(n => n == ""))

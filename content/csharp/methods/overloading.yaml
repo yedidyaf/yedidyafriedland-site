@@ -220,7 +220,7 @@
 - id: cs.methods.overloading.013
   type: bug
   difficulty: 2
-  prompt: "התוכנית אמורה להדפיס `5 ILS` ואז `5 USD`, אבל היא קורסת עם `StackOverflowException`. באיזו שורה הבאג?"
+  prompt: "התוכנית אמורה להדפיס `5 ILS` ואז `5 USD`, אבל היא קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(Formatter.Price(5));
     Console.WriteLine(Formatter.Price(5, "USD"));
@@ -259,7 +259,7 @@
 - id: cs.methods.overloading.014
   type: bug
   difficulty: 2
-  prompt: "הקריאה `Stats.Average(3, 4)` אמורה להדפיס `3.5`, אבל מודפס `3`. באיזו שורה הבאג?"
+  prompt: "הקריאה `Stats.Average(3, 4)` אמורה להדפיס `3.5`, אבל מודפס `3`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(Stats.Average(3, 4));
 

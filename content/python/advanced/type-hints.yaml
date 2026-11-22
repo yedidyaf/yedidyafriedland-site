@@ -211,7 +211,7 @@
 - id: py.advanced.type-hints.014
   type: bug
   difficulty: 2
-  prompt: "הפונקציה מקבלת גילים כמחרוזות (למשל משורות של קובץ) ואמורה להחזיר את סכומם כמספר שלם. באיזו שורה הבאג?"
+  prompt: "הפונקציה מקבלת גילים כמחרוזות (למשל משורות של קובץ) ואמורה להחזיר את סכומם כמספר שלם. איזו שורה צריך לתקן?"
   code: |
     def total_age(ages: list[str]) -> int:
         total = 0
@@ -234,7 +234,7 @@
 - id: py.advanced.type-hints.015
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר את השם באות ראשונה גדולה, או `anonymous` אם התקבל `None`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר את השם באות ראשונה גדולה, או `anonymous` אם התקבל `None`. איזו שורה צריך לתקן?"
   code: |
     def label(name: str | None) -> str:
         if name is not None:

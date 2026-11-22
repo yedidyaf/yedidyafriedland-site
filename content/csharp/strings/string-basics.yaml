@@ -116,7 +116,7 @@
 - id: cs.strings.string-basics.009
   type: bug
   difficulty: 1
-  prompt: הקוד אמור לספור כמה פעמים מופיע התו `a` במילה. באיזו שורה הבאג?
+  prompt: הקוד אמור לספור כמה פעמים מופיע התו `a` במילה. איזו שורה צריך לתקן?
   code: |
     string word = "banana";
     int count = 0;
@@ -161,7 +161,7 @@
 - id: cs.strings.string-basics.011
   type: bug
   difficulty: 2
-  prompt: "`IsYes` אמורה להחזיר `true` עבור `yes`, `Yes` או `YES`, גם עם רווחים בקצוות. באיזו שורה הבאג?"
+  prompt: "`IsYes` אמורה להחזיר `true` עבור `yes`, `Yes` או `YES`, גם עם רווחים בקצוות. איזו שורה צריך לתקן?"
   code: |
     class Answers
     {

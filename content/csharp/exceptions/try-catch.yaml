@@ -228,7 +228,7 @@
 - id: cs.exceptions.try-catch.009
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה להחזיר 1- כאשר `text` איננו מספר, למשל `\"abc\"`. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר 1- כאשר `text` איננו מספר, למשל `\"abc\"`. איזו שורה צריך לתקן?"
   code: |
     class Parser
     {
@@ -265,7 +265,7 @@
 - id: cs.exceptions.try-catch.010
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה להחזיר את הגיל, או להדפיס `Invalid age` ולהחזיר 0 כשהטקסט איננו מספר. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר את הגיל, או להדפיס `Invalid age` ולהחזיר 0 כשהטקסט איננו מספר. איזו שורה צריך לתקן?"
   code: |
     class AgeReader
     {

@@ -140,7 +140,7 @@
 - id: cs.basics.value-types.010
   type: bug
   difficulty: 3
-  prompt: הקוד אמור להדפיס את הנפח הכולל בבתים, `3000000000`. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את הנפח הכולל בבתים, `3000000000`. איזו שורה צריך לתקן?
   code: |
     int files = 1_000_000;
     int bytesPerFile = 3_000;
@@ -157,7 +157,7 @@
 - id: cs.basics.value-types.011
   type: bug
   difficulty: 2
-  prompt: הקוד אמור לספור עד 300 ולהדפיס `300`. באיזו שורה הבאג?
+  prompt: הקוד אמור לספור עד 300 ולהדפיס `300`. איזו שורה צריך לתקן?
   code: |
     byte count = 0;
     for (int i = 0; i < 300; i++)

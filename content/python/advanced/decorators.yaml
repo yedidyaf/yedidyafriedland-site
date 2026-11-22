@@ -229,7 +229,7 @@
 - id: py.advanced.decorators.010
   type: bug
   difficulty: 2
-  prompt: "הדקורטור אמור להדפיס `start` לפני כל קריאה לפונקציה המעוטרת ו-`end` אחריה. באיזו שורה הבאג?"
+  prompt: "הדקורטור אמור להדפיס `start` לפני כל קריאה לפונקציה המעוטרת ו-`end` אחריה. איזו שורה צריך לתקן?"
   code: |
     def timer(func):
         def wrapper(*args, **kwargs):
@@ -252,7 +252,7 @@
 - id: py.advanced.decorators.011
   type: bug
   difficulty: 3
-  prompt: "הדקורטור אמור לנסות להריץ את הפונקציה עד `times` פעמים כשנזרקת `ValueError`, ולהשתמש בו כך: `@retry(3)`. באיזו שורה הבאג?"
+  prompt: "הדקורטור אמור לנסות להריץ את הפונקציה עד `times` פעמים כשנזרקת `ValueError`, ולהשתמש בו כך: `@retry(3)`. איזו שורה צריך לתקן?"
   code: |
     from functools import wraps
 

@@ -127,7 +127,7 @@
 - id: cs.advanced.generics.007
   type: bug
   difficulty: 1
-  prompt: המתודה הגנרית אמורה להחליף בין ערכי שני משתנים מכל טיפוס. באיזו שורה הבאג?
+  prompt: המתודה הגנרית אמורה להחליף בין ערכי שני משתנים מכל טיפוס. איזו שורה צריך לתקן?
   code: |
     int a = 1, b = 2;
     Swap(ref a, ref b);
@@ -196,7 +196,7 @@
 - id: cs.advanced.generics.010
   type: bug
   difficulty: 3
-  prompt: "המתודה אמורה לספור כמה פעמים `target` מופיע ברשימה (כאן אמור להיות מודפס 2), אבל מודפס 0. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לספור כמה פעמים `target` מופיע ברשימה (כאן אמור להיות מודפס 2), אבל מודפס 0. איזו שורה צריך לתקן?"
   code: |
     var nums = new List<int> { 1, 2, 1, 3 };
     Console.WriteLine(CountOf(nums, 1));

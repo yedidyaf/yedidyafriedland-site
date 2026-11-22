@@ -118,7 +118,7 @@
 - id: cs.basics.console-io.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לקרוא גיל ולהדפיס את הגיל בשנה הבאה. למשל, לקלט `20` צריך להיות מודפס `Next year: 21`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לקרוא גיל ולהדפיס את הגיל בשנה הבאה. למשל, לקלט `20` צריך להיות מודפס `Next year: 21`. איזו שורה צריך לתקן?"
   code: |
     Console.Write("Enter your age: ");
     string age = Console.ReadLine();
@@ -133,7 +133,7 @@
 - id: cs.basics.console-io.010
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס כותרת, ומתחתיה כל שם בשורה נפרדת. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס כותרת, ומתחתיה כל שם בשורה נפרדת. איזו שורה צריך לתקן?
   code: |
     Console.WriteLine("Students:");
     Console.Write("Dana");

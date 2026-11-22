@@ -201,7 +201,7 @@
 - id: cs.software-design.dependency-injection.008
   type: bug
   difficulty: 2
-  prompt: "`InvoiceService` אמורה לשמור כל חשבונית דרך ה-Repository שהוזרק לה, אבל `Issue` נכשלת ב-`NullReferenceException`. באיזו שורה הבאג?"
+  prompt: "`InvoiceService` אמורה לשמור כל חשבונית דרך ה-Repository שהוזרק לה, אבל `Issue` נכשלת ב-`NullReferenceException`. איזו שורה צריך לתקן?"
   code: |
     public interface IInvoiceRepository
     {

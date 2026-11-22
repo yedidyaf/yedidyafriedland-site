@@ -144,7 +144,7 @@
 - id: cs.strings.stringbuilder.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס `Ann, Ben, Dan`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `Ann, Ben, Dan`. איזו שורה צריך לתקן?"
   code: |
     using System.Text;
 
@@ -280,7 +280,7 @@
 - id: cs.strings.stringbuilder.015
   type: bug
   difficulty: 2
-  prompt: "`Reverse` אמורה להחזיר את המחרוזת בסדר הפוך, למשל `cba` עבור `abc`. באיזו שורה הבאג?"
+  prompt: "`Reverse` אמורה להחזיר את המחרוזת בסדר הפוך, למשל `cba` עבור `abc`. איזו שורה צריך לתקן?"
   code: |
     using System.Text;
 

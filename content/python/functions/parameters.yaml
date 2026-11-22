@@ -121,7 +121,7 @@
 - id: py.functions.parameters.008
   type: bug
   difficulty: 3
-  prompt: "כל קריאה בלי `roster` אמורה ליצור רשימה חדשה ונפרדת. בפועל, `class_b` מכילה גם את `Dana`. באיזו שורה הבאג?"
+  prompt: "כל קריאה בלי `roster` אמורה ליצור רשימה חדשה ונפרדת. בפועל, `class_b` מכילה גם את `Dana`. איזו שורה צריך לתקן?"
   code: |
     def add_student(name, roster=[]):
         if roster is None:
@@ -193,7 +193,7 @@
 - id: py.functions.parameters.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה של 10% בשקלים: `90.0 ILS`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה של 10% בשקלים: `90.0 ILS`. איזו שורה צריך לתקן?"
   code: |
     def make_price(amount, currency="ILS", discount=0):
         final = amount * (1 - discount)

@@ -216,7 +216,7 @@
 - id: cs.methods.parameters.011
   type: bug
   difficulty: 2
-  prompt: "המתודה `ClearCart` אמורה לרוקן את העגלה, ולכן הקוד אמור להדפיס `0`. באיזו שורה הבאג?"
+  prompt: "המתודה `ClearCart` אמורה לרוקן את העגלה, ולכן הקוד אמור להדפיס `0`. איזו שורה צריך לתקן?"
   code: |
     var cart = new List<string> { "milk", "bread" };
     ClearCart(cart);
@@ -241,7 +241,7 @@
 - id: cs.methods.parameters.012
   type: bug
   difficulty: 1
-  prompt: "`Swap` אמורה להחליף בין שני המשתנים, ולכן הקוד אמור להדפיס `2 1`. באיזו שורה הבאג?"
+  prompt: "`Swap` אמורה להחליף בין שני המשתנים, ולכן הקוד אמור להדפיס `2 1`. איזו שורה צריך לתקן?"
   code: |
     int a = 1, b = 2;
     Swap(ref a, ref b);

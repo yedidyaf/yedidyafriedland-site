@@ -177,7 +177,7 @@
 - id: py.oop.special-methods.009
   type: bug
   difficulty: 1
-  prompt: "`print(product)` אמורה להדפיס שורה אחת: `Milk: 6.9`. באיזו שורה הבאג?"
+  prompt: "`print(product)` אמורה להדפיס שורה אחת: `Milk: 6.9`. איזו שורה צריך לתקן?"
   code: |
     class Product:
         def __init__(self, name, price):
@@ -206,7 +206,7 @@
 - id: py.oop.special-methods.010
   type: bug
   difficulty: 3
-  prompt: "`Pages` מחלקת רשימה לעמודים בגודל קבוע, ו-`len` אמורה להחזיר את מספר העמודים. הקוד אמור להדפיס `3`. באיזו שורה הבאג?"
+  prompt: "`Pages` מחלקת רשימה לעמודים בגודל קבוע, ו-`len` אמורה להחזיר את מספר העמודים. הקוד אמור להדפיס `3`. איזו שורה צריך לתקן?"
   code: |
     class Pages:
         def __init__(self, items, page_size):
