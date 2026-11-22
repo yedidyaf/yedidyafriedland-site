@@ -55,21 +55,11 @@
     "3": "`not (a or b)` הוא `not True`, כלומר `False`."
 
 - id: py.basics.operators.005
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    a = [1, 2]
-    b = [1, 2]
-    c = a
-    print(a == b, a is b, a is c)
-  options: ["True False True", "True True True", "False False True", "True False False"]
-  answer: 0
-  explanation: "`==` בודק שוויון ערכים (Equality): לשתי הרשימות אותו תוכן. `is` בודק זהות (Identity): האם זה אותו אובייקט בזיכרון. `a` ו-`b` הן שתי רשימות נפרדות, ואילו `c` הוא שם נוסף לאותה רשימה של `a`."
-  optionExplanations:
-    "1": "תוכן זהה לא הופך שתי רשימות לאותו אובייקט. כל `[1, 2]` יוצר רשימה חדשה."
-    "2": "`==` על רשימות משווה את התוכן, ולא את הזהות."
-    "3": "`c = a` לא מעתיקה את הרשימה, ולכן `c` ו-`a` הם אותו אובייקט."
+  type: truefalse
+  difficulty: 1
+  prompt: "האופרטור `==` בודק אם שני ערכים שווים, ו-`is` בודק אם שני השמות מצביעים על אותו אובייקט בדיוק."
+  answer: true
+  explanation: "`==` בודק שוויון ערכים (Equality), ו-`is` בודק זהות (Identity). שני אובייקטים יכולים להיות שווים בתוכן ועדיין להיות אובייקטים נפרדים, ואז `==` מחזיר `True` ו-`is` מחזיר `False`. בבדיקה מול `None` כותבים `x is None`."
 
 - id: py.basics.operators.006
   type: output

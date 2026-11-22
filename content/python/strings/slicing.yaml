@@ -49,19 +49,21 @@
 - id: py.strings.slicing.005
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להחזיר את שלושת התווים האחרונים של מחרוזת. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור להדפיס את שלושת התווים האחרונים של המחרוזת: `hon`. איזו שורה צריך לתקן?"
   code: |
-    def last_three(s):
-        if len(s) < 3:
-            return s
-        return s[-3:-1]
-  answer: 4
-  explanation: "הגבול העליון בחיתוך לא נכלל. `s[-3:-1]` מחזיר רק שני תווים. צריך `s[-3:]`."
+    s = "python"
+    if len(s) < 3:
+        print(s)
+    else:
+        print(s[-3:-1])
+  answer: 5
+  explanation: "הגבול העליון בחיתוך לא נכלל. `s[-3:-1]` מחזיר רק שני תווים, `ho`. צריך `s[-3:]`, שממשיך עד סוף המחרוזת."
   fixed: |
-    def last_three(s):
-        if len(s) < 3:
-            return s
-        return s[-3:]
+    s = "python"
+    if len(s) < 3:
+        print(s)
+    else:
+        print(s[-3:])
 
 - id: py.strings.slicing.006
   type: output
@@ -172,17 +174,17 @@
 - id: py.strings.slicing.013
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה לבדוק אם מילה היא פלינדרום (נקראת אותו דבר משני הכיוונים). איזו שורה צריך לתקן?
+  prompt: "הקוד אמור לבדוק אם מילה היא פלינדרום (נקראת אותו דבר משני הכיוונים). עבור `hello` הוא צריך להדפיס `False`. איזו שורה צריך לתקן?"
   code: |
-    def is_palindrome(word):
-        reversed_word = word[::1]
-        return word == reversed_word
+    word = "hello"
+    reversed_word = word[::1]
+    print(word == reversed_word)
   answer: 2
-  explanation: "`word[::1]` הוא עותק של המילה באותו סדר, ולכן הפונקציה מחזירה `True` לכל מילה. כדי להפוך מחרוזת צריך קפיצה שלילית: `word[::-1]`."
+  explanation: "`word[::1]` הוא עותק של המילה באותו סדר, ולכן מודפס `True` לכל מילה. כדי להפוך מחרוזת צריך קפיצה שלילית: `word[::-1]`."
   fixed: |
-    def is_palindrome(word):
-        reversed_word = word[::-1]
-        return word == reversed_word
+    word = "hello"
+    reversed_word = word[::-1]
+    print(word == reversed_word)
 
 - id: py.strings.slicing.014
   type: truefalse
@@ -194,20 +196,17 @@
 - id: py.strings.slicing.015
   type: cleaner
   difficulty: 2
-  prompt: כל הגרסאות מחזירות את שלושת התווים הראשונים (או את כל המחרוזת אם היא קצרה יותר). איזו גרסה נקייה יותר?
+  prompt: כל הגרסאות מדפיסות את שלושת התווים הראשונים של `s` (או את כל המחרוזת אם היא קצרה יותר). איזו גרסה נקייה יותר?
   options:
     - |
-      def first_three(s):
-          return s[:3]
+      print(s[:3])
     - |
-      def first_three(s):
-          result = ""
-          for i in range(min(3, len(s))):
-              result += s[i]
-          return result
+      result = ""
+      for i in range(min(3, len(s))):
+          result += s[i]
+      print(result)
     - |
-      def first_three(s):
-          return s[0:len(s) - (len(s) - 3)]
+      print(s[0:len(s) - (len(s) - 3)])
   answer: 0
   explanation: "`s[:3]` אומר בדיוק את הכוונה: מההתחלה ועד לפני אינדקס 3. חיתוך כבר מטפל במחרוזות קצרות בלי שגיאה, ולכן אין צורך בלולאה, ב-`min` או בחישוב."
   optionExplanations:

@@ -33,7 +33,7 @@ chapters:
       - id: data-types
         title_he: סוגי נתונים
         title_en: Data Types
-        summary_he: int, float, str, bool ו-None. איך בודקים טיפוס עם type ו-isinstance, ומה ההבדל בין טיפוסים ניתנים לשינוי ושאינם ניתנים.
+        summary_he: int, float, str, bool ו-None, מה כל טיפוס מייצג, ואיך בודקים טיפוס עם type ו-isinstance.
       - id: operators
         title_he: אופרטורים
         title_en: Operators
@@ -100,7 +100,7 @@ chapters:
       - id: tuples
         title_he: טאפלים
         title_en: Tuples
-        summary_he: טאפלים שאינם ניתנים לשינוי, פירוק (unpacking), טאפל של איבר אחד, והחזרת כמה ערכים מפונקציה.
+        summary_he: טאפלים שאינם ניתנים לשינוי, פירוק (unpacking), טאפל של איבר אחד, ויצירת טאפל עם פסיק.
       - id: dictionaries
         title_he: מילונים
         title_en: Dictionaries

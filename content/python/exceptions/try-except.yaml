@@ -90,7 +90,8 @@
   code: |
     try:
         print("1")
-        raise KeyError("k")
+        prices = {}
+        print(prices["milk"])
     except ValueError:
         print("2")
     finally:
@@ -98,7 +99,7 @@
     print("4")
   options: ["1\n3\nKeyError", "1\n2\n3\n4", "1\n3\n4", "1\nKeyError"]
   answer: 0
-  explanation: "אין `except` שמתאים ל-`KeyError`, ולכן החריגה לא נתפסת. לפני שהיא ממשיכה לעלות (Propagation), `finally` רץ ומדפיס `3`. אחר כך התוכנית נעצרת עם `KeyError`, ו-`4` לא מודפס."
+  explanation: "הגישה למפתח שלא קיים זורקת `KeyError`, ואין `except` שמתאים לה, ולכן החריגה לא נתפסת. לפני שהיא ממשיכה לעלות (Propagation), `finally` רץ ומדפיס `3`. אחר כך התוכנית נעצרת עם `KeyError`, ו-`4` לא מודפס."
   optionExplanations:
     "1": "`except ValueError` לא תופס `KeyError`. בלוק `except` רץ רק כשסוג החריגה מתאים."
     "2": "`finally` לא תופס את החריגה. הוא רק רץ בדרך החוצה, והחריגה ממשיכה ועוצרת את התוכנית."

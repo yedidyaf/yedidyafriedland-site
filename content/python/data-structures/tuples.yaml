@@ -96,19 +96,16 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    def min_max(nums):
-        return min(nums), max(nums)
-
-
-    result = min_max([4, 1, 8])
+    nums = [4, 1, 8]
+    result = min(nums), max(nums)
     print(result)
   options: ["(1, 8)", "[1, 8]", "1 8", "1"]
   answer: 0
-  explanation: "`return min(nums), max(nums)` מחזירה ערך אחד: טאפל של שני איברים. כך פונקציה \"מחזירה כמה ערכים\". המקבל יכול לשמור את הטאפל כולו, כמו כאן, או לפרק אותו: `low, high = min_max(...)`."
+  explanation: "הפסיק בצד ימין של ההשמה יוצר טאפל (Tuple) של שני איברים, גם בלי סוגריים. `result` מחזיק את הטאפל כולו, ולכן מודפס `(1, 8)`. אפשר גם לפרק אותו: `low, high = min(nums), max(nums)`."
   optionExplanations:
-    "1": "הפסיק ב-`return` יוצר טאפל, לא רשימה."
+    "1": "הפסיק יוצר טאפל, לא רשימה."
     "2": "כך היה מודפס אילו היינו מפרקים את התוצאה לשני משתנים ומדפיסים את שניהם. כאן מודפס הטאפל עצמו."
-    "3": "`return` לא עוצרת אחרי הערך הראשון. הביטוי כולו, עם הפסיק, הוא הערך המוחזר."
+    "3": "הביטוי כולו, עם הפסיק, נשמר ב-`result`, ולא רק הערך הראשון."
 
 - id: py.data-structures.tuples.008
   type: output
@@ -183,30 +180,22 @@
   difficulty: 2
   prompt: "השורה `point = 3, 4` (בלי סוגריים) זורקת `SyntaxError`, כי טאפל חייב להיכתב בתוך סוגריים."
   answer: false
-  explanation: "הפסיק הוא שיוצר את הטאפל, והסוגריים ברוב המקרים אופציונליים. `point = 3, 4` יוצר את הטאפל `(3, 4)`. זה גם מה שקורה ב-`return a, b` ובהשמה מרובה כמו `x, y = 1, 2`."
+  explanation: "הפסיק הוא שיוצר את הטאפל, והסוגריים ברוב המקרים אופציונליים. `point = 3, 4` יוצר את הטאפל `(3, 4)`. זה גם מה שקורה בהשמה מרובה כמו `x, y = 1, 2`."
 
 - id: py.data-structures.tuples.014
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר גם את הסכום וגם את הממוצע של הרשימה, כדי שהשורה האחרונה תעבוד. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור לפרק את הנקודה לשלושה משתנים ולהדפיס `3 4`. איזו שורה צריך לתקן?"
   code: |
-    def stats(nums):
-        total = sum(nums)
-        average = total / len(nums)
-        return total
-
-
-    total, avg = stats([2, 4, 6])
-  answer: 4
-  explanation: "כדי להחזיר כמה ערכים מחזירים טאפל: `return total, average`. כרגע מוחזר מספר אחד, והפירוק `total, avg = ...` נכשל עם `TypeError`, כי אי אפשר לפרק מספר לשני משתנים."
+    point = (3, 4, 5)
+    x, y = point
+    print(x, y)
+  answer: 2
+  explanation: "בפירוק (Unpacking) מספר המשתנים בצד שמאל חייב להיות שווה למספר האיברים בטאפל. כאן יש שלושה איברים ושני משתנים, ולכן נזרקת `ValueError`. התיקון: `x, y, z = point`."
   fixed: |
-    def stats(nums):
-        total = sum(nums)
-        average = total / len(nums)
-        return total, average
-
-
-    total, avg = stats([2, 4, 6])
+    point = (3, 4, 5)
+    x, y, z = point
+    print(x, y)
 
 - id: py.data-structures.tuples.015
   type: bug

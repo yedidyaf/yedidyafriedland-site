@@ -68,23 +68,19 @@
   difficulty: 3
   prompt: "מה הבעיה העיקרית בפונקציה `checkout`?"
   code: |
-    import sqlite3
-
-
     def checkout(cart, user):
         validate_cart(cart)
         total = calculate_total(cart)
-        conn = sqlite3.connect("shop.db")
-        conn.execute("INSERT INTO orders VALUES (?, ?)", (user.id, total))
-        conn.commit()
+        with open("orders.txt", "a") as file:
+            file.write(f"{user.id},{total}\n")
         send_receipt(user, total)
   options:
     - "יש לה יותר מדי פרמטרים. עדיף שתקבל רק את `cart`"
     - "היא חייבת להחזיר ערך, אחרת היא לא פונקציה תקינה"
     - "צריך לאחד את `validate_cart` ו-`calculate_total` לפונקציה אחת כדי לקצר"
-    - "היא מערבבת רמות הפשטה: צעדים כלליים כמו `validate_cart` לצד פרטי SQL. עדיף לחלץ את השמירה ל-`save_order(user, total)`"
+    - "היא מערבבת רמות הפשטה: צעדים כלליים כמו `validate_cart` לצד פרטי כתיבה לקובץ. עדיף לחלץ את השמירה ל-`save_order(user, total)`"
   answer: 3
-  explanation: "רמת הפשטה אחידה (Single Level of Abstraction): כל שורה בפונקציה צריכה להיות באותו גובה. `validate_cart` ו-`send_receipt` מתארים מה קורה, ושלוש שורות ה-SQL מתארות איך. אחרי חילוץ `save_order`, הפונקציה נקראת כמו רשימת צעדים: לאמת, לחשב, לשמור, לשלוח קבלה."
+  explanation: "רמת הפשטה אחידה (Single Level of Abstraction): כל שורה בפונקציה צריכה להיות באותו גובה. `validate_cart` ו-`send_receipt` מתארים מה קורה, ושתי שורות הכתיבה לקובץ מתארות איך. אחרי חילוץ `save_order`, הפונקציה נקראת כמו רשימת צעדים: לאמת, לחשב, לשמור, לשלוח קבלה."
   optionExplanations:
     "0": "שני פרמטרים הם מספר סביר, ושניהם נחוצים: הקבלה נשלחת למשתמש."
     "1": "פונקציה שמבצעת פעולה ואינה מחזירה ערך היא תקינה לגמרי."

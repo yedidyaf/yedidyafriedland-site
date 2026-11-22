@@ -168,19 +168,19 @@
     "3": "כפל `str` ב-`int` וחיבור של שתי מחרוזות הם פעולות חוקיות."
 
 - id: py.basics.input-output.012
-  type: bug
+  type: single
   difficulty: 2
-  prompt: "הקוד אמור לקרוא שני מספרים שלמים ולהדפיס את הסכום שלהם. איזו שורה צריך לתקן?"
+  prompt: "המשתמש מקליד `42` ולוחץ Enter. מה יודפס?"
   code: |
-    a = int(input("First: "))
-    b = input("Second: ")
-    print("Sum:", a + b)
-  answer: 2
-  explanation: "בשורה 2 הקלט לא מומר, ולכן `b` הוא מחרוזת. בשורה 3 `a + b` מנסה לחבר `int` עם `str` ונזרקת `TypeError`. צריך להמיר כמו בשורה 1: `int(input(\"Second: \"))`, כך שהמשתנה `b` יכיל מספר מהרגע שנקרא."
-  fixed: |
-    a = int(input("First: "))
-    b = int(input("Second: "))
-    print("Sum:", a + b)
+    age = input()
+    print(type(age))
+  options: ["<class 'str'>", "<class 'int'>", "<class 'float'>", "42"]
+  answer: 0
+  explanation: "`input` מחזירה תמיד מחרוזת, גם כשהמשתמש מקליד ספרות. כדי לקבל מספר צריך להמיר את הקלט, נושא שנלמד בהמרות טיפוסים."
+  optionExplanations:
+    "1": "`input` לא מנחשת את הטיפוס לפי התוכן; היא מחזירה את הטקסט שהוקלד כמחרוזת."
+    "2": "אין כאן נקודה עשרונית, וממילא `input` מחזירה מחרוזת."
+    "3": "מודפס הטיפוס של `age`, לא הערך שלו."
 
 - id: py.basics.input-output.013
   type: bug
@@ -216,16 +216,18 @@
 - id: py.basics.input-output.016
   type: cleaner
   difficulty: 2
-  prompt: "שלוש השורות מדפיסות `Total: 120 NIS` כש-`total` הוא `120`. איזו כתובה בצורה הנקייה ביותר?"
+  prompt: "שלוש הגרסאות מדפיסות `Total: 120 NIS` כש-`total` הוא `120`. איזו כתובה בצורה הנקייה ביותר?"
   options:
     - |
       print("Total:", total, "NIS")
     - |
-      print("Total: " + str(total) + " NIS")
+      print("Total:", end=" ")
+      print(total, end=" ")
+      print("NIS")
     - |
-      print("Total:" + " " + str(total) + " " + "NIS")
+      print("Total:", total, "NIS", sep=" ", end="\n")
   answer: 0
-  explanation: "כשמעבירים ל-`print` כמה ערכים, היא ממירה כל אחד לטקסט ומוסיפה רווחים בעצמה. אין צורך בהמרה ידנית עם `str` ובחיבור מחרוזות."
+  explanation: "כשמעבירים ל-`print` כמה ערכים, היא מדפיסה אותם עם רווח ביניהם ומסיימת בירידת שורה. זו כבר ברירת המחדל, ולכן קריאה אחת פשוטה מספיקה."
   optionExplanations:
-    "1": "`str` ו-`+` עושים ידנית את מה ש-`print` עושה ממילא, וקל לשכוח רווח בתוך המחרוזות."
-    "2": "פירוק הרווחים למחרוזות נפרדות מוסיף רעש בלי שום תועלת."
+    "1": "שלוש קריאות ל-`print` עם `end` עושות ידנית את מה שקריאה אחת עושה ממילא."
+    "2": "`sep=\" \"` ו-`end=\"\\n\"` הם ערכי ברירת המחדל; כתיבה שלהם רק מוסיפה רעש."

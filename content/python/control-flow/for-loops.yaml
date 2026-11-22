@@ -61,32 +61,30 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    names = ["Dana", "Avi", "Noa"]
-    for i, name in enumerate(names, start=1):
-        print(i, name)
-  options: ["1 Dana\n2 Avi\n3 Noa", "0 Dana\n1 Avi\n2 Noa", "Dana 1\nAvi 2\nNoa 3", "(1, 'Dana')\n(2, 'Avi')\n(3, 'Noa')"]
+    for i, letter in enumerate("abc", start=1):
+        print(i, letter)
+  options: ["1 a\n2 b\n3 c", "0 a\n1 b\n2 c", "a 1\nb 2\nc 3", "(1, 'a')\n(2, 'b')\n(3, 'c')"]
   answer: 0
-  explanation: "`enumerate` מחזיר בכל סיבוב זוג של מונה ואיבר, ופירוק (Unpacking) בכותרת הלולאה מכניס אותם ל-`i` ול-`name`. הפרמטר `start=1` קובע שהמונה יתחיל ב-1 במקום ב-0."
+  explanation: "`enumerate` מחזיר בכל סיבוב זוג של מונה ואיבר, וההשמה המרובה בכותרת הלולאה מכניסה אותם ל-`i` ול-`letter`. הפרמטר `start=1` קובע שהמונה יתחיל ב-1 במקום ב-0."
   optionExplanations:
-    "1": "זו ברירת המחדל של `enumerate`, אבל כאן `start=1` מזיז את תחילת הספירה."
-    "3": "הזוג מפורק לשני משתנים, ו-`print` מקבל שני ארגומנטים נפרדים ולא טאפל."
+    "1": "בלי `start=1` המונה היה מתחיל ב-0. כאן הוא מתחיל ב-1."
+    "2": "הסדר בזוג הוא קודם המונה ואחר כך האיבר."
+    "3": "הזוג מפורק לשני משתנים, ו-`print` מקבלת שני ערכים ומדפיסה אותם עם רווח."
 
 - id: py.control-flow.for-loops.006
   type: output
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    letters = ["a", "b", "c"]
-    numbers = [1, 2]
-    for letter, number in zip(letters, numbers):
-        print(letter * number)
-  options: ["a\nbb", "a\nbb\nc", "a\nbb\nValueError", "a1\nb2"]
+    for letter, digit in zip("abc", "12"):
+        print(letter, digit)
+  options: ["a 1\nb 2", "a 1\nb 2\nc", "a 1\nb 2\nValueError", "a1\nb2"]
   answer: 0
   explanation: "`zip` עובר על כמה רצפים במקביל ומחזיר בכל סיבוב זוג של איברים מאותו מיקום. הוא עוצר כשהרצף הקצר ביותר נגמר, ולכן `\"c\"` לא מגיע ללולאה ואין שגיאה."
   optionExplanations:
-    "1": "ל-`\"c\"` אין בן זוג ב-`numbers`, ולכן `zip` לא מייצר עבורו סיבוב."
-    "2": "`zip` לא זורק שגיאה כשהאורכים שונים. הוא פשוט עוצר בקצר ביותר."
-    "3": "הכפלת מחרוזת במספר שלם חוזרת עליה, ולא מצמידה אליה את המספר."
+    "1": "`zip` לא משלים זוגות חסרים; הוא עוצר בסוף הרצף הקצר."
+    "2": "רצפים באורכים שונים לא גורמים לשגיאה ב-`zip`."
+    "3": "`print` עם שני ערכים מפריד ביניהם ברווח."
 
 - id: py.control-flow.for-loops.007
   type: output
@@ -137,63 +135,65 @@
 - id: py.control-flow.for-loops.010
   type: bug
   difficulty: 1
-  prompt: "הפונקציה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את סכום המספרים מ-1 עד `n`, כולל `n`. עבור `n = 3` צריך להדפיס `6`. איזו שורה צריך לתקן?"
   code: |
-    def sum_to(n):
-        total = 0
-        for i in range(1, n):
-            total += i
-        return total
+    n = 3
+    total = 0
+    for i in range(1, n):
+        total += i
+    print(total)
   answer: 3
-  explanation: "הגבול של `range` לא נכלל, ולכן `range(1, n)` עוצר ב-`n - 1`. עבור `n = 3` הפונקציה מחזירה 3 במקום 6. זו טעות של אחד (Off-by-one), והתיקון הוא `range(1, n + 1)`."
+  explanation: "הגבול של `range` לא נכלל, ולכן `range(1, n)` עוצר ב-`n - 1`. עבור `n = 3` מודפס 3 במקום 6. זו טעות של אחד (Off-by-one), והתיקון הוא `range(1, n + 1)`."
   fixed: |
-    def sum_to(n):
-        total = 0
-        for i in range(1, n + 1):
-            total += i
-        return total
+    n = 3
+    total = 0
+    for i in range(1, n + 1):
+        total += i
+    print(total)
 
 - id: py.control-flow.for-loops.011
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה לספור בכמה מקומות `answers` ו-`key` זהים. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור לספור בכמה מקומות `answers` ו-`key` זהים, ולהדפיס את התוצאה פעם אחת: `3`. איזו שורה צריך לתקן?"
   code: |
-    def count_matches(answers, key):
-        matches = 0
-        for a, k in zip(answers, key):
-            if a == k:
-                matches += 1
-            return matches
-  answer: 6
-  explanation: "ה-`return` מוזח בתוך הלולאה, ולכן הפונקציה חוזרת כבר בסוף הסיבוב הראשון ובודקת זוג אחד בלבד. ההזחה קובעת מה שייך לגוף הלולאה: ה-`return` צריך להיות ברמה של ה-`for`, כדי לרוץ רק אחרי שהלולאה סיימה."
+    answers = "abcd"
+    key = "abdd"
+    matches = 0
+    for a, k in zip(answers, key):
+        if a == k:
+            matches += 1
+        print(matches)
+  answer: 7
+  explanation: "ה-`print` מוזח בתוך הלולאה, ולכן הוא רץ בכל סיבוב ומודפסים `1`, `2`, `2`, `3`. ההזחה קובעת מה שייך לגוף הלולאה: ה-`print` צריך להיות ברמה של ה-`for`, כדי לרוץ רק אחרי שהלולאה סיימה."
   fixed: |
-    def count_matches(answers, key):
-        matches = 0
-        for a, k in zip(answers, key):
-            if a == k:
-                matches += 1
-        return matches
+    answers = "abcd"
+    key = "abdd"
+    matches = 0
+    for a, k in zip(answers, key):
+        if a == k:
+            matches += 1
+    print(matches)
 
 - id: py.control-flow.for-loops.012
   type: bug
-  difficulty: 3
-  prompt: "הפונקציה אמורה להחזיר את האינדקס של הערך הגדול ביותר ברשימה לא ריקה. איזו שורה צריך לתקן?"
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את המיקום (החל מ-0) של ה-`a` האחרונה במילה, כלומר `5`. איזו שורה צריך לתקן?"
   code: |
-    def index_of_max(values):
-        best_index = 0
-        for i, value in enumerate(values):
-            if value > values[best_index]:
-                best_index = value
-        return best_index
+    word = "banana"
+    last_index = -1
+    for i, letter in enumerate(word):
+        if letter == "a":
+            last_index = letter
+    print(last_index)
   answer: 5
-  explanation: "`enumerate` נותן גם את האינדקס `i` וגם את הערך `value`, ושורה 5 שומרת את הערך במקום את האינדקס. עבור `[1, 2]` הפונקציה מחזירה 2 במקום 1, ועבור `[3, 9, 4]` היא אפילו זורקת `IndexError`, כי בסיבוב הבא היא ניגשת ל-`values[9]`."
+  explanation: "`enumerate` נותן גם את המיקום `i` וגם את התו `letter`, ושורה 5 שומרת את התו במקום את המיקום. לכן מודפס `a` במקום `5`. התיקון: `last_index = i`."
   fixed: |
-    def index_of_max(values):
-        best_index = 0
-        for i, value in enumerate(values):
-            if value > values[best_index]:
-                best_index = i
-        return best_index
+    word = "banana"
+    last_index = -1
+    for i, letter in enumerate(word):
+        if letter == "a":
+            last_index = i
+    print(last_index)
 
 - id: py.control-flow.for-loops.013
   type: single
@@ -213,24 +213,17 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      names = ["Dana", "Avi"]
-      for i, name in enumerate(names, start=1):
-          print(i, name)
+      for i, letter in enumerate("abc", start=1):
+          print(i, letter)
     - |
-      names = ["Dana", "Avi"]
-      for i in range(len(names)):
-          print(i + 1, names[i])
-    - |
-      names = ["Dana", "Avi"]
       i = 1
-      for name in names:
-          print(i, name)
+      for letter in "abc":
+          print(i, letter)
           i += 1
   answer: 0
-  explanation: "כשצריך גם מספור וגם את האיבר, `enumerate` נותן את שניהם ישירות, בלי גישה לפי אינדקס ובלי מונה ידני. הפרמטר `start=1` חוסך את החישוב `i + 1`."
+  explanation: "כשצריך גם מספור וגם את האיבר, `enumerate` נותן את שניהם ישירות, בלי מונה ידני. הפרמטר `start=1` קובע מאיפה הספירה מתחילה."
   optionExplanations:
-    "1": "`range(len(...))` עם `names[i]` הוא דפוס שהועתק משפות אחרות. הוא ארוך יותר ופתוח לטעויות אינדקס."
-    "2": "מונה ידני מוסיף שתי שורות שאפשר לשכוח לעדכן, כשבדיוק לזה נועד `enumerate`."
+    "1": "מונה ידני מוסיף שתי שורות שאפשר לשכוח לעדכן, כשבדיוק לזה נועד `enumerate`."
 
 - id: py.control-flow.for-loops.015
   type: single

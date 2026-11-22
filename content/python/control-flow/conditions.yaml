@@ -142,61 +142,65 @@
 - id: py.control-flow.conditions.009
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר דמי משלוח: `0` מ-200 ומעלה, `20` מ-100 עד 199, ו-`35` מתחת ל-100. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור לקבוע דמי משלוח: `0` מ-200 ומעלה, `20` מ-100 עד 199, ו-`35` מתחת ל-100. עבור `250` הוא צריך להדפיס `0`. איזו שורה צריך לתקן?"
   code: |
-    def shipping_cost(total):
-        if total >= 200:
-            cost = 0
-        if total >= 100:
-            cost = 20
-        else:
-            cost = 35
-        return cost
+    total = 250
+    if total >= 200:
+        cost = 0
+    if total >= 100:
+        cost = 20
+    else:
+        cost = 35
+    print(cost)
   answer: 4
-  explanation: "שורה 4 פותחת `if` חדש ועצמאי במקום להמשיך את השרשרת. עבור `total = 250` הבלוק הראשון קובע `cost = 0`, ואז גם `250 >= 100` מתקיים ודורס את הערך ל-`20`. עם `elif` רק הענף הראשון שמתקיים רץ."
+  explanation: "שורה 4 פותחת `if` חדש ועצמאי במקום להמשיך את השרשרת. עבור `250` הבלוק הראשון קובע `cost = 0`, ואז גם `250 >= 100` מתקיים ודורס את הערך ל-`20`. עם `elif` רק הענף הראשון שמתקיים רץ."
   fixed: |
-    def shipping_cost(total):
-        if total >= 200:
-            cost = 0
-        elif total >= 100:
-            cost = 20
-        else:
-            cost = 35
-        return cost
+    total = 250
+    if total >= 200:
+        cost = 0
+    elif total >= 100:
+        cost = 20
+    else:
+        cost = 35
+    print(cost)
 
 - id: py.control-flow.conditions.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר `True` רק עבור `\"Friday\"` או `\"Saturday\"`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס `weekend` רק עבור `\"Friday\"` או `\"Saturday\"`, ועבור `\"Monday\"` להדפיס `weekday`. איזו שורה צריך לתקן?"
   code: |
-    def is_weekend(day):
-        if day == "Saturday" or "Friday":
-            return True
-        return False
+    day = "Monday"
+    if day == "Saturday" or "Friday":
+        print("weekend")
+    else:
+        print("weekday")
   answer: 2
-  explanation: "התנאי מתפרש כ-`(day == \"Saturday\") or \"Friday\"`. מחרוזת לא ריקה היא truthy, ולכן התנאי תמיד מתקיים והפונקציה מחזירה `True` גם עבור `\"Monday\"`. צריך להשוות את `day` לכל ערך בנפרד, או לכתוב `day in (\"Friday\", \"Saturday\")`."
+  explanation: "התנאי מתפרש כ-`(day == \"Saturday\") or \"Friday\"`. מחרוזת לא ריקה היא truthy, ולכן התנאי תמיד מתקיים ומודפס `weekend` גם עבור `\"Monday\"`. צריך להשוות את `day` לכל ערך בנפרד: `day == \"Saturday\" or day == \"Friday\"`."
   fixed: |
-    def is_weekend(day):
-        if day == "Saturday" or day == "Friday":
-            return True
-        return False
+    day = "Monday"
+    if day == "Saturday" or day == "Friday":
+        print("weekend")
+    else:
+        print("weekday")
 
 - id: py.control-flow.conditions.011
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר `False` עבור מספר חודש שאינו בין 1 ל-12, ו-`True` אחרת. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס `invalid` עבור מספר חודש שאינו בין 1 ל-12, ו-`valid` אחרת. איזו שורה צריך לתקן?"
   code: |
-    def is_valid_month(month):
-        if month < 1 and month > 12:
-            return False
-        return True
+    month = 13
+    if month < 1 and month > 12:
+        print("invalid")
+    else:
+        print("valid")
   answer: 2
-  explanation: "אף מספר לא יכול להיות גם קטן מ-1 וגם גדול מ-12, ולכן התנאי עם `and` תמיד `False` והפונקציה מאשרת כל ערך, כולל `13`. מספר לא תקין הוא כזה שחורג מצד אחד או מהצד השני, ולכן צריך `or`."
+  explanation: "אף מספר לא יכול להיות גם קטן מ-1 וגם גדול מ-12, ולכן התנאי עם `and` תמיד `False` ומודפס `valid` לכל ערך, כולל `13`. מספר לא תקין הוא כזה שחורג מצד אחד או מהצד השני, ולכן צריך `or`."
   fixed: |
-    def is_valid_month(month):
-        if month < 1 or month > 12:
-            return False
-        return True
+    month = 13
+    if month < 1 or month > 12:
+        print("invalid")
+    else:
+        print("valid")
 
 - id: py.control-flow.conditions.012
   type: single
@@ -230,24 +234,21 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      if user is not None and user.is_active and user.is_admin:
+      if is_logged_in and is_active and is_admin:
           print("access granted")
     - |
-      if user is not None:
-          if user.is_active:
-              if user.is_admin:
+      if is_logged_in:
+          if is_active:
+              if is_admin:
                   print("access granted")
     - |
-      if user is not None:
-          if user.is_active and user.is_admin:
-              print("access granted")
-          else:
-              pass
+      if is_logged_in == True and is_active == True and is_admin == True:
+          print("access granted")
   answer: 0
-  explanation: "כשכל התנאים צריכים להתקיים, תנאי אחד עם `and` קריא יותר משלוש רמות קינון. זה גם בטוח: בזכות ההערכה המקוצרת, אם `user` הוא `None` הבדיקות שאחריו לא מחושבות."
+  explanation: "כשכל התנאים צריכים להתקיים, תנאי אחד עם `and` קריא יותר משלוש רמות קינון. משתנה בוליאני כבר הוא `True` או `False`, ולכן אין צורך להשוות אותו ל-`True`. בזכות ההערכה המקוצרת, אם `is_logged_in` שקר הבדיקות שאחריו לא מחושבות."
   optionExplanations:
     "1": "קינון עמוק (Deep Nesting) של `if` בתוך `if` מקשה על הקריאה בלי להוסיף שום התנהגות."
-    "2": "ענף `else: pass` לא עושה דבר ורק מוסיף רעש, והקינון עדיין מיותר."
+    "2": "`== True` על משתנה בוליאני מיותר ומאריך את התנאי."
 
 - id: py.control-flow.conditions.016
   type: output

@@ -35,7 +35,7 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    for n in [3, 5, 7]:
+    for n in range(3, 9, 2):
         if n % 2 == 0:
             print("found even")
             break
@@ -43,17 +43,18 @@
         print("all odd")
   options: ["all odd", "all odd\nall odd\nall odd", "found even", "found even\nall odd"]
   answer: 0
-  explanation: "ה-`else` כאן שייך ללולאה ולא ל-`if`: ההזחה שלו זהה לזו של ה-`for`. `else` של לולאה רץ פעם אחת, אחרי שהלולאה הסתיימה כרגיל בלי `break`. אף מספר אינו זוגי, ה-`break` לא התבצע, ולכן מודפס `all odd`."
+  explanation: "ה-`else` כאן שייך ללולאה ולא ל-`if`: ההזחה שלו זהה לזו של ה-`for`. `else` של לולאה רץ פעם אחת, אחרי שהלולאה הסתיימה כרגיל בלי `break`. המספרים 3, 5 ו-7 אי-זוגיים, ה-`break` לא התבצע, ולכן מודפס `all odd`."
   optionExplanations:
-    "1": "זה היה קורה אם ה-`else` היה שייך ל-`if` שבתוך הלולאה. `else` של לולאה רץ פעם אחת, בסופה."
-    "2": "אין ברשימה מספר זוגי, ולכן התנאי לא מתקיים אף פעם."
+    "1": "ה-`else` לא שייך ל-`if`, ולכן הוא לא רץ בכל סיבוב."
+    "2": "`range(3, 9, 2)` נותן רק מספרים אי-זוגיים, ולכן התנאי לא מתקיים אף פעם."
+    "3": "כשאין `break`, `found even` לא מודפס."
 
 - id: py.control-flow.loop-control.004
   type: output
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    for n in [3, 4, 7]:
+    for n in range(3, 8):
         if n % 2 == 0:
             print("found", n)
             break
@@ -64,8 +65,9 @@
   answer: 0
   explanation: "כשהלולאה נעצרת באמצעות `break`, בלוק ה-`else` שלה מדולג. הקוד שאחרי הלולאה ממשיך לרוץ כרגיל, ולכן מודפס גם `end`. כך `else` משמש לטיפול במקרה של \"חיפשנו ולא מצאנו\"."
   optionExplanations:
-    "1": "`else` של לולאה רץ רק אם לא היה `break`. כאן היה `break` כש-`n` היה 4."
-    "3": "`break` יוצא רק מהלולאה, והתוכנית ממשיכה לשורה שאחריה."
+    "1": "`else` של לולאה רץ רק כשלא היה `break`. כאן היה."
+    "2": "4 זוגי, ולכן ה-`break` מתבצע כבר בסיבוב השני."
+    "3": "`break` יוצא רק מהלולאה, לא מהתוכנית, ולכן `end` מודפס."
 
 - id: py.control-flow.loop-control.005
   type: output
@@ -135,81 +137,81 @@
   prompt: מה יודפס?
   code: |
     total = 0
-    for x in [4, -1, 6, 0, 8]:
-        if x < 0:
+    for x in range(1, 10):
+        if x % 3 == 0:
             continue
-        if x == 0:
+        if x == 7:
             break
         total += x
     print(total)
-  options: ["10", "18", "9", "4"]
+  options: ["12", "19", "27", "21"]
   answer: 0
-  explanation: "המספר השלילי מדולג באמצעות `continue`, ו-0 עוצר את הלולאה לגמרי באמצעות `break`. לכן נסכמים רק 4 ו-6. ה-8 שאחרי ה-0 לא נבדק בכלל."
+  explanation: "כפולות של 3 מדולגות באמצעות `continue`, ו-7 עוצר את הלולאה לגמרי באמצעות `break` לפני שהוא נסכם. לכן נסכמים רק 1, 2, 4 ו-5. המספרים 8 ו-9 לא נבדקים בכלל."
   optionExplanations:
-    "1": "`break` עוצר את הלולאה כולה, ולכן 8 לא מגיע לחישוב."
-    "2": "`continue` מדלג על `total += x`, ולכן -1 לא נוסף לסכום."
-    "3": "`continue` לא עוצר את הלולאה, ולכן גם 6 נסכם."
+    "1": "ה-`break` מתבצע לפני `total += x`, ולכן 7 לא נכנס לסכום."
+    "2": "זה הסכום בלי ה-`break`: 1, 2, 4, 5, 7 ו-8. אבל הלולאה נעצרת ב-7."
+    "3": "זה הסכום של 1 עד 6 בלי לדלג על כפולות של 3. `continue` מדלג על 3 ועל 6."
 
 - id: py.control-flow.loop-control.009
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור להדפיס רק את המספר השלילי הראשון ברשימה. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס רק את המספר הראשון בין 10 ל-29 שמתחלק ב-7. איזו שורה צריך לתקן?"
   code: |
-    numbers = [5, 8, -2, 7, -9]
-    for n in numbers:
-        if n < 0:
-            print("first negative:", n)
+    for n in range(10, 30):
+        if n % 7 == 0:
+            print("first:", n)
             continue
-  answer: 5
-  explanation: "`continue` רק עובר לסיבוב הבא, ולכן הלולאה ממשיכה ומדפיסה גם את `-9`. כדי לעצור אחרי שמצאנו את הראשון צריך `break`."
+  answer: 4
+  explanation: "`continue` רק עובר לסיבוב הבא, ולכן הלולאה ממשיכה ומדפיסה גם את 21 ואת 28. כדי לעצור אחרי שמצאנו את הראשון צריך `break`."
   fixed: |
-    numbers = [5, 8, -2, 7, -9]
-    for n in numbers:
-        if n < 0:
-            print("first negative:", n)
+    for n in range(10, 30):
+        if n % 7 == 0:
+            print("first:", n)
             break
 
 - id: py.control-flow.loop-control.010
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה להדפיס `found` אם `target` נמצא ב-`items`, ו-`not found` פעם אחת בלבד אם הוא לא נמצא. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס `found` אם `target` נמצא ב-`word`, ו-`not found` פעם אחת בלבד אם הוא לא נמצא. איזו שורה צריך לתקן?"
   code: |
-    def report(items, target):
-        for item in items:
-            if item == target:
-                print("found")
-                break
-            else:
-                print("not found")
-  answer: 6
-  explanation: "ה-`else` מוזח כחלק מה-`if`, ולכן `not found` מודפס עבור כל איבר שאינו שווה ל-`target`. הכוונה הייתה ל-`else` של הלולאה, שרץ פעם אחת ורק אם לא היה `break`. לשם כך הוא צריך להיות באותה הזחה של ה-`for`."
-  fixed: |
-    def report(items, target):
-        for item in items:
-            if item == target:
-                print("found")
-                break
+    word = "hello"
+    target = "z"
+    for letter in word:
+        if letter == target:
+            print("found")
+            break
         else:
             print("not found")
+  answer: 7
+  explanation: "ה-`else` מוזח כחלק מה-`if`, ולכן `not found` מודפס עבור כל תו שאינו שווה ל-`target`: חמש פעמים. הכוונה הייתה ל-`else` של הלולאה, שרץ פעם אחת ורק אם לא היה `break`. לשם כך הוא צריך להיות באותה הזחה של ה-`for`."
+  fixed: |
+    word = "hello"
+    target = "z"
+    for letter in word:
+        if letter == target:
+            print("found")
+            break
+    else:
+        print("not found")
 
 - id: py.control-flow.loop-control.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס רק את השמות שאינם ריקים. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס כל תו של הטקסט בשורה משלו, ולדלג על רווחים. איזו שורה צריך לתקן?"
   code: |
-    names = ["Dana", "", "Avi"]
-    for name in names:
-        if name == "":
+    text = "a b"
+    for ch in text:
+        if ch == " ":
             pass
-        print(name)
+        print(ch)
   answer: 4
-  explanation: "`pass` לא עושה דבר, ולכן הביצוע ממשיך ל-`print` גם עבור המחרוזת הריקה, ומודפסת שורה ריקה. כדי לדלג על שאר הגוף בסיבוב הזה צריך `continue`."
+  explanation: "`pass` לא עושה דבר, ולכן הביצוע ממשיך ל-`print` גם עבור הרווח, ומודפסת שורה עם רווח. כדי לדלג על שאר הגוף בסיבוב הזה צריך `continue`."
   fixed: |
-    names = ["Dana", "", "Avi"]
-    for name in names:
-        if name == "":
+    text = "a b"
+    for ch in text:
+        if ch == " ":
             continue
-        print(name)
+        print(ch)
 
 - id: py.control-flow.loop-control.012
   type: single
@@ -259,28 +261,22 @@
 - id: py.control-flow.loop-control.016
   type: cleaner
   difficulty: 2
-  prompt: "שלוש הגרסאות מדפיסות את השורות שב-`lines` עד השורה `\"END\"` (לא כולל). איזו נקייה יותר?"
+  prompt: "שתי הגרסאות מדפיסות את התווים של `text` עד הנקודה הראשונה (לא כולל). איזו נקייה יותר?"
   options:
     - |
-      for line in lines:
-          if line == "END":
+      for ch in text:
+          if ch == ".":
               break
-          print(line)
+          print(ch, end="")
     - |
       done = False
-      for line in lines:
+      for ch in text:
           if not done:
-              if line == "END":
+              if ch == ".":
                   done = True
               else:
-                  print(line)
-    - |
-      i = 0
-      while i < len(lines) and lines[i] != "END":
-          print(lines[i])
-          i += 1
+                  print(ch, end="")
   answer: 0
-  explanation: "`break` אומר במפורש \"כאן מפסיקים\", ולולאת `for` עוברת על השורות עצמן בלי אינדקסים. הקוד קצר, שטוח, ולא ממשיך לעבור על שורות אחרי שכבר הוחלט לעצור."
+  explanation: "`break` אומר במפורש \"כאן מפסיקים\". הקוד קצר, שטוח, ולא ממשיך לעבור על תווים אחרי שכבר הוחלט לעצור."
   optionExplanations:
-    "1": "משתנה דגל (Flag) וקינון מחליפים `break` אחד. הלולאה גם ממשיכה לרוץ על כל השורות שאחרי `END` בלי סיבה."
-    "2": "מונה ידני וגישה לפי אינדקס מסבכים מעבר פשוט על רצף, ושכחה של `i += 1` תיצור לולאה אינסופית."
+    "1": "משתנה דגל (Flag) וקינון מחליפים `break` אחד. הלולאה גם ממשיכה לרוץ על כל התווים שאחרי הנקודה בלי סיבה."
