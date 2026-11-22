@@ -24,7 +24,7 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    var box = new Box();
+    Box box = new Box();
     Console.WriteLine(box.Size);
     Console.WriteLine(box.Label == null);
 
@@ -62,7 +62,7 @@
   tags: [compile-error]
   prompt: מה יודפס?
   code: |
-    var account = new Account();
+    Account account = new Account();
     account.balance = 100;
     Console.WriteLine(account.balance);
 
@@ -82,9 +82,9 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    var a = new Ticket();
-    var b = new Ticket();
-    var c = new Ticket();
+    Ticket a = new Ticket();
+    Ticket b = new Ticket();
+    Ticket c = new Ticket();
     Console.WriteLine($"{a.Number} {Ticket.Issued}");
 
     class Ticket
@@ -111,7 +111,7 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    var counter = new Counter();
+    Counter counter = new Counter();
     counter.Add(2).Add(3);
     Console.WriteLine(counter.Total);
 
@@ -158,7 +158,7 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס את שטח המלבן, 12, אבל מדפיס 0. איזו שורה צריך לתקן?"
   code: |
-    var rect = new Rectangle(3, 4);
+    Rectangle rect = new Rectangle(3, 4);
     Console.WriteLine(rect.Area());
 
     class Rectangle
@@ -172,11 +172,14 @@
             height = height;
         }
 
-        public int Area() => width * height;
+        public int Area()
+        {
+            return width * height;
+        }
     }
   answer: 12
   fixed: |
-    var rect = new Rectangle(3, 4);
+    Rectangle rect = new Rectangle(3, 4);
     Console.WriteLine(rect.Area());
 
     class Rectangle
@@ -190,7 +193,10 @@
             this.height = height;
         }
 
-        public int Area() => width * height;
+        public int Area()
+        {
+            return width * height;
+        }
     }
   explanation: "בתוך הבנאי, השם `height` מתייחס לפרמטר, שמסתיר את השדה באותו שם. `height = height;` מציב את הפרמטר בעצמו, והשדה נשאר 0. צריך `this.height = height;` כדי לפנות לשדה של האובייקט."
 
@@ -206,8 +212,8 @@
   difficulty: 3
   prompt: "לכל שחקן אמור להיות ניקוד משלו, ולכן הקוד אמור להדפיס 10. בפועל הוא מדפיס 15. איזו שורה צריך לתקן?"
   code: |
-    var a = new Player();
-    var b = new Player();
+    Player a = new Player();
+    Player b = new Player();
     a.AddPoints(10);
     b.AddPoints(5);
     Console.WriteLine(a.GetScore());
@@ -216,14 +222,20 @@
     {
         private static int score;
 
-        public void AddPoints(int points) => score += points;
+        public void AddPoints(int points)
+        {
+            score += points;
+        }
 
-        public int GetScore() => score;
+        public int GetScore()
+        {
+            return score;
+        }
     }
   answer: 9
   fixed: |
-    var a = new Player();
-    var b = new Player();
+    Player a = new Player();
+    Player b = new Player();
     a.AddPoints(10);
     b.AddPoints(5);
     Console.WriteLine(a.GetScore());
@@ -232,9 +244,15 @@
     {
         private int score;
 
-        public void AddPoints(int points) => score += points;
+        public void AddPoints(int points)
+        {
+            score += points;
+        }
 
-        public int GetScore() => score;
+        public int GetScore()
+        {
+            return score;
+        }
     }
   explanation: "השדה `score` מוגדר `static`, ולכן יש ממנו עותק אחד לכל המחלקה, וכל השחקנים מוסיפים לאותו מונה. נתון ששייך לכל אובייקט בנפרד צריך להיות שדה מופע, בלי `static`."
 
@@ -270,7 +288,7 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס 1, אבל נזרקת `NullReferenceException`. איזו שורה צריך לתקן?"
   code: |
-    var cart = new Cart();
+    Cart cart = new Cart();
     cart.Add("apple");
     Console.WriteLine(cart.Count());
 
@@ -278,13 +296,19 @@
     {
         private List<string> items;
 
-        public void Add(string item) => items.Add(item);
+        public void Add(string item)
+        {
+            items.Add(item);
+        }
 
-        public int Count() => items.Count;
+        public int Count()
+        {
+            return items.Count;
+        }
     }
   answer: 7
   fixed: |
-    var cart = new Cart();
+    Cart cart = new Cart();
     cart.Add("apple");
     Console.WriteLine(cart.Count());
 
@@ -292,9 +316,15 @@
     {
         private List<string> items = new List<string>();
 
-        public void Add(string item) => items.Add(item);
+        public void Add(string item)
+        {
+            items.Add(item);
+        }
 
-        public int Count() => items.Count;
+        public int Count()
+        {
+            return items.Count;
+        }
     }
   explanation: "השדה `items` הוא טיפוס הפניה, וערך ברירת המחדל שלו הוא `null`. הצהרה על שדה לא יוצרת את הרשימה. צריך לאתחל אותו, בשורת ההצהרה או בבנאי, למשל `= new List<string>();`."
 
@@ -354,7 +384,7 @@
   difficulty: 3
   prompt: מה יודפס?
   code: |
-    var p = new Point();
+    Point p = new Point();
     Console.WriteLine($"{p.X},{p.Y}");
 
     class Point

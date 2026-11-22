@@ -153,14 +153,28 @@
     - |
       class Notifier
       {
-          public string WelcomeMessage(string name) => $"Welcome, {name}!";
-          public string GoodbyeMessage(string name) => $"Goodbye, {name}.";
+          public string WelcomeMessage(string name)
+          {
+              return $"Welcome, {name}!";
+          }
+
+          public string GoodbyeMessage(string name)
+          {
+              return $"Goodbye, {name}.";
+          }
       }
     - |
       class Notifier
       {
-          public string WelcomeMessage(string name) => BuildMessage(name, true);
-          public string GoodbyeMessage(string name) => BuildMessage(name, false);
+          public string WelcomeMessage(string name)
+          {
+              return BuildMessage(name, true);
+          }
+
+          public string GoodbyeMessage(string name)
+          {
+              return BuildMessage(name, false);
+          }
 
           private static string BuildMessage(string name, bool isWelcome)
           {
@@ -397,9 +411,20 @@
     {
         public decimal Net { get; set; }
 
-        public decimal Vat() => Net * 0.18m;
-        public decimal Gross() => Net * 1.18m;
-        public string Summary() => $"VAT: {Net * 0.18m}, Gross: {Net + Net * 0.18m}";
+        public decimal Vat()
+        {
+            return Net * 0.18m;
+        }
+
+        public decimal Gross()
+        {
+            return Net * 1.18m;
+        }
+
+        public string Summary()
+        {
+            return $"VAT: {Net * 0.18m}, Gross: {Net + Net * 0.18m}";
+        }
     }
   options:
     - "1"
@@ -420,9 +445,15 @@
   code: |
     class UserForm
     {
-        public bool IsValid(string userName) => userName.Length <= 20;
+        public bool IsValid(string userName)
+        {
+            return userName.Length <= 20;
+        }
 
-        public string Hint() => "Up to 20 characters";
+        public string Hint()
+        {
+            return "Up to 20 characters";
+        }
     }
   options:
     - "לא, כי אין בקוד שתי שורות זהות"
@@ -442,7 +473,7 @@
   prompt: "הקוד אמור להעתיק את כתובת המשלוח לכתובת החיוב ולהדפיס `Haifa 3100000`. איזו שורה צריך לתקן?"
   code: |
     var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
-    var billing = new Address();
+    Address billing = new Address();
     billing.City = shipping.City;
     billing.ZipCode = billing.ZipCode;
     Console.WriteLine($"{billing.City} {billing.ZipCode}");
@@ -455,7 +486,7 @@
   answer: 4
   fixed: |
     var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
-    var billing = new Address();
+    Address billing = new Address();
     billing.City = shipping.City;
     billing.ZipCode = shipping.ZipCode;
     Console.WriteLine($"{billing.City} {billing.ZipCode}");

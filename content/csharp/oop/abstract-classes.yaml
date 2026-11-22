@@ -8,14 +8,20 @@
 
     abstract class Report
     {
-        public void Print() => Console.WriteLine($"[{Title()}] printed");
+        public void Print()
+        {
+            Console.WriteLine($"[{Title()}] printed");
+        }
 
         protected abstract string Title();
     }
 
     class SalesReport : Report
     {
-        protected override string Title() => "Sales";
+        protected override string Title()
+        {
+            return "Sales";
+        }
     }
   options: ["[Sales] printed", "[] printed", "[Title] printed", "שגיאת קומפילציה"]
   answer: 0
@@ -126,8 +132,15 @@
     class Square : Shape
     {
         private readonly double side;
-        public Square(double side) => this.side = side;
-        public override double Area() => side * side;
+        public Square(double side)
+        {
+            this.side = side;
+        }
+
+        public override double Area()
+        {
+            return side * side;
+        }
     }
   options: ["4", "שגיאת קומפילציה", "0", "NotImplementedException"]
   answer: 1
@@ -141,7 +154,7 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    var dog = new Dog("Rex");
+    Dog dog = new Dog("Rex");
     Console.WriteLine(dog.Intro());
 
     abstract class Animal
@@ -154,7 +167,10 @@
             Console.WriteLine("Animal ctor");
         }
 
-        public string Intro() => $"{name} says {Sound()}";
+        public string Intro()
+        {
+            return $"{name} says {Sound()}";
+        }
 
         protected abstract string Sound();
     }
@@ -163,7 +179,10 @@
     {
         public Dog(string name) : base(name) { }
 
-        protected override string Sound() => "Woof";
+        protected override string Sound()
+        {
+            return "Woof";
+        }
     }
   options: ["Animal ctor\nRex says Woof", "Rex says Woof", "שגיאת קומפילציה", "Animal ctor\nRex says"]
   answer: 0
@@ -183,30 +202,42 @@
 
     abstract class PriceCalculator
     {
-        public decimal Final(decimal price) => price - Discount(price);
+        public decimal Final(decimal price)
+        {
+            return price - Discount(price);
+        }
 
         protected abstract decimal Discount(decimal price);
     }
 
     class StudentPrice : PriceCalculator
     {
-        protected override decimal Discount(decimal price) => price * 0.9m;
+        protected override decimal Discount(decimal price)
+        {
+            return price * 0.9m;
+        }
     }
-  answer: 13
+  answer: 18
   fixed: |
     PriceCalculator calc = new StudentPrice();
     Console.WriteLine(calc.Final(200));
 
     abstract class PriceCalculator
     {
-        public decimal Final(decimal price) => price - Discount(price);
+        public decimal Final(decimal price)
+        {
+            return price - Discount(price);
+        }
 
         protected abstract decimal Discount(decimal price);
     }
 
     class StudentPrice : PriceCalculator
     {
-        protected override decimal Discount(decimal price) => price * 0.1m;
+        protected override decimal Discount(decimal price)
+        {
+            return price * 0.1m;
+        }
     }
   explanation: "המחלקה המופשטת מגדירה את החוזה: `Final` מחסירה את מה ש-`Discount` מחזירה. המימוש ב-`StudentPrice` מחזיר את המחיר אחרי ההנחה (90%) במקום את סכום ההנחה (10%). כשמממשים מתודה מופשטת, צריך לכבד את המשמעות שהבסיס מצפה לה, לא רק את החתימה."
 
@@ -222,22 +253,32 @@
     abstract class Account
     {
         protected decimal Balance { get; }
-        protected Account(decimal balance) => Balance = balance;
+        protected Account(decimal balance)
+        {
+            Balance = balance;
+        }
+
         public abstract decimal MonthlyFee();
     }
 
     class Checking : Account
     {
         public Checking(decimal balance) : base(balance) { }
-        public override decimal MonthlyFee() => 5;
+        public override decimal MonthlyFee()
+        {
+            return 5;
+        }
     }
 
     class Savings : Account
     {
         public Savings(decimal balance) : base(0) { }
-        public override decimal MonthlyFee() => Balance * 0.01m;
+        public override decimal MonthlyFee()
+        {
+            return Balance * 0.01m;
+        }
     }
-  answer: 20
+  answer: 27
   fixed: |
     var accounts = new List<Account> { new Checking(1000), new Savings(1000) };
     foreach (var account in accounts)
@@ -246,20 +287,30 @@
     abstract class Account
     {
         protected decimal Balance { get; }
-        protected Account(decimal balance) => Balance = balance;
+        protected Account(decimal balance)
+        {
+            Balance = balance;
+        }
+
         public abstract decimal MonthlyFee();
     }
 
     class Checking : Account
     {
         public Checking(decimal balance) : base(balance) { }
-        public override decimal MonthlyFee() => 5;
+        public override decimal MonthlyFee()
+        {
+            return 5;
+        }
     }
 
     class Savings : Account
     {
         public Savings(decimal balance) : base(balance) { }
-        public override decimal MonthlyFee() => Balance * 0.01m;
+        public override decimal MonthlyFee()
+        {
+            return Balance * 0.01m;
+        }
     }
   explanation: "היתרה נשמרת בחלק המשותף, במחלקה המופשטת, ומגיעה אליה רק דרך `base(...)`. הבנאי של `Savings` מעביר `0` במקום את `balance`, ולכן `Balance` הוא 0 והעמלה 0. הנוסחה ב-`MonthlyFee` נכונה; הנתון שהיא מקבלת שגוי."
 
@@ -296,13 +347,19 @@
     abstract class Shape : IDrawable
     {
         public abstract double Area();
-        public void Draw() => Console.WriteLine($"Area {Area()}");
+        public void Draw()
+        {
+            Console.WriteLine($"Area {Area()}");
+        }
     }
 
     class Circle : Shape
     {
         public double Radius { get; init; }
-        public override double Area() => Math.PI * Radius * Radius;
+        public override double Area()
+        {
+            return Math.PI * Radius * Radius;
+        }
     }
 
     class Theme { }
@@ -343,18 +400,31 @@
     abstract class Employee
     {
         public abstract int BaseSalary();
-        public virtual int Bonus() => 100;
-        public int Pay() => BaseSalary() + Bonus();
+        public virtual int Bonus()
+        {
+            return 100;
+        }
+
+        public int Pay()
+        {
+            return BaseSalary() + Bonus();
+        }
     }
 
     abstract class Trainee : Employee
     {
-        public override int Bonus() => 0;
+        public override int Bonus()
+        {
+            return 0;
+        }
     }
 
     class Intern : Trainee
     {
-        public override int BaseSalary() => 3000;
+        public override int BaseSalary()
+        {
+            return 3000;
+        }
     }
   options: ["3000", "3100", "שגיאת קומפילציה", "100"]
   answer: 0
@@ -420,18 +490,27 @@
     {
         public double Base { get; init; }
         public double Height { get; init; }
-        public override double Area() => Base * Height / 2;
+        public override double Area()
+        {
+            return Base * Height / 2;
+        }
     }
 
     abstract class Logger
     {
-        public void Log(string message) => Console.WriteLine(message);
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
     }
 
     class Circle : Shape
     {
         public double Radius { get; init; }
-        public override double Area() => Math.PI * Radius * Radius;
+        public override double Area()
+        {
+            return Math.PI * Radius * Radius;
+        }
     }
   targets:
     - id: "אפשר ליצור עם new"

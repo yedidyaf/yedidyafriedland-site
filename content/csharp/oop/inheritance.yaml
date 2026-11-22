@@ -3,18 +3,24 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    var dog = new Dog();
+    Dog dog = new Dog();
     dog.Eat();
     dog.Bark();
 
     class Animal
     {
-        public void Eat() => Console.WriteLine("Eating");
+        public void Eat()
+        {
+            Console.WriteLine("Eating");
+        }
     }
 
     class Dog : Animal
     {
-        public void Bark() => Console.WriteLine("Woof");
+        public void Bark()
+        {
+            Console.WriteLine("Woof");
+        }
     }
   options: ["Eating\nWoof", "Woof", "Woof\nEating", "שגיאת קומפילציה"]
   answer: 0
@@ -52,7 +58,10 @@
 
     class SavingsAccount : BankAccount
     {
-        public void AddInterest() => balance *= 1.02m;
+        public void AddInterest()
+        {
+            balance *= 1.02m;
+        }
     }
 
     class Report
@@ -128,17 +137,26 @@
 
     class Vehicle
     {
-        public Vehicle() => Console.WriteLine("Vehicle");
+        public Vehicle()
+        {
+            Console.WriteLine("Vehicle");
+        }
     }
 
     class Car : Vehicle
     {
-        public Car() => Console.WriteLine("Car");
+        public Car()
+        {
+            Console.WriteLine("Car");
+        }
     }
 
     class SportsCar : Car
     {
-        public SportsCar() => Console.WriteLine("SportsCar");
+        public SportsCar()
+        {
+            Console.WriteLine("SportsCar");
+        }
     }
   options: ["Vehicle\nCar\nSportsCar", "SportsCar\nCar\nVehicle", "SportsCar", "Car\nSportsCar"]
   answer: 0
@@ -154,21 +172,27 @@
   tags: [compile-error]
   prompt: מה יודפס?
   code: |
-    var m = new Manager("Rina", 3);
+    Manager m = new Manager("Rina", 3);
     Console.WriteLine(m.Name);
 
     class Employee
     {
         public string Name { get; }
 
-        public Employee(string name) => Name = name;
+        public Employee(string name)
+        {
+            Name = name;
+        }
     }
 
     class Manager : Employee
     {
         public int TeamSize { get; }
 
-        public Manager(string name, int teamSize) => TeamSize = teamSize;
+        public Manager(string name, int teamSize)
+        {
+            TeamSize = teamSize;
+        }
     }
   options: ["Rina", "שגיאת קומפילציה", "null", "שגיאה בזמן ריצה"]
   answer: 1
@@ -205,31 +229,43 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס `User (admin)`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
-    var admin = new Admin();
+    Admin admin = new Admin();
     Console.WriteLine(admin.Describe());
 
     class User
     {
-        public virtual string Describe() => "User";
+        public virtual string Describe()
+        {
+            return "User";
+        }
     }
 
     class Admin : User
     {
-        public override string Describe() => Describe() + " (admin)";
+        public override string Describe()
+        {
+            return Describe() + " (admin)";
+        }
     }
-  answer: 11
+  answer: 16
   fixed: |
-    var admin = new Admin();
+    Admin admin = new Admin();
     Console.WriteLine(admin.Describe());
 
     class User
     {
-        public virtual string Describe() => "User";
+        public virtual string Describe()
+        {
+            return "User";
+        }
     }
 
     class Admin : User
     {
-        public override string Describe() => base.Describe() + " (admin)";
+        public override string Describe()
+        {
+            return base.Describe() + " (admin)";
+        }
     }
   explanation: "בתוך `Admin`, הקריאה `Describe()` היא `this.Describe()`, כלומר הגרסה של `Admin` עצמה, וזו רקורסיה אינסופית. כדי להפעיל את הגרסה של מחלקת הבסיס צריך `base.Describe()`."
 
@@ -238,7 +274,7 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס 16, השטח של ריבוע שצלעו 4, אבל מדפיס 4. איזו שורה צריך לתקן?"
   code: |
-    var square = new Square(4);
+    Square square = new Square(4);
     Console.WriteLine(square.Area());
 
     class Rectangle
@@ -252,16 +288,19 @@
             Height = height;
         }
 
-        public int Area() => Width * Height;
+        public int Area()
+        {
+            return Width * Height;
+        }
     }
 
     class Square : Rectangle
     {
         public Square(int side) : base(side, 1) { }
     }
-  answer: 20
+  answer: 23
   fixed: |
-    var square = new Square(4);
+    Square square = new Square(4);
     Console.WriteLine(square.Area());
 
     class Rectangle
@@ -275,7 +314,10 @@
             Height = height;
         }
 
-        public int Area() => Width * Height;
+        public int Area()
+        {
+            return Width * Height;
+        }
     }
 
     class Square : Rectangle
@@ -331,14 +373,20 @@
 
     class Base
     {
-        public Base() => Console.WriteLine("Base ctor");
+        public Base()
+        {
+            Console.WriteLine("Base ctor");
+        }
     }
 
     class Derived : Base
     {
         private int x = Log("Derived field");
 
-        public Derived() => Console.WriteLine("Derived ctor");
+        public Derived()
+        {
+            Console.WriteLine("Derived ctor");
+        }
 
         static int Log(string msg) { Console.WriteLine(msg); return 0; }
     }
@@ -363,17 +411,26 @@
 
     class A
     {
-        public virtual string Name() => "A";
+        public virtual string Name()
+        {
+            return "A";
+        }
     }
 
     class B : A
     {
-        public override string Name() => "B" + base.Name();
+        public override string Name()
+        {
+            return "B" + base.Name();
+        }
     }
 
     class C : B
     {
-        public override string Name() => "C" + base.Name();
+        public override string Name()
+        {
+            return "C" + base.Name();
+        }
     }
   options: ["CBA", "CA", "ABC", "C"]
   answer: 0

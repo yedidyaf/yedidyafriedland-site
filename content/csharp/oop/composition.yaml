@@ -3,12 +3,15 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    var car = new Car();
+    Car car = new Car();
     car.Start();
 
     class Engine
     {
-        public void Ignite() => Console.WriteLine("Engine started");
+        public void Ignite()
+        {
+            Console.WriteLine("Engine started");
+        }
     }
 
     class Car
@@ -101,17 +104,23 @@
   tags: [compile-error]
   prompt: מה יודפס?
   code: |
-    var duck = new Duck();
+    Duck duck = new Duck();
     duck.Fly();
 
     class Flyer
     {
-        public void Fly() => Console.WriteLine("Fly");
+        public void Fly()
+        {
+            Console.WriteLine("Fly");
+        }
     }
 
     class Swimmer
     {
-        public void Swim() => Console.WriteLine("Swim");
+        public void Swim()
+        {
+            Console.WriteLine("Swim");
+        }
     }
 
     class Duck : Flyer, Swimmer { }
@@ -139,7 +148,10 @@
     class Duck
     {
         public IMover Mover { get; set; }
-        public void Move() => Console.WriteLine($"Duck can {Mover.Move()}");
+        public void Move()
+        {
+            Console.WriteLine($"Duck can {Mover.Move()}");
+        }
     }
   options: ["Duck can fly\nDuck can walk", "Duck can fly\nDuck can fly", "Duck can walk\nDuck can walk", "שגיאת קומפילציה"]
   answer: 0
@@ -154,9 +166,9 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    var engine = new Engine();
-    var first = new Car(engine);
-    var second = new Car(engine);
+    Engine engine = new Engine();
+    Car first = new Car(engine);
+    Car second = new Car(engine);
     first.Drive(100);
     second.Drive(50);
     Console.WriteLine(engine.Km);
@@ -166,8 +178,15 @@
     class Car
     {
         private readonly Engine engine;
-        public Car(Engine engine) => this.engine = engine;
-        public void Drive(int km) => engine.Km += km;
+        public Car(Engine engine)
+        {
+            this.engine = engine;
+        }
+
+        public void Drive(int km)
+        {
+            engine.Km += km;
+        }
     }
   options: ["150", "100", "50", "0"]
   answer: 0
@@ -182,41 +201,53 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס `True` אחרי שהרכב הותנע, אבל מדפיס `False`. איזו שורה צריך לתקן?"
   code: |
-    var car = new Car();
+    Car car = new Car();
     car.Start();
     Console.WriteLine(car.IsRunning);
 
     class Engine
     {
         public bool Running { get; private set; }
-        public void Start() => Running = true;
+        public void Start()
+        {
+            Running = true;
+        }
     }
 
     class Car
     {
         private readonly Engine engine = new Engine();
 
-        public void Start() => new Engine().Start();
+        public void Start()
+        {
+            new Engine().Start();
+        }
 
         public bool IsRunning => engine.Running;
     }
-  answer: 15
+  answer: 20
   fixed: |
-    var car = new Car();
+    Car car = new Car();
     car.Start();
     Console.WriteLine(car.IsRunning);
 
     class Engine
     {
         public bool Running { get; private set; }
-        public void Start() => Running = true;
+        public void Start()
+        {
+            Running = true;
+        }
     }
 
     class Car
     {
         private readonly Engine engine = new Engine();
 
-        public void Start() => engine.Start();
+        public void Start()
+        {
+            engine.Start();
+        }
 
         public bool IsRunning => engine.Running;
     }
@@ -229,7 +260,10 @@
   code: |
     class IntStack : List<int>
     {
-        public void Push(int value) => Add(value);
+        public void Push(int value)
+        {
+            Add(value);
+        }
 
         public int Pop()
         {
@@ -309,13 +343,23 @@
   code: |
     class Bird
     {
-        public virtual void Eat() => Console.WriteLine("Eating");
-        public virtual void Fly() => Console.WriteLine("Flying");
+        public virtual void Eat()
+        {
+            Console.WriteLine("Eating");
+        }
+
+        public virtual void Fly()
+        {
+            Console.WriteLine("Flying");
+        }
     }
 
     class Penguin : Bird
     {
-        public override void Fly() => throw new NotSupportedException("Penguins can't fly");
+        public override void Fly()
+        {
+            throw new NotSupportedException("Penguins can't fly");
+        }
     }
   options:
     - "ירושה שנדחית - Refused Bequest"
@@ -334,7 +378,7 @@
   difficulty: 3
   prompt: מה יודפס?
   code: |
-    var list = new CountingList();
+    CountingList list = new CountingList();
     list.AddRange(new[] { 1, 2, 3 });
     Console.WriteLine(list.AddCount);
 
@@ -342,7 +386,10 @@
     {
         private readonly List<int> items = new();
 
-        public virtual void Add(int x) => items.Add(x);
+        public virtual void Add(int x)
+        {
+            items.Add(x);
+        }
 
         public virtual void AddRange(int[] xs)
         {
@@ -372,41 +419,59 @@
   difficulty: 3
   prompt: "הקוד אמור להדפיס `Order A-17 placed`, אבל נזרקת `NullReferenceException`. איזו שורה צריך לתקן?"
   code: |
-    var logger = new ConsoleLogger();
-    var service = new OrderService(logger);
+    ConsoleLogger logger = new ConsoleLogger();
+    OrderService service = new OrderService(logger);
     service.Place("A-17");
 
     class ConsoleLogger
     {
-        public void Log(string message) => Console.WriteLine(message);
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
     }
 
     class OrderService
     {
         private readonly ConsoleLogger logger;
 
-        public OrderService(ConsoleLogger logger) => logger = this.logger;
+        public OrderService(ConsoleLogger logger)
+        {
+            logger = this.logger;
+        }
 
-        public void Place(string id) => logger.Log($"Order {id} placed");
+        public void Place(string id)
+        {
+            logger.Log($"Order {id} placed");
+        }
     }
-  answer: 14
+  answer: 19
   fixed: |
-    var logger = new ConsoleLogger();
-    var service = new OrderService(logger);
+    ConsoleLogger logger = new ConsoleLogger();
+    OrderService service = new OrderService(logger);
     service.Place("A-17");
 
     class ConsoleLogger
     {
-        public void Log(string message) => Console.WriteLine(message);
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
     }
 
     class OrderService
     {
         private readonly ConsoleLogger logger;
 
-        public OrderService(ConsoleLogger logger) => this.logger = logger;
+        public OrderService(ConsoleLogger logger)
+        {
+            this.logger = logger;
+        }
 
-        public void Place(string id) => logger.Log($"Order {id} placed");
+        public void Place(string id)
+        {
+            logger.Log($"Order {id} placed");
+        }
     }
   explanation: "ההשמה הפוכה: `logger = this.logger` מציבה בפרמטר את ערך השדה, שהוא עדיין `null`. השדה לא מקבל את הרכיב, ו-`Place` קוראת ל-`Log` על `null`. ברכיב שמגיע דרך הבנאי, השדה תמיד בצד שמאל: `this.logger = logger`."
 

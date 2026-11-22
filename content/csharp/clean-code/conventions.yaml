@@ -26,7 +26,10 @@
 
         public int customerCount => _customers.Count;
 
-        public void AddCustomer(string name) => _customers.Add(name);
+        public void AddCustomer(string name)
+        {
+            _customers.Add(name);
+        }
     }
   options:
     - "MaxCustomers"
@@ -159,7 +162,10 @@
         /// <summary>Calculates the VAT for a net amount.</summary>
         /// <param name="netAmount">The amount before VAT.</param>
         /// <??>The VAT amount.</??>
-        public decimal CalculateVat(decimal netAmount) => netAmount * VatRate;
+        public decimal CalculateVat(decimal netAmount)
+        {
+            return netAmount * VatRate;
+        }
     }
   options:
     - "<return>"
@@ -182,7 +188,10 @@
       public static class Temperature
       {
           // Converts Celsius to Fahrenheit
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
+          public static double ToFahrenheit(double celsius)
+          {
+              return celsius * 9 / 5 + 32;
+          }
       }
     - |
       public static class Temperature
@@ -190,13 +199,19 @@
           /// <summary>Converts a temperature from Celsius to Fahrenheit.</summary>
           /// <param name="celsius">Temperature in degrees Celsius.</param>
           /// <returns>Temperature in degrees Fahrenheit.</returns>
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
+          public static double ToFahrenheit(double celsius)
+          {
+              return celsius * 9 / 5 + 32;
+          }
       }
     - |
       public static class Temperature
       {
           /* Converts Celsius to Fahrenheit */
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
+          public static double ToFahrenheit(double celsius)
+          {
+              return celsius * 9 / 5 + 32;
+          }
       }
   answer: 1
   explanation: "חברים ציבוריים של ספרייה מתעדים בהערות XML עם `///`. המהדר והעורך מכירים אותן: הן מוצגות ב-IntelliSense ליד כל קריאה, ואפשר לייצר מהן תיעוד. הערה רגילה נראית רק למי שפותח את קוד המקור."
@@ -230,24 +245,45 @@
       {
           private int Visits;
 
-          public void RecordVisit() => Visits++;
-          public string Describe() => $"{Visits} visits";
+          public void RecordVisit()
+          {
+              Visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{Visits} visits";
+          }
       }
     - |
       class PageCounter
       {
           private int m_visits;
 
-          public void RecordVisit() => m_visits++;
-          public string Describe() => $"{m_visits} visits";
+          public void RecordVisit()
+          {
+              m_visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{m_visits} visits";
+          }
       }
     - |
       class PageCounter
       {
           private int _visits;
 
-          public void RecordVisit() => _visits++;
-          public string Describe() => $"{_visits} visits";
+          public void RecordVisit()
+          {
+              _visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{_visits} visits";
+          }
       }
   answer: 2
   explanation: "מוסכמות מיקרוסופט: שדה פרטי נכתב ב-camelCase עם קידומת `_`. כך רואים מיד בתוך מתודה שמדובר בשדה של האובייקט ולא במשתנה מקומי או בפרמטר."

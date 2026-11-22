@@ -99,7 +99,11 @@
         }
 
         private static void EnsureNotEmpty(List<decimal> prices) { }
-        private static decimal CalculateTotal(List<decimal> prices) => prices.Sum();
+        private static decimal CalculateTotal(List<decimal> prices)
+        {
+            return prices.Sum();
+        }
+
         private static void SendConfirmation(decimal total) { }
     }
   options:
@@ -119,8 +123,8 @@
   difficulty: 3
   prompt: מה יודפס?
   code: |
-    var session = new Session(new DateTime(2024, 1, 1, 10, 0, 0));
-    var now = new DateTime(2024, 1, 1, 11, 0, 0);
+    Session session = new Session(new DateTime(2024, 1, 1, 10, 0, 0));
+    DateTime now = new DateTime(2024, 1, 1, 11, 0, 0);
     Console.WriteLine(session.IsExpired(now));
     Console.WriteLine(session.IsExpired(now));
 
@@ -128,7 +132,10 @@
     {
         private DateTime _lastAccess;
 
-        public Session(DateTime lastAccess) => _lastAccess = lastAccess;
+        public Session(DateTime lastAccess)
+        {
+            _lastAccess = lastAccess;
+        }
 
         public bool IsExpired(DateTime now)
         {
@@ -157,14 +164,20 @@
     string lastName = "Levi";
     Console.WriteLine(FullName(lastName, firstName));
 
-    static string FullName(string firstName, string lastName) => $"{firstName} {lastName}";
+    static string FullName(string firstName, string lastName)
+    {
+        return $"{firstName} {lastName}";
+    }
   answer: 3
   fixed: |
     string firstName = "Dana";
     string lastName = "Levi";
     Console.WriteLine(FullName(firstName, lastName));
 
-    static string FullName(string firstName, string lastName) => $"{firstName} {lastName}";
+    static string FullName(string firstName, string lastName)
+    {
+        return $"{firstName} {lastName}";
+    }
   explanation: "הארגומנטים הועברו בסדר הפוך, ומודפס `Levi Dana`. כשכמה פרמטרים הם מאותו טיפוס, הקומפיילר לא יתפוס החלפה. ככל שיש פחות פרמטרים קל יותר להימנע מזה, וארגומנטים לפי שם (`FullName(firstName: ..., lastName: ...)`) עוזרים כשאין ברירה."
 
 - id: cs.clean-code.small-methods.007
@@ -265,7 +278,7 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      var calculator = new PriceCalculator();
+      PriceCalculator calculator = new PriceCalculator();
       calculator.Calculate(5m, 3);
       Console.WriteLine(calculator.Result);
 
@@ -273,15 +286,21 @@
       {
           public decimal Result { get; private set; }
 
-          public void Calculate(decimal unitPrice, int quantity) => Result = unitPrice * quantity;
+          public void Calculate(decimal unitPrice, int quantity)
+          {
+              Result = unitPrice * quantity;
+          }
       }
     - |
-      var calculator = new PriceCalculator();
+      PriceCalculator calculator = new PriceCalculator();
       Console.WriteLine(calculator.Calculate(5m, 3));
 
       class PriceCalculator
       {
-          public decimal Calculate(decimal unitPrice, int quantity) => unitPrice * quantity;
+          public decimal Calculate(decimal unitPrice, int quantity)
+          {
+              return unitPrice * quantity;
+          }
       }
   answer: 1
   explanation: "מתודה שמחשבת ערך צריכה להחזיר אותו. כשהתוצאה נשמרת במאפיין, נוצר צימוד בזמן (Temporal Coupling): חייבים לקרוא ל-`Calculate` לפני שקוראים את `Result`, ו-`Result` נשאר עם ערך ישן עד הקריאה הבאה."
@@ -298,8 +317,15 @@
 
       static double Bmi(double weightKilograms, double heightMeters) =>
           Divide(weightKilograms, Square(heightMeters));
-      static double Square(double x) => x * x;
-      static double Divide(double a, double b) => a / b;
+      static double Square(double x)
+      {
+          return x * x;
+      }
+
+      static double Divide(double a, double b)
+      {
+          return a / b;
+      }
     - |
       Console.WriteLine(Bmi(80, 2));
 
@@ -367,10 +393,13 @@
           return nights * nightlyRate;
       }
     - |
-      var stay = new Stay(new DateTime(2024, 5, 1), new DateTime(2024, 5, 4));
+      Stay stay = new Stay(new DateTime(2024, 5, 1), new DateTime(2024, 5, 4));
       Console.WriteLine(Price(stay, 300m));
 
-      static decimal Price(Stay stay, decimal nightlyRate) => stay.Nights * nightlyRate;
+      static decimal Price(Stay stay, decimal nightlyRate)
+      {
+          return stay.Nights * nightlyRate;
+      }
 
       record Stay(DateTime CheckIn, DateTime CheckOut)
       {
@@ -391,7 +420,10 @@
         Normalize(emails[i]);
     Console.WriteLine(string.Join(",", emails));
 
-    static string Normalize(string email) => email.Trim().ToLowerInvariant();
+    static string Normalize(string email)
+    {
+        return email.Trim().ToLowerInvariant();
+    }
   answer: 3
   fixed: |
     List<string> emails = new() { " Dana@Mail.com ", "AVI@mail.com" };
@@ -399,5 +431,8 @@
         emails[i] = Normalize(emails[i]);
     Console.WriteLine(string.Join(",", emails));
 
-    static string Normalize(string email) => email.Trim().ToLowerInvariant();
+    static string Normalize(string email)
+    {
+        return email.Trim().ToLowerInvariant();
+    }
   explanation: "`Normalize` היא מתודה טהורה (Pure Function): היא לא משנה את הקלט, כי מחרוזות ב-C# אינן ניתנות לשינוי, אלא מחזירה מחרוזת חדשה. זה עיצוב טוב, אבל הקורא חייב להשתמש בערך שחוזר. כאן הוא נזרק, והרשימה מודפסת כמו שהייתה."

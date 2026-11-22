@@ -274,9 +274,20 @@
   code: |
     class StoreRepository
     {
-        public string GetCustomer(int id) => $"Customer {id}";
-        public string FetchOrder(int id) => $"Order {id}";
-        public string RetrieveProduct(int id) => $"Product {id}";
+        public string GetCustomer(int id)
+        {
+            return $"Customer {id}";
+        }
+
+        public string FetchOrder(int id)
+        {
+            return $"Order {id}";
+        }
+
+        public string RetrieveProduct(int id)
+        {
+            return $"Product {id}";
+        }
     }
   options:
     - "שמות של מתודות צריכים להיות שמות עצם, למשל Customer, Order ו-Product"

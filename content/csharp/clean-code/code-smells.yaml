@@ -242,7 +242,10 @@
             return $"Hello, {name}";
         }
 
-        private string FormatLegacyGreeting(string name) => "Hi " + name;
+        private string FormatLegacyGreeting(string name)
+        {
+            return "Hi " + name;
+        }
     }
   options:
     - "שכפול קוד - Duplicated Code"
@@ -307,7 +310,10 @@
 
           public bool IsLocked => _failedAttempts >= 3; // 3 = max failed attempts
 
-          public void RecordFailure() => _failedAttempts++;
+          public void RecordFailure()
+          {
+              _failedAttempts++;
+          }
       }
     - |
       class LoginGuard
@@ -317,7 +323,10 @@
 
           public bool IsLocked => _failedAttempts >= MaxFailedAttempts;
 
-          public void RecordFailure() => _failedAttempts++;
+          public void RecordFailure()
+          {
+              _failedAttempts++;
+          }
       }
     - |
       class LoginGuard
@@ -326,7 +335,10 @@
 
           public bool IsLocked => _failedAttempts >= 3;
 
-          public void RecordFailure() => _failedAttempts++;
+          public void RecordFailure()
+          {
+              _failedAttempts++;
+          }
       }
   answer: 1
   explanation: "קבוע עם שם (`MaxFailedAttempts`) מסביר את המספר בכל מקום שמשתמשים בו, ושינוי המדיניות נעשה בשורה אחת. ב-C# קבועים נכתבים ב-PascalCase."
@@ -348,8 +360,8 @@
           throw new InvalidOperationException("Currency mismatch.");
       Console.WriteLine($"{priceAmount + taxAmount} {priceCurrency}");
     - |
-      var price = new Money(50m, "ILS");
-      var tax = new Money(9m, "ILS");
+      Money price = new Money(50m, "ILS");
+      Money tax = new Money(9m, "ILS");
       Console.WriteLine(price.Add(tax));
 
       record Money(decimal Amount, string Currency)
@@ -361,7 +373,10 @@
               return this with { Amount = Amount + other.Amount };
           }
 
-          public override string ToString() => $"{Amount} {Currency}";
+          public override string ToString()
+          {
+              return $"{Amount} {Currency}";
+          }
       }
   answer: 1
   explanation: "סכום ומטבע הם מושג אחד, כסף, ולכן מגיע להם טיפוס משלהם. `Money` מחזיק את שני הערכים יחד ומרכז את הכלל «אסור לחבר מטבעות שונים» במקום אחד. זה התיקון לאובססיית טיפוסים פרימיטיביים (Primitive Obsession)."
@@ -405,17 +420,29 @@
   code: |
     class Subscription
     {
-        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= 14;
+        public bool IsTrialOver(int daysSinceSignup)
+        {
+            return daysSinceSignup >= 14;
+        }
 
-        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, 30 - daysSinceSignup);
+        public int TrialDaysLeft(int daysSinceSignup)
+        {
+            return Math.Max(0, 30 - daysSinceSignup);
+        }
     }
-  answer: 5
+  answer: 10
   fixed: |
     class Subscription
     {
-        public bool IsTrialOver(int daysSinceSignup) => daysSinceSignup >= 14;
+        public bool IsTrialOver(int daysSinceSignup)
+        {
+            return daysSinceSignup >= 14;
+        }
 
-        public int TrialDaysLeft(int daysSinceSignup) => Math.Max(0, 14 - daysSinceSignup);
+        public int TrialDaysLeft(int daysSinceSignup)
+        {
+            return Math.Max(0, 14 - daysSinceSignup);
+        }
     }
   explanation: "`TrialDaysLeft` מחשבת לפי 30 ימים, ולכן אחרי 20 ימים הניסיון נגמר אבל המשתמש רואה שנשארו לו 10. התיקון המינימלי הוא להחליף את `30` ב-`14`; התיקון הנכון באמת הוא קבוע אחד `TrialDays`, כדי שמספרי קסם לא יוכלו להתרחק זה מזה."
 

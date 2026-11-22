@@ -8,12 +8,18 @@
 
     class Animal
     {
-        public virtual void Speak() => Console.WriteLine("...");
+        public virtual void Speak()
+        {
+            Console.WriteLine("...");
+        }
     }
 
     class Dog : Animal
     {
-        public override void Speak() => Console.WriteLine("Woof");
+        public override void Speak()
+        {
+            Console.WriteLine("Woof");
+        }
     }
   options: ["Woof", "...", "שגיאת קומפילציה", "לא יודפס כלום"]
   answer: 0
@@ -29,12 +35,18 @@
 
     class Animal
     {
-        public void Speak() => Console.WriteLine("Animal");
+        public void Speak()
+        {
+            Console.WriteLine("Animal");
+        }
     }
 
     class Cat : Animal
     {
-        public new void Speak() => Console.WriteLine("Meow");
+        public new void Speak()
+        {
+            Console.WriteLine("Meow");
+        }
     }
   options: ["Animal", "Meow", "שגיאת קומפילציה", "AnimalMeow"]
   answer: 0
@@ -53,17 +65,26 @@
 
     class Shape
     {
-        public virtual string Name() => "Shape";
+        public virtual string Name()
+        {
+            return "Shape";
+        }
     }
 
     class Circle : Shape
     {
-        public override string Name() => "Circle";
+        public override string Name()
+        {
+            return "Circle";
+        }
     }
 
     class Square : Shape
     {
-        public override string Name() => "Square";
+        public override string Name()
+        {
+            return "Square";
+        }
     }
   options: ["Circle\nSquare\nShape", "Shape\nShape\nShape", "Circle\nSquare", "שגיאת קומפילציה"]
   answer: 0
@@ -148,12 +169,18 @@
 
     class Animal
     {
-        public virtual void Speak() => Console.WriteLine("...");
+        public virtual void Speak()
+        {
+            Console.WriteLine("...");
+        }
     }
 
     class Dog : Animal
     {
-        public void Fetch() => Console.WriteLine("Fetching");
+        public void Fetch()
+        {
+            Console.WriteLine("Fetching");
+        }
     }
   options:
     - "הקומפיילר בודק אילו מתודות זמינות לפי טיפוס ההפניה, `Animal`, ול-`Animal` אין `Fetch`"
@@ -179,17 +206,26 @@
 
     class Animal
     {
-        public virtual string Name() => "Animal";
+        public virtual string Name()
+        {
+            return "Animal";
+        }
     }
 
     class Dog : Animal
     {
-        public override string Name() => "Dog";
+        public override string Name()
+        {
+            return "Dog";
+        }
     }
 
     class Cat : Animal
     {
-        public override string Name() => "Cat";
+        public override string Name()
+        {
+            return "Cat";
+        }
     }
   options: ["Cat\nInvalidCastException", "Cat\ndone", "Animal\nInvalidCastException", "שגיאת קומפילציה"]
   answer: 0
@@ -206,26 +242,41 @@
   code: |
     class Exporter
     {
-        public virtual string Export(string data) => data;
+        public virtual string Export(string data)
+        {
+            return data;
+        }
     }
 
     class CsvExporter : Exporter
     {
-        public override string Export(string data) => data.Replace(' ', ',');
+        public override string Export(string data)
+        {
+            return data.Replace(' ', ',');
+        }
     }
 
     class PdfExporter : Exporter
     {
-        public override string Export(string data) => $"PDF[{data}]";
+        public override string Export(string data)
+        {
+            return $"PDF[{data}]";
+        }
     }
 
     class ReportService
     {
         private readonly Exporter exporter;
 
-        public ReportService(Exporter exporter) => this.exporter = exporter;
+        public ReportService(Exporter exporter)
+        {
+            this.exporter = exporter;
+        }
 
-        public string Run() => exporter.Export("a b c");
+        public string Run()
+        {
+            return exporter.Export("a b c");
+        }
     }
   targets:
     - id: is-a
@@ -258,19 +309,28 @@
 
     class Payment
     {
-        public virtual decimal Fee(decimal amount) => 0;
+        public virtual decimal Fee(decimal amount)
+        {
+            return 0;
+        }
     }
 
     class CardPayment : Payment
     {
-        public override decimal Fee(decimal amount) => amount * 0.02m;
+        public override decimal Fee(decimal amount)
+        {
+            return amount * 0.02m;
+        }
     }
 
     class CashPayment : Payment
     {
-        public new decimal Fee(decimal amount) => 1;
+        public new decimal Fee(decimal amount)
+        {
+            return 1;
+        }
     }
-  answer: 17
+  answer: 25
   fixed: |
     var payments = new List<Payment> { new CardPayment(), new CashPayment() };
     foreach (var p in payments)
@@ -278,17 +338,26 @@
 
     class Payment
     {
-        public virtual decimal Fee(decimal amount) => 0;
+        public virtual decimal Fee(decimal amount)
+        {
+            return 0;
+        }
     }
 
     class CardPayment : Payment
     {
-        public override decimal Fee(decimal amount) => amount * 0.02m;
+        public override decimal Fee(decimal amount)
+        {
+            return amount * 0.02m;
+        }
     }
 
     class CashPayment : Payment
     {
-        public override decimal Fee(decimal amount) => 1;
+        public override decimal Fee(decimal amount)
+        {
+            return 1;
+        }
     }
   explanation: "`new` מסתיר את `Fee` של הבסיס במקום לדרוס אותה. בלולאה `p` הוא מטיפוס `Payment`, ולכן עבור `CashPayment` נקראת הגרסה של `Payment`, שמחזירה 0. עם `override` הקריאה דרך הבסיס תגיע לגרסה של `CashPayment`."
 
@@ -300,19 +369,28 @@
     - |
       class Shape
       {
-          public virtual double Area() => 0;
+          public virtual double Area()
+          {
+              return 0;
+          }
       }
 
       class Circle : Shape
       {
           public double Radius { get; init; }
-          public override double Area() => Math.PI * Radius * Radius;
+          public override double Area()
+          {
+              return Math.PI * Radius * Radius;
+          }
       }
 
       class Square : Shape
       {
           public double Side { get; init; }
-          public override double Area() => Side * Side;
+          public override double Area()
+          {
+              return Side * Side;
+          }
       }
     - |
       class Shape
@@ -358,18 +436,30 @@
 
     class Base
     {
-        public Base() => Show();
+        public Base()
+        {
+            Show();
+        }
 
-        public virtual void Show() => Console.WriteLine("Base");
+        public virtual void Show()
+        {
+            Console.WriteLine("Base");
+        }
     }
 
     class Derived : Base
     {
         private string label = "field";
 
-        public Derived() => label = "ctor";
+        public Derived()
+        {
+            label = "ctor";
+        }
 
-        public override void Show() => Console.WriteLine(label);
+        public override void Show()
+        {
+            Console.WriteLine(label);
+        }
     }
   options: ["field", "Base", "ctor", "Base\nfield"]
   answer: 0
@@ -392,14 +482,28 @@
 
     class Base
     {
-        public virtual void A() => Console.WriteLine("Base.A");
-        public void B() => Console.WriteLine("Base.B");
+        public virtual void A()
+        {
+            Console.WriteLine("Base.A");
+        }
+
+        public void B()
+        {
+            Console.WriteLine("Base.B");
+        }
     }
 
     class Derived : Base
     {
-        public override void A() => Console.WriteLine("Derived.A");
-        public new void B() => Console.WriteLine("Derived.B");
+        public override void A()
+        {
+            Console.WriteLine("Derived.A");
+        }
+
+        public new void B()
+        {
+            Console.WriteLine("Derived.B");
+        }
     }
   options:
     - "Derived.A\nBase.B\nDerived.B"
@@ -420,19 +524,36 @@
   code: |
     class Animal
     {
-        public virtual string Sound() => "...";
-        public string Kind() => "Animal";
+        public virtual string Sound()
+        {
+            return "...";
+        }
+
+        public string Kind()
+        {
+            return "Animal";
+        }
     }
 
     class Dog : Animal
     {
-        public override string Sound() => "Woof";
-        public new string Kind() => "Dog";
+        public override string Sound()
+        {
+            return "Woof";
+        }
+
+        public new string Kind()
+        {
+            return "Dog";
+        }
     }
 
     class Puppy : Dog
     {
-        public override string Sound() => "Yip";
+        public override string Sound()
+        {
+            return "Yip";
+        }
     }
   targets:
     - id: Animal
@@ -460,7 +581,7 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס `Pen: 5`, אבל מודפס שם המחלקה במקום זה. איזו שורה צריך לתקן?"
   code: |
-    var product = new Product("Pen", 5);
+    Product product = new Product("Pen", 5);
     Console.WriteLine(product);
 
     class Product
@@ -474,11 +595,14 @@
             Price = price;
         }
 
-        public string ToString() => $"{Name}: {Price}";
+        public string ToString()
+        {
+            return $"{Name}: {Price}";
+        }
     }
-  answer: 15
+  answer: 17
   fixed: |
-    var product = new Product("Pen", 5);
+    Product product = new Product("Pen", 5);
     Console.WriteLine(product);
 
     class Product
@@ -492,6 +616,9 @@
             Price = price;
         }
 
-        public override string ToString() => $"{Name}: {Price}";
+        public override string ToString()
+        {
+            return $"{Name}: {Price}";
+        }
     }
   explanation: "`Console.WriteLine(object)` קוראת ל-`ToString`, שהיא מתודה וירטואלית של `object`. בלי `override`, המתודה ב-`Product` רק מסתירה את המקורית (הקומפיילר מזהיר על כך), ולכן נקראת הגרסה של `object`, שמחזירה את שם הטיפוס. עם `override` ההדפסה תשתמש בגרסה של `Product`."
