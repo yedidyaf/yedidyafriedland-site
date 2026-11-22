@@ -25,42 +25,13 @@
   answer: 0
   explanation: "`Speak` מוגדרת `virtual` ונדרסת עם `override`. בזמן ריצה האובייקט הוא `Dog`, ולכן נקראת הגרסה של `Dog`, גם כשההפניה היא מטיפוס `Animal`."
 
-- id: cs.oop.polymorphism.002
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Animal a = new Cat();
-    a.Speak();
-
-    class Animal
-    {
-        public void Speak()
-        {
-            Console.WriteLine("Animal");
-        }
-    }
-
-    class Cat : Animal
-    {
-        public new void Speak()
-        {
-            Console.WriteLine("Meow");
-        }
-    }
-  options: ["Animal", "Meow", "שגיאת קומפילציה", "AnimalMeow"]
-  answer: 0
-  explanation: "עם `new` המתודה ב-`Cat` מסתירה את המתודה של הבסיס, אבל לא דורסת אותה. ההחלטה נעשית לפי טיפוס ההפניה (`Animal`), ולכן מודפס `Animal`."
-  optionExplanations:
-    "1": "`Meow` היה מודפס רק עם `virtual` ו-`override`, או אם ההפניה הייתה מטיפוס `Cat`."
-
 - id: cs.oop.polymorphism.003
   type: output
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    var shapes = new List<Shape> { new Circle(), new Square(), new Shape() };
-    foreach (var s in shapes)
+    Shape[] shapes = { new Circle(), new Square(), new Shape() };
+    foreach (Shape s in shapes)
         Console.WriteLine(s.Name());
 
     class Shape
@@ -88,11 +59,11 @@
     }
   options: ["Circle\nSquare\nShape", "Shape\nShape\nShape", "Circle\nSquare", "שגיאת קומפילציה"]
   answer: 0
-  explanation: "זה פולימורפיזם (Polymorphism): אותה קריאה `s.Name()` מפעילה גרסה שונה לפי הטיפוס האמיתי של כל אובייקט ברשימה. הרשימה מטיפוס `List<Shape>` יכולה להחזיק כל אובייקט שהוא `Shape`, כולל מחלקות יורשות."
+  explanation: "זה פולימורפיזם (Polymorphism): אותה קריאה `s.Name()` מפעילה גרסה שונה לפי הטיפוס האמיתי של כל אובייקט ברשימה. מערך מטיפוס `Shape[]` יכול להחזיק כל אובייקט שהוא `Shape`, כולל מחלקות יורשות."
   optionExplanations:
-    "1": "עם `virtual` ו-`override` ההחלטה נעשית לפי האובייקט בזמן ריצה, לא לפי טיפוס הרשימה."
-    "2": "גם `new Shape()` הוא איבר ברשימה, והוא מדפיס את הגרסה של `Shape`."
-    "3": "אובייקט של מחלקה יורשת מתאים למקום שבו מצופה טיפוס הבסיס, ולכן אפשר להכניס `Circle` ל-`List<Shape>`."
+    "1": "עם `virtual` ו-`override` ההחלטה נעשית לפי האובייקט בזמן ריצה, לא לפי טיפוס המערך."
+    "2": "גם `new Shape()` הוא איבר במערך, והוא מדפיס את הגרסה של `Shape`."
+    "3": "אובייקט של מחלקה יורשת מתאים למקום שבו מצופה טיפוס הבסיס, ולכן אפשר להכניס `Circle` למערך `Shape[]`."
 
 - id: cs.oop.polymorphism.004
   type: single
@@ -137,7 +108,7 @@
 
     class NotificationCenter
     {
-        private List<Notification> queue = new();
+        private Notification[] queue;
     }
   targets:
     - id: Notification
@@ -156,7 +127,7 @@
       why: NotificationCenter מחזיקה תור של התראות (has-a) ושולחת אותן דרך הפניה מטיפוס הבסיס.
     - label: Notification
       answer: "object (אין מחלקת בסיס מפורשת)"
-  explanation: "כל ההתראות יורשות מ-`Notification`, ולכן אפשר להחזיק אותן ברשימה אחת מטיפוס הבסיס ולקרוא ל-`Send` בלי לדעת את הסוג המדויק. `NotificationCenter` לא יורשת מאף התראה: היא משתמשת בהן."
+  explanation: "כל ההתראות יורשות מ-`Notification`, ולכן אפשר להחזיק אותן במערך אחד מטיפוס הבסיס ולקרוא ל-`Send` בלי לדעת את הסוג המדויק. `NotificationCenter` לא יורשת מאף התראה: היא משתמשת בהן."
 
 - id: cs.oop.polymorphism.007
   type: single
@@ -266,7 +237,7 @@
 
     class ReportService
     {
-        private readonly Exporter exporter;
+        private Exporter exporter;
 
         public ReportService(Exporter exporter)
         {
@@ -303,13 +274,13 @@
   difficulty: 2
   prompt: "הקוד אמור להדפיס עמלה לכל אמצעי תשלום. עבור תשלום במזומן העמלה צריכה להיות 1, אבל מודפס 0. איזו שורה צריך לתקן?"
   code: |
-    var payments = new List<Payment> { new CardPayment(), new CashPayment() };
-    foreach (var p in payments)
-        Console.WriteLine(p.Fee(100));
+    Payment[] payments = { new CardPayment(), new CashPayment() };
+    for (int i = 0; i < payments.Length; i++)
+        Console.WriteLine(payments[i].Fee(100));
 
     class Payment
     {
-        public virtual decimal Fee(decimal amount)
+        public virtual double Fee(double amount)
         {
             return 0;
         }
@@ -317,28 +288,29 @@
 
     class CardPayment : Payment
     {
-        public override decimal Fee(decimal amount)
+        public override double Fee(double amount)
         {
-            return amount * 0.02m;
+            return amount * 0.02;
         }
     }
 
     class CashPayment : Payment
     {
-        public new decimal Fee(decimal amount)
+        public double Fee(double amount)
         {
             return 1;
         }
     }
-  answer: 25
+  answer: 23
+  explanation: "בלי `override`, הפעולה `Fee` ב-`CashPayment` לא דורסת את הגרסה של `Payment`, אלא מסתירה אותה (הקומפיילר מזהיר על כך). בלולאה כל איבר הוא מטיפוס `Payment`, ולכן עבור `CashPayment` נקראת הגרסה של `Payment`, שמחזירה 0. עם `override` הקריאה דרך הבסיס תגיע לגרסה של `CashPayment`."
   fixed: |
-    var payments = new List<Payment> { new CardPayment(), new CashPayment() };
-    foreach (var p in payments)
-        Console.WriteLine(p.Fee(100));
+    Payment[] payments = { new CardPayment(), new CashPayment() };
+    for (int i = 0; i < payments.Length; i++)
+        Console.WriteLine(payments[i].Fee(100));
 
     class Payment
     {
-        public virtual decimal Fee(decimal amount)
+        public virtual double Fee(double amount)
         {
             return 0;
         }
@@ -346,20 +318,19 @@
 
     class CardPayment : Payment
     {
-        public override decimal Fee(decimal amount)
+        public override double Fee(double amount)
         {
-            return amount * 0.02m;
+            return amount * 0.02;
         }
     }
 
     class CashPayment : Payment
     {
-        public override decimal Fee(decimal amount)
+        public override double Fee(double amount)
         {
             return 1;
         }
     }
-  explanation: "`new` מסתיר את `Fee` של הבסיס במקום לדרוס אותה. בלולאה `p` הוא מטיפוס `Payment`, ולכן עבור `CashPayment` נקראת הגרסה של `Payment`, שמחזירה 0. עם `override` הקריאה דרך הבסיס תגיע לגרסה של `CashPayment`."
 
 - id: cs.oop.polymorphism.011
   type: cleaner
@@ -411,116 +382,10 @@
   optionExplanations:
     "1": "שרשרת בדיקות `is` מחליפה את הפולימורפיזם: מחלקת הבסיס צריכה להכיר כל יורשת, וכל צורה חדשה מחייבת לשנות את `Shape`. צורה ששוכחים להוסיף מחזירה 0 בשקט."
 
-- id: cs.oop.polymorphism.012
-  type: single
-  difficulty: 2
-  prompt: "מה המשמעות של `public sealed override void Speak()` במחלקה `Dog : Animal`?"
-  options:
-    - "`Dog` דורסת את `Speak`, ומחלקות שיורשות מ-`Dog` לא יכולות לדרוס אותה שוב"
-    - "אי אפשר לרשת מהמחלקה `Dog`"
-    - "אי אפשר לקרוא ל-`Speak` דרך הפניה מטיפוס `Animal`"
-    - "`Speak` הופכת למתודה `static` של `Dog`"
-  answer: 0
-  explanation: "מתודה עם `override` היא בעצמה וירטואלית, ויורשות נוספות יכולות לדרוס אותה שוב. `sealed` על מתודה עוצר את שרשרת הדריסות בנקודה הזו. מחלקה `Puppy : Dog` עדיין חוקית, אבל `override` של `Speak` בה הוא שגיאת קומפילציה."
-  optionExplanations:
-    "1": "זה מה ש-`sealed` עושה על המחלקה עצמה (`sealed class Dog`). על מתודה הוא חוסם רק את דריסתה."
-    "2": "הדריסה עדיין פועלת דרך `Animal`: `Animal a = new Dog(); a.Speak();` מפעיל את הגרסה של `Dog`."
-    "3": "`sealed` לא קשור ל-`static`. זו עדיין מתודת מופע."
-
-- id: cs.oop.polymorphism.013
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    new Derived();
-
-    class Base
-    {
-        public Base()
-        {
-            Show();
-        }
-
-        public virtual void Show()
-        {
-            Console.WriteLine("Base");
-        }
-    }
-
-    class Derived : Base
-    {
-        private string label = "field";
-
-        public Derived()
-        {
-            label = "ctor";
-        }
-
-        public override void Show()
-        {
-            Console.WriteLine(label);
-        }
-    }
-  options: ["field", "Base", "ctor", "Base\nfield"]
-  answer: 0
-  explanation: "הבנאי של `Base` קורא למתודה וירטואלית, והאובייקט כבר מטיפוס `Derived`, ולכן רצה הגרסה של `Derived`. אתחול השדה `label = \"field\"` רץ לפני בנאי הבסיס, אבל גוף הבנאי של `Derived` עוד לא רץ. זו הסיבה שלא מומלץ לקרוא למתודה וירטואלית מתוך בנאי."
-  optionExplanations:
-    "1": "גם בתוך הבנאי של `Base`, קריאה וירטואלית מגיעה לגרסה של הטיפוס האמיתי, `Derived`."
-    "2": "`label = \"ctor\"` רץ בגוף הבנאי של `Derived`, כלומר אחרי שבנאי הבסיס כבר הדפיס."
-    "3": "`Show` נקראת פעם אחת בלבד, והגרסה של `Base` לא רצה כי היא נדרסה."
-
-- id: cs.oop.polymorphism.014
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Base b = new Derived();
-    Derived d = new Derived();
-    b.A();
-    b.B();
-    d.B();
-
-    class Base
-    {
-        public virtual void A()
-        {
-            Console.WriteLine("Base.A");
-        }
-
-        public void B()
-        {
-            Console.WriteLine("Base.B");
-        }
-    }
-
-    class Derived : Base
-    {
-        public override void A()
-        {
-            Console.WriteLine("Derived.A");
-        }
-
-        public new void B()
-        {
-            Console.WriteLine("Derived.B");
-        }
-    }
-  options:
-    - "Derived.A\nBase.B\nDerived.B"
-    - "Derived.A\nDerived.B\nDerived.B"
-    - "Base.A\nBase.B\nDerived.B"
-    - "Derived.A\nBase.B\nBase.B"
-  answer: 0
-  explanation: "`A` היא `virtual` ונדרסת, ולכן היא נבחרת לפי האובייקט: `Derived.A`. `B` מוסתרת עם `new`, ולכן היא נבחרת לפי טיפוס ההפניה: דרך `b` (מטיפוס `Base`) רצה `Base.B`, ודרך `d` (מטיפוס `Derived`) רצה `Derived.B`."
-  optionExplanations:
-    "1": "`new` לא דורס. דרך הפניה מטיפוס `Base` נקראת הגרסה של `Base`."
-    "2": "`A` נדרסה עם `override`, ולכן גם דרך `b` רצה הגרסה של `Derived`."
-    "3": "דרך הפניה מטיפוס `Derived` רואים את המתודה החדשה שהוגדרה עם `new`."
-
 - id: cs.oop.polymorphism.015
   type: hierarchy
   difficulty: 3
-  prompt: "לכל קריאה, בחרו באיזו מחלקה מוגדרת הגרסה של המתודה שתרוץ."
+  prompt: "לכל קריאה, בחרו באיזו מחלקה מוגדרת הגרסה של הפעולה שתרוץ."
   code: |
     class Animal
     {
@@ -541,11 +406,6 @@
         {
             return "Woof";
         }
-
-        public new string Kind()
-        {
-            return "Dog";
-        }
     }
 
     class Puppy : Dog
@@ -557,24 +417,25 @@
     }
   targets:
     - id: Animal
+      desc: מחלקת הבסיס
     - id: Dog
+      desc: יורשת מ-Animal
     - id: Puppy
+      desc: יורשת מ-Dog
   items:
     - label: "Animal a = new Puppy(); a.Sound()"
       answer: Puppy
-      why: Sound וירטואלית, ולכן נבחרת לפי האובייקט, שהוא Puppy.
+      why: "`Sound` וירטואלית, ולכן נבחרת הגרסה של העצם עצמו, `Puppy`, גם כשההפניה מטיפוס `Animal`."
     - label: "Dog d = new Dog(); d.Sound()"
       answer: Dog
-    - label: "Animal a = new Dog(); a.Kind()"
-      answer: Animal
-      why: Kind לא וירטואלית, ו-Dog רק מסתירה אותה עם new. הבחירה לפי טיפוס ההפניה, Animal.
+    - label: "Animal a = new Dog(); a.Sound()"
+      answer: Dog
     - label: "Dog d = new Puppy(); d.Kind()"
-      answer: Dog
-      why: טיפוס ההפניה הוא Dog, וזו הגרסה של Dog.
-    - label: "Puppy p = new Puppy(); p.Kind()"
-      answer: Dog
-      why: Puppy לא מגדירה Kind, ולכן היא יורשת את הגרסה הקרובה ביותר מעליה, של Dog.
-  explanation: "מתודה וירטואלית שנדרסה עם `override` נבחרת לפי הטיפוס האמיתי של האובייקט בזמן ריצה. מתודה רגילה, גם אם הוסתרה עם `new`, נבחרת לפי טיפוס ההפניה בזמן קומפילציה, ומשם עולים בהיררכיה עד הגרסה הקרובה."
+      answer: Animal
+      why: "`Kind` מוגדרת רק ב-`Animal`, ואף מחלקה לא דורסת אותה. כל העצמים משתמשים בגרסה שירשו."
+    - label: "Animal a = new Animal(); a.Sound()"
+      answer: Animal
+  explanation: "פעולה וירטואלית שנדרסה עם `override` נבחרת לפי הטיפוס האמיתי של העצם בזמן ריצה, ולא לפי טיפוס ההפניה. אם המחלקה של העצם לא דורסת את הפעולה, עולים בהיררכיה עד הגרסה הקרובה."
 
 - id: cs.oop.polymorphism.016
   type: bug
@@ -586,39 +447,207 @@
 
     class Product
     {
-        public string Name { get; }
-        public decimal Price { get; }
+        private string name;
+        private int price;
 
-        public Product(string name, decimal price)
+        public Product(string name, int price)
         {
-            Name = name;
-            Price = price;
+            this.name = name;
+            this.price = price;
         }
 
         public string ToString()
         {
-            return $"{Name}: {Price}";
+            return name + ": " + price;
         }
     }
-  answer: 17
+  answer: 15
+  explanation: "`Console.WriteLine` שמקבלת עצם קוראת ל-`ToString`, שהיא פעולה וירטואלית של `object`. בלי `override`, הפעולה ב-`Product` רק מסתירה את המקורית (הקומפיילר מזהיר על כך), ולכן נקראת הגרסה של `object`, שמחזירה את שם המחלקה. צריך `public override string ToString()`."
   fixed: |
     Product product = new Product("Pen", 5);
     Console.WriteLine(product);
 
     class Product
     {
-        public string Name { get; }
-        public decimal Price { get; }
+        private string name;
+        private int price;
 
-        public Product(string name, decimal price)
+        public Product(string name, int price)
         {
-            Name = name;
-            Price = price;
+            this.name = name;
+            this.price = price;
         }
 
         public override string ToString()
         {
-            return $"{Name}: {Price}";
+            return name + ": " + price;
         }
     }
-  explanation: "`Console.WriteLine(object)` קוראת ל-`ToString`, שהיא מתודה וירטואלית של `object`. בלי `override`, המתודה ב-`Product` רק מסתירה את המקורית (הקומפיילר מזהיר על כך), ולכן נקראת הגרסה של `object`, שמחזירה את שם הטיפוס. עם `override` ההדפסה תשתמש בגרסה של `Product`."
+
+- id: cs.oop.polymorphism.017
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס `User (admin)`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
+  code: |
+    Admin admin = new Admin();
+    Console.WriteLine(admin.Describe());
+
+    class User
+    {
+        public virtual string Describe()
+        {
+            return "User";
+        }
+    }
+
+    class Admin : User
+    {
+        public override string Describe()
+        {
+            return Describe() + " (admin)";
+        }
+    }
+  answer: 16
+  explanation: "בתוך `Admin`, הקריאה `Describe()` היא `this.Describe()`, כלומר הגרסה של `Admin` עצמה, וזו רקורסיה אינסופית. כדי להפעיל את הגרסה של מחלקת הבסיס צריך `base.Describe()`."
+  fixed: |
+    Admin admin = new Admin();
+    Console.WriteLine(admin.Describe());
+
+    class User
+    {
+        public virtual string Describe()
+        {
+            return "User";
+        }
+    }
+
+    class Admin : User
+    {
+        public override string Describe()
+        {
+            return base.Describe() + " (admin)";
+        }
+    }
+
+- id: cs.oop.polymorphism.018
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    A obj = new C();
+    Console.WriteLine(obj.Name());
+
+    class A
+    {
+        public virtual string Name()
+        {
+            return "A";
+        }
+    }
+
+    class B : A
+    {
+        public override string Name()
+        {
+            return "B" + base.Name();
+        }
+    }
+
+    class C : B
+    {
+        public override string Name()
+        {
+            return "C" + base.Name();
+        }
+    }
+  options: ["CBA", "CA", "ABC", "A"]
+  answer: 0
+  explanation: "ההפניה מטיפוס `A`, אבל העצם הוא `C`, ולכן נקראת הגרסה של `C`. `base` מתייחס למחלקת הבסיס הישירה: `C.Name` קוראת ל-`B.Name`, שקוראת ל-`A.Name`. התוצאה נבנית מבפנים החוצה: `\"C\" + (\"B\" + \"A\")`."
+  optionExplanations:
+    "1": "`base` ב-`C` הוא `B`, לא ראש ההיררכיה. `B.Name` מוסיפה את ה-`B` שלה."
+    "2": "כל גרסה כותבת את האות שלה לפני תוצאת `base`, ולכן `C` ראשונה."
+    "3": "`Name` וירטואלית, ולכן טיפוס ההפניה `A` לא קובע איזו גרסה תרוץ."
+
+- id: cs.oop.polymorphism.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Dog d = new Dog();
+    Animal a = d;
+    Console.WriteLine(a is Dog);
+    Console.WriteLine(d is Animal);
+    Console.WriteLine(new Animal() is Dog);
+
+    class Animal
+    {
+    }
+
+    class Dog : Animal
+    {
+    }
+  options: ["True\nTrue\nFalse", "False\nTrue\nFalse", "True\nTrue\nTrue", "True\nFalse\nFalse"]
+  answer: 0
+  explanation: "`is` בודק את הטיפוס של העצם בזמן ריצה. `a` מפנה לעצם `Dog`, ולכן `a is Dog` אמת. כל `Dog` הוא גם `Animal` (is-a), אבל `Animal` רגיל הוא לא `Dog`: הירושה עובדת בכיוון אחד בלבד. כך בודקים לפני המרה כלפי מטה (Downcasting)."
+  optionExplanations:
+    "1": "טיפוס המשתנה `Animal` לא משנה את העצם עצמו, שנשאר `Dog`."
+    "2": "כל כלב הוא חיה, אבל לא כל חיה היא כלב. עצם שנוצר כ-`Animal` אינו `Dog`."
+    "3": "`Dog` יורשת מ-`Animal`, ולכן כל `Dog` הוא גם `Animal`."
+
+- id: cs.oop.polymorphism.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Shape[] shapes = { new Square(2), new Rect(2, 3), new Square(1) };
+    int total = 0;
+    for (int i = 0; i < shapes.Length; i++)
+        total += shapes[i].Area();
+    Console.WriteLine(total);
+
+    class Shape
+    {
+        public virtual int Area()
+        {
+            return 0;
+        }
+    }
+
+    class Square : Shape
+    {
+        private int side;
+
+        public Square(int side)
+        {
+            this.side = side;
+        }
+
+        public override int Area()
+        {
+            return side * side;
+        }
+    }
+
+    class Rect : Shape
+    {
+        private int w;
+        private int h;
+
+        public Rect(int w, int h)
+        {
+            this.w = w;
+            this.h = h;
+        }
+
+        public override int Area()
+        {
+            return w * h;
+        }
+    }
+  options: ["11", "0", "10", "7"]
+  answer: 0
+  explanation: "המערך מטיפוס `Shape[]` מחזיק עצמים מסוגים שונים. הקריאה `shapes[i].Area()` מפעילה בכל פעם את הגרסה של העצם עצמו: `4 + 6 + 1 = 11`. זה פולימורפיזם: אותה קריאה, התנהגות שונה לפי העצם."
+  optionExplanations:
+    "1": "`Area` וירטואלית ונדרסה, ולכן לא נקראת הגרסה של `Shape` שמחזירה 0."
+    "2": "גם הריבוע הקטן, שצלעו 1, נכנס לסכום."
+    "3": "השטח של `Square(2)` הוא 4, לא 2."

@@ -106,32 +106,6 @@
     "2": "`Issued` הוא `static`, ולכן כל שלושת הבנאים מקדמים את אותו מונה."
     "3": "המספרים הפוכים: המונה המשותף הוא 3, והמספר של האובייקט הראשון הוא 1."
 
-- id: cs.oop.classes-objects.006
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    Counter counter = new Counter();
-    counter.Add(2).Add(3);
-    Console.WriteLine(counter.Total);
-
-    class Counter
-    {
-        public int Total;
-
-        public Counter Add(int n)
-        {
-            Total += n;
-            return this;
-        }
-    }
-  options: ["5", "2", "3", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "`Add` מחזירה `this`, כלומר את אותו אובייקט. לכן `Add(3)` נקראת על אותו `counter`, והסכום הוא 5. זו שרשרת קריאות (Method Chaining)."
-  optionExplanations:
-    "1": "`return this` לא מחזיר עותק אלא הפניה לאותו אובייקט, ולכן גם הקריאה השנייה משנה את `counter`."
-    "3": "מתודה יכולה להחזיר את טיפוס המחלקה שלה, ו-`return this` הוא קוד תקין."
-
 - id: cs.oop.classes-objects.007
   type: single
   difficulty: 2
@@ -290,43 +264,47 @@
   code: |
     Cart cart = new Cart();
     cart.Add("apple");
-    Console.WriteLine(cart.Count());
+    Console.WriteLine(cart.GetCount());
 
     class Cart
     {
-        private List<string> items;
+        private string[] items;
+        private int count;
 
         public void Add(string item)
         {
-            items.Add(item);
+            items[count] = item;
+            count++;
         }
 
-        public int Count()
+        public int GetCount()
         {
-            return items.Count;
+            return count;
         }
     }
   answer: 7
+  explanation: "השדה `items` הוא מערך, כלומר טיפוס הפניה, וערך ברירת המחדל שלו הוא `null`. הצהרה על השדה לא יוצרת את המערך. צריך ליצור אותו, בשורת ההצהרה או בבנאי, למשל `private string[] items = new string[10];`."
   fixed: |
     Cart cart = new Cart();
     cart.Add("apple");
-    Console.WriteLine(cart.Count());
+    Console.WriteLine(cart.GetCount());
 
     class Cart
     {
-        private List<string> items = new List<string>();
+        private string[] items = new string[10];
+        private int count;
 
         public void Add(string item)
         {
-            items.Add(item);
+            items[count] = item;
+            count++;
         }
 
-        public int Count()
+        public int GetCount()
         {
-            return items.Count;
+            return count;
         }
     }
-  explanation: "השדה `items` הוא טיפוס הפניה, וערך ברירת המחדל שלו הוא `null`. הצהרה על שדה לא יוצרת את הרשימה. צריך לאתחל אותו, בשורת ההצהרה או בבנאי, למשל `= new List<string>();`."
 
 - id: cs.oop.classes-objects.013
   type: cleaner
@@ -369,7 +347,7 @@
   code: |
     class Account
     {
-        private decimal balance;
+        private double balance;
 
         public static bool SameBalance(Account first, Account second)
         {
@@ -379,56 +357,187 @@
   answer: true
   explanation: "`private` ב-C# מגביל גישה לפי מחלקה, לא לפי אובייקט. כל קוד שנמצא בתוך `Account`, כולל מתודה `static`, רשאי לגשת לשדות ה-`private` של כל אובייקט `Account`. כאן אין בעיה של `static`, כי המתודה ניגשת דרך אובייקטים מפורשים (`first`, `second`)."
 
-- id: cs.oop.classes-objects.015
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Point p = new Point();
-    Console.WriteLine($"{p.X},{p.Y}");
-
-    class Point
-    {
-        public int X, Y;
-
-        public Point() : this(1)
-        {
-            Y = 5;
-        }
-
-        public Point(int x)
-        {
-            X = x;
-            Y = x * 2;
-        }
-    }
-  options: ["1,5", "1,2", "0,5", "1,0"]
-  answer: 0
-  explanation: "`: this(1)` היא שרשור בנאים (Constructor Chaining): קודם רץ הבנאי `Point(int x)` במלואו (`X = 1`, `Y = 2`), ורק אחר כך גוף הבנאי בלי הפרמטרים, שמשנה את `Y` ל-5."
-  optionExplanations:
-    "1": "הבנאי המשורשר רץ ראשון, ולכן גוף הבנאי בלי הפרמטרים רץ אחריו ודורס את `Y`."
-    "2": "`this(1)` אכן מפעיל את הבנאי השני, ולכן `X` מקבל 1."
-
 - id: cs.oop.classes-objects.016
   type: output
   difficulty: 3
   prompt: מה יודפס?
   code: |
-    var orders = new List<Order>();
-    for (int i = 0; i < 3; i++)
-        orders.Add(new Order());
-    Console.WriteLine(orders[0].Id + orders[2].Id);
+    Order[] orders = new Order[3];
+    for (int i = 0; i < orders.Length; i++)
+        orders[i] = new Order();
+    Console.WriteLine(orders[0].GetId() + orders[2].GetId());
     Console.WriteLine(Order.NextId);
 
     class Order
     {
         public static int NextId = 100;
-        public int Id = NextId++;
+        private int id;
+
+        public Order()
+        {
+            id = NextId;
+            NextId++;
+        }
+
+        public int GetId()
+        {
+            return id;
+        }
     }
   options: ["202\n103", "202\n102", "300\n103", "100102\n103"]
   answer: 0
-  explanation: "`NextId` הוא `static` ומאותחל פעם אחת ל-100. אתחול השדה `Id` רץ בכל יצירת אובייקט: הראשון מקבל 100, השני 101, השלישי 102, ו-`NextId` מתקדם ל-103. הסכום `100 + 102` הוא 202, כי זה חיבור של שני `int`."
+  explanation: "`NextId` הוא `static`, כלומר משותף לכל העצמים, ומאותחל פעם אחת ל-100. הבנאי רץ בכל יצירת עצם: הראשון מקבל 100, השני 101, השלישי 102, ו-`NextId` מתקדם ל-103. הסכום `100 + 102` הוא 202, כי זה חיבור של שני `int`."
   optionExplanations:
-    "1": "`NextId++` מחזיר את הערך הישן ואז מקדם. אחרי שלושה אובייקטים הערך הוא 103."
-    "2": "אתחול שדה מופע רץ מחדש לכל אובייקט, ולכן לא כל ה-`Id` שווים 100."
-    "3": "`Id` הוא `int`, ולכן `+` הוא חיבור מספרי ולא שרשור מחרוזות."
+    "1": "אחרי שלושה עצמים `NextId` קודם שלוש פעמים, מ-100 ל-103."
+    "2": "כל עצם מקבל מספר אחר, ולכן לא כולם 100 או 200."
+    "3": "`GetId()` מחזירה `int`, ולכן `+` מחבר ולא משרשר."
+
+- id: cs.oop.classes-objects.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Student s = new Student("Dana", 80);
+    s.SetGrade(s.GetGrade() + 5);
+    Console.WriteLine(s.GetGrade());
+
+    class Student
+    {
+        private string name;
+        private int grade;
+
+        public Student(string name, int grade)
+        {
+            this.name = name;
+            this.grade = grade;
+        }
+
+        public int GetGrade()
+        {
+            return grade;
+        }
+
+        public void SetGrade(int grade)
+        {
+            this.grade = grade;
+        }
+    }
+  options: ["85", "80", "5", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "השדה `grade` הוא `private`, ולכן מחוץ למחלקה ניגשים אליו רק דרך פעולות: `GetGrade` מחזירה את הערך ו-`SetGrade` משנה אותו. זו כימוס (Encapsulation): המחלקה שולטת בגישה לנתונים שלה. `GetGrade()` מחזירה 80, ו-`SetGrade(85)` שומרת 85."
+  optionExplanations:
+    "1": "`SetGrade` מעדכנת את השדה, ולכן הקריאה השנייה ל-`GetGrade` מחזירה את הערך החדש."
+    "2": "`SetGrade` מקבלת את הערך המלא, `80 + 5`, ולא רק את התוספת."
+    "3": "הגישה לשדה הפרטי נעשית דרך פעולות `public`, וזה חוקי."
+
+- id: cs.oop.classes-objects.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Point p = new Point(2, 3);
+    Console.WriteLine(p);
+
+    class Point
+    {
+        private int x;
+        private int y;
+
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public override string ToString()
+        {
+            return "(" + x + "," + y + ")";
+        }
+    }
+  options: ["(2,3)", "Point", "2,3", "(x,y)"]
+  answer: 0
+  explanation: "`Console.WriteLine` שמקבלת עצם קוראת ל-`ToString` שלו. המחלקה הגדירה `ToString` משלה, ולכן מודפס הטקסט שהיא בונה: `(2,3)`. בלי ההגדרה הזו היה מודפס רק שם המחלקה."
+  optionExplanations:
+    "1": "שם המחלקה מודפס רק כשאין `ToString` משלה."
+    "2": "`ToString` מוסיפה סוגריים סביב המספרים."
+    "3": "`x` ו-`y` בתוך הפעולה הם השדות, ולכן מודפסים הערכים שלהם."
+
+- id: cs.oop.classes-objects.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Student[] arr = new Student[3];
+    arr[0] = new Student("Avi", 90);
+    arr[1] = new Student("Noa", 70);
+    arr[2] = new Student("Tal", 85);
+    int count = 0;
+    for (int i = 0; i < arr.Length; i++)
+    {
+        if (arr[i].GetGrade() > 80)
+            count++;
+    }
+    Console.WriteLine(count);
+
+    class Student
+    {
+        private string name;
+        private int grade;
+
+        public Student(string name, int grade)
+        {
+            this.name = name;
+            this.grade = grade;
+        }
+
+        public int GetGrade()
+        {
+            return grade;
+        }
+    }
+  options: ["2", "3", "1", "NullReferenceException"]
+  answer: 0
+  explanation: "זה מערך של עצמים: כל תא מחזיק הפניה לעצם `Student`. הלולאה קוראת ל-`GetGrade` של כל תלמיד וסופרת את מי שהציון שלו מעל 80: Avi (90) ו-Tal (85)."
+  optionExplanations:
+    "1": "הציון של Noa הוא 70, ולכן היא לא נספרת."
+    "2": "גם 90 וגם 85 גדולים מ-80."
+    "3": "כל שלושת התאים קיבלו עצם לפני הלולאה, ולכן אף תא אינו `null`."
+
+- id: cs.oop.classes-objects.020
+  type: bug
+  difficulty: 2
+  prompt: "הפעולה `SetGrade` אמורה לעדכן את הציון רק אם הוא בין 0 ל-100. בפועל היא מקבלת גם 150. איזו שורה צריך לתקן?"
+  code: |
+    class Student
+    {
+        private int grade;
+
+        public void SetGrade(int g)
+        {
+            if (g >= 0 || g <= 100)
+                grade = g;
+        }
+
+        public int GetGrade()
+        {
+            return grade;
+        }
+    }
+  answer: 7
+  explanation: "עם `||` מספיק שתנאי אחד יתקיים, ו-150 הוא לפחות 0, ולכן הציון מתקבל. טווח דורש ששני התנאים יתקיימו יחד: `g >= 0 && g <= 100`. בדיקה כזו בפעולת `Set` היא אחת הסיבות שהשדה `private`."
+  fixed: |
+    class Student
+    {
+        private int grade;
+
+        public void SetGrade(int g)
+        {
+            if (g >= 0 && g <= 100)
+                grade = g;
+        }
+
+        public int GetGrade()
+        {
+            return grade;
+        }
+    }

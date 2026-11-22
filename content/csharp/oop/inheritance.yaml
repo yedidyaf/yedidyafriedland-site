@@ -53,14 +53,14 @@
   code: |
     class BankAccount
     {
-        protected decimal balance;
+        protected double balance;
     }
 
     class SavingsAccount : BankAccount
     {
         public void AddInterest()
         {
-            balance *= 1.02m;
+            balance *= 1.02;
         }
     }
 
@@ -71,13 +71,13 @@
     - "מתוך `BankAccount` ומתוך מחלקות שיורשות ממנה, כמו `SavingsAccount`"
     - "מכל מקום בתוכנית, כולל `Report`, כי הוא לא `private`"
     - "רק מתוך `BankAccount` עצמה"
-    - "מכל מחלקה באותו פרויקט, כולל `Report`"
+    - "רק מתוך מחלקות שיורשות ממנה, ולא מתוך `BankAccount` עצמה"
   answer: 0
   explanation: "`protected` נמצא בין `private` ל-`public`: המחלקה עצמה ומחלקות שיורשות ממנה רואות את החבר, אבל קוד חיצוני כמו `Report` לא. כך מחלקה יורשת יכולה להשתמש במצב הפנימי בלי לחשוף אותו לכולם."
   optionExplanations:
     "1": "\"לא `private`\" לא אומר `public`. `protected` חוסם גישה מקוד שלא יורש מהמחלקה."
     "2": "כך מתנהג `private`. עם `protected` גם `SavingsAccount` רשאית לגשת."
-    "3": "גישה לכל הפרויקט היא `internal`, לא `protected`."
+    "3": "המחלקה עצמה תמיד רשאית לגשת לחברים שלה, גם `protected` וגם `private`."
 
 - id: cs.oop.inheritance.004
   type: hierarchy
@@ -105,28 +105,6 @@
       answer: is-a
       why: ריבוע הוא סוג של צורה.
   explanation: "ירושה מתאימה כשמשפט «X הוא סוג של Y» נכון (is-a). כשנכון לומר «ל-X יש Y», ה-Y צריך להיות שדה בתוך X (has-a), לא מחלקת בסיס."
-
-- id: cs.oop.inheritance.005
-  type: output
-  difficulty: 1
-  prompt: מה יודפס?
-  code: |
-    Dog d = new Dog();
-    Animal a = d;
-    Console.WriteLine(a is Dog);
-    Console.WriteLine(d is Animal);
-    Console.WriteLine(new Animal() is Dog);
-
-    class Animal { }
-
-    class Dog : Animal { }
-  options: ["True\nTrue\nFalse", "False\nTrue\nFalse", "True\nTrue\nTrue", "True\nFalse\nFalse"]
-  answer: 0
-  explanation: "`is` בודק את הטיפוס של האובייקט בזמן ריצה. `a` מצביע על אובייקט `Dog`, ולכן `a is Dog` אמת. כל `Dog` הוא גם `Animal` (is-a), אבל `Animal` רגיל הוא לא `Dog`: הירושה עובדת בכיוון אחד בלבד."
-  optionExplanations:
-    "1": "טיפוס המשתנה `Animal` לא משנה את האובייקט עצמו, שנשאר `Dog`."
-    "2": "כל כלב הוא חיה, אבל לא כל חיה היא כלב. אובייקט שנוצר כ-`Animal` אינו `Dog`."
-    "3": "`Dog` יורשת מ-`Animal`, ולכן כל `Dog` הוא גם `Animal`."
 
 - id: cs.oop.inheritance.006
   type: output
@@ -173,25 +151,30 @@
   prompt: מה יודפס?
   code: |
     Manager m = new Manager("Rina", 3);
-    Console.WriteLine(m.Name);
+    Console.WriteLine(m.GetName());
 
     class Employee
     {
-        public string Name { get; }
+        private string name;
 
         public Employee(string name)
         {
-            Name = name;
+            this.name = name;
+        }
+
+        public string GetName()
+        {
+            return name;
         }
     }
 
     class Manager : Employee
     {
-        public int TeamSize { get; }
+        private int teamSize;
 
         public Manager(string name, int teamSize)
         {
-            TeamSize = teamSize;
+            this.teamSize = teamSize;
         }
     }
   options: ["Rina", "שגיאת קומפילציה", "null", "שגיאה בזמן ריצה"]
@@ -200,6 +183,7 @@
   optionExplanations:
     "0": "הפרמטר `name` של `Manager` לא מועבר ל-`Employee` מעצמו. צריך להעביר אותו במפורש עם `base(name)`."
     "2": "הקוד לא מגיע לריצה, כי לא קיים בנאי בסיס שאפשר לקרוא לו בלי ארגומנטים."
+    "3": "הבעיה מתגלה כבר בקומפילציה, לא בזמן ריצה."
 
 - id: cs.oop.inheritance.008
   type: single
@@ -217,58 +201,6 @@
     "2": "ירושה לא יוצרת אובייקט נוסף. זה אותו אובייקט, והחלק הבסיסי שלו מאותחל על ידי בנאי הבסיס."
     "3": "מחלקת הבסיס נקבעת בהצהרת המחלקה (`class Manager : Employee`), לא בבנאי."
 
-- id: cs.oop.inheritance.009
-  type: truefalse
-  difficulty: 2
-  prompt: "אפשר לרשת ממחלקה שמוגדרת `sealed`, בתנאי שהמחלקה היורשת נמצאת באותו קובץ."
-  answer: false
-  explanation: "`sealed` (חתומה) אומר שאף מחלקה לא יכולה לרשת ממנה, בלי חריגים של קובץ או פרויקט. משתמשים בזה כשהמחלקה לא תוכננה להרחבה, כמו `string` ב-.NET. ניסיון לרשת ממנה הוא שגיאת קומפילציה."
-
-- id: cs.oop.inheritance.010
-  type: bug
-  difficulty: 2
-  prompt: "הקוד אמור להדפיס `User (admin)`, אבל התוכנית קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
-  code: |
-    Admin admin = new Admin();
-    Console.WriteLine(admin.Describe());
-
-    class User
-    {
-        public virtual string Describe()
-        {
-            return "User";
-        }
-    }
-
-    class Admin : User
-    {
-        public override string Describe()
-        {
-            return Describe() + " (admin)";
-        }
-    }
-  answer: 16
-  fixed: |
-    Admin admin = new Admin();
-    Console.WriteLine(admin.Describe());
-
-    class User
-    {
-        public virtual string Describe()
-        {
-            return "User";
-        }
-    }
-
-    class Admin : User
-    {
-        public override string Describe()
-        {
-            return base.Describe() + " (admin)";
-        }
-    }
-  explanation: "בתוך `Admin`, הקריאה `Describe()` היא `this.Describe()`, כלומר הגרסה של `Admin` עצמה, וזו רקורסיה אינסופית. כדי להפעיל את הגרסה של מחלקת הבסיס צריך `base.Describe()`."
-
 - id: cs.oop.inheritance.011
   type: bug
   difficulty: 2
@@ -279,52 +211,56 @@
 
     class Rectangle
     {
-        public int Width { get; }
-        public int Height { get; }
+        private int width;
+        private int height;
 
         public Rectangle(int width, int height)
         {
-            Width = width;
-            Height = height;
+            this.width = width;
+            this.height = height;
         }
 
         public int Area()
         {
-            return Width * Height;
+            return width * height;
         }
     }
 
     class Square : Rectangle
     {
-        public Square(int side) : base(side, 1) { }
+        public Square(int side) : base(side, 1)
+        {
+        }
     }
   answer: 23
+  explanation: "`Square` לא שומרת נתונים משלה: היא מעבירה את המידות לבנאי של `Rectangle` דרך `base(...)`. היא מעבירה `1` כגובה, ולכן השטח `4 * 1`. ריבוע הוא מלבן שהרוחב והגובה שלו שווים, ולכן צריך `base(side, side)`."
   fixed: |
     Square square = new Square(4);
     Console.WriteLine(square.Area());
 
     class Rectangle
     {
-        public int Width { get; }
-        public int Height { get; }
+        private int width;
+        private int height;
 
         public Rectangle(int width, int height)
         {
-            Width = width;
-            Height = height;
+            this.width = width;
+            this.height = height;
         }
 
         public int Area()
         {
-            return Width * Height;
+            return width * height;
         }
     }
 
     class Square : Rectangle
     {
-        public Square(int side) : base(side, side) { }
+        public Square(int side) : base(side, side)
+        {
+        }
     }
-  explanation: "`Square` לא שומרת נתונים משלה: היא מעבירה את המידות לבנאי של `Rectangle` דרך `base(...)`. היא מעבירה `1` כגובה, ולכן השטח `4 * 1`. ריבוע הוא מלבן שהרוחב והגובה שלו שווים, ולכן צריך `base(side, side)`."
 
 - id: cs.oop.inheritance.012
   type: hierarchy
@@ -338,7 +274,7 @@
 
     class Drawing
     {
-        private List<Shape> shapes = new();
+        private Shape[] shapes;
     }
 
     class Layer : Drawing { }
@@ -362,83 +298,7 @@
       answer: Drawing
     - label: Shape
       answer: "object (אין מחלקת בסיס מפורשת)"
-  explanation: "מחלקת הבסיס הישירה היא מה שכתוב אחרי הנקודתיים. מחלקה בלי נקודתיים יורשת מ-`object`. שדה מטיפוס `List<Shape>` הוא הרכבה, לא ירושה."
-
-- id: cs.oop.inheritance.013
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    new Derived();
-
-    class Base
-    {
-        public Base()
-        {
-            Console.WriteLine("Base ctor");
-        }
-    }
-
-    class Derived : Base
-    {
-        private int x = Log("Derived field");
-
-        public Derived()
-        {
-            Console.WriteLine("Derived ctor");
-        }
-
-        static int Log(string msg) { Console.WriteLine(msg); return 0; }
-    }
-  options:
-    - "Derived field\nBase ctor\nDerived ctor"
-    - "Base ctor\nDerived field\nDerived ctor"
-    - "Base ctor\nDerived ctor\nDerived field"
-    - "Derived ctor\nDerived field\nBase ctor"
-  answer: 0
-  explanation: "ב-C# הסדר ביצירת אובייקט יורש הוא: אתחולי השדות (Field Initializers) של המחלקה היורשת, אחר כך הבנאי של מחלקת הבסיס, ובסוף גוף הבנאי של המחלקה היורשת. לכן `Derived field` מודפס עוד לפני `Base ctor`."
-  optionExplanations:
-    "1": "כך זה עובד ב-Java. ב-C# אתחולי השדות של המחלקה היורשת רצים לפני הקריאה לבנאי הבסיס."
-    "2": "אתחולי שדות רצים תמיד לפני גוף הבנאי של אותה מחלקה."
-    "3": "גוף הבנאי של `Derived` רץ אחרון, אחרי שבנאי הבסיס הסתיים."
-
-- id: cs.oop.inheritance.014
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Console.WriteLine(new C().Name());
-
-    class A
-    {
-        public virtual string Name()
-        {
-            return "A";
-        }
-    }
-
-    class B : A
-    {
-        public override string Name()
-        {
-            return "B" + base.Name();
-        }
-    }
-
-    class C : B
-    {
-        public override string Name()
-        {
-            return "C" + base.Name();
-        }
-    }
-  options: ["CBA", "CA", "ABC", "C"]
-  answer: 0
-  explanation: "`base` מתייחס למחלקת הבסיס הישירה. `C.Name` קוראת ל-`B.Name`, שקוראת ל-`A.Name`. התוצאה נבנית מבפנים החוצה: `\"C\" + (\"B\" + \"A\")`."
-  optionExplanations:
-    "1": "`base` ב-`C` הוא `B`, לא ראש ההיררכיה. `B.Name` מוסיפה את ה-`B` שלה."
-    "2": "כל גרסה כותבת את האות שלה לפני תוצאת `base`, ולכן `C` ראשונה."
-    "3": "`base.Name()` כן נקראת, ומחזירה את התוצאה של מחלקת הבסיס."
+  explanation: "מחלקת הבסיס הישירה היא מה שכתוב אחרי הנקודתיים. מחלקה בלי נקודתיים יורשת מ-`object`. שדה מטיפוס `Shape[]` הוא הרכבה, לא ירושה."
 
 - id: cs.oop.inheritance.015
   type: truefalse
@@ -452,34 +312,174 @@
   difficulty: 3
   prompt: "לפי הקוד, מהי מחלקת הבסיס הישירה של כל מחלקה?"
   code: |
-    interface IAuditable { }
-
     class Entity { }
-    class Account : Entity, IAuditable { }
+    class Account : Entity { }
     class SavingsAccount : Account { }
-    class Transaction : IAuditable { }
+    class Transaction { }
 
-    class Bank
+    class Bank : Entity
     {
-        private List<Account> accounts = new();
+        private Account[] accounts;
     }
   targets:
     - id: Entity
+      desc: מחלקת בסיס כללית
     - id: Account
-    - id: IAuditable
+      desc: חשבון
     - id: "object (אין מחלקת בסיס מפורשת)"
+      desc: אין נקודתיים בהגדרה
   items:
     - label: Account
       answer: Entity
-      why: אחרי הנקודתיים מופיעה קודם מחלקת הבסיס Entity, ואחריה ממשק שהיא מממשת.
     - label: SavingsAccount
       answer: Account
+      why: "`SavingsAccount` יורשת ישירות מ-`Account`, ורק דרכה מ-`Entity`. מחלקת הבסיס הישירה היא זו שכתובה אחרי הנקודתיים."
     - label: Transaction
       answer: "object (אין מחלקת בסיס מפורשת)"
-      why: IAuditable הוא ממשק, לא מחלקה. Transaction מממשת אותו, ומחלקת הבסיס שלה היא object.
     - label: Bank
-      answer: "object (אין מחלקת בסיס מפורשת)"
-      why: Bank מחזיקה רשימת חשבונות (has-a), אבל לא יורשת מ-Account.
+      answer: Entity
+      why: "השדה `Account[] accounts` הוא הרכבה (Has-a): בנק מחזיק חשבונות. הוא לא הופך את `Bank` ליורשת של `Account`."
     - label: Entity
       answer: "object (אין מחלקת בסיס מפורשת)"
-  explanation: "ברשימה שאחרי הנקודתיים, מחלקה (אם יש) חייבת להופיע ראשונה, וכל השאר ממשקים. ממשק אף פעם לא מחלקת בסיס: מחלקה שמופיעים אחריה רק ממשקים יורשת מ-`object`."
+  explanation: "מחלקת הבסיס הישירה היא מה שכתוב אחרי הנקודתיים. מחלקה בלי נקודתיים יורשת מ-`object`. שדה מטיפוס של מחלקה אחרת הוא הרכבה, לא ירושה."
+
+- id: cs.oop.inheritance.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Student s = new Student("Dana", 90);
+    Console.WriteLine(s.Info());
+
+    class Person
+    {
+        protected string name;
+
+        public Person(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    class Student : Person
+    {
+        private int grade;
+
+        public Student(string name, int grade) : base(name)
+        {
+            this.grade = grade;
+        }
+
+        public string Info()
+        {
+            return name + " " + grade;
+        }
+    }
+  options: ["Dana 90", " 90", "שגיאת קומפילציה", "Dana"]
+  answer: 0
+  explanation: "`base(name)` מעביר את השם לבנאי של `Person`, שמציב אותו בשדה `name`. השדה מוגדר `protected`, ולכן `Student` רשאית לגשת אליו ישירות בפעולה `Info`."
+  optionExplanations:
+    "1": "`base(name)` מעביר את השם לבנאי הבסיס, ולכן `name` לא ריק."
+    "2": "שדה `protected` נגיש מתוך מחלקה יורשת."
+    "3": "`Info` מחזירה גם את הציון."
+
+- id: cs.oop.inheritance.018
+  type: output
+  difficulty: 2
+  tags: [compile-error]
+  prompt: מה יודפס?
+  code: |
+    Cat c = new Cat("Mitzi");
+    Console.WriteLine(c.Hello());
+
+    class Animal
+    {
+        private string name;
+
+        public Animal(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    class Cat : Animal
+    {
+        public Cat(string name) : base(name)
+        {
+        }
+
+        public string Hello()
+        {
+            return "I am " + name;
+        }
+    }
+  options: ["שגיאת קומפילציה", "I am Mitzi", "I am ", "שגיאה בזמן ריצה"]
+  answer: 0
+  explanation: "שדה `private` נגיש רק בתוך המחלקה שהגדירה אותו, גם לא במחלקה יורשת. `Cat` לא רשאית לגשת ל-`name`, ולכן זו שגיאת קומפילציה. הפתרונות: להגדיר את השדה `protected`, או להוסיף ל-`Animal` פעולה `GetName()`."
+  optionExplanations:
+    "1": "השדה קיים בעצם, אבל `private` חוסם גישה אליו מתוך `Cat`."
+    "2": "הקוד לא מתקמפל, ולכן לא מודפס כלום."
+    "3": "הבעיה מתגלה כבר בקומפילציה."
+
+- id: cs.oop.inheritance.019
+  type: hierarchy
+  difficulty: 1
+  prompt: לכל זוג מחלקות, בחרו את סוג היחס הנכון ביניהן.
+  targets:
+    - id: is-a
+      desc: "ירושה - Inheritance"
+    - id: has-a
+      desc: "הרכבה - Composition"
+  items:
+    - label: "Teacher ו-Person"
+      answer: is-a
+    - label: "Car ו-Wheel"
+      answer: has-a
+      why: "לרכב יש גלגלים, אבל גלגל הוא לא סוג של רכב."
+    - label: "Classroom ו-Student"
+      answer: has-a
+    - label: "Cat ו-Animal"
+      answer: is-a
+    - label: "Library ו-Book"
+      answer: has-a
+      why: "ספרייה מחזיקה ספרים. היא לא סוג של ספר, ולכן זו הרכבה."
+  explanation: "בודקים במשפט: \"X הוא סוג של Y\" מתאים לירושה (is-a), ו-\"ל-X יש Y\" מתאים להרכבה (has-a). מורה הוא סוג של אדם, ולכיתה יש תלמידים."
+
+- id: cs.oop.inheritance.020
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Cat c = new Cat();
+    c.Sleep();
+    c.Meow();
+
+    class Animal
+    {
+        public void Sleep()
+        {
+            Console.WriteLine("Zzz");
+        }
+    }
+
+    class Cat : Animal
+    {
+        public void Meow()
+        {
+            Console.WriteLine("Meow");
+        }
+    }
+  options: ["Zzz\nMeow", "Meow", "שגיאת קומפילציה", "Meow\nZzz"]
+  answer: 0
+  explanation: "`Cat` יורשת מ-`Animal`, ולכן עצם מטיפוס `Cat` מקבל גם את הפעולה `Sleep` שהוגדרה במחלקת הבסיס, בנוסף לפעולה `Meow` שלו."
+  optionExplanations:
+    "1": "גם הפעולה `Sleep` של מחלקת הבסיס זמינה לעצם של `Cat`."
+    "2": "אין צורך להגדיר מחדש את `Sleep` ב-`Cat`. היא עוברת בירושה."
+    "3": "הפעולות רצות לפי סדר הקריאות."
+
+- id: cs.oop.inheritance.021
+  type: truefalse
+  difficulty: 1
+  prompt: "מחלקה יורשת מקבלת את כל הפעולות ה-`public` של מחלקת הבסיס שלה."
+  answer: true
+  explanation: "ירושה (Inheritance) פירושה שהמחלקה היורשת מקבלת את מה שהוגדר במחלקת הבסיס. פעולות `public` אפשר להפעיל על עצם של היורשת כאילו הוגדרו בה."
