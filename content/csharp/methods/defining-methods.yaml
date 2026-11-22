@@ -17,23 +17,6 @@
     "2": "`49` הוא `(4 + 3) * (4 + 3)`. כל קריאה מחושבת בנפרד ורק אחר כך התוצאות מחוברות."
     "3": "`7` הוא סכום הארגומנטים עצמם, בלי להפעיל עליהם את המתודה."
 
-- id: cs.methods.defining-methods.002
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    int baseValue = 1;
-    int AddBase(int x) => x + baseValue;
-    baseValue = 10;
-    Console.WriteLine(AddBase(5));
-  options: ["15", "6", "5", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "מתודה מקומית (Local function) שאינה `static` לוכדת (Capture) את המשתנה `baseValue` עצמו, ולא עותק של הערך שלו ברגע ההגדרה. בזמן הקריאה הערך הוא כבר 10, ולכן מודפס 5 + 10 = 15."
-  optionExplanations:
-    "1": "`6` מניח שהמתודה שומרת את הערך 1 שהיה ברגע ההגדרה. היא קוראת את המשתנה בזמן הקריאה."
-    "2": "`5` מניח שהמתודה המקומית לא רואה את המשתנים שמסביבה, אבל מתודה מקומית רגילה רואה אותם."
-    "3": "מותר להגדיר מתודה מקומית באמצע הקוד ולהשתמש בה במשתנים שהוגדרו לפניה."
-
 - id: cs.methods.defining-methods.003
   type: single
   difficulty: 1
@@ -70,72 +53,6 @@
     "1": "מתודת `void` לא מחזירה את הארגומנט שקיבלה. היא לא מחזירה כלום."
     "2": "אין ערך ברירת מחדל שחוזר ממתודת `void`. הקוד לא מתקמפל בכלל."
     "3": "לא יודפס כלום, כי תוכנית שלא מתקמפלת לא רצה."
-
-- id: cs.methods.defining-methods.005
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    var a = new Counter();
-    var b = new Counter();
-    a.Increment();
-    b.Increment();
-    b.Increment();
-    Console.WriteLine($"{a.Count} {b.Count} {Counter.Total}");
-
-    class Counter
-    {
-        public static int Total;
-        public int Count;
-
-        public void Increment()
-        {
-            Count++;
-            Total++;
-        }
-    }
-  options: ["1 2 3", "1 2 2", "3 3 3", "1 2 1"]
-  answer: 0
-  explanation: "`Increment` היא מתודת מופע (Instance method): היא משנה את `Count` של האובייקט שעליו נקראה. `Total` הוא שדה `static`, אחד משותף לכל המחלקה, ולכן הוא סופר את כל שלוש הקריאות."
-  optionExplanations:
-    "1": "`Total` לא שייך לאובייקט מסוים. הוא משותף, ולכן הוא סופר גם את הקריאה על `a`."
-    "2": "`Count` הוא שדה מופע. לכל אובייקט יש עותק משלו, ולכן `a.Count` הוא 1 בלבד."
-    "3": "`Total` לא מתאפס בכל אובייקט חדש. יש ממנו עותק אחד בלבד."
-
-- id: cs.methods.defining-methods.006
-  type: single
-  difficulty: 2
-  tags: [compile-error]
-  prompt: מה הבעיה בקוד?
-  code: |
-    class Calculator
-    {
-        private int lastResult;
-
-        public static int Add(int a, int b)
-        {
-            lastResult = a + b;
-            return lastResult;
-        }
-    }
-  options:
-    - "מתודה `static` לא יכולה לגשת לשדה המופע `lastResult` בלי אובייקט, ולכן הקוד לא מתקמפל"
-    - "שדה `private` לא נגיש מתוך מתודה של אותה מחלקה"
-    - "מתודה `static` חייבת להיות מוגדרת `void`"
-    - "אין בעיה, הקוד מתקמפל ו-`Add` מחזירה את הסכום"
-  answer: 0
-  explanation: "מתודה סטטית (Static method) שייכת למחלקה ולא לאובייקט מסוים, ולכן אין לה `this`. השדה `lastResult` קיים רק בתוך אובייקט, אז הקומפיילר לא יודע של איזה אובייקט מדובר. הפתרון: להסיר את `static` מהמתודה, או להפוך את השדה ל-`static`."
-  optionExplanations:
-    "1": "`private` מגביל גישה מחוץ למחלקה בלבד. בתוך המחלקה כל המתודות רואות אותו."
-    "2": "מתודה סטטית יכולה להחזיר כל טיפוס, למשל `Math.Max` מחזירה מספר."
-    "3": "הקומפיילר מחזיר שגיאה כי למתודה סטטית אין אובייקט שממנו אפשר לקרוא שדה מופע."
-
-- id: cs.methods.defining-methods.007
-  type: truefalse
-  difficulty: 2
-  prompt: "מתודה מקומית (Local function) חייבת להיות מוגדרת לפני השורה הראשונה שקוראת לה."
-  answer: false
-  explanation: "מתודה מקומית מוכרת בכל הבלוק שבו היא מוגדרת, גם לפני שורת ההגדרה. לכן מקובל לכתוב את הקוד הראשי למעלה ואת המתודות המקומיות בסוף. זה שונה ממשתנה מקומי, שחייב להיות מוצהר לפני השימוש בו."
 
 - id: cs.methods.defining-methods.008
   type: bug
@@ -282,7 +199,10 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      static bool IsPositive(int n) => n > 0;
+      static bool IsPositive(int n)
+      {
+          return n > 0;
+      }
     - |
       static bool IsPositive(int n)
       {
@@ -304,42 +224,144 @@
           return result;
       }
   answer: 0
-  explanation: "הביטוי `n > 0` כבר מחזיר `bool`, ולכן אפשר להחזיר אותו ישירות. מתודה של שורה אחת נכתבת יפה כגוף ביטוי (Expression-bodied member) עם `=>`."
+  explanation: "הביטוי `n > 0` כבר מחזיר `bool`, ולכן אפשר להחזיר אותו ישירות. אין צורך לתרגם אותו ל-`true` או `false` בעזרת `if`."
   optionExplanations:
     "1": "`if` שמחזיר `true` או `false` רק משכפל את התנאי עצמו."
     "2": "משתנה עזר ו-`if` מוסיפים שורות בלי להוסיף מידע."
 
-- id: cs.methods.defining-methods.015
-  type: smell
-  difficulty: 2
-  prompt: איזה ריח קוד בולט במתודה `GetTotal`?
+- id: cs.methods.defining-methods.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
   code: |
-    class Cart
+    Greet("Dana");
+    Greet("Avi");
+
+    static void Greet(string name)
     {
-        private List<decimal> prices = new();
-
-        public decimal GetTotal()
-        {
-            decimal total = prices.Sum();
-            prices.Clear();
-            return total;
-        }
+        Console.WriteLine("Hi " + name);
     }
-  options:
-    - "תופעת לוואי נסתרת - Hidden Side Effect"
-    - "רשימת פרמטרים ארוכה - Long Parameter List"
-    - "דגל בוליאני - Flag Argument"
-    - "מספר קסם - Magic Number"
+  options: ["Hi Dana\nHi Avi", "Hi name\nHi name", "Hi Dana", "Hi Avi\nHi Dana"]
   answer: 0
-  explanation: "שם שמתחיל ב-`Get` מבטיח שהמתודה רק מחזירה ערך. בפועל היא גם מרוקנת את העגלה, וקריאה שנייה תחזיר 0. התיקון: להפריד ל-`GetTotal` שרק מחשבת ול-`Clear` נפרדת שהקורא מפעיל במפורש."
+  explanation: "בכל קריאה הפרמטר `name` מקבל את הערך של הארגומנט שהועבר. המתודה רצה פעמיים, פעם עם `\"Dana\"` ופעם עם `\"Avi\"`, לפי סדר הקריאות."
   optionExplanations:
-    "1": "למתודה אין פרמטרים בכלל."
-    "2": "אין פרמטר בוליאני שמשנה את התנהגות המתודה."
-    "3": "אין בקוד מספר בלי שם."
+    "1": "`name` הוא פרמטר, ולכן מודפס הערך שהועבר אליו ולא המילה name."
+    "2": "יש שתי קריאות, וכל אחת מדפיסה שורה."
+    "3": "הקריאות מתבצעות לפי הסדר שבו הן כתובות."
 
-- id: cs.methods.defining-methods.016
-  type: truefalse
+- id: cs.methods.defining-methods.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Max(Max(3, 7), 5));
+
+    static int Max(int a, int b)
+    {
+        if (a > b)
+            return a;
+        return b;
+    }
+  options: ["7", "5", "3", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "הקריאה הפנימית מחושבת קודם: `Max(3, 7)` מחזירה 7. הערך הזה משמש כארגומנט לקריאה החיצונית, `Max(7, 5)`, שמחזירה 7. `return` מסיים את המתודה מיד, ולכן כשמתקיים `a > b` השורה `return b` לא רצה."
+  optionExplanations:
+    "1": "5 הוא הארגומנט השני של הקריאה החיצונית, אבל 7 גדול ממנו."
+    "2": "3 הוא הקטן מבין השלושה."
+    "3": "מותר להעביר ערך שמוחזר ממתודה כארגומנט לקריאה אחרת."
+
+- id: cs.methods.defining-methods.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int count = 0;
+    for (int i = 1; i <= 10; i++)
+    {
+        if (IsEven(i))
+            count++;
+    }
+    Console.WriteLine(count);
+
+    static bool IsEven(int n)
+    {
+        return n % 2 == 0;
+    }
+  options: ["5", "10", "4", "6"]
+  answer: 0
+  explanation: "`IsEven` מחזירה `bool`, ולכן אפשר לקרוא לה ישירות בתוך תנאי. בין 1 ל-10 יש חמישה מספרים זוגיים: 2, 4, 6, 8 ו-10."
+  optionExplanations:
+    "1": "המונה גדל רק כש-`IsEven` מחזירה `true`."
+    "2": "גם 10 זוגי, והלולאה כוללת אותו."
+    "3": "יש בטווח חמישה מספרים זוגיים וחמישה אי־זוגיים."
+
+- id: cs.methods.defining-methods.020
+  type: single
+  difficulty: 2
+  prompt: "נתונה המתודה `static double Average(int a, int b)`. איזו קריאה מתקמפלת?"
+  options:
+    - "`double avg = Average(3, 4);`"
+    - "`int avg = Average(3, 4);`"
+    - "`double avg = Average(3);`"
+    - "`double avg = Average(\"3\", \"4\");`"
+  answer: 0
+  explanation: "קריאה למתודה צריכה להתאים לחתימה שלה: מספר הפרמטרים, הטיפוסים שלהם והסדר. גם הערך המוחזר, כאן `double`, צריך להתאים למשתנה שמקבל אותו."
+  optionExplanations:
+    "1": "המתודה מחזירה `double`, ואין המרה מרומזת מ-`double` ל-`int`."
+    "2": "המתודה דורשת שני ארגומנטים, והועבר רק אחד."
+    "3": "`\"3\"` הוא מחרוזת, והפרמטרים הם `int`."
+
+- id: cs.methods.defining-methods.021
+  type: bug
+  difficulty: 2
+  prompt: "המתודה `DigitSum` אמורה להחזיר את סכום הספרות של `n`, ולכן הקוד אמור להדפיס `6`. בפועל התוכנית לא מסתיימת. איזו שורה צריך לתקן?"
+  code: |
+    Console.WriteLine(DigitSum(123));
+
+    static int DigitSum(int n)
+    {
+        int sum = 0;
+        while (n > 0)
+        {
+            sum += n % 10;
+            n = n % 10;
+        }
+        return sum;
+    }
+  answer: 9
+  explanation: "`n % 10` נותן את ספרת האחדות, ולכן אחרי הסיבוב הראשון `n` נשאר 3 לתמיד והלולאה אינסופית. כדי להוריד את הספרה האחרונה צריך חלוקה שלמה: `n = n / 10`."
+  fixed: |
+    Console.WriteLine(DigitSum(123));
+
+    static int DigitSum(int n)
+    {
+        int sum = 0;
+        while (n > 0)
+        {
+            sum += n % 10;
+            n = n / 10;
+        }
+        return sum;
+    }
+
+- id: cs.methods.defining-methods.022
+  type: output
   difficulty: 3
-  prompt: "מתודה סטטית יכולה ליצור אובייקט של המחלקה שלה ולקרוא דרכו למתודת מופע של אותה מחלקה."
-  answer: true
-  explanation: "ההגבלה על מתודה סטטית היא שאין לה `this`, כלומר אין לה אובייקט נוכחי. אם היא יוצרת אובייקט, למשל `var c = new Calculator();`, היא יכולה לקרוא ל-`c.Reset()` כמו כל קוד אחר. כך בדיוק עובדת מתודת `Main` שיוצרת אובייקטים."
+  prompt: מה יודפס?
+  code: |
+    int a = 3;
+    int b = F(a);
+    Console.WriteLine(a + " " + b);
+
+    static int F(int x)
+    {
+        x = x * 2;
+        return x + 1;
+    }
+  options: ["3 7", "6 7", "3 6", "7 7"]
+  answer: 0
+  explanation: "הפרמטר `x` מקבל עותק של הערך של `a` (העברה לפי ערך, Pass by Value). השינוי של `x` בתוך המתודה לא נוגע ב-`a`, שנשאר 3. המתודה מחזירה `6 + 1`, ולכן `b` הוא 7."
+  optionExplanations:
+    "1": "`x` הוא עותק. שינוי שלו לא משנה את `a`."
+    "2": "המתודה מחזירה `x + 1`, כלומר 7, ולא את `x` עצמו."
+    "3": "`a` לא מושפע ממה שקורה ל-`x` בתוך המתודה."

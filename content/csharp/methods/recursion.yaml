@@ -63,30 +63,6 @@
     "2": "`4` הוא ערך מקרה הבסיס בלבד. כל קריאה בדרך חזרה מוסיפה אליו את הספרה שלה."
     "3": "המספר עצמו מוחזר רק כשהוא קטן מ-10."
 
-- id: cs.methods.recursion.004
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    int calls = 0;
-    Console.WriteLine(Fib(4));
-    Console.WriteLine(calls);
-
-    int Fib(int n)
-    {
-        calls++;
-        if (n < 2)
-            return n;
-        return Fib(n - 1) + Fib(n - 2);
-    }
-  options: ["3\n9", "3\n5", "3\n4", "5\n9"]
-  answer: 0
-  explanation: "`Fib(4)` = 3. כל קריאה שאינה מקרה בסיס פותחת שתי קריאות, ולכן מספר הקריאות הוא 1 ועוד הקריאות של `Fib(3)` (5) ועוד אלה של `Fib(2)` (3), כלומר 9. אותם ערכים מחושבים שוב ושוב, ולכן רקורסיה כזו מתנפחת מהר."
-  optionExplanations:
-    "1": "`5` הוא מספר הקריאות של `Fib(3)` בלבד. צריך לספור גם את הקריאה ל-`Fib(4)` ואת ענף `Fib(2)`."
-    "2": "`4` מניח שיש קריאה אחת לכל ערך של `n`. בפועל `Fib(2)`, `Fib(1)` ו-`Fib(0)` נקראות יותר מפעם אחת."
-    "3": "`Fib(4)` הוא 3 בסדרה 0, 1, 1, 2, 3. `5` הוא `Fib(5)`."
-
 - id: cs.methods.recursion.005
   type: output
   difficulty: 2
@@ -107,30 +83,6 @@
     "1": "התו הראשון מתווסף אחרי התוצאה הרקורסיבית, ולכן הוא עובר לסוף."
     "2": "`bca` הוא הזזה אחת של `a` לסוף. גם `bc` עובר היפוך ברקורסיה."
     "3": "`a` הוא התו הראשון בלבד. מקרה הבסיס מחזיר מחרוזת באורך 1, כאן `c`."
-
-- id: cs.methods.recursion.006
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    var path = new List<int>();
-    Collect(3, path);
-    Console.WriteLine(string.Join(",", path));
-
-    static void Collect(int n, List<int> acc)
-    {
-        if (n == 0)
-            return;
-        Collect(n - 1, acc);
-        acc.Add(n);
-    }
-  options: ["1,2,3", "3,2,1", "3", "1,2"]
-  answer: 0
-  explanation: "כל הקריאות מקבלות הפניה לאותה רשימה. ה-`Add` נמצא אחרי הקריאה הרקורסיבית, ולכן הוא רץ בדרך חזרה: קודם הקריאה הפנימית ביותר מוסיפה 1, אחריה 2 ולבסוף 3."
-  optionExplanations:
-    "1": "`3,2,1` היה מתקבל אילו `Add` היה לפני הקריאה הרקורסיבית."
-    "2": "כל הקריאות משנות את אותה רשימה, כי ההפניה עוברת בכל קריאה."
-    "3": "גם הקריאה החיצונית, עם `n` = 3, מוסיפה את הערך שלה אחרי שהקריאות הפנימיות חוזרות."
 
 - id: cs.methods.recursion.007
   type: bug
@@ -164,7 +116,7 @@
   code: |
     Console.WriteLine(Factorial(0));
 
-    static long Factorial(int n)
+    static int Factorial(int n)
     {
         if (n == 1)
             return 1;
@@ -175,7 +127,7 @@
   fixed: |
     Console.WriteLine(Factorial(0));
 
-    static long Factorial(int n)
+    static int Factorial(int n)
     {
         if (n <= 1)
             return 1;
@@ -266,7 +218,7 @@
     static string Binary(int n)
     {
         if (n < 2)
-            return n.ToString();
+            return "" + n;
         return Binary(n / 2) + (n % 2);
     }
   options: ["110", "011", "6", "3"]
@@ -326,3 +278,49 @@
   explanation: "הדפוס הקלאסי ברקורסיה: בודקים את מקרה הבסיס בראש המתודה ויוצאים מיד, ואחריו כותבים את הצעד הרקורסיבי. זה תנאי שמירה (Guard Clause), והיא מראה בבירור את שני החלקים של הרקורסיה."
   optionExplanations:
     "1": "משתנה העזר וה-`else` מוסיפים שורות וקינון בלי להוסיף מידע, ומטשטשים את ההפרדה בין מקרה הבסיס לצעד הרקורסיבי."
+
+- id: cs.methods.recursion.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine(Power(2, 5));
+
+    static int Power(int b, int e)
+    {
+        if (e == 0)
+            return 1;
+        return b * Power(b, e - 1);
+    }
+  options: ["32", "10", "25", "64"]
+  answer: 0
+  explanation: "כל קריאה מקטינה את המעריך ב-1, עד מקרה הבסיס `e == 0` שמחזיר 1. בדרך חזרה כל קריאה מכפילה ב-2: `2 * 2 * 2 * 2 * 2 * 1 = 32`."
+  optionExplanations:
+    "1": "זו לא מכפלה של `b` ב-`e`. כל קריאה מכפילה ב-`b` פעם נוספת."
+    "2": "25 הוא 5 בריבוע. כאן הבסיס הוא 2 והמעריך 5."
+    "3": "64 הוא 2 בחזקת 6. יש חמש הכפלות, ומקרה הבסיס מחזיר 1."
+
+- id: cs.methods.recursion.018
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[] a = { 3, 9, 4 };
+    Console.WriteLine(Max(a, 0));
+
+    static int Max(int[] a, int i)
+    {
+        if (i == a.Length - 1)
+            return a[i];
+        int rest = Max(a, i + 1);
+        if (a[i] > rest)
+            return a[i];
+        return rest;
+    }
+  options: ["9", "4", "3", "IndexOutOfRangeException"]
+  answer: 0
+  explanation: "המתודה מוצאת את המקסימום מהאינדקס `i` ועד סוף המערך. מקרה הבסיס הוא האיבר האחרון. בדרך חזרה כל קריאה משווה את האיבר שלה למקסימום של שאר המערך: `Max(a, 2)` מחזירה 4, `Max(a, 1)` מחזירה 9, ו-`Max(a, 0)` מחזירה 9."
+  optionExplanations:
+    "1": "4 הוא רק מקרה הבסיס. הקריאות שמעליו משוות אותו לאיברים הקודמים."
+    "2": "3 הוא האיבר הראשון, אבל 9 גדול ממנו."
+    "3": "הרקורסיה נעצרת באינדקס האחרון, `a.Length - 1`, ולא חורגת ממנו."

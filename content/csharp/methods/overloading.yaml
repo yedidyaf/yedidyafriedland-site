@@ -3,64 +3,37 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    Printer.Print(5);
-    Printer.Print("5");
-    Printer.Print(5.0);
-
-    static class Printer
+    class Program
     {
-        public static void Print(int x) => Console.WriteLine("int");
-        public static void Print(string x) => Console.WriteLine("string");
-        public static void Print(double x) => Console.WriteLine("double");
+        static void Main()
+        {
+            Print(5);
+            Print("5");
+            Print(5.0);
+        }
+
+        static void Print(int x)
+        {
+            Console.WriteLine("int");
+        }
+
+        static void Print(string x)
+        {
+            Console.WriteLine("string");
+        }
+
+        static void Print(double x)
+        {
+            Console.WriteLine("double");
+        }
     }
   options: ["int\nstring\ndouble", "int\nint\nint", "int\nstring\nint", "string\nstring\nstring"]
   answer: 0
-  explanation: "שלוש המתודות נקראות `Print` אבל רשימות הפרמטרים שלהן שונות. זו העמסה (Overloading). הקומפיילר בוחר בכל קריאה את הגרסה שמתאימה לטיפוס הארגומנט: `5` הוא `int`, `\"5\"` הוא `string`, ו-`5.0` הוא `double`."
+  explanation: "שלוש המתודות נקראות `Print`, אבל רשימות הפרמטרים שלהן שונות. זו העמסה (Overloading). הקומפיילר בוחר בכל קריאה את הגרסה שמתאימה לטיפוס הארגומנט: `5` הוא `int`, `\"5\"` הוא `string` ו-`5.0` הוא `double`."
   optionExplanations:
+    "1": "הקומפיילר בוחר גרסה לפי הטיפוס של כל ארגומנט, ולא את הראשונה שמופיעה."
     "2": "`5.0` הוא ליטרל מסוג `double`, ואין המרה מרומזת מ-`double` ל-`int`."
     "3": "הבחירה נעשית לפי הטיפוס, לא לפי האופן שבו הערך ייראה כשמדפיסים אותו."
-
-- id: cs.methods.overloading.002
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Calc.Show(7);
-
-    static class Calc
-    {
-        public static void Show(long x) => Console.WriteLine("long");
-        public static void Show(double x) => Console.WriteLine("double");
-    }
-  options: ["long", "double", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "אין גרסה שמקבלת `int`, ושתי הגרסאות מתאימות דרך המרה מרומזת. הקומפיילר מעדיף את הטיפוס הספציפי יותר: יש המרה מרומזת מ-`long` ל-`double` אבל לא להפך, ולכן `long` נחשבת ההמרה הטובה יותר."
-  optionExplanations:
-    "1": "`double` היא המרה אפשרית אבל פחות טובה. כלל ההכרעה: הטיפוס שאפשר להמיר ממנו לשני עדיף."
-    "2": "אין דו־משמעות (Ambiguity), כי אחת ההמרות טובה מהשנייה לפי כללי השפה."
-
-- id: cs.methods.overloading.003
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    Calc.Show(3);
-    Calc.Show(3L);
-    Calc.Show(3.0f);
-
-    static class Calc
-    {
-        public static void Show(int x) => Console.WriteLine("int");
-        public static void Show(long x) => Console.WriteLine("long");
-        public static void Show(double x) => Console.WriteLine("double");
-    }
-  options: ["int\nlong\ndouble", "int\nint\ndouble", "int\nlong\nint", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "התאמה מדויקת תמיד מנצחת: `3` הוא `int` ו-`3L` הוא `long`. ל-`3.0f` מסוג `float` אין גרסה מדויקת, והמרה מרומזת קיימת רק ל-`double`, ולכן נבחרת היא."
-  optionExplanations:
-    "1": "הסיומת `L` הופכת את הליטרל ל-`long`, ולכן יש לו התאמה מדויקת."
-    "2": "אין המרה מרומזת מ-`float` ל-`int`, כי היא עלולה לאבד את החלק העשרוני."
-    "3": "לכל קריאה יש גרסה אחת שמתאימה הכי טוב, ולכן אין דו־משמעות."
 
 - id: cs.methods.overloading.004
   type: output
@@ -68,19 +41,30 @@
   tags: [compile-error]
   prompt: מה יודפס?
   code: |
-    Console.WriteLine(Parser.Parse("5"));
-
-    static class Parser
+    class Program
     {
-        public static int Parse(string s) => int.Parse(s);
-        public static double Parse(string s) => double.Parse(s);
+        static void Main()
+        {
+            Console.WriteLine(Half(5));
+        }
+
+        static int Half(int n)
+        {
+            return n / 2;
+        }
+
+        static double Half(int n)
+        {
+            return n / 2.0;
+        }
     }
-  options: ["שגיאת קומפילציה", "5", "5\n5"]
+  options: ["שגיאת קומפילציה", "2", "2.5", "2\n2.5"]
   answer: 0
-  explanation: "טיפוס ההחזרה אינו חלק מהחתימה לצורך העמסה. לשתי המתודות אותו שם ואותה רשימת פרמטרים, `(string)`, ולכן זו הגדרה כפולה ושגיאת קומפילציה."
+  explanation: "טיפוס ההחזרה אינו חלק מהחתימה לצורך העמסה. לשתי המתודות אותו שם ואותה רשימת פרמטרים, `(int)`, ולכן זו הגדרה כפולה ושגיאת קומפילציה."
   optionExplanations:
     "1": "הקומפיילר לא בוחר לפי הטיפוס שהקורא מצפה לקבל. הוא דוחה את ההגדרה הכפולה עוד לפני הקריאה."
-    "2": "קריאה אחת מפעילה מתודה אחת לכל היותר, וכאן הקוד לא מתקמפל בכלל."
+    "2": "אין דרך לבחור בין שתי מתודות עם אותה רשימת פרמטרים, ולכן הקוד לא מתקמפל."
+    "3": "קריאה אחת מפעילה מתודה אחת לכל היותר, וכאן הקוד לא מתקמפל בכלל."
 
 - id: cs.methods.overloading.005
   type: single
@@ -92,46 +76,35 @@
     - "שמות הפרמטרים"
     - "משנה הגישה, למשל `public` מול `private`"
   answer: 0
-  explanation: "הקומפיילר מבחין בין מתודות מועמסות לפי השם ורשימת הפרמטרים (טיפוסים, סדר, ומגדירים כמו `ref`), כלומר החתימה (Signature). רק כך הוא יכול להחליט בכל קריאה לאיזו גרסה הכוונה."
+  explanation: "הקומפיילר מבחין בין מתודות מועמסות לפי השם ורשימת הפרמטרים, כלומר החתימה (Signature). רק כך הוא יכול להחליט בכל קריאה איזו גרסה להפעיל, לפי הארגומנטים."
   optionExplanations:
     "1": "שתי מתודות שנבדלות רק בטיפוס ההחזרה הן הגדרה כפולה, כי בקריאה לא רואים איזה טיפוס מצופה."
     "2": "שמות הפרמטרים לא משפיעים על החתימה. `Add(int a)` ו-`Add(int b)` הן אותה מתודה."
     "3": "משנה הגישה לא שייך לחתימה, ושינוי שלו בלבד יוצר הגדרה כפולה."
-
-- id: cs.methods.overloading.006
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Log.Write("a");
-    Log.Write("a", "b");
-
-    static class Log
-    {
-        public static void Write(string msg) => Console.WriteLine("one");
-        public static void Write(params string[] msgs) => Console.WriteLine($"many: {msgs.Length}");
-    }
-  options: ["one\nmany: 2", "many: 1\nmany: 2", "one\none", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "לקריאה עם ארגומנט אחד שתי הגרסאות מתאימות, אבל הקומפיילר מעדיף גרסה שמתאימה בצורה הרגילה על פני גרסת `params` שצריך לפרוש. לקריאה עם שני ארגומנטים רק גרסת `params` מתאימה, ו-`msgs` הוא מערך באורך 2."
-  optionExplanations:
-    "1": "כשיש גרסה רגילה שמתאימה בדיוק, היא עדיפה על גרסת `params`."
-    "2": "`Write(string)` מקבלת ארגומנט אחד בלבד ולא מתאימה לקריאה עם שניים."
-    "3": "אין דו־משמעות: כלל ההכרעה מעדיף את הצורה הרגילה על הצורה המורחבת של `params`."
 
 - id: cs.methods.overloading.007
   type: output
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    Printer.Show(7 / 2);
-    Printer.Show(7 / 2.0);
-    Printer.Show((double)7 / 2);
-
-    static class Printer
+    class Program
     {
-        public static void Show(int x) => Console.WriteLine($"int {x}");
-        public static void Show(double x) => Console.WriteLine($"double {x}");
+        static void Main()
+        {
+            Show(7 / 2);
+            Show(7 / 2.0);
+            Show((double)7 / 2);
+        }
+
+        static void Show(int x)
+        {
+            Console.WriteLine("int " + x);
+        }
+
+        static void Show(double x)
+        {
+            Console.WriteLine("double " + x);
+        }
     }
   options:
     - "int 3\ndouble 3.5\ndouble 3.5"
@@ -139,7 +112,7 @@
     - "int 3\ndouble 3.5\nint 3"
     - "int 3\ndouble 3.5\ndouble 3"
   answer: 0
-  explanation: "הגרסה נבחרת לפי הטיפוס של הביטוי כולו. `7 / 2` הוא `int` שערכו 3. ב-`7 / 2.0` וב-`(double)7 / 2` אחד האופרנדים הוא `double`, ולכן התוצאה `double` ושווה 3.5. ההמרה `(double)7` קודמת לחלוקה."
+  explanation: "הגרסה נבחרת לפי הטיפוס של הביטוי כולו. `7 / 2` הוא `int` שערכו 3. ב-`7 / 2.0` וב-`(double)7 / 2` אחד הצדדים הוא `double`, ולכן התוצאה `double` ושווה 3.5. ההמרה `(double)` חלה על `7` לפני החלוקה."
   optionExplanations:
     "1": "חלוקה בין שני `int` נשארת `int`, ולכן נבחרת `Show(int)`."
     "2": "ההמרה חלה על `7` לפני החלוקה, ולכן התוצאה כבר `double`."
@@ -150,13 +123,23 @@
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    Console.WriteLine(Geo.Area(3));
-    Console.WriteLine(Geo.Area(3, 4));
-
-    static class Geo
+    class Program
     {
-        public static int Area(int side) => Area(side, side);
-        public static int Area(int width, int height) => width * height;
+        static void Main()
+        {
+            Console.WriteLine(Area(3));
+            Console.WriteLine(Area(3, 4));
+        }
+
+        static int Area(int side)
+        {
+            return Area(side, side);
+        }
+
+        static int Area(int width, int height)
+        {
+            return width * height;
+        }
     }
   options: ["9\n12", "3\n12", "שגיאת קומפילציה", "9\n9"]
   answer: 0
@@ -171,17 +154,31 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    Console.WriteLine(MathUtil.Max(2, 3.5));
-    Console.WriteLine(MathUtil.Max(7, 3));
-
-    static class MathUtil
+    class Program
     {
-        public static int Max(int a, int b) => a > b ? a : b;
-        public static double Max(double a, double b) => a > b ? a : b;
+        static void Main()
+        {
+            Console.WriteLine(Max(2, 3.5));
+            Console.WriteLine(Max(7, 3));
+        }
+
+        static int Max(int a, int b)
+        {
+            if (a > b)
+                return a;
+            return b;
+        }
+
+        static double Max(double a, double b)
+        {
+            if (a > b)
+                return a;
+            return b;
+        }
     }
   options: ["3.5\n7", "3\n7", "שגיאת קומפילציה", "3.5\n7.0"]
   answer: 0
-  explanation: "בקריאה הראשונה `3.5` הוא `double`, ואין המרה מרומזת ממנו ל-`int`, ולכן רק גרסת `double` מתאימה, ו-`2` מומר ל-`double`. בקריאה השנייה יש התאמה מדויקת לגרסת `int`."
+  explanation: "בקריאה הראשונה `3.5` הוא `double`, ואין המרה מרומזת ממנו ל-`int`, ולכן רק גרסת `double` מתאימה, ו-`2` מומר ל-`double`. בקריאה השנייה שני הארגומנטים `int`, ולכן נבחרת גרסת `int`."
   optionExplanations:
     "1": "C# לא חותך `double` ל-`int` בשקט. גרסת `int` פשוט לא מתאימה לקריאה הראשונה."
     "2": "אין צורך בהתאמה מדויקת לכל ארגומנט. מספיק שקיימת המרה מרומזת."
@@ -189,26 +186,19 @@
 
 - id: cs.methods.overloading.010
   type: single
-  difficulty: 3
+  difficulty: 2
   prompt: אילו שתי מתודות יכולות להופיע יחד באותה מחלקה?
   options:
-    - "`void Save(int id)` ו-`void Save(ref int id)`"
-    - "`void Save(ref int id)` ו-`void Save(out int id)`"
-    - "`int Save(int id)` ו-`void Save(int id)`"
-    - "`void Save(int id)` ו-`void Save(int userId)`"
+    - "`static void Save(int id)` ו-`static void Save(string name)`"
+    - "`static int Save(int id)` ו-`static void Save(int id)`"
+    - "`static void Save(int id)` ו-`static void Save(int userId)`"
+    - "`public static void Save(int id)` ו-`private static void Save(int id)`"
   answer: 0
-  explanation: "העברה לפי ערך מול `ref` נחשבת הבדל בחתימה, ובקריאה רואים איזו גרסה נבחרה: `Save(x)` או `Save(ref x)`. לעומת זאת, `ref` ו-`out` נחשבים אותו דבר לצורך העמסה, וגם טיפוס ההחזרה ושמות הפרמטרים לא מבדילים בין מתודות."
+  explanation: "העמסה דורשת רשימות פרמטרים שונות. `Save(int)` ו-`Save(string)` נבדלות בטיפוס הפרמטר, ולכן הן חוקיות יחד. בשאר הזוגות רשימת הפרמטרים זהה, `(int)`, וזו הגדרה כפולה."
   optionExplanations:
-    "1": "אסור להעמיס מתודות שנבדלות רק ב-`ref` מול `out`."
-    "2": "טיפוס ההחזרה אינו חלק מהחתימה, ולכן זו הגדרה כפולה."
-    "3": "שם הפרמטר לא משנה את החתימה. שתיהן `Save(int)`."
-
-- id: cs.methods.overloading.011
-  type: truefalse
-  difficulty: 3
-  prompt: "אפשר להגדיר באותו בלוק שתי מתודות מקומיות (Local functions) באותו שם, אם רשימות הפרמטרים שלהן שונות."
-  answer: false
-  explanation: "מתודות מקומיות לא תומכות בהעמסה. שם של מתודה מקומית מתנהג כמו שם של משתנה מקומי, ושני שמות זהים באותו בלוק הם שגיאת קומפילציה. כדי להעמיס, מגדירים את המתודות בתוך מחלקה."
+    "1": "טיפוס ההחזרה אינו חלק מהחתימה, ולכן זו הגדרה כפולה."
+    "2": "שם הפרמטר לא משנה את החתימה. שתיהן `Save(int)`."
+    "3": "משנה הגישה לא משנה את החתימה. שתיהן `Save(int)`."
 
 - id: cs.methods.overloading.012
   type: truefalse
@@ -222,61 +212,87 @@
   difficulty: 2
   prompt: "התוכנית אמורה להדפיס `5 ILS` ואז `5 USD`, אבל היא קורסת עם `StackOverflowException`. איזו שורה צריך לתקן?"
   code: |
-    Console.WriteLine(Formatter.Price(5));
-    Console.WriteLine(Formatter.Price(5, "USD"));
-
-    static class Formatter
+    class Program
     {
-        public static string Price(decimal amount)
+        static void Main()
+        {
+            Console.WriteLine(Price(5));
+            Console.WriteLine(Price(5, "USD"));
+        }
+
+        static string Price(int amount)
         {
             return Price(amount, "ILS");
         }
 
-        public static string Price(decimal amount, string currency)
+        static string Price(int amount, string currency)
         {
             return Price(amount);
         }
     }
-  answer: 13
-  explanation: "הגרסה הקצרה מעבירה את העבודה לגרסה המלאה, וזה נכון. אבל הגרסה המלאה מעבירה חזרה לגרסה הקצרה, ושתיהן קוראות זו לזו בלי סוף. הגרסה המלאה היא זו שצריכה לבצע את העבודה בפועל: `return $\"{amount} {currency}\";`."
+  answer: 16
+  explanation: "הגרסה הקצרה מעבירה את העבודה לגרסה המלאה, וזה נכון. אבל הגרסה המלאה מעבירה חזרה לגרסה הקצרה, ושתיהן קוראות זו לזו בלי סוף. הגרסה המלאה היא זו שצריכה לבצע את העבודה בפועל: `return amount + \" \" + currency;`."
   fixed: |
-    Console.WriteLine(Formatter.Price(5));
-    Console.WriteLine(Formatter.Price(5, "USD"));
-
-    static class Formatter
+    class Program
     {
-        public static string Price(decimal amount)
+        static void Main()
+        {
+            Console.WriteLine(Price(5));
+            Console.WriteLine(Price(5, "USD"));
+        }
+
+        static string Price(int amount)
         {
             return Price(amount, "ILS");
         }
 
-        public static string Price(decimal amount, string currency)
+        static string Price(int amount, string currency)
         {
-            return $"{amount} {currency}";
+            return amount + " " + currency;
         }
     }
 
 - id: cs.methods.overloading.014
   type: bug
   difficulty: 2
-  prompt: "הקריאה `Stats.Average(3, 4)` אמורה להדפיס `3.5`, אבל מודפס `3`. איזו שורה צריך לתקן?"
+  prompt: "הקריאה `Average(3, 4)` אמורה להדפיס `3.5`, אבל מודפס `3`. איזו שורה צריך לתקן?"
   code: |
-    Console.WriteLine(Stats.Average(3, 4));
-
-    static class Stats
+    class Program
     {
-        public static double Average(int a, int b) => (a + b) / 2;
-        public static double Average(double a, double b) => (a + b) / 2;
+        static void Main()
+        {
+            Console.WriteLine(Average(3, 4));
+        }
+
+        static double Average(int a, int b)
+        {
+            return (a + b) / 2;
+        }
+
+        static double Average(double a, double b)
+        {
+            return (a + b) / 2;
+        }
     }
-  answer: 5
-  explanation: "הארגומנטים `3` ו-`4` הם `int`, ולכן נבחרת הגרסה של `int` (שורה 5) ולא של `double`. בה `(a + b) / 2` היא חלוקה שלמה שנותנת 3, ורק אחר כך התוצאה מומרת ל-`double`. התיקון: `(a + b) / 2.0`."
+  answer: 10
+  explanation: "הארגומנטים `3` ו-`4` הם `int`, ולכן נבחרת הגרסה של `int` ולא של `double`. בה `(a + b) / 2` היא חלוקה שלמה שנותנת 3, ורק אחר כך התוצאה מומרת ל-`double`. התיקון: `(a + b) / 2.0`."
   fixed: |
-    Console.WriteLine(Stats.Average(3, 4));
-
-    static class Stats
+    class Program
     {
-        public static double Average(int a, int b) => (a + b) / 2.0;
-        public static double Average(double a, double b) => (a + b) / 2;
+        static void Main()
+        {
+            Console.WriteLine(Average(3, 4));
+        }
+
+        static double Average(int a, int b)
+        {
+            return (a + b) / 2.0;
+        }
+
+        static double Average(double a, double b)
+        {
+            return (a + b) / 2;
+        }
     }
 
 - id: cs.methods.overloading.015
@@ -298,17 +314,122 @@
 - id: cs.methods.overloading.016
   type: single
   difficulty: 3
-  prompt: "במחלקה `C` מוגדרות שתי הגרסאות הבאות. איזו קריאה לא תתקמפל?"
+  prompt: "במחלקה מוגדרות שתי הגרסאות הבאות. איזו קריאה מתוך `Main` לא תתקמפל?"
   code: |
-    static class C
+    class Program
     {
-        public static void F(int a, double b) => Console.WriteLine("int, double");
-        public static void F(double a, int b) => Console.WriteLine("double, int");
+        static void F(int a, double b)
+        {
+            Console.WriteLine("int, double");
+        }
+
+        static void F(double a, int b)
+        {
+            Console.WriteLine("double, int");
+        }
     }
-  options: ["`C.F(1, 2)`", "`C.F(1, 2.0)`", "`C.F(1.0, 2)`", "`C.F(1.5, 2)`"]
+  options: ["`F(1, 2)`", "`F(1, 2.0)`", "`F(1.0, 2)`", "`F(1.5, 2)`"]
   answer: 0
-  explanation: "ב-`C.F(1, 2)` שתי הגרסאות מתאימות. הראשונה טובה יותר עבור הארגומנט הראשון, והשנייה טובה יותר עבור השני, ואף אחת לא טובה יותר בכולם. זו קריאה דו־משמעית (Ambiguous call), והקומפיילר מסרב לבחור."
+  explanation: "ב-`F(1, 2)` שתי הגרסאות מתאימות. הראשונה טובה יותר עבור הארגומנט הראשון, והשנייה טובה יותר עבור השני, ואף אחת לא טובה יותר בשניהם. זו קריאה דו־משמעית (Ambiguous Call), והקומפיילר מסרב לבחור."
   optionExplanations:
     "1": "`2.0` הוא `double`, ולכן רק `F(int, double)` מתאימה."
     "2": "`1.0` הוא `double` ואין המרה מרומזת ממנו ל-`int`, ולכן רק `F(double, int)` מתאימה."
     "3": "`1.5` הוא `double`, ולכן רק `F(double, int)` מתאימה."
+
+- id: cs.methods.overloading.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine(Sum(1, 2) + Sum(1, 2, 3));
+        }
+
+        static int Sum(int a, int b)
+        {
+            return a + b;
+        }
+
+        static int Sum(int a, int b, int c)
+        {
+            return a + b + c;
+        }
+    }
+  options: ["9", "6", "3", "36"]
+  answer: 0
+  explanation: "הקומפיילר בוחר גרסה לפי מספר הארגומנטים: `Sum(1, 2)` מפעילה את הגרסה עם שני פרמטרים ומחזירה 3, ו-`Sum(1, 2, 3)` מפעילה את הגרסה עם שלושה ומחזירה 6. הסכום הוא 9."
+  optionExplanations:
+    "1": "6 הוא רק התוצאה של הקריאה השנייה."
+    "2": "3 הוא רק התוצאה של הקריאה הראשונה."
+    "3": "שתי הקריאות מחזירות `int`, ולכן `+` מחבר ולא משרשר."
+
+- id: cs.methods.overloading.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    class Program
+    {
+        static void Main()
+        {
+            Describe('a');
+            Describe("a");
+        }
+
+        static void Describe(char c)
+        {
+            Console.WriteLine("char");
+        }
+
+        static void Describe(string s)
+        {
+            Console.WriteLine("string");
+        }
+    }
+  options: ["char\nstring", "string\nstring", "char\nchar", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`'a'` בגרשים הוא `char`, ו-`\"a\"` במירכאות הוא `string`. לכל קריאה יש גרסה שמתאימה בדיוק לטיפוס, ולכן הקומפיילר בוחר בכל פעם בגרסה אחרת."
+  optionExplanations:
+    "1": "`'a'` הוא תו בודד ולא מחרוזת, ולכן נבחרת גרסת `char`."
+    "2": "`\"a\"` הוא מחרוזת, גם אם יש בה תו אחד."
+    "3": "שתי הגרסאות נבדלות בטיפוס הפרמטר, וזו העמסה חוקית."
+
+- id: cs.methods.overloading.019
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    class Program
+    {
+        static void Main()
+        {
+            Show('A');
+        }
+
+        static void Show(int x)
+        {
+            Console.WriteLine("int " + x);
+        }
+
+        static void Show(double x)
+        {
+            Console.WriteLine("double " + x);
+        }
+    }
+  options: ["int 65", "double 65", "int A", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "אין גרסה שמקבלת `char`, אבל `char` מומר במרומז גם ל-`int` וגם ל-`double`. הקומפיילר מעדיף את ההמרה \"הקרובה\" יותר, ל-`int`. בתוך המתודה `x` הוא מספר, ולכן מודפס הקוד של `'A'`, כלומר 65."
+  optionExplanations:
+    "1": "כש-`int` ו-`double` מתאימים שניהם, `int` עדיף, כי אפשר להמיר `int` ל-`double` ולא להפך."
+    "2": "`x` הוא `int`, ולכן מודפס המספר 65 ולא התו."
+    "3": "יש המרה מרומזת מ-`char` ל-`int`, ולכן הקריאה חוקית."
+
+- id: cs.methods.overloading.020
+  type: truefalse
+  difficulty: 2
+  prompt: "מתודות מועמסות חייבות להחזיר את אותו טיפוס."
+  answer: false
+  explanation: "כל גרסה מועמסת יכולה להחזיר טיפוס אחר, כמו `int Max(int, int)` ו-`double Max(double, double)`. מה שחייב להיות שונה הוא רשימת הפרמטרים. טיפוס ההחזרה לבדו לא מספיק כדי להבדיל בין גרסאות."
