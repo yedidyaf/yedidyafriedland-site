@@ -39,18 +39,17 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
 ## Deploy
 
 - **Preview:** every push to `main` deploys to GitHub Pages (`.github/workflows/pages.yml`),
-  marked `noindex` so it does not compete with the real domain.
-- **Production (planned):** Cloudflare Pages connected to this repository.
-  Build command `npm run build`, output directory `dist`,
-  environment variables `SITE_URL=https://yedidyafriedland.com` and, for visitor counts,
-  `PUBLIC_CF_BEACON_TOKEN=<token from Cloudflare Web Analytics>` (cookieless).
-- **Email:** `hello@yedidyafriedland.com` via Cloudflare Email Routing (forwarding only).
+  marked `noindex` so it does not compete with the Vercel site.
+- **Production:** Vercel project `yedidyafriedland`, on its free `*.vercel.app` address (no custom
+  domain by choice). Canonical URLs, sitemap and og:image come from `VERCEL_PROJECT_PRODUCTION_URL`.
+  For visitor counts set `PUBLIC_CF_BEACON_TOKEN=<token from Cloudflare Web Analytics>` (cookieless).
+- **Contact:** LinkedIn and `SITE.email` in `src/site.ts`.
 
 ## Environment variables
 
 | name | default | purpose |
 | --- | --- | --- |
-| `SITE_URL` | `https://yedidyafriedland.com` (on Vercel: the deployment's own domain) | canonical URLs, sitemap, og:image |
+| `SITE_URL` | Vercel production address (fallback `https://yedidyafriedland.vercel.app`) | canonical URLs, sitemap, og:image |
 | `BASE_PATH` | `/` | sub-path hosting (GitHub Pages preview) |
 | `PUBLIC_CF_BEACON_TOKEN` | empty | Cloudflare Web Analytics; no script when empty |
 | `PUBLIC_NOINDEX` | empty | `1` adds `noindex` to every page |
@@ -63,7 +62,6 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
 - Every page carries one JSON-LD graph (`src/lib/seo.ts`): a `Person` (Hebrew and English name,
   LinkedIn in `sameAs`) and a `WebSite` that points to him by `@id`. `/about/` is his `ProfilePage`.
 - `sitemap-index.xml` and `robots.txt` are generated; exam, progress and settings pages are `noindex`.
-- On Vercel, previews are `noindex` and production uses the project's production domain, so
-  WhatsApp previews work before the custom domain is added.
+- On Vercel, previews are `noindex`; production uses the project's production address.
 - If `og.png` changes, keep it 1200x630 and under 300 KB (WhatsApp ignores bigger images).
 
