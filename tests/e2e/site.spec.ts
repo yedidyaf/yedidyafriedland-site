@@ -90,9 +90,28 @@ for (const [lang, chapter, topic] of [
       await page.locator('.palette button').nth(i).click();
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(over, `question ${i + 1}`).toBeLessThanOrEqual(1);
+      // long code lines wrap instead of hiding behind a horizontal scroll inside the block
+      const hidden = await page.evaluate(() =>
+        [...document.querySelectorAll('pre.code, .match .sig')].filter((e) => e.scrollWidth > e.clientWidth + 1).length,
+      );
+      expect(hidden, `question ${i + 1}: code blocks with hidden overflow`).toBe(0);
     }
   });
 }
+
+test('architecture class labels show the class and its method on separate lines', async ({ page }) => {
+  await page.goto('/exam/?lang=python&mode=topic&chapter=software-design&topic=dependency-injection&count=16');
+  for (let i = 0; i < 16; i++) {
+    await page.locator('.palette button').nth(i).click();
+    const sig = page.locator('.match .sig', { hasText: 'class GradeRepository' });
+    if (await sig.count()) {
+      await expect(sig.locator('.sl')).toHaveCount(2);
+      await expect(sig.locator('.sl').nth(1)).toHaveText(/^def grades_of/);
+      return;
+    }
+  }
+  throw new Error('GradeRepository question not found');
+});
 
 test('multi-line code options keep their line breaks', async ({ page }) => {
   await page.goto('/exam/?lang=csharp&mode=topic&chapter=clean-code&topic=conventions&count=16');

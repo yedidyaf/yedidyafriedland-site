@@ -1,3 +1,4 @@
+import { prepareLine } from '../lib/codewrap';
 import type { CodeLines } from '../lib/types';
 
 interface Props {
@@ -18,13 +19,14 @@ export default function CodeBlock({ lines, numbers = false, onLine, selected, co
       <code>
         {lines.map((html, i) => {
           const n = i + 1;
+          const line = prepareLine(html);
           const cls = ['ln', selected === n ? 'sel' : '', correctLine === n ? 'right' : '', correctLine && selected === n && selected !== correctLine ? 'wrong' : '']
             .filter(Boolean)
             .join(' ');
           const content = (
             <>
               {(numbers || clickable) && <span class="num">{n}</span>}
-              <span class="src" dangerouslySetInnerHTML={{ __html: html || ' ' }} />
+              <span class="src" style={`--ind:${line.ind}`} dangerouslySetInnerHTML={{ __html: line.html || ' ' }} />
             </>
           );
           return clickable ? (

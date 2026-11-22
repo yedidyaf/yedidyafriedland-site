@@ -158,6 +158,12 @@ code.ic {
   unicode-bidi: isolate;
   direction: ltr;
   white-space: pre-wrap;
+  /* a snippet that doesn't fit moves to the next line as one LTR box and wraps inside it,
+     instead of being split across RTL lines in reversed order */
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-indent: 0;
 }
 
 /* code blocks: a printed listing with an ink rule at the start edge */
@@ -176,7 +182,17 @@ code.ic {
   overflow-x: auto;
   tab-size: 4;
 }
-.code .ln { display: flex; padding: 0 16px; min-height: 1.7em; white-space: pre; }
+/* long lines wrap instead of hiding off-screen; a wrapped line continues 4 columns
+   deeper than its own indentation, so the indentation structure stays readable */
+.code .ln { display: flex; padding: 0 16px; min-height: 1.7em; }
+.code .src {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding-left: calc((var(--ind, 0) + 4) * 1ch);
+  text-indent: -4ch;
+}
 .code .num { color: var(--muted); opacity: .75; user-select: none; min-width: 2.2em; padding-inline-end: .8em; text-align: right; flex: none; }
 .code span[style] { color: var(--shiki-light); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .code span[style] { color: var(--shiki-dark); } }
@@ -326,7 +342,16 @@ details.sample summary { cursor: pointer; font-weight: 600; color: var(--text); 
 .match .item { border: 1px solid var(--border); padding: 10px 12px; }
 .match .item.right { border-color: var(--success); background: var(--success-soft); }
 .match .item.wrong { border-color: var(--pen); background: var(--danger-soft); }
-.match .sig { font-family: var(--mono); font-size: 14px; text-align: left; overflow-x: auto; white-space: pre; padding-bottom: 6px; }
+.match .sig { font-family: var(--mono); font-size: 14px; text-align: left; padding-bottom: 6px; }
+.nobr { white-space: nowrap; }
+/* one line of a signature: wraps with a hanging indent like code blocks */
+.match .sig .sl {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding-left: calc((var(--ind, 0) + 4) * 1ch);
+  text-indent: -4ch;
+}
 .match .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font: inherit; font-family: var(--mono); font-size: .85rem; min-height: 36px; padding: 5px 12px; border-radius: 0; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
 .chip:hover:not([disabled]) { border-color: var(--text); }
