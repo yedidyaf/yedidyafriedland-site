@@ -67,15 +67,15 @@
   code: |
     s = "cat"
     for ch in s:
-        ch = ch.upper()
+        ch = ch + "!"
     print(s)
-  options: ["cat", "CAT", "TypeError", "C"]
+  options: ["cat", "c!a!t!", "TypeError", "t!"]
   answer: 0
-  explanation: "מחרוזות ב-Python אינן ניתנות לשינוי (Immutable). בכל סיבוב `ch` הוא מחרוזת חדשה של תו אחד, ו-`ch = ch.upper()` רק מצמיד את השם `ch` למחרוזת אחרת. המחרוזת `s` עצמה לא משתנה, ולכן מודפס `cat`. כדי לקבל `CAT` צריך ליצור מחרוזת חדשה: `s = s.upper()`."
+  explanation: "מחרוזות ב-Python אינן ניתנות לשינוי (Immutable). בכל סיבוב `ch` הוא מחרוזת של תו אחד, ו-`ch = ch + \"!\"` רק מצמיד את השם `ch` למחרוזת חדשה. המחרוזת `s` עצמה לא משתנה, ולכן מודפס `cat`."
   optionExplanations:
     "1": "שינוי של משתנה הלולאה לא משנה את המחרוזת שעוברים עליה. אי אפשר לשנות מחרוזת במקום."
     "2": "אין כאן ניסיון להציב לאינדקס של מחרוזת. השמה למשתנה `ch` חוקית לגמרי."
-    "3": "מודפסת `s`, ולא `ch`. וגם `ch` בסוף הלולאה הוא `T`, לא `C`."
+    "3": "מודפסת `s`, ולא `ch`."
 
 - id: py.strings.string-basics.006
   type: truefalse
@@ -117,38 +117,40 @@
 - id: py.strings.string-basics.009
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להחזיר את התו האחרון של מחרוזת, או מחרוזת ריקה אם המחרוזת ריקה. איזו שורה צריך לתקן?
+  prompt: הקוד אמור להדפיס את התו האחרון של המחרוזת, או שורה ריקה אם המחרוזת ריקה. איזו שורה צריך לתקן?
   code: |
-    def last_char(s):
-        if s == "":
-            return ""
-        return s[len(s)]
-  answer: 4
+    s = "hello"
+    if s == "":
+        print("")
+    else:
+        print(s[len(s)])
+  answer: 5
   explanation: "במחרוזת באורך `n` האינדקסים החוקיים הם 0 עד `n - 1`. `s[len(s)]` חורג באחד וזורק `IndexError`. התו האחרון הוא `s[len(s) - 1]`, או בקיצור `s[-1]`."
   fixed: |
-    def last_char(s):
-        if s == "":
-            return ""
-        return s[-1]
+    s = "hello"
+    if s == "":
+        print("")
+    else:
+        print(s[-1])
 
 - id: py.strings.string-basics.010
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להחזיר את המחרוזת כשהתו הראשון שלה מוחלף בכוכבית. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור להסתיר את הסיסמה ולהדפיס כוכבית אחת לכל תו: `******`. איזו שורה צריך לתקן?"
   code: |
-    def mask_first(s):
-        if len(s) == 0:
-            return s
-        s[0] = "*"
-        return s
+    password = "secret"
+    masked = ""
+    for ch in password:
+        masked = "*"
+    print(masked)
   answer: 4
-  explanation: "מחרוזת אינה ניתנת לשינוי (Immutable), ולכן הצבה לאינדקס זורקת `TypeError`. בונים מחרוזת חדשה מכוכבית ומשאר התווים: `s = \"*\" + s[1:]`."
+  explanation: "בכל סיבוב `masked` מקבל מחדש את המחרוזת `\"*\"`, ולכן בסוף מודפסת כוכבית אחת. מחרוזת לא משנים במקום; בונים מחרוזת חדשה ומחברים אליה תו בכל סיבוב: `masked = masked + \"*\"`. אפשר גם בלי לולאה: `\"*\" * len(password)`."
   fixed: |
-    def mask_first(s):
-        if len(s) == 0:
-            return s
-        s = "*" + s[1:]
-        return s
+    password = "secret"
+    masked = ""
+    for ch in password:
+        masked = masked + "*"
+    print(masked)
 
 - id: py.strings.string-basics.011
   type: output

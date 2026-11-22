@@ -82,7 +82,7 @@ test('pages have no horizontal scroll on phones', async ({ page }) => {
 for (const [lang, chapter, topic] of [
   ['csharp', 'clean-code', 'conventions'],
   ['python', 'software-design', 'architecture-assembly'],
-  ['csharp', 'software-design', 'architecture-assembly'],
+  ['csharp', 'oop', 'class-design'],
 ]) {
   test(`exam with wide code keeps the page inside the screen: ${lang}/${topic}`, async ({ page }) => {
     await page.goto(`/exam/?lang=${lang}&mode=topic&chapter=${chapter}&topic=${topic}&count=16`);

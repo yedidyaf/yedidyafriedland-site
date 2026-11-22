@@ -4,48 +4,45 @@ title_he: סי שארפ
 title_en: C#
 highlight: csharp
 version: "C# 12 / .NET 8"
-description_he: מבחנים ב-C# מהיסודות ועד ממשקים, LINQ, קוד נקי וארכיטקטורה. כל שאלה מגיעה עם הסבר, וכל קטע קוד נבדק בהרצה אמיתית.
+description_he: מבחנים ב-C# ברמת בגרות במדעי המחשב, 3 עד 5 יחידות. מהיסודות, דרך מערכים ומתודות, ועד מחלקות, ירושה וקוד נקי. כל שאלה מגיעה עם הסבר, וכל קטע קוד נבדק בהרצה אמיתית.
 simulation:
   questions: 30
   minutes: 40
   passScore: 85
   blueprint:
-    basics: 3
-    control-flow: 3
-    strings: 2
+    basics: 4
+    control-flow: 5
     collections: 3
-    methods: 3
-    oop: 5
-    exceptions: 2
-    clean-code: 3
-    software-design: 3
-    advanced: 3
+    strings: 3
+    methods: 4
+    oop: 7
+    clean-code: 4
 chapters:
   - id: basics
     title_he: יסודות
     title_en: Basics
-    description_he: משתנים, טיפוסי ערך, אופרטורים, קלט ופלט בקונסול והמרות. הבסיס של כל תוכנית C#.
+    description_he: משתנים, טיפוסים, אופרטורים, קלט ופלט בקונסול והמרות. הבסיס של כל תוכנית C#.
     topics:
       - id: variables
         title_he: משתנים
         title_en: Variables
-        summary_he: הצהרה על משתנים, var, const, ברירות מחדל, וטיפוס סטטי שנקבע בזמן קומפילציה.
+        summary_he: הצהרה על משתנים, השמה, const, ומשתנה שחייב לקבל ערך לפני השימוש בו.
       - id: value-types
-        title_he: טיפוסי ערך
-        title_en: Value Types
-        summary_he: int, long, double, decimal, bool ו-char, טווחים, גלישה (overflow), והבדל בין טיפוס ערך לטיפוס הפניה.
+        title_he: טיפוסים
+        title_en: Data Types
+        summary_he: int, double, bool, char ו-string, מה כל טיפוס יכול להכיל, וערכים מותרים ואסורים.
       - id: operators
         title_he: אופרטורים
         title_en: Operators
-        summary_he: חלוקה שלמה מול עשרונית, שארית, ++ לפני ואחרי, אופרטורים לוגיים, קדימות ו-?? .
+        summary_he: חלוקה שלמה מול עשרונית, שארית %, ++ ו-+=, אופרטורי השוואה ולוגיים, וקדימות.
       - id: console-io
         title_he: קלט ופלט
         title_en: Console Input and Output
-        summary_he: Console.WriteLine מול Write, Console.ReadLine שמחזיר מחרוזת, ועיצוב פלט בסיסי.
+        summary_he: Console.WriteLine מול Write, Console.ReadLine שמחזירה מחרוזת, ושרשור בפלט.
       - id: casting
         title_he: המרות
         title_en: Casting and Conversion
-        summary_he: המרה מרומזת ומפורשת, int.Parse ו-TryParse, Convert, ואובדן מידע בהמרה.
+        summary_he: המרה מרומזת ומפורשת (int), int.Parse ו-double.Parse, ואובדן מידע בהמרה.
   - id: control-flow
     title_he: זרימת בקרה
     title_en: Control Flow
@@ -54,82 +51,62 @@ chapters:
       - id: conditions
         title_he: תנאים
         title_en: Conditions
-        summary_he: if, else if ו-else, האופרטור הטרנרי, והערכה מקוצרת של && ו-||.
+        summary_he: if, else if ו-else, תנאים מקוננים, והערכה מקוצרת של && ו-||.
       - id: switch
-        title_he: switch וביטויי switch
-        title_en: Switch Statements and Expressions
-        summary_he: switch קלאסי עם case ו-break, ביטויי switch, ו-pattern matching בסיסי.
+        title_he: משפט switch
+        title_en: Switch Statement
+        summary_he: switch עם case, break ו-default, ומתי switch קריא יותר משרשרת if.
       - id: loops
         title_he: לולאות
         title_en: Loops
-        summary_he: for, foreach, while ו-do-while, ומתי כל אחת מתאימה.
+        summary_he: for, while ו-do-while, מונה וצובר, ומתי כל לולאה מתאימה.
       - id: loop-control
         title_he: שליטה בלולאות
         title_en: Loop Control
         summary_he: break, continue, לולאות מקוננות, ותנאי עצירה.
-  - id: strings
-    title_he: מחרוזות
-    title_en: Strings
-    description_he: עבודה עם טקסט ב-C#. אי־שינוי, אינטרפולציה, מתודות ו-StringBuilder.
-    topics:
-      - id: string-basics
-        title_he: יסודות מחרוזות
-        title_en: String Basics
-        summary_he: string ו-char, אינדקסים, Length, השוואה עם == ו-Equals, ומחרוזות שאינן ניתנות לשינוי.
-      - id: interpolation
-        title_he: אינטרפולציה ועיצוב
-        title_en: Interpolation and Formatting
-        summary_he: מחרוזות עם $, עיצוב מספרים, verbatim strings עם @, ותווי בריחה.
-      - id: string-methods
-        title_he: מתודות מחרוזת
-        title_en: String Methods
-        summary_he: Substring, Split, Join, Replace, Trim, Contains, IndexOf ועוד, ומה כל אחת מחזירה.
-      - id: stringbuilder
-        title_he: StringBuilder
-        title_en: StringBuilder
-        summary_he: למה שרשור בלולאה יקר, ומתי StringBuilder עדיף.
   - id: collections
-    title_he: אוספים
-    title_en: Collections
-    description_he: מערכים, List, Dictionary ו-HashSet. מתי להשתמש בכל אחד ומה עלות הפעולות.
+    title_he: מערכים
+    title_en: Arrays
+    description_he: מערכים חד־ממדיים ודו־ממדיים. אורך קבוע, אינדקסים, מעבר בלולאה, מערך מונים וחיפוש.
     topics:
       - id: arrays
         title_he: מערכים
         title_en: Arrays
-        summary_he: מערכים חד־ממדיים ורב־ממדיים, אורך קבוע, ערכי ברירת מחדל, ו-IndexOutOfRangeException.
-      - id: lists
-        title_he: רשימות
-        title_en: Lists
-        summary_he: List<T>, Add, Remove, Insert, Count, מיון, והעתקה מול הפניה לאותה רשימה.
-      - id: dictionaries
-        title_he: מילונים
-        title_en: Dictionaries
-        summary_he: Dictionary<TKey, TValue>, TryGetValue, ContainsKey, מעבר עם foreach, ומפתח כפול.
-      - id: hashsets
-        title_he: קבוצות
-        title_en: HashSet
-        summary_he: HashSet<T>, איברים ייחודיים, UnionWith ו-IntersectWith, ובדיקת שייכות מהירה.
+        summary_he: יצירת מערך, אורך קבוע, ערכי ברירת מחדל, מעבר בלולאה, מערך מונים, מערך דו־ממדי ו-IndexOutOfRangeException.
+  - id: strings
+    title_he: מחרוזות
+    title_en: Strings
+    description_he: עבודה עם טקסט ב-C#. תווים, אינדקסים, אינטרפולציה ומתודות של מחרוזת.
+    topics:
+      - id: string-basics
+        title_he: יסודות מחרוזות
+        title_en: String Basics
+        summary_he: string ו-char, אינדקסים, Length, מעבר על תווים בלולאה, השוואה, ומחרוזות שאינן ניתנות לשינוי.
+      - id: interpolation
+        title_he: אינטרפולציה ותווי בריחה
+        title_en: Interpolation and Escape Characters
+        summary_he: מחרוזות עם $, שרשור מול אינטרפולציה, ותווי בריחה כמו \n, \t ו-\".
+      - id: string-methods
+        title_he: מתודות מחרוזת
+        title_en: String Methods
+        summary_he: Substring, IndexOf, Contains, ToUpper, Replace, Split, CompareTo ועוד, ומה כל אחת מחזירה.
   - id: methods
     title_he: מתודות
     title_en: Methods
-    description_he: הגדרת מתודות, פרמטרים, העמסה, ארגומנטים אופציונליים ורקורסיה.
+    description_he: הגדרת פעולות סטטיות, פרמטרים, העמסה ורקורסיה.
     topics:
       - id: defining-methods
         title_he: הגדרת מתודות
         title_en: Defining Methods
-        summary_he: חתימת מתודה, טיפוס החזרה, void, static מול מתודת מופע, ומתודות מקומיות.
+        summary_he: חתימת מתודה, טיפוס החזרה, void, return, וקריאה למתודה סטטית.
       - id: parameters
         title_he: פרמטרים
         title_en: Parameters
-        summary_he: העברה לפי ערך, ref, out, in ו-params, ומה קורה לטיפוס הפניה שמועבר לפי ערך.
+        summary_he: העברה לפי ערך, ומה קורה כשמעבירים מערך למתודה ומשנים אותו בתוכה.
       - id: overloading
         title_he: העמסה
         title_en: Method Overloading
         summary_he: כמה מתודות באותו שם עם חתימות שונות, ואיך הקומפיילר בוחר ביניהן.
-      - id: optional-named
-        title_he: ארגומנטים אופציונליים ושמיים
-        title_en: Optional and Named Arguments
-        summary_he: ערכי ברירת מחדל לפרמטרים, העברת ארגומנט לפי שם, והכללים לסדר שלהם.
       - id: recursion
         title_he: רקורסיה
         title_en: Recursion
@@ -137,57 +114,32 @@ chapters:
   - id: oop
     title_he: תכנות מונחה עצמים
     title_en: Object-Oriented Programming
-    description_he: מחלקות, מאפיינים, ירושה, פולימורפיזם, ממשקים, מחלקות מופשטות והרכבה. כולל שאלות על יחסים בין מחלקות.
+    description_he: מחלקות, ירושה, פולימורפיזם, מחלקות מופשטות והרכבה, ותכנון מחלקות מתוך דרישה.
     topics:
       - id: classes-objects
         title_he: מחלקות ואובייקטים
         title_en: Classes and Objects
-        summary_he: class, בנאים, this, שדות, static מול מופע, ומשתני גישה public ו-private.
-      - id: properties
-        title_he: מאפיינים
-        title_en: Properties
-        summary_he: get ו-set, מאפיינים אוטומטיים, init, ומאפיינים לקריאה בלבד.
+        summary_he: class, שדות private, בנאים, this, פעולות Get ו-Set, ToString, static מול מופע, ומערך של עצמים.
       - id: inheritance
         title_he: ירושה
         title_en: Inheritance
-        summary_he: מחלקת בסיס ויורשת, base, protected, sealed, וסדר הפעלת בנאים.
+        summary_he: מחלקת בסיס ויורשת, base, protected, וסדר הפעלת בנאים.
       - id: polymorphism
         title_he: פולימורפיזם
         title_en: Polymorphism
-        summary_he: virtual ו-override, new מול override, וקריאה למתודה דרך הפניה מטיפוס הבסיס.
-      - id: interfaces
-        title_he: ממשקים
-        title_en: Interfaces
-        summary_he: interface, מימוש כמה ממשקים, חוזה בין מחלקות, ומתי ממשק עדיף על מחלקת בסיס.
+        summary_he: virtual ו-override, הפניה מטיפוס הבסיס לעצם מטיפוס יורש, והמרה כלפי מטה עם is.
       - id: abstract-classes
         title_he: מחלקות מופשטות
         title_en: Abstract Classes
-        summary_he: abstract class ו-abstract method, מימוש חלקי, והבדל בינן לבין ממשק.
+        summary_he: abstract class ו-abstract method, מימוש חלקי, ולמה אי אפשר ליצור עצם ממחלקה מופשטת.
       - id: composition
         title_he: הרכבה מול ירושה
         title_en: Composition vs Inheritance
-        summary_he: יחס is-a מול has-a, מתי להעדיף הרכבה על ירושה, וזיהוי יחסים בין מחלקות.
-  - id: exceptions
-    title_he: חריגות
-    title_en: Exceptions
-    description_he: טיפול בשגיאות. try, catch, finally, זריקת חריגות, חריגות מותאמות ו-using.
-    topics:
-      - id: try-catch
-        title_he: try ו-catch
-        title_en: Try and Catch
-        summary_he: תפיסת חריגות, כמה בלוקי catch, סדר מהספציפי לכללי, finally ומסננים עם when.
-      - id: throwing
-        title_he: זריקת חריגות
-        title_en: Throwing Exceptions
-        summary_he: throw, throw מול throw ex, ArgumentException ו-InvalidOperationException, ומתי לזרוק.
-      - id: custom-exceptions
-        title_he: חריגות מותאמות אישית
-        title_en: Custom Exceptions
-        summary_he: הגדרת מחלקת חריגה, ירושה מ-Exception, והיררכיית חריגות.
-      - id: using-dispose
-        title_he: using ו-IDisposable
-        title_en: Using and IDisposable
-        summary_he: שחרור משאבים, הצהרת using, ומה מובטח שירוץ גם כשנזרקת חריגה.
+        summary_he: יחס is-a מול has-a, מחלקה שמכילה עצמים של מחלקה אחרת, וזיהוי יחסים בין מחלקות.
+      - id: class-design
+        title_he: תכנון מחלקות
+        title_en: Class Design
+        summary_he: מקבלים דרישה וחתימות של פעולות, ומשבצים כל פעולה במחלקה שאחראית עליה.
   - id: clean-code
     title_he: קוד נקי
     title_en: Clean Code
@@ -196,7 +148,7 @@ chapters:
       - id: naming
         title_he: שמות
         title_en: Naming
-        summary_he: שמות שמסבירים כוונה, PascalCase ו-camelCase, שמות לממשקים, ומה לא לקצר.
+        summary_he: שמות שמסבירים כוונה, PascalCase ו-camelCase, ומה לא לקצר.
       - id: small-methods
         title_he: מתודות קטנות וממוקדות
         title_en: Small Methods
@@ -208,58 +160,8 @@ chapters:
       - id: code-smells
         title_he: ריחות קוד
         title_en: Code Smells
-        summary_he: Long Method, Magic Number, Deep Nesting, God Class, Primitive Obsession ועוד, ואיך מתקנים.
+        summary_he: Long Method, Magic Number, Deep Nesting, God Class ועוד, ואיך מתקנים.
       - id: conventions
         title_he: מוסכמות C#
         title_en: C# Conventions
-        summary_he: מוסכמות שמות של מיקרוסופט, מבנה קובץ, סוגריים, var, והערות XML.
-  - id: software-design
-    title_he: ארכיטקטורה ותכנון
-    title_en: Software Design
-    description_he: איך מחלקים מערכת לפרויקטים, למחלקות ולשכבות. עקרונות SOLID, תבניות עיצוב, הזרקת תלויות ושאלות הרכבת ארכיטקטורה מדרישה.
-    topics:
-      - id: layers
-        title_he: שכבות ומודולים
-        title_en: Layers and Modules
-        summary_he: הפרדה בין ממשק, לוגיקה עסקית ונתונים, תלויות בין שכבות, ואיזו מחלקה שייכת לאיזה קובץ.
-      - id: solid
-        title_he: עקרונות SOLID
-        title_en: SOLID Principles
-        summary_he: אחריות יחידה, פתוח לסגור, החלפת ליסקוב, הפרדת ממשקים והיפוך תלויות, עם דוגמאות קוד.
-      - id: design-patterns
-        title_he: תבניות עיצוב
-        title_en: Design Patterns
-        summary_he: Strategy, Factory, Observer, Singleton, Adapter ו-Repository, ואיזו תבנית פותרת איזו בעיה.
-      - id: dependency-injection
-        title_he: הזרקת תלויות
-        title_en: Dependency Injection
-        summary_he: הזרקה דרך בנאי, ממשקים כתלויות, החלפת מימוש בבדיקות, ומשך חיים של שירותים.
-      - id: architecture-assembly
-        title_he: הרכבת ארכיטקטורה
-        title_en: Architecture Assembly
-        summary_he: מקבלים דרישה, חתימות מתודות מלאות ושמות קבצים, וצריך לשבץ כל מתודה במקום הנכון.
-  - id: advanced
-    title_he: נושאים מתקדמים
-    title_en: Advanced Topics
-    description_he: Generics, delegates ואירועים, LINQ, async ו-await, וטיפוסים שיכולים להיות null.
-    topics:
-      - id: generics
-        title_he: גנריות
-        title_en: Generics
-        summary_he: מחלקות ומתודות גנריות, אילוצים עם where, ולמה List<T> עדיף על ArrayList.
-      - id: delegates-events
-        title_he: delegates ואירועים
-        title_en: Delegates and Events
-        summary_he: Func, Action, ביטויי למבדא, multicast delegates ו-event.
-      - id: linq
-        title_he: LINQ
-        title_en: LINQ
-        summary_he: Where, Select, OrderBy, First מול FirstOrDefault, GroupBy, והערכה דחויה.
-      - id: async-await
-        title_he: async ו-await
-        title_en: Async and Await
-        summary_he: Task, async ו-await, Task.WhenAll, ומלכודות נפוצות כמו async void.
-      - id: nullable
-        title_he: טיפוסי Nullable
-        title_en: Nullable Types
-        summary_he: int?, ?. ו-??, nullable reference types ואזהרות הקומפיילר.
+        summary_he: מוסכמות שמות של מיקרוסופט, סוגריים מסולסלים, הזחה והערות.

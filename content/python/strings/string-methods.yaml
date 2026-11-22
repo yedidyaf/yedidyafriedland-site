@@ -136,47 +136,51 @@
 - id: py.strings.string-methods.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר כתובת דוא\"ל בלי רווחים בקצוות ובאותיות קטנות. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את כתובת הדוא\"ל בלי רווחים בקצוות ובאותיות קטנות: `dana@mail.com`. איזו שורה צריך לתקן?"
   code: |
-    def normalize_email(email):
-        email.strip()
-        return email.lower()
+    email = "  Dana@Mail.com "
+    email.strip()
+    email = email.lower()
+    print(email)
   answer: 2
-  explanation: "`strip` לא משנה את `email`, כי מחרוזות אינן ניתנות לשינוי. היא מחזירה מחרוזת חדשה, וכאן הערך הזה נזרק. צריך לשמור אותו: `email = email.strip()`."
+  explanation: "`strip` לא משנה את `email`, כי מחרוזות אינן ניתנות לשינוי. היא מחזירה מחרוזת חדשה, וכאן הערך הזה נזרק, ולכן הרווחים נשארים. צריך לשמור אותו: `email = email.strip()`."
   fixed: |
-    def normalize_email(email):
-        email = email.strip()
-        return email.lower()
+    email = "  Dana@Mail.com "
+    email = email.strip()
+    email = email.lower()
+    print(email)
 
 - id: py.strings.string-methods.011
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה לבדוק אם המילה `word` מופיעה בטקסט, בלי תלות באותיות גדולות וקטנות. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור לבדוק אם המילה `word` מופיעה בטקסט, בלי תלות באותיות גדולות וקטנות, ולהדפיס `True`. איזו שורה צריך לתקן?"
   code: |
-    def contains_word(text, word):
-        text = text.lower()
-        return text.find(word.lower()) > 0
-  answer: 3
-  explanation: "`find` מחזירה 0 כשהמילה נמצאת בתחילת הטקסט, ו-`-1` רק כשהיא לא נמצאת בכלל. התנאי `> 0` מפספס את אינדקס 0. התנאי הנכון הוא `!= -1`, או בפשטות `word.lower() in text`."
+    text = "Python is fun"
+    word = "python"
+    text = text.lower()
+    print(text.find(word.lower()) > 0)
+  answer: 4
+  explanation: "`find` מחזירה 0 כשהמילה נמצאת בתחילת הטקסט, ו-`-1` רק כשהיא לא נמצאת בכלל. התנאי `> 0` מפספס את אינדקס 0, ולכן מודפס `False`. התנאי הנכון הוא `!= -1`, או בפשטות `word.lower() in text`."
   fixed: |
-    def contains_word(text, word):
-        text = text.lower()
-        return text.find(word.lower()) != -1
+    text = "Python is fun"
+    word = "python"
+    text = text.lower()
+    print(text.find(word.lower()) != -1)
 
 - id: py.strings.string-methods.012
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה לספור את המילים בשורה, גם כשבין המילים יש יותר מרווח אחד. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור לספור את המילים בשורה, גם כשבין המילים יש יותר מרווח אחד, ולהדפיס `3`. איזו שורה צריך לתקן?"
   code: |
-    def word_count(line):
-        words = line.split(" ")
-        return len(words)
+    line = "one  two three"
+    words = line.split(" ")
+    print(len(words))
   answer: 2
-  explanation: "`split(\" \")` מפרידה בדיוק לפי רווח אחד, ולכן שני רווחים רצופים יוצרים מחרוזת ריקה ברשימה, והיא נספרת כמילה. `split()` בלי ארגומנט מפרידה לפי כל רצף של רווחים לבנים ומתעלמת מרווחים בקצוות."
+  explanation: "`split(\" \")` מפרידה בדיוק לפי רווח אחד, ולכן שני רווחים רצופים יוצרים מחרוזת ריקה בתוצאה, והיא נספרת כמילה: מודפס `4`. `split()` בלי ארגומנט מפרידה לפי כל רצף של רווחים לבנים ומתעלמת מרווחים בקצוות."
   fixed: |
-    def word_count(line):
-        words = line.split()
-        return len(words)
+    line = "one  two three"
+    words = line.split()
+    print(len(words))
 
 - id: py.strings.string-methods.013
   type: truefalse
@@ -195,24 +199,22 @@
 - id: py.strings.string-methods.015
   type: cleaner
   difficulty: 2
-  prompt: כל הגרסאות בודקות אם שם הקובץ מסתיים ב-`.py`. איזו גרסה נקייה יותר?
+  prompt: כל הגרסאות מדפיסות אם שם הקובץ מסתיים ב-`.py`. איזו גרסה נקייה יותר?
   options:
     - |
-      def is_python_file(filename):
-          return filename.endswith(".py")
+      print(filename.endswith(".py"))
     - |
-      def is_python_file(filename):
-          return filename[-3:] == ".py"
+      print(filename[-3:] == ".py")
     - |
-      def is_python_file(filename):
-          if filename.endswith(".py"):
-              return True
-          return False
+      if filename.endswith(".py"):
+          print(True)
+      else:
+          print(False)
   answer: 0
   explanation: "`endswith` אומרת את הכוונה במילה אחת. היא מחזירה ערך בוליאני ישירות, ואין צורך לספור תווים או לעטוף אותה ב-`if`."
   optionExplanations:
     "1": "החיתוך עובד, אבל המספר 3 קשור לאורך הסיומת. שינוי הסיומת דורש לזכור לעדכן גם אותו."
-    "2": "`endswith` כבר מחזירה `True` או `False`. `if` שמחזיר אותם רק מאריך את הקוד."
+    "2": "`endswith` כבר מחזירה `True` או `False`. `if` שמדפיס אותם רק מאריך את הקוד."
 
 - id: py.strings.string-methods.016
   type: output

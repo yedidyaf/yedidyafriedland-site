@@ -18,19 +18,12 @@
   type: single
   difficulty: 1
   prompt: "נתון `string s = \"C#\";`. מה הטיפוס של הביטוי `s[0]`?"
-  options: ["`char`", "`string`", "`int`", "`byte`"]
+  options: ["`char`", "`string`", "`int`", "`bool`"]
   answer: 0
   explanation: "גישה לאינדקס במחרוזת מחזירה תו בודד מטיפוס `char`, ולא מחרוזת באורך 1. ליטרל של תו נכתב בגרשיים בודדים (`'C'`), וליטרל של מחרוזת במירכאות כפולות (`\"C\"`)."
   optionExplanations:
     "1": "מחרוזת היא אוסף של תווים, ואיבר בודד שלה הוא `char`. זה ההבדל מ-Python, שבה תו בודד הוא מחרוזת."
     "2": "`char` אפשר להמיר ל-`int` (קוד התו), אבל הטיפוס של `s[0]` עצמו הוא `char`."
-
-- id: cs.strings.string-basics.003
-  type: truefalse
-  difficulty: 1
-  prompt: "`string` ב-C# הוא טיפוס ערך (Value Type), ולכן `==` בין שתי מחרוזות משווה את התוכן שלהן."
-  answer: false
-  explanation: "`string` הוא טיפוס הפניה (Reference Type), בדיוק כמו מחלקה. ההשוואה `==` משווה תוכן רק כי המחלקה `string` מגדירה מחדש (Overload) את האופרטור `==`. החלק הראשון של הטענה שגוי."
 
 - id: cs.strings.string-basics.004
   type: output
@@ -63,23 +56,6 @@
     "2": "אחרי `\"c\" + 'a'` התוצאה היא `string`, ולכן גם `'b'` משורשר כתו ולא מתחבר כמספר."
     "3": "שתי הטעויות יחד: בשורה הראשונה התווים מחוברים כמספרים, ובשנייה הם משורשרים אחרי המחרוזת."
 
-- id: cs.strings.string-basics.006
-  type: output
-  difficulty: 1
-  prompt: מה יודפס?
-  code: |
-    string s = "code";
-    s.ToUpper();
-    Console.WriteLine(s);
-    string t = s.ToUpper();
-    Console.WriteLine(t);
-  options: ["code\nCODE", "CODE\nCODE", "code\ncode", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "מחרוזות ב-C# הן בלתי ניתנות לשינוי (Immutable). `ToUpper` לא משנה את `s`, אלא מחזירה מחרוזת חדשה. בשורה 2 התוצאה נזרקת, ולכן `s` נשאר `code`. רק כשמציבים את התוצאה במשתנה, כמו `t`, היא נשמרת."
-  optionExplanations:
-    "1": "זו הטעות הנפוצה: לחשוב ש-`ToUpper` משנה את המחרוזת עצמה. היא מחזירה מחרוזת חדשה."
-    "3": "מותר לקרוא למתודה ולהתעלם מהערך שהיא מחזירה. הקוד מתקמפל, הקריאה פשוט חסרת השפעה."
-
 - id: cs.strings.string-basics.007
   type: output
   difficulty: 2
@@ -96,22 +72,6 @@
     "1": "זה היה עובד עם מערך `char[]`, אבל לא עם `string`. אי אפשר לשנות תו בתוך מחרוזת קיימת."
     "2": "השגיאה נתפסת כבר בקומפילציה, ולכן התוכנית לא רצה בכלל."
     "3": "האינדקס 0 תקין. הבעיה היא ההשמה עצמה, והיא נתפסת לפני הריצה."
-
-- id: cs.strings.string-basics.008
-  type: single
-  difficulty: 2
-  prompt: "`string` הוא טיפוס הפניה. למה `a == b` מחזיר `True` עבור שתי מחרוזות שונות בזיכרון עם אותו תוכן?"
-  options:
-    - "המחלקה `string` מגדירה את האופרטור `==` מחדש כך שישווה את התווים"
-    - "`string` מאוחסן במחסנית (Stack) כמו `int`, ולכן מושווה לפי ערך"
-    - "הקומפיילר מאחד תמיד כל מחרוזות עם תוכן זהה לאובייקט אחד"
-    - "`==` משווה תוכן עבור כל טיפוס הפניה ב-C#"
-  answer: 0
-  explanation: "עבור רוב טיפוסי ההפניה `==` משווה הפניות (Reference Equality). `string` היא חריגה מכוונת: היא מעמיסה (Overload) את `==` ואת `Equals` כך שישוו את רצף התווים."
-  optionExplanations:
-    "1": "`string` הוא טיפוס הפניה, והאובייקט עצמו נמצא בערימה (Heap). ההשוואה לפי תוכן נובעת מה-Overload, לא ממקום האחסון."
-    "2": "רק ליטרלים זהים מאוחדים (Interning). מחרוזת שנבנית בזמן ריצה היא אובייקט חדש, ובכל זאת `==` מחזיר `True`."
-    "3": "עבור מחלקה רגילה בלי Overload, `==` משווה הפניות ומחזיר `False` לשני אובייקטים שונים."
 
 - id: cs.strings.string-basics.009
   type: bug
@@ -158,95 +118,12 @@
     "2": "גישה מחוץ לגבולות לא מדפיסה שורה ריקה. היא זורקת חריגה (Exception)."
     "3": "`s.Length - 1` הוא 2, וזה האינדקס של התו האחרון, `c`."
 
-- id: cs.strings.string-basics.011
-  type: bug
-  difficulty: 2
-  prompt: "`IsYes` אמורה להחזיר `true` עבור `yes`, `Yes` או `YES`, גם עם רווחים בקצוות. איזו שורה צריך לתקן?"
-  code: |
-    class Answers
-    {
-        public static bool IsYes(string answer)
-        {
-            string trimmed = answer.Trim();
-            return trimmed == "yes";
-        }
-    }
-  answer: 6
-  explanation: "`==` בין מחרוזות רגיש לאותיות גדולות וקטנות (Case-sensitive), ולכן `\"Yes\" == \"yes\"` הוא `false`. צריך השוואה שמתעלמת מגודל אותיות: `string.Equals` עם `StringComparison.OrdinalIgnoreCase`."
-  fixed: |
-    class Answers
-    {
-        public static bool IsYes(string answer)
-        {
-            string trimmed = answer.Trim();
-            return trimmed.Equals("yes", StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
-- id: cs.strings.string-basics.012
-  type: single
-  difficulty: 2
-  prompt: "נתון `string a = \"Hello\";` ו-`string b = \"hello\";`. איזה ביטוי מחזיר `true`?"
-  options:
-    - "`a.Equals(b, StringComparison.OrdinalIgnoreCase)`"
-    - "`a == b`"
-    - "`a.Equals(b)`"
-    - "`a.CompareTo(b) == 0`"
-  answer: 0
-  explanation: "`==` ו-`Equals` בלי פרמטר משווים תו מול תו, כולל גודל אותיות. כדי להתעלם מגודל האותיות מעבירים `StringComparison.OrdinalIgnoreCase`."
-  optionExplanations:
-    "1": "`==` רגיש לגודל אותיות, ו-`H` שונה מ-`h`."
-    "2": "`Equals` בלי פרמטר נוסף מתנהג כמו `==` ורגיש לגודל אותיות."
-    "3": "`CompareTo` מיועדת למיון ומשווה לפי כללי תרבות (Culture). גם היא מבחינה בין אות גדולה לקטנה, ולכן לא מחזירה כאן 0."
-
 - id: cs.strings.string-basics.013
   type: truefalse
   difficulty: 2
   prompt: "`'A'` ו-`\"A\"` הם אותו ערך ב-C#, ולכן הביטוי `'A' == \"A\"` מחזיר `true`."
   answer: false
   explanation: "`'A'` הוא `char` ו-`\"A\"` הוא `string`, שני טיפוסים שונים. לא מוגדר `==` בין `char` ל-`string`, ולכן הביטוי בכלל לא מתקמפל. כדי להשוות ממירים קודם, למשל `'A'.ToString() == \"A\"`."
-
-- id: cs.strings.string-basics.014
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    string a = "hi";
-    string b = new string(new[] { 'h', 'i' });
-    object x = a;
-    object y = b;
-    Console.WriteLine(a == b);
-    Console.WriteLine(x == y);
-    Console.WriteLine(x.Equals(y));
-  options: ["True\nFalse\nTrue", "True\nTrue\nTrue", "False\nFalse\nTrue", "True\nFalse\nFalse"]
-  answer: 0
-  explanation: "`b` נבנה בזמן ריצה, ולכן הוא אובייקט נפרד מ-`a` עם אותו תוכן. `a == b` משתמש ב-`==` של `string` ומשווה תוכן. `x == y` נבחר לפי הטיפוס הסטטי `object`, ולכן משווה הפניות ומחזיר `False`. `Equals` היא מתודה וירטואלית, ולכן בזמן ריצה נקראת הגרסה של `string` שמשווה תוכן."
-  optionExplanations:
-    "1": "האופרטור `==` נבחר בזמן קומפילציה לפי טיפוס המשתנה. עבור `object` זו השוואת הפניות, ו-`a` ו-`b` הם שני אובייקטים שונים."
-    "2": "כששני הצדדים מטיפוס `string`, `==` משווה תוכן ולא הפניות."
-    "3": "`Equals` נדרסת (Override) ב-`string`, ולכן גם דרך הפניה מטיפוס `object` היא משווה תוכן."
-
-- id: cs.strings.string-basics.015
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    string a = null;
-    string b = "x";
-    Console.WriteLine(a == b);
-    Console.WriteLine(string.Equals(a, b));
-    Console.WriteLine(a.Equals(b));
-  options:
-    - "False\nFalse\nNullReferenceException"
-    - "False\nFalse\nFalse"
-    - "NullReferenceException"
-    - "False\nNullReferenceException"
-  answer: 0
-  explanation: "`==` והמתודה הסטטית `string.Equals(a, b)` בודקים `null` בעצמם ומחזירים `False`. `a.Equals(b)` היא קריאה למתודת מופע על `null`, ולכן נזרקת `NullReferenceException`. כשמחרוזת עשויה להיות `null`, משווים עם `==` או עם `string.Equals`."
-  optionExplanations:
-    "1": "אי אפשר לקרוא למתודת מופע כשהמשתנה הוא `null`, גם אם המתודה היא `Equals`."
-    "2": "השוואה עם `==` כשאחד הצדדים `null` היא בטוחה ומחזירה `False`."
-    "3": "המתודה הסטטית `string.Equals` מטפלת ב-`null` ולא זורקת חריגה."
 
 - id: cs.strings.string-basics.016
   type: cleaner
@@ -255,22 +132,145 @@
   options:
     - |
       string word = "pencil";
-      char last = word[^1];
-      Console.WriteLine(last);
-    - |
-      string word = "pencil";
-      char last = word.ToCharArray()[word.ToCharArray().Length - 1];
+      char last = word[word.Length - 1];
       Console.WriteLine(last);
     - |
       string word = "pencil";
       char last = ' ';
-      foreach (char c in word)
+      for (int i = 0; i < word.Length; i++)
       {
-          last = c;
+          last = word[i];
       }
       Console.WriteLine(last);
   answer: 0
-  explanation: "האופרטור `^1` (אינדקס מהסוף, Index from End) אומר במפורש \"התו האחרון\" וניגש אליו ישירות. זה שקול ל-`word[word.Length - 1]`, בלי לחזור על שם המשתנה ובלי העתקות."
+  explanation: "התו האחרון נמצא תמיד באינדקס `Length - 1`, ולכן אפשר לגשת אליו ישירות. הגישה הישירה אומרת בדיוק מה רוצים: \"התו האחרון\"."
   optionExplanations:
-    "1": "`ToCharArray` מעתיקה את כל המחרוזת למערך חדש, וכאן אפילו פעמיים. אפשר לגשת לתו ישירות דרך האינדקסר של `string`."
-    "2": "מעבר על כל התווים כדי למצוא את האחרון מסתיר את הכוונה ועושה עבודה מיותרת."
+    "1": "מעבר על כל התווים כדי למצוא את האחרון מסתיר את הכוונה ועושה עבודה מיותרת."
+
+- id: cs.strings.string-basics.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string s = "Shalom";
+    Console.WriteLine(s[0]);
+    Console.WriteLine(s.Length);
+  options: ["S\n6", "h\n6", "S\n5", "Shalom\n6"]
+  answer: 0
+  explanation: "האינדקסים במחרוזת מתחילים מ-0, ולכן `s[0]` הוא התו הראשון, `S`. `Length` הוא מספר התווים: 6."
+  optionExplanations:
+    "1": "`h` נמצא באינדקס 1. האינדקס הראשון הוא 0."
+    "2": "`Length` סופר את כל התווים, 6. האינדקס האחרון הוא 5."
+    "3": "`s[0]` הוא תו אחד, לא המחרוזת כולה."
+
+- id: cs.strings.string-basics.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string word = "level";
+    int count = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+        if (word[i] == 'e')
+            count++;
+    }
+    Console.WriteLine(count);
+  options: ["2", "1", "5", "3"]
+  answer: 0
+  explanation: "הלולאה עוברת על כל תו במחרוזת לפי האינדקס, ו-`count` גדל בכל פעם שהתו הוא `'e'`. ב-`level` יש שני מופעים של `e`, באינדקסים 1 ו-3."
+  optionExplanations:
+    "1": "הלולאה ממשיכה עד סוף המחרוזת, ולא עוצרת במופע הראשון."
+    "2": "5 הוא אורך המילה. המונה גדל רק כשהתו הוא `'e'`."
+    "3": "יש במילה שני `e` ושני `l`, אבל רק `e` נספר."
+
+- id: cs.strings.string-basics.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string s = "abc";
+    for (int i = s.Length - 1; i >= 0; i--)
+    {
+        Console.Write(s[i]);
+    }
+  options: ["cba", "abc", "cb", "IndexOutOfRangeException"]
+  answer: 0
+  explanation: "הלולאה מתחילה מהאינדקס האחרון, `Length - 1` (כלומר 2), ויורדת עד 0 כולל. לכן התווים מודפסים מהסוף להתחלה."
+  optionExplanations:
+    "1": "הלולאה רצה מהסוף להתחלה, כי `i` מתחיל ב-2 ויורד."
+    "2": "התנאי `i >= 0` כולל את האינדקס 0, ולכן גם `a` מודפס."
+    "3": "האינדקס הגבוה ביותר הוא `Length - 1`, שהוא אינדקס חוקי."
+
+- id: cs.strings.string-basics.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string a = "cat";
+    string b = "c" + "at";
+    Console.WriteLine(a == b);
+  options: ["True", "False", "cat", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "ב-C# האופרטור `==` בין שתי מחרוזות משווה את התוכן שלהן, תו אחרי תו. `\"c\" + \"at\"` הוא `\"cat\"`, ולכן התוצאה `True`."
+  optionExplanations:
+    "1": "`==` על מחרוזות ב-C# משווה תוכן, ולכן שתי מחרוזות עם אותם תווים שוות."
+    "2": "`a == b` הוא ביטוי השוואה, והתוצאה שלו `bool`."
+    "3": "השוואה של שתי מחרוזות עם `==` חוקית."
+
+- id: cs.strings.string-basics.021
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור לבדוק אם המילה היא פלינדרום (נקראת אותו דבר משני הכיוונים) ולהדפיס `True` עבור `noon`. בפועל התוכנית קורסת. איזו שורה צריך לתקן?"
+  code: |
+    string s = "noon";
+    bool isPalindrome = true;
+    for (int i = 0; i < s.Length / 2; i++)
+    {
+        if (s[i] != s[s.Length - i])
+            isPalindrome = false;
+    }
+    Console.WriteLine(isPalindrome);
+  answer: 5
+  explanation: "כש-`i` הוא 0, הביטוי `s.Length - i` הוא 4, אבל האינדקס האחרון הוא 3, ולכן נזרקת `IndexOutOfRangeException`. התו שמול `s[i]` נמצא באינדקס `s.Length - 1 - i`."
+  fixed: |
+    string s = "noon";
+    bool isPalindrome = true;
+    for (int i = 0; i < s.Length / 2; i++)
+    {
+        if (s[i] != s[s.Length - 1 - i])
+            isPalindrome = false;
+    }
+    Console.WriteLine(isPalindrome);
+
+- id: cs.strings.string-basics.022
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    string s = "";
+    for (int i = 0; i < 3; i++)
+    {
+        s = s + i;
+    }
+    Console.WriteLine(s);
+    Console.WriteLine(s.Length);
+  options: ["012\n3", "3\n1", "012\n6", "0\n1"]
+  answer: 0
+  explanation: "`s` הוא מחרוזת, ולכן `s + i` משרשר את הספרה לסוף המחרוזת. בכל סיבוב נוצרת מחרוזת חדשה ארוכה יותר: `\"0\"`, `\"01\"`, `\"012\"`. האורך הוא 3 תווים."
+  optionExplanations:
+    "1": "`s` מתחיל כמחרוזת ריקה, ולכן `+` משרשר ולא מחבר."
+    "2": "`Length` סופר תווים: יש 3 תווים, `0`, `1` ו-`2`."
+    "3": "ההצבה `s = s + i` שומרת את התוצאה, ולכן המחרוזת מתארכת בכל סיבוב."
+
+- id: cs.strings.string-basics.023
+  type: single
+  difficulty: 1
+  prompt: "למחרוזת `s` יש `n` תווים. מה האינדקס של התו האחרון שלה?"
+  options: ["`n - 1`", "`n`", "`n + 1`", "`1`"]
+  answer: 0
+  explanation: "האינדקסים מתחילים מ-0, ולכן מחרוזת באורך `n` משתמשת באינדקסים 0 עד `n - 1`. ניסיון לגשת ל-`s[n]` זורק `IndexOutOfRangeException`."
+  optionExplanations:
+    "1": "`s[n]` מחוץ לגבולות. האינדקס האחרון קטן ב-1 מהאורך."
+    "2": "`n + 1` רחוק עוד יותר מהסוף."
+    "3": "1 הוא האינדקס של התו השני."

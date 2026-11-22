@@ -209,21 +209,21 @@
 - id: py.data-structures.dictionaries.014
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה לספור כמה פעמים כל מילה מופיעה ברשימה. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור לספור כמה פעמים כל מילה מופיעה ברשימה ולהדפיס `{'a': 2, 'b': 1}`. איזו שורה צריך לתקן?"
   code: |
-    def count_words(words):
-        counts = {}
-        for w in words:
-            counts[w] += 1
-        return counts
+    words = ["a", "b", "a"]
+    counts = {}
+    for w in words:
+        counts[w] += 1
+    print(counts)
   answer: 4
   explanation: "בפעם הראשונה שמילה מופיעה, היא עדיין לא מפתח במילון, ו-`counts[w] += 1` מנסה לקרוא ערך שלא קיים וזורק `KeyError`. צריך לקרוא עם ברירת מחדל: `counts[w] = counts.get(w, 0) + 1`."
   fixed: |
-    def count_words(words):
-        counts = {}
-        for w in words:
-            counts[w] = counts.get(w, 0) + 1
-        return counts
+    words = ["a", "b", "a"]
+    counts = {}
+    for w in words:
+        counts[w] = counts.get(w, 0) + 1
+    print(counts)
 
 - id: py.data-structures.dictionaries.015
   type: bug
@@ -243,24 +243,24 @@
 - id: py.data-structures.dictionaries.016
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה לקבץ מילים לפי האורך שלהן, למשל `{3: ['sun', 'sky'], 4: ['moon']}`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור לקבץ מילים לפי האורך שלהן ולהדפיס `{3: ['sun', 'sky'], 4: ['moon']}`. איזו שורה צריך לתקן?"
   code: |
-    def group_by_length(words):
-        groups = {}
-        for w in words:
-            key = len(w)
-            if key not in groups:
-                groups[key] = []
-            groups[w].append(w)
-        return groups
+    words = ["sun", "moon", "sky"]
+    groups = {}
+    for w in words:
+        key = len(w)
+        if key not in groups:
+            groups[key] = []
+        groups[w].append(w)
+    print(groups)
   answer: 7
   explanation: "המפתח של הקבוצה הוא האורך, `key`, אבל שורה 7 ניגשת למילון עם המילה עצמה. המפתח `w` לא קיים, ולכן נזרקת `KeyError`. התיקון: `groups[key].append(w)`."
   fixed: |
-    def group_by_length(words):
-        groups = {}
-        for w in words:
-            key = len(w)
-            if key not in groups:
-                groups[key] = []
-            groups[key].append(w)
-        return groups
+    words = ["sun", "moon", "sky"]
+    groups = {}
+    for w in words:
+        key = len(w)
+        if key not in groups:
+            groups[key] = []
+        groups[key].append(w)
+    print(groups)

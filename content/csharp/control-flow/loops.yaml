@@ -54,42 +54,6 @@
     "2": "16 לא מודפס, כי התנאי `16 <= 10` נבדק לפני הסיבוב ונכשל."
     "3": "הקידום רץ רק בסוף הסיבוב, ולכן בסיבוב הראשון `i` עדיין 1."
 
-- id: cs.control-flow.loops.004
-  type: output
-  difficulty: 2
-  tags: [compile-error]
-  prompt: מה יודפס?
-  code: |
-    int[] scores = { 70, 85, 90 };
-    foreach (int s in scores)
-    {
-        s += 5;
-    }
-    Console.WriteLine(scores[0]);
-  options: ["75", "70", "שגיאת קומפילציה"]
-  answer: 2
-  explanation: "משתנה האיטרציה של `foreach` הוא לקריאה בלבד: אי אפשר להציב בו ערך, והקומפיילר מדווח שגיאה CS1656. גם אילו היה מותר, הוא רק עותק של האיבר ולא האיבר עצמו. כדי לשנות איברים במערך משתמשים ב-`for` עם אינדקס: `scores[i] += 5`."
-  optionExplanations:
-    "0": "75 מניח ש-`s` הוא הפניה לאיבר במערך. `foreach` לא מאפשר לשנות דרכו את המערך."
-    "1": "70 מניח שהשינוי פשוט לא משפיע על המערך, אבל הקוד בכלל לא עובר קומפילציה."
-
-- id: cs.control-flow.loops.005
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    for (int i = 0, j = 10; i < j; i += 3, j -= 2)
-    {
-        Console.Write($"{i}-{j} ");
-    }
-  options: ["0-10 3-8 6-6", "0-10 3-8", "0-10", "0-10 3-8 6-6 9-4"]
-  answer: 1
-  explanation: "בחלקי האתחול והקידום של `for` אפשר לכתוב כמה ביטויים מופרדים בפסיק. אחרי כל סיבוב שני המשתנים מתעדכנים יחד, ורק אז נבדק התנאי. אחרי `3-8` מתקבלים `i = 6` ו-`j = 6`, ו-`6 < 6` שקר."
-  optionExplanations:
-    "0": "`6-6` לא מודפס: התנאי `i < j` נבדק לפני הסיבוב ונכשל כששניהם 6."
-    "2": "אחרי הסיבוב הראשון `i = 3` ו-`j = 8`, ו-`3 < 8` עדיין אמת."
-    "3": "הלולאה נעצרת בפעם הראשונה שהתנאי נכשל, ולא חוזרת לבדוק אותו."
-
 - id: cs.control-flow.loops.006
   type: output
   difficulty: 2
@@ -129,18 +93,6 @@
     "0": "012 מניח שהתנאי מחושב פעם אחת בלבד, בתחילת הלולאה."
     "3": "התנאי `i < 5` מתקיים גם עבור 4, ולכן 4 מודפס."
 
-- id: cs.control-flow.loops.008
-  type: single
-  difficulty: 1
-  prompt: "צריך לעבור על כל הציונים במערך `grades` ולהדפיס כל אחד מהם, בלי צורך באינדקס. איזו לולאה מתאימה ביותר?"
-  options: ["`for`", "`while`", "`foreach`", "`do-while`"]
-  answer: 2
-  explanation: "`foreach` עוברת על כל איבר באוסף בלי לנהל אינדקס ובלי סיכון לחרוג מהגבולות. `for` מתאימה כשצריך את האינדקס (למשל כדי לשנות איבר או לדלג), `while` כשמספר הסיבובים לא ידוע מראש, ו-`do-while` כשהגוף חייב לרוץ לפחות פעם אחת."
-  optionExplanations:
-    "0": "`for` תעבוד, אבל מוסיפה אינדקס וגבול שאין בהם צורך, ובהם קל לטעות."
-    "1": "`while` מתאימה לתנאי שאינו קשור לאוסף. כאן היא מחייבת לנהל אינדקס ידני."
-    "3": "`do-while` מריצה את הגוף לפחות פעם אחת, וזה שגוי עבור מערך ריק."
-
 - id: cs.control-flow.loops.009
   type: single
   difficulty: 2
@@ -176,116 +128,171 @@
   answer: true
   explanation: "`while` בודקת את התנאי לפני כל סיבוב, כולל הראשון, ולכן הגוף יכול לרוץ אפס פעמים. זה ההבדל המרכזי מ-`do-while`, שבודקת את התנאי בסוף הסיבוב ולכן מריצה את הגוף לפחות פעם אחת."
 
-- id: cs.control-flow.loops.012
-  type: truefalse
-  difficulty: 2
-  prompt: "הלולאה `for (;;) { ... }` היא שגיאת קומפילציה, כי חסר בה תנאי."
-  answer: false
-  explanation: "שלושת החלקים של `for` (אתחול, תנאי וקידום) הם אופציונליים. בלי תנאי, הלולאה אינסופית, בדיוק כמו `while (true)`, ויוצאים ממנה עם `break` או `return`."
-
 - id: cs.control-flow.loops.013
   type: bug
   difficulty: 1
-  prompt: "המתודה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את סכום המספרים מ-1 עד `n`, כולל `n`. עבור `n = 5` צריך להיות מודפס `15`. איזו שורה צריך לתקן?"
   code: |
-    int SumTo(int n)
+    int n = 5;
+    int sum = 0;
+    for (int i = 1; i < n; i++)
     {
-        int sum = 0;
-        for (int i = 1; i < n; i++)
-        {
-            sum += i;
-        }
-        return sum;
+        sum += i;
     }
-  answer: 4
-  explanation: "התנאי `i < n` עוצר לפני `n`, כך שהמספר האחרון לא נכנס לסכום: `SumTo(3)` מחזיר 3 במקום 6. זו טעות «פחות אחד» (Off-by-one). כשהגבול כלול, התנאי הוא `i <= n`."
+    Console.WriteLine(sum);
+  answer: 3
+  explanation: "התנאי `i < n` עוצר לפני `n`, כך שהמספר האחרון לא נכנס לסכום ומודפס 10 במקום 15. זו טעות «פחות אחד» (Off-by-one). כשהגבול כלול, התנאי הוא `i <= n`."
   fixed: |
-    int SumTo(int n)
+    int n = 5;
+    int sum = 0;
+    for (int i = 1; i <= n; i++)
     {
-        int sum = 0;
-        for (int i = 1; i <= n; i++)
-        {
-            sum += i;
-        }
-        return sum;
+        sum += i;
     }
+    Console.WriteLine(sum);
 
-- id: cs.control-flow.loops.014
+- id: cs.control-flow.loops.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int sum = 0;
+    for (int i = 1; i <= 4; i++)
+    {
+        sum += i;
+    }
+    Console.WriteLine(sum);
+  options: ["10", "6", "4", "1234"]
+  answer: 0
+  explanation: "`sum` הוא צובר (Accumulator): בכל סיבוב מוסיפים לו את `i`. הוא עובר 1, 3, 6 ולבסוף 10. התנאי `i <= 4` כולל את 4."
+  optionExplanations:
+    "1": "6 הוא הסכום עד 3. התנאי `i <= 4` כולל גם את 4."
+    "2": "4 הוא מספר הסיבובים, לא הסכום."
+    "3": "`sum` ו-`i` הם מספרים, ולכן `+=` מחבר ולא משרשר."
+
+- id: cs.control-flow.loops.018
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int i = 10;
+    while (i > 0)
+    {
+        Console.Write(i + " ");
+        i -= 3;
+    }
+  options: ["10 7 4 1", "10 7 4 1 -2", "10 7 4", "7 4 1"]
+  answer: 0
+  explanation: "התנאי נבדק לפני כל סיבוב. אחרי ההדפסה של 1, `i` הופך ל-2-, התנאי `-2 > 0` שקר, והלולאה נגמרת בלי להדפיס אותו."
+  optionExplanations:
+    "1": "2- לא מודפס, כי התנאי נבדק לפני הגוף ומחזיר שקר."
+    "2": "כש-`i` הוא 1, התנאי `1 > 0` עדיין אמת, ולכן 1 מודפס."
+    "3": "ההדפסה באה לפני החיסור, ולכן 10 מודפס ראשון."
+
+- id: cs.control-flow.loops.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int count = 0;
+    for (int i = 1; i <= 20; i++)
+    {
+        if (i % 4 == 0)
+            count++;
+    }
+    Console.WriteLine(count);
+  options: ["5", "4", "20", "6"]
+  answer: 0
+  explanation: "`count` הוא מונה (Counter): הוא גדל ב-1 רק כשהתנאי מתקיים. בין 1 ל-20 יש 5 כפולות של 4: 4, 8, 12, 16 ו-20."
+  optionExplanations:
+    "1": "התנאי `i <= 20` כולל את 20, שגם הוא כפולה של 4."
+    "2": "המונה גדל רק כשהתנאי מתקיים, לא בכל סיבוב."
+    "3": "0 לא נבדק, כי הלולאה מתחילה מ-1."
+
+- id: cs.control-flow.loops.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= i; j++)
+        {
+            Console.Write("*");
+        }
+        Console.WriteLine();
+    }
+  options: ["*\n**\n***", "***\n***\n***", "***\n**\n*", "******"]
+  answer: 0
+  explanation: "בלולאות מקוננות (Nested Loops) הלולאה הפנימית רצה מההתחלה בכל סיבוב של החיצונית. הגבול של הפנימית הוא `i`, ולכן בשורה הראשונה כוכבית אחת, בשנייה שתיים ובשלישית שלוש."
+  optionExplanations:
+    "1": "הגבול של הלולאה הפנימית הוא `i`, ולא 3, ולכן אורך השורה משתנה."
+    "2": "`i` גדל מ-1 ל-3, ולכן השורות מתארכות ולא מתקצרות."
+    "3": "`Console.WriteLine()` אחרי הלולאה הפנימית יורדת שורה בכל סיבוב של החיצונית."
+
+- id: cs.control-flow.loops.021
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את איברי המערך בסדר הפוך: `4321`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את המכפלה של המספרים מ-1 עד 5, כלומר `120`. בפועל מודפס `0`. איזו שורה צריך לתקן?"
   code: |
-    int[] items = { 1, 2, 3, 4 };
-    for (int i = items.Length; i >= 0; i--)
+    int product = 0;
+    for (int i = 1; i <= 5; i++)
     {
-        Console.Write(items[i]);
+        product *= i;
     }
-  answer: 2
-  explanation: "האינדקסים במערך באורך 4 הם 0 עד 3. הסיבוב הראשון ניגש ל-`items[4]`, ונזרקת `IndexOutOfRangeException`. האינדקס האחרון הוא תמיד `Length - 1`, ולכן לולאה הפוכה מתחילה ממנו."
+    Console.WriteLine(product);
+  answer: 1
+  explanation: "צובר של מכפלה חייב להתחיל מ-1, האיבר הנייטרלי של כפל. כשמתחילים מ-0, כל כפל נותן 0 והתוצאה נשארת 0. צובר של סכום מתחיל מ-0, וצובר של מכפלה מתחיל מ-1."
   fixed: |
-    int[] items = { 1, 2, 3, 4 };
-    for (int i = items.Length - 1; i >= 0; i--)
+    int product = 1;
+    for (int i = 1; i <= 5; i++)
     {
-        Console.Write(items[i]);
+        product *= i;
     }
+    Console.WriteLine(product);
 
-- id: cs.control-flow.loops.015
-  type: bug
+- id: cs.control-flow.loops.022
+  type: output
   difficulty: 3
-  prompt: "המתודה אמורה להחזיר את האינדקס של `target` במערך, או `-1` אם הוא לא קיים בו. איזו שורה צריך לתקן?"
+  prompt: מה יודפס?
   code: |
-    int IndexOf(int[] values, int target)
+    int a = 0;
+    int b = 1;
+    for (int i = 0; i < 5; i++)
     {
-        int i = 0;
-        while (i < values.Length || values[i] != target)
-        {
-            i++;
-        }
-        return i < values.Length ? i : -1;
+        int t = a + b;
+        a = b;
+        b = t;
     }
-  answer: 4
-  explanation: "הלולאה צריכה להמשיך רק כל עוד שני הדברים נכונים: עוד לא הגענו לסוף, וגם עוד לא מצאנו. עם `||`, כל עוד `i < values.Length` אמת הלולאה ממשיכה גם אחרי שהערך נמצא, וכש-`i` מגיע לאורך המערך נבדק `values[i]` מחוץ לגבולות. עם `&&` ההערכה המקוצרת מגינה: כש-`i == values.Length`, הביטוי `values[i]` לא מחושב."
-  fixed: |
-    int IndexOf(int[] values, int target)
-    {
-        int i = 0;
-        while (i < values.Length && values[i] != target)
-        {
-            i++;
-        }
-        return i < values.Length ? i : -1;
-    }
+    Console.WriteLine(a);
+  options: ["5", "8", "3", "13"]
+  answer: 0
+  explanation: "זו סדרת פיבונאצ'י: בכל סיבוב `a` מקבל את הערך של `b`, ו-`b` מקבל את הסכום. אחרי כל סיבוב `a` הוא 1, 1, 2, 3 ולבסוף 5. כדאי לעקוב בטבלה עם עמודה לכל משתנה."
+  optionExplanations:
+    "1": "8 הוא הערך של `b` בסוף, לא של `a`."
+    "2": "3 הוא הערך של `a` אחרי ארבעה סיבובים, אבל הלולאה רצה חמש פעמים (0 עד 4)."
+    "3": "13 היה מתקבל אחרי שבעה סיבובים."
 
-- id: cs.control-flow.loops.016
+- id: cs.control-flow.loops.023
   type: cleaner
   difficulty: 1
-  prompt: שלוש הגרסאות מחשבות את סכום המחירים. איזו נקייה יותר?
+  prompt: שתי הגרסאות מדפיסות את המספרים מ-1 עד 10. איזו נקייה יותר?
   options:
     - |
-      int[] prices = { 10, 20, 30 };
-      int total = 0;
-      for (int i = 0; i < prices.Length; i++)
+      for (int i = 1; i <= 10; i++)
       {
-          total += prices[i];
+          Console.WriteLine(i);
       }
     - |
-      int[] prices = { 10, 20, 30 };
-      int total = 0;
-      foreach (int price in prices)
+      int i = 1;
+      while (true)
       {
-          total += price;
-      }
-    - |
-      int[] prices = { 10, 20, 30 };
-      int total = 0;
-      int i = 0;
-      while (i < prices.Length)
-      {
-          total += prices[i];
+          if (i > 10)
+              break;
+          Console.WriteLine(i);
           i++;
       }
-  answer: 1
-  explanation: "כשצריך רק את הערכים ולא את מיקומם, `foreach` אומרת בדיוק את הכוונה: «לכל מחיר». אין אינדקס, אין גבול לטעות בו, ושם המשתנה `price` מתאר את מה שמחברים."
+  answer: 0
+  explanation: "כשמספר הסיבובים ידוע מראש, `for` מרכזת בשורה אחת את כל מה שמנהל את הלולאה: ערך התחלתי, תנאי וקידום. כך רואים מיד כמה פעמים היא רצה."
   optionExplanations:
-    "0": "`for` עם אינדקס מוסיפה משתנה וגבול שלא נחוצים כאן, ומזמינה טעויות «פחות אחד»."
-    "2": "`while` עם אינדקס ידני מפזרת את האתחול, התנאי והקידום על פני כמה שורות, ושכחת `i++` הייתה יוצרת לולאה אינסופית."
+    "1": "`while (true)` עם `break` מפזר את תנאי העצירה בתוך הגוף, והקורא צריך לחפש אותו."

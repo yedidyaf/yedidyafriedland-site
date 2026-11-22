@@ -83,20 +83,20 @@
     class Address: ...
 
     class Person:
-        def __init__(self, address: Address):
+        def __init__(self, address):
             self.address = address
 
     class Teacher(Person):
-        def __init__(self, address: Address, subject: str):
+        def __init__(self, address, subject):
             super().__init__(address)
             self.subject = subject
 
     class School:
         def __init__(self):
-            self.teachers: list[Teacher] = []
+            self.teachers = []
 
     class ReportPrinter:
-        def print_staff(self, school: School) -> None: ...
+        def print_staff(self, school): ...
   targets:
     - id: is-a
       desc: ירושה - Inheritance

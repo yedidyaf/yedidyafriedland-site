@@ -118,18 +118,19 @@
   difficulty: 2
   prompt: מה יודפס?
   code: |
-    stack = [1, 2, 3]
+    n = 3
     total = 0
-    while stack:
-        total += stack.pop()
+    while n:
+        total += n
+        n -= 1
         print(total)
-  options: ["3\n5\n6", "1\n3\n6", "6", "3\n5\n6\nIndexError"]
+  options: ["3\n5\n6", "1\n3\n6", "6", "3\n5\n6\n6"]
   answer: 0
-  explanation: "`while stack:` בודק את ערך האמת של הרשימה: כל עוד היא לא ריקה, היא truthy. `pop()` מוציא את האיבר האחרון, ולכן מצטברים 3, אחר כך 2, ואז 1. כשהרשימה מתרוקנת היא falsy, והלולאה נעצרת בלי לנסות להוציא איבר מרשימה ריקה."
+  explanation: "`while n:` בודק את ערך האמת של המספר: כל מספר שאינו 0 הוא truthy. בכל סיבוב מוסיפים את `n` ומקטינים אותו, ולכן מצטברים 3, אחר כך 2, ואז 1. כש-`n` מגיע ל-0 הוא falsy, והלולאה נעצרת."
   optionExplanations:
-    "1": "`pop()` בלי ארגומנט מוציא מהסוף, לא מההתחלה."
-    "2": "`print` נמצא בתוך גוף הלולאה, ולכן הוא רץ בכל סיבוב."
-    "3": "התנאי נבדק לפני כל סיבוב. רשימה ריקה היא falsy, ולכן `pop` לא נקרא עליה."
+    "1": "הסכימה מתחילה מ-3, כי `n` מתחיל ב-3 ויורד."
+    "2": "ה-`print` נמצא בתוך הלולאה, ולכן הוא רץ בכל סיבוב."
+    "3": "כש-`n` הוא 0 התנאי שקר, והגוף לא רץ פעם נוספת."
 
 - id: py.control-flow.while-loops.008
   type: output
@@ -170,42 +171,46 @@
 - id: py.control-flow.while-loops.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר כמה שנים יעברו עד שסכום שצובר ריבית שנתית `rate` יגיע ל-`target`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס כמה שנים יעברו עד שסכום שצובר ריבית שנתית `rate` יגיע ל-`target`. איזו שורה צריך לתקן?"
   code: |
-    def years_to_target(amount, target, rate):
-        years = 0
-        while amount > target:
-            amount *= 1 + rate
-            years += 1
-        return years
-  answer: 3
-  explanation: "תנאי של `while` מתאר מתי להמשיך, לא מתי לעצור. צריך להמשיך כל עוד הסכום עדיין לא הגיע ליעד, כלומר `amount < target`. עם `>` הלולאה לא רצה בכלל כשהסכום קטן מהיעד, והפונקציה מחזירה 0."
+    amount = 1000
+    target = 1200
+    rate = 0.1
+    years = 0
+    while amount > target:
+        amount *= 1 + rate
+        years += 1
+    print(years)
+  answer: 5
+  explanation: "תנאי של `while` מתאר מתי להמשיך, לא מתי לעצור. צריך להמשיך כל עוד הסכום עדיין לא הגיע ליעד, כלומר `amount < target`. עם `>` הלולאה לא רצה בכלל כשהסכום קטן מהיעד, ומודפס 0."
   fixed: |
-    def years_to_target(amount, target, rate):
-        years = 0
-        while amount < target:
-            amount *= 1 + rate
-            years += 1
-        return years
+    amount = 1000
+    target = 1200
+    rate = 0.1
+    years = 0
+    while amount < target:
+        amount *= 1 + rate
+        years += 1
+    print(years)
 
 - id: py.control-flow.while-loops.011
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה להחזיר את החזקה הקטנה ביותר של 2 שגדולה או שווה ל-`n` (עבור `n` חיובי). למשל, עבור 5 היא צריכה להחזיר 8, ועבור 8 גם כן 8. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את החזקה הקטנה ביותר של 2 שגדולה או שווה ל-`n`. עבור 5 הוא צריך להדפיס 8, ועבור 8 גם כן 8. איזו שורה צריך לתקן?"
   code: |
-    def next_power_of_two(n):
-        power = 1
-        while power <= n:
-            power *= 2
-        return power
+    n = 8
+    power = 1
+    while power <= n:
+        power *= 2
+    print(power)
   answer: 3
   explanation: "טעות גבול: עם `<=` הלולאה ממשיכה גם כש-`power` כבר שווה ל-`n`, ולכן עבור 8 מתקבל 16. עבור 5 התוצאה נכונה במקרה, ולכן באג כזה מתגלה רק כשבודקים את ערך הגבול עצמו. צריך להמשיך רק כל עוד `power < n`."
   fixed: |
-    def next_power_of_two(n):
-        power = 1
-        while power < n:
-            power *= 2
-        return power
+    n = 8
+    power = 1
+    while power < n:
+        power *= 2
+    print(power)
 
 - id: py.control-flow.while-loops.012
   type: single
@@ -247,11 +252,11 @@
   difficulty: 2
   prompt: "הקוד הבא לא ידפיס כלום."
   code: |
-    items = []
-    while items:
+    text = ""
+    while text:
         print("x")
   answer: true
-  explanation: "תנאי של `while` לא חייב להיות השוואה. כל ערך נבדק לפי ערך האמת שלו, ורשימה ריקה היא falsy. לכן התנאי שקר כבר בבדיקה הראשונה, והגוף לא רץ."
+  explanation: "תנאי של `while` לא חייב להיות השוואה. כל ערך נבדק לפי ערך האמת שלו, ומחרוזת ריקה היא falsy. לכן התנאי שקר כבר בבדיקה הראשונה, והגוף לא רץ."
 
 - id: py.control-flow.while-loops.016
   type: cleaner

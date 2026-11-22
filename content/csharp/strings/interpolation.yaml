@@ -30,74 +30,6 @@
     "1": "`@` יוצרת מחרוזת מילולית (Verbatim String), שבה `\\` הוא תו רגיל. היא לא מחליפה ביטויים."
     "2": "`#` משמש להנחיות קדם־מעבד (Preprocessor Directives) כמו `#region`, לא למחרוזות."
 
-- id: cs.strings.interpolation.003
-  type: output
-  difficulty: 1
-  prompt: מה יודפס?
-  code: |
-    double price = 12.5;
-    Console.WriteLine($"Price: {price:F2}");
-  options: ["Price: 12.50", "Price: 12.5", "Price: 13", "Price: 12.5F2"]
-  answer: 0
-  explanation: "אחרי הנקודתיים בתוך `{}` באה מחרוזת עיצוב (Format String). `F2` פירושו מספר עם בדיוק שתי ספרות אחרי הנקודה העשרונית, ולכן 12.5 מודפס `12.50`."
-  optionExplanations:
-    "1": "בלי עיצוב היה מודפס `12.5`. `F2` מוסיף אפסים עד שתי ספרות אחרי הנקודה."
-    "2": "`F2` מעגל לשתי ספרות אחרי הנקודה, לא למספר שלם. עיגול לשלם הוא `F0`."
-    "3": "`F2` הוא הוראת עיצוב ולא טקסט. הוא לא מופיע בפלט."
-
-- id: cs.strings.interpolation.004
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    int population = 1234567;
-    int id = 7;
-    Console.WriteLine($"{population:N0}");
-    Console.WriteLine($"{id:D3}");
-  options: ["1,234,567\n007", "1234567\n7", "1,234,567.00\n007", "1,234,567\n7"]
-  answer: 0
-  explanation: "`N0` מעצב מספר עם מפריד אלפים (Thousands Separator) ובלי ספרות אחרי הנקודה. `D3` מעצב מספר שלם לפחות בשלוש ספרות, ומשלים אפסים מובילים."
-  optionExplanations:
-    "1": "פורמט משנה את הייצוג. `N0` מוסיף פסיקים ו-`D3` מוסיף אפסים מובילים."
-    "2": "המספר אחרי `N` קובע כמה ספרות יהיו אחרי הנקודה. `N0` פירושו אפס ספרות, ו-`.00` מתקבל רק עם `N2`."
-    "3": "`D3` משלים את המספר לשלוש ספרות לפחות, ולכן 7 מודפס `007`."
-
-- id: cs.strings.interpolation.005
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    string name = "Tal";
-    int score = 95;
-    Console.WriteLine($"|{name,-5}|{score,4}|");
-  options: ["|Tal  |  95|", "|  Tal|95  |", "|Tal|95|", "|Tal  |95  |"]
-  answer: 0
-  explanation: "המספר אחרי הפסיק הוא רוחב השדה (Alignment). מספר חיובי מיישר לימין ומוסיף רווחים משמאל, ומספר שלילי מיישר לשמאל ומוסיף רווחים מימין. `Tal` ממולא לחמישה תווים מימין, ו-`95` לארבעה תווים משמאל."
-  optionExplanations:
-    "1": "הכיוון הפוך: רוחב שלילי (`-5`) מיישר לשמאל, ורוחב חיובי (`4`) מיישר לימין."
-    "2": "המספר אחרי הפסיק אינו מתעלם. הוא קובע רוחב מינימלי ומשלים ברווחים."
-    "3": "`4` הוא רוחב חיובי, ולכן הרווחים נוספים משמאל ל-`95`."
-
-- id: cs.strings.interpolation.006
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    string path = @"C:\temp\new";
-    Console.WriteLine(path);
-    Console.WriteLine(path.Length);
-  options:
-    - "C:\\temp\\new\n11"
-    - "C:\\temp\\new\n9"
-    - "C:\\\\temp\\\\new\n13"
-    - "@C:\\temp\\new\n12"
-  answer: 0
-  explanation: "במחרוזת מילולית (Verbatim String) עם `@`, הלוכסן ההפוך `\\` הוא תו רגיל ולא פותח תו בריחה (Escape Sequence). לכן המחרוזת מכילה בדיוק את 11 התווים שכתובים בה, כולל שני הלוכסנים."
-  optionExplanations:
-    "1": "9 תווים היו מתקבלים בלי `@`: שם `\\t` הוא תו טאב ו-`\\n` הוא ירידת שורה, כל אחד תו אחד."
-    "2": "עם `@` לא צריך להכפיל את הלוכסן. כל `\\` בקוד הוא תו אחד במחרוזת."
-    "3": "`@` היא קידומת בקוד המקור ולא חלק מהמחרוזת עצמה."
-
 - id: cs.strings.interpolation.007
   type: output
   difficulty: 2
@@ -132,13 +64,6 @@
     "2": "`\\n` הוא תו ירידת שורה, ולכן `a` ו-`b` מודפסים בשתי שורות."
     "3": "`\\\\` ו-`\\\"` לא מוחקים את התו. הם מכניסים לוכסן ומירכאה למחרוזת."
 
-- id: cs.strings.interpolation.008
-  type: truefalse
-  difficulty: 2
-  prompt: "במחרוזת מילולית, למשל `@\"line1\\nline2\"`, הרצף `\\n` יוצר ירידת שורה."
-  answer: false
-  explanation: "ב-Verbatim String אין תווי בריחה: `\\n` הוא פשוט שני תווים, לוכסן ו-`n`. כדי לקבל ירידת שורה במחרוזת כזו כותבים ירידת שורה אמיתית בתוך המירכאות. התו היחיד שמקבל טיפול מיוחד הוא מירכאה, שנכתבת כפולה: `\"\"`."
-
 - id: cs.strings.interpolation.009
   type: cleaner
   difficulty: 1
@@ -147,127 +72,185 @@
     - |
       string name = "Noa";
       int quantity = 3;
-      double total = 59.9;
-      Console.WriteLine($"{name} ordered {quantity} items for {total:F2}");
+      int total = 60;
+      Console.WriteLine($"{name} ordered {quantity} items for {total}");
     - |
       string name = "Noa";
       int quantity = 3;
-      double total = 59.9;
-      Console.WriteLine(name + " ordered " + quantity + " items for " + total.ToString("F2"));
+      int total = 60;
+      Console.WriteLine(name + " ordered " + quantity + " items for " + total);
     - |
       string name = "Noa";
       int quantity = 3;
-      double total = 59.9;
-      Console.WriteLine(string.Format("{0} ordered {1} items for {2:F2}", name, quantity, total));
+      int total = 60;
+      Console.Write(name);
+      Console.Write(" ordered ");
+      Console.Write(quantity);
+      Console.Write(" items for ");
+      Console.WriteLine(total);
   answer: 0
-  explanation: "באינטרפולציה כל ערך כתוב בדיוק במקום שבו הוא מופיע במשפט, והעיצוב (`:F2`) צמוד אליו. קל לקרוא את השורה כמו שתיראה בפלט."
+  explanation: "באינטרפולציה כל ערך כתוב בדיוק במקום שבו הוא מופיע במשפט, ולכן קל לקרוא את השורה כמו שתיראה בפלט."
   optionExplanations:
-    "1": "שרשור עם `+` מפזר את המשפט בין מירכאות רבות, וקל לשכוח רווח. העיצוב דורש קריאה נפרדת ל-`ToString`."
-    "2": "עם `string.Format` צריך להתאים בראש בין `{0}`, `{1}`, `{2}` לבין סדר הארגומנטים, וטעות בסדר לא נראית לעין."
+    "1": "שרשור עם `+` מפזר את המשפט בין מירכאות רבות, וקל לשכוח רווח."
+    "2": "חמש פקודות הדפסה לשורה אחת מסתירות את המשפט השלם."
 
 - id: cs.strings.interpolation.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את סכום המחירים עם שתי ספרות אחרי הנקודה, למשל `Total: 29.74`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס `Total: 12`. איזו שורה צריך לתקן?"
   code: |
-    double[] prices = { 9.99, 15.5, 4.25 };
-    double total = 0;
-    foreach (double p in prices)
-    {
-        total += p;
-    }
-    Console.WriteLine("Total: {total:F2}");
-  answer: 7
-  explanation: "חסרה הקידומת `$`. בלי `$` המחרוזת רגילה, ומודפס הטקסט `Total: {total:F2}` כמו שהוא. הקוד מתקמפל, ולכן הבאג מתגלה רק בהרצה."
+    int total = 5 + 7;
+    Console.WriteLine("Total: {total}");
+  answer: 2
+  explanation: "חסרה הקידומת `$`. בלי `$` המחרוזת רגילה, ומודפס הטקסט `Total: {total}` כמו שהוא. הקוד מתקמפל, ולכן הבאג מתגלה רק בהרצה."
   fixed: |
-    double[] prices = { 9.99, 15.5, 4.25 };
-    double total = 0;
-    foreach (double p in prices)
-    {
-        total += p;
-    }
-    Console.WriteLine($"Total: {total:F2}");
-
-- id: cs.strings.interpolation.011
-  type: single
-  difficulty: 2
-  prompt: "נתון `double total = 3.5;`. איזו שורה מדפיסה בדיוק `Total: 3.50`?"
-  options:
-    - "`Console.WriteLine($\"Total: {total:F2}\");`"
-    - "`Console.WriteLine($\"Total: {total,2}\");`"
-    - "`Console.WriteLine($\"Total: {total:D2}\");`"
-    - "`Console.WriteLine(\"Total: {total:F2}\");`"
-  answer: 0
-  explanation: "`F2` הוא הפורמט של מספר עם שתי ספרות קבועות אחרי הנקודה. מה שבא אחרי `:` הוא עיצוב, ומה שבא אחרי `,` הוא רוחב השדה."
-  optionExplanations:
-    "1": "`,2` קובע רוחב מינימלי של שני תווים, לא מספר ספרות. יודפס `Total: 3.5`."
-    "2": "`D` מיועד למספרים שלמים בלבד. על `double` הוא זורק `FormatException` בזמן ריצה."
-    "3": "בלי `$` לא מתבצעת אינטרפולציה, ומודפס הטקסט `{total:F2}` כמו שהוא."
-
-- id: cs.strings.interpolation.012
-  type: single
-  difficulty: 1
-  prompt: "מה ההבדל בין הקידומת `$` לקידומת `@` במחרוזת?"
-  options:
-    - "`$` משלבת ביטויים בתוך `{}`, ו-`@` הופכת את `\\` לתו רגיל"
-    - "`$` מיועדת למחרוזות של מספרים, ו-`@` למחרוזות של טקסט"
-    - "`@` משלבת ביטויים בתוך `{}`, ו-`$` הופכת את `\\` לתו רגיל"
-    - "אין הבדל. אלה שתי דרכים לכתוב את אותו הדבר"
-  answer: 0
-  explanation: "`$` היא אינטרפולציה (Interpolation): ביטויים בתוך `{}` מחושבים. `@` היא מחרוזת מילולית (Verbatim): אין תווי בריחה, ומותר לפרוס אותה על כמה שורות. אפשר לשלב את שתיהן: `$@\"C:\\Users\\{user}\"`."
-  optionExplanations:
-    "1": "שתי הקידומות עובדות עם כל טקסט. ההבדל הוא באופן שבו הקומפיילר קורא את המחרוזת, לא בסוג התוכן."
-    "2": "התפקידים הפוכים: `$` היא הקידומת של אינטרפולציה."
-    "3": "יש הבדל מהותי: עם `@` המחרוזת `\"{x}\"` נשארת טקסט, ועם `$` מתקבל הערך של `x`."
-
-- id: cs.strings.interpolation.013
-  type: bug
-  difficulty: 2
-  prompt: "הקוד אמור להדפיס את הנתיב `C:\\new\\reports\\summary.csv`. איזו שורה צריך לתקן?"
-  code: |
-    string folder = "C:\new\reports";
-    string file = folder + @"\summary.csv";
-    Console.WriteLine(file);
-  answer: 1
-  explanation: "במחרוזת רגילה `\\n` הוא ירידת שורה ו-`\\r` הוא חזרת גררה (Carriage Return), ולכן הנתיב משתבש בלי שגיאת קומפילציה. בשורה 2 כבר יש `@`, ולכן היא תקינה. התיקון: `@\"C:\\new\\reports\"` או הכפלת הלוכסנים."
-  fixed: |
-    string folder = @"C:\new\reports";
-    string file = folder + @"\summary.csv";
-    Console.WriteLine(file);
+    int total = 5 + 7;
+    Console.WriteLine($"Total: {total}");
 
 - id: cs.strings.interpolation.014
   type: truefalse
   difficulty: 2
-  prompt: "בתוך הסוגריים המסולסלים של מחרוזת אינטרפולציה אפשר לכתוב ביטוי שלם, למשל `$\"{a + b}\"` או `$\"{name.ToUpper()}\"`."
+  prompt: "בתוך הסוגריים המסולסלים של מחרוזת אינטרפולציה אפשר לכתוב ביטוי שלם, למשל `$\"{a + b}\"` או `$\"{name.Length}\"`, ולא רק שם של משתנה."
   answer: true
-  explanation: "בתוך `{}` אפשר לכתוב כל ביטוי (Expression) שמחזיר ערך: חישוב, קריאה למתודה או גישה למאפיין. הערך מחושב ומומר לטקסט. עדיף להשאיר שם ביטויים קצרים, כדי שהמחרוזת תישאר קריאה."
+  explanation: "כל ביטוי חוקי יכול להופיע בתוך `{}`: חישוב, גישה ל-`Length` או אינדקס. הערך מחושב ומוכנס למחרוזת במקום הסוגריים."
 
-- id: cs.strings.interpolation.015
+- id: cs.strings.interpolation.017
   type: output
-  difficulty: 3
-  tags: [compile-error]
+  difficulty: 1
   prompt: מה יודפס?
   code: |
-    int stock = 0;
-    Console.WriteLine($"Status: {stock > 0 ? "in stock" : "sold out"}");
-  options: ["שגיאת קומפילציה", "Status: sold out", "Status: in stock", "Status: False"]
+    int a = 3;
+    int b = 4;
+    Console.WriteLine($"{a} + {b} = {a + b}");
+  options: ["3 + 4 = 7", "3 + 4 = 34", "{a} + {b} = {a + b}", "7 = 7"]
   answer: 0
-  explanation: "בתוך `{}` הנקודתיים מסמנות את תחילת מחרוזת העיצוב, ולכן הקומפיילר לא יכול לקרוא את האופרטור הטרנרי `?:` כמו שהוא. צריך לעטוף אותו בסוגריים: `{(stock > 0 ? \"in stock\" : \"sold out\")}`."
+  explanation: "באינטרפולציה כל ביטוי בתוך `{}` מחושב ומוכנס למחרוזת. הסימן `+` שמחוץ לסוגריים הוא חלק מהטקסט, ואילו `{a + b}` הוא חיבור של מספרים ונותן 7."
   optionExplanations:
-    "1": "זה היה הפלט עם סוגריים סביב התנאי. בלעדיהם הקוד לא מתקמפל."
-    "3": "הביטוי לא מחושב בכלל, כי הקומפיילר עוצר כבר בנקודתיים."
+    "1": "`a + b` בתוך הסוגריים הוא חיבור של שני `int`, ולא שרשור."
+    "2": "הקידומת `$` גורמת להחלפת הביטויים בערכים שלהם."
+    "3": "הטקסט שמחוץ לסוגריים מודפס כמו שהוא, כולל `+` ו-`=`."
 
-- id: cs.strings.interpolation.016
+- id: cs.strings.interpolation.018
+  type: single
+  difficulty: 1
+  prompt: "איזה רצף בתוך מחרוזת יוצר ירידת שורה?"
+  options: ["`\\n`", "`\\t`", "`/n`", "`\\\\`"]
+  answer: 0
+  explanation: "תו בריחה (Escape Character) מתחיל בלוכסן הפוך `\\`. `\\n` הוא ירידת שורה (New Line), `\\t` הוא טאב, ו-`\\\\` הוא הלוכסן ההפוך עצמו."
+  optionExplanations:
+    "1": "`\\t` הוא טאב, רווח אופקי, ולא ירידת שורה."
+    "2": "תווי בריחה מתחילים בלוכסן הפוך `\\`, לא בלוכסן רגיל."
+    "3": "`\\\\` מדפיס לוכסן הפוך אחד."
+
+- id: cs.strings.interpolation.019
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("Line1\nLine2");
+    Console.WriteLine("End");
+  options: ["Line1\nLine2\nEnd", "Line1\\nLine2\nEnd", "Line1Line2\nEnd", "Line1\nLine2End"]
+  answer: 0
+  explanation: "`\\n` בתוך המחרוזת הוא תו ירידת שורה, ולכן `Line1` ו-`Line2` מודפסים בשתי שורות. `WriteLine` מוסיפה ירידת שורה בסוף, ולכן `End` בשורה שלישית."
+  optionExplanations:
+    "1": "`\\n` לא מודפס כשני תווים. הוא תו אחד של ירידת שורה."
+    "2": "`\\n` יוצר ירידת שורה בין שני החלקים."
+    "3": "`WriteLine` מוסיפה ירידת שורה אחרי `Line2`."
+
+- id: cs.strings.interpolation.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int x = 5;
+    Console.WriteLine($"{x}{x}");
+    Console.WriteLine($"{x + x}");
+  options: ["55\n10", "10\n10", "55\n55", "xx\nx + x"]
+  answer: 0
+  explanation: "`{x}{x}` הם שני ביטויים נפרדים שכל אחד מוכנס כטקסט, זה אחר זה: `55`. `{x + x}` הוא ביטוי אחד, חיבור של מספרים, ולכן מוכנס 10."
+  optionExplanations:
+    "1": "בשורה הראשונה אין חיבור. כל `{x}` מוחלף ב-5 בנפרד."
+    "2": "בשורה השנייה `x + x` מחושב כחיבור של `int`, ולכן 10."
+    "3": "הקידומת `$` מחליפה את הביטויים בערכים שלהם."
+
+- id: cs.strings.interpolation.021
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס `Score: 90`. איזו שורה צריך לתקן?"
+  code: |
+    int score = 90;
+    Console.WriteLine($"Score: score");
+  answer: 2
+  explanation: "באינטרפולציה רק מה שבתוך סוגריים מסולסלים מוחלף בערך. בלי `{}` המילה `score` היא טקסט רגיל, ומודפס `Score: score`. צריך לכתוב `{score}`."
+  fixed: |
+    int score = 90;
+    Console.WriteLine($"Score: {score}");
+
+- id: cs.strings.interpolation.022
   type: output
   difficulty: 3
   prompt: מה יודפס?
   code: |
-    Console.WriteLine(string.Format("{1}-{0}-{1}", "a", "b"));
-    Console.WriteLine(string.Format("{0} and {2}", "a", "b"));
-  options: ["b-a-b\nFormatException", "a-b-a\nFormatException", "b-a-b\na and", "b-a-b\nIndexOutOfRangeException"]
+    int i = 2;
+    Console.WriteLine($"{i}{i++}{i}");
+  options: ["223", "222", "233", "333"]
   answer: 0
-  explanation: "ב-`string.Format` המספר בתוך `{}` הוא אינדקס הארגומנט, מתחיל מ-0, ואפשר להשתמש בו כמה פעמים ובכל סדר. בשורה השנייה יש רק שני ארגומנטים (אינדקסים 0 ו-1), ולכן `{2}` גורם ל-`FormatException` בזמן ריצה."
+  explanation: "הביטויים מחושבים משמאל לימין. הראשון הוא 2. `i++` מחזיר את הערך הנוכחי (2) ורק אז מגדיל את `i` ל-3. הביטוי השלישי כבר רואה 3. לכן `223`."
   optionExplanations:
-    "1": "`{1}` מתייחס לארגומנט השני, `\"b\"`. הסדר נקבע לפי האינדקסים, לא לפי סדר ההופעה."
-    "2": "מקום חסר לא מוחלף בטקסט ריק. אינדקס שאין לו ארגומנט הוא שגיאה בזמן ריצה."
-    "3": "זו מחרוזת עיצוב לא תקינה, ולכן החריגה היא `FormatException` ולא `IndexOutOfRangeException`."
+    "1": "`i++` מגדיל את `i` מיד אחרי שהערך נקרא, ולכן הביטוי השלישי רואה 3."
+    "2": "`i++` מחזיר את הערך שלפני ההגדלה, 2 ולא 3."
+    "3": "הביטוי הראשון מחושב לפני ההגדלה."
+
+- id: cs.strings.interpolation.023
+  type: truefalse
+  difficulty: 1
+  prompt: "בתוך מחרוזת רגילה, בלי הקידומת `$`, הטקסט `{age}` מוחלף בערך של המשתנה `age`."
+  answer: false
+  explanation: "רק מחרוזת עם הקידומת `$` היא מחרוזת אינטרפולציה. במחרוזת רגילה הסוגריים המסולסלים הם תווים כמו כל תו אחר, ומודפסים כמו שהם."
+
+- id: cs.strings.interpolation.024
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    double avg = 7 / 2;
+    Console.WriteLine($"Average: {avg}");
+  options: ["Average: 3", "Average: 3.5", "Average: 3.0", "Average: {avg}"]
+  answer: 0
+  explanation: "`7 / 2` היא חלוקה בין שני `int`, ולכן התוצאה 3 עוד לפני שהיא נשמרת ב-`double`. האינטרפולציה רק מציגה את הערך, ו-`double` שלם מודפס בלי נקודה: `3`."
+  optionExplanations:
+    "1": "החלוקה שלמה, כי 7 ו-2 הם `int`. צריך `7 / 2.0` כדי לקבל 3.5."
+    "2": "`double` שלם מודפס בלי `.0`."
+    "3": "הקידומת `$` מחליפה את `{avg}` בערך."
+
+- id: cs.strings.interpolation.025
+  type: single
+  difficulty: 2
+  prompt: "איזו שורה מדפיסה בדיוק `Path: C:\\Temp`?"
+  options:
+    - "`Console.WriteLine(\"Path: C:\\\\Temp\");`"
+    - "`Console.WriteLine(\"Path: C:\\Temp\");`"
+    - "`Console.WriteLine(\"Path: C:/Temp\");`"
+    - "`Console.WriteLine(\"Path: C:\\\\\\\\Temp\");`"
+  answer: 0
+  explanation: "הלוכסן ההפוך `\\` פותח תו בריחה, ולכן כדי להדפיס לוכסן הפוך אחד כותבים שניים: `\\\\`. `\\T` אינו תו בריחה מוכר, ולכן הוא שגיאת קומפילציה."
+  optionExplanations:
+    "1": "`\\T` אינו תו בריחה חוקי, והקוד לא מתקמפל."
+    "2": "זה מדפיס לוכסן רגיל `/`, לא לוכסן הפוך."
+    "3": "ארבעה לוכסנים הפוכים מדפיסים שניים."
+
+- id: cs.strings.interpolation.026
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    string first = "Dana";
+    string last = "Levi";
+    Console.WriteLine($"{last}, {first}");
+  options: ["Levi, Dana", "Dana, Levi", "{last}, {first}", "LeviDana"]
+  answer: 0
+  explanation: "הערכים מוכנסים בדיוק במקום שבו כתובים הסוגריים, ולפי הסדר שלהם במחרוזת. הפסיק והרווח הם טקסט רגיל ומודפסים כמו שהם."
+  optionExplanations:
+    "1": "הסדר נקבע לפי המיקום בתוך המחרוזת: `{last}` ראשון."
+    "2": "הקידומת `$` מחליפה את הסוגריים בערכים."
+    "3": "הפסיק והרווח שבין הסוגריים נשארים בפלט."

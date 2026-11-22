@@ -216,7 +216,7 @@
     class StudentChecking(CheckingAccount): ...
 
     class Statement:
-        def __init__(self, account: Account):
+        def __init__(self, account):
             self.account = account
   targets:
     - id: Account
@@ -235,7 +235,7 @@
     - label: Statement
       answer: "object (אין מחלקת בסיס מפורשת)"
       why: "`Statement` מקבלת חשבון ומחזיקה אותו כתכונה (has-a), אבל לא יורשת ממנו."
-  explanation: "מחלקת הבסיס הישירה נקבעת רק לפי מה שכתוב בסוגריים בהגדרת המחלקה. type hint כמו `account: Account` או שמירת אובייקט בתכונה הם הרכבה, לא ירושה."
+  explanation: "מחלקת הבסיס הישירה נקבעת רק לפי מה שכתוב בסוגריים בהגדרת המחלקה. קבלת אובייקט כפרמטר ושמירתו בתכונה הן הרכבה, לא ירושה."
 
 - id: py.oop.inheritance.010
   type: hierarchy

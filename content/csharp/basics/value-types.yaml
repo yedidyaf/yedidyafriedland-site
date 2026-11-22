@@ -12,68 +12,6 @@
     "1": "בקוד כותבים `true`, אבל ההדפסה של `bool` ב-.NET היא `True` עם אות גדולה."
     "2": "ב-C# `bool` אינו מספר. הוא לא מודפס כ-1, ואין בכלל המרה בינו לבין `int`."
 
-- id: cs.basics.value-types.002
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    int x = int.MaxValue;
-    x = x + 1;
-    Console.WriteLine(x);
-  options: ["-2147483648", "2147483648", "OverflowException", "0"]
-  answer: 0
-  explanation: "`int` הוא 32 ביט עם טווח מ-2147483648- עד 2147483647. כברירת מחדל C# לא בודק גלישה (Overflow) בחשבון שלמים, ולכן הערך \"מסתובב\" לקצה השני של הטווח ומתקבל המספר השלילי הקטן ביותר."
-  optionExplanations:
-    "1": "2147483648 לא נכנס בטווח של `int`. כדי להחזיק אותו צריך `long`."
-    "2": "חריגה נזרקת רק בהקשר `checked`. כברירת מחדל הגלישה שקטה."
-
-- id: cs.basics.value-types.003
-  type: single
-  difficulty: 3
-  prompt: מה קורה בשורה השנייה?
-  code: |
-    int x = int.MaxValue;
-    int y = checked(x + 1);
-  options:
-    - "נזרקת `OverflowException` בזמן ריצה"
-    - "`y` מקבל את הערך `-2147483648`"
-    - "`y` מקבל את הערך `2147483648`"
-    - "שגיאת קומפילציה"
-  answer: 0
-  explanation: "`checked` מפעיל בדיקת גלישה: אם תוצאת החישוב יוצאת מטווח הטיפוס, נזרקת `OverflowException` במקום שהערך יסתובב בשקט. זה שימושי בחישובים שבהם גלישה שקטה היא באג, למשל סכומי כסף."
-  optionExplanations:
-    "1": "זו ההתנהגות בלי `checked` (או עם `unchecked`). `checked` בדיוק מונע את הסיבוב השקט."
-    "2": "`int` לא יכול להחזיק את 2147483648, לא משנה איך מחשבים."
-    "3": "`x` הוא משתנה ולא קבוע, ולכן הקומפיילר לא יודע מראש שתהיה גלישה. הבעיה מתגלה רק בריצה."
-
-- id: cs.basics.value-types.004
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    double a = 0.1 + 0.2;
-    Console.WriteLine(a == 0.3);
-    decimal b = 0.1m + 0.2m;
-    Console.WriteLine(b == 0.3m);
-  options: ["False\nTrue", "True\nTrue", "False\nFalse", "True\nFalse"]
-  answer: 0
-  explanation: "`double` שומר מספרים בבסיס 2, ולכן `0.1` ו-`0.2` נשמרים בקירוב והסכום יוצא `0.30000000000000004`, שאינו שווה ל-`0.3`. `decimal` שומר מספרים בבסיס 10, ולכן `0.1m + 0.2m` שווה בדיוק ל-`0.3m`."
-  optionExplanations:
-    "1": "ב-`double` יש שגיאת עיגול זעירה, ולכן השוואה מדויקת עם `==` נכשלת."
-    "2": "`decimal` מייצג שברים עשרוניים כמו 0.1 בדיוק, ולכן אצלו ההשוואה מצליחה."
-
-- id: cs.basics.value-types.005
-  type: single
-  difficulty: 1
-  prompt: איזה טיפוס הכי מתאים לשמירת סכומי כסף, כמו מחיר של מוצר?
-  options: ["`decimal`", "`double`", "`int`", "`float`"]
-  answer: 0
-  explanation: "`decimal` שומר מספרים עשרוניים בדיוק (בבסיס 10), ולכן אין בו שגיאות עיגול כמו `0.1 + 0.2` ב-`double`. זה הטיפוס המקובל לכסף ב-C#. ליטרל `decimal` נכתב עם הסיומת `m`, למשל `19.90m`."
-  optionExplanations:
-    "1": "`double` מהיר ומתאים לחישובים מדעיים, אבל שומר שברים עשרוניים בקירוב, וזה מצטבר לטעויות בסכומי כסף."
-    "2": "`int` לא שומר אגורות. אפשר לשמור סכום באגורות כ-`int`, אבל אז החלוקות והעיגולים הם באחריותכם."
-    "3": "`float` הוא בעל דיוק נמוך עוד יותר מ-`double`, בערך 7 ספרות משמעותיות."
-
 - id: cs.basics.value-types.006
   type: output
   difficulty: 2
@@ -91,90 +29,6 @@
     "2": "`c++` לא משנה את הטיפוס של `c`. הוא נשאר `char` ומודפס כתו."
     "3": "`'b'` הוא `char` ולא `string`, ולכן `+ 1` הוא חשבון ולא שרשור."
 
-- id: cs.basics.value-types.007
-  type: truefalse
-  difficulty: 1
-  prompt: "`int` הוא טיפוס ערך (Value Type), ו-`string` הוא טיפוס הפניה (Reference Type)."
-  answer: true
-  explanation: "משתנה מטיפוס ערך (`int`, `double`, `bool`, `char`, `decimal` וכל `struct`) מחזיק את הנתון עצמו, והצבה מעתיקה אותו. משתנה מטיפוס הפניה (`string`, מערכים וכל `class`) מחזיק הפניה לאובייקט, והצבה מעתיקה רק את ההפניה. `string` מתנהג כמו ערך כי אי אפשר לשנות אותו, אבל הוא טיפוס הפניה."
-
-- id: cs.basics.value-types.008
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    var s1 = new PointS { X = 1 };
-    var s2 = s1;
-    s2.X = 5;
-    var c1 = new PointC { X = 1 };
-    var c2 = c1;
-    c2.X = 5;
-    Console.WriteLine($"{s1.X} {c1.X}");
-
-    struct PointS { public int X; }
-    class PointC { public int X; }
-  options: ["1 5", "5 5", "1 1", "5 1"]
-  answer: 0
-  explanation: "`struct` הוא טיפוס ערך: `s2 = s1` יוצר עותק נפרד, ושינוי `s2` לא נוגע ב-`s1`. `class` הוא טיפוס הפניה: `c2 = c1` מעתיק רק את ההפניה, ושני המשתנים מצביעים על אותו אובייקט, ולכן שינוי דרך `c2` נראה גם דרך `c1`."
-  optionExplanations:
-    "1": "ב-`struct` ההצבה מעתיקה את כל הערך, ולכן `s1` לא מושפע."
-    "2": "ב-`class` שני המשתנים מפנים לאותו אובייקט, ולכן `c1.X` הוא 5."
-    "3": "זה בדיוק ההפך: העותק הוא של ה-`struct`, וההפניה המשותפת היא של ה-`class`."
-
-- id: cs.basics.value-types.009
-  type: single
-  difficulty: 2
-  prompt: "מה קורה בשורה `int population = 3_000_000_000;`?"
-  options:
-    - "שגיאת קומפילציה"
-    - "`population` מקבל ערך שלילי בגלל גלישה"
-    - "נזרקת `OverflowException` בזמן ריצה"
-    - "`population` מקבל את הערך המקסימלי של `int`"
-  answer: 0
-  explanation: "הערך המקסימלי של `int` הוא 2,147,483,647. הליטרל 3,000,000,000 גדול ממנו, ולכן הוא לא מטיפוס `int`, ואין המרה מרומזת ממנו ל-`int`. הקומפיילר מזהה את זה מראש. למספרים בסדר גודל כזה משתמשים ב-`long`. הקווים התחתונים בליטרל הם רק מפרידים לקריאות."
-  optionExplanations:
-    "1": "גלישה שקטה קורית בחישוב בזמן ריצה. כאן מדובר בליטרל קבוע, והקומפיילר יודע מראש שהוא לא נכנס."
-    "2": "הבעיה מתגלה כבר בקומפילציה, ולכן הקוד לא מגיע לריצה."
-    "3": "C# לא \"חותך\" ערכים אוטומטית לגבול הטווח."
-
-- id: cs.basics.value-types.010
-  type: bug
-  difficulty: 3
-  prompt: הקוד אמור להדפיס את הנפח הכולל בבתים, `3000000000`. איזו שורה צריך לתקן?
-  code: |
-    int files = 1_000_000;
-    int bytesPerFile = 3_000;
-    long totalBytes = files * bytesPerFile;
-    Console.WriteLine(totalBytes);
-  answer: 3
-  explanation: "הטיפוס של תוצאת הכפל נקבע לפי האופרנדים ולא לפי המשתנה שמקבל אותה. `files * bytesPerFile` הוא כפל של שני `int`, ולכן הוא מחושב ב-`int`, גולש ומחזיר מספר שלילי. רק אחר כך הערך השגוי מורחב ל-`long`. צריך להמיר אופרנד אחד ל-`long` לפני הכפל."
-  fixed: |
-    int files = 1_000_000;
-    int bytesPerFile = 3_000;
-    long totalBytes = (long)files * bytesPerFile;
-    Console.WriteLine(totalBytes);
-
-- id: cs.basics.value-types.011
-  type: bug
-  difficulty: 2
-  prompt: הקוד אמור לספור עד 300 ולהדפיס `300`. איזו שורה צריך לתקן?
-  code: |
-    byte count = 0;
-    for (int i = 0; i < 300; i++)
-    {
-        count++;
-    }
-    Console.WriteLine(count);
-  answer: 1
-  explanation: "`byte` מחזיק ערכים מ-0 עד 255 בלבד. אחרי 255 הוא גולש בשקט חזרה ל-0, ולכן בסוף מודפס `44` (300 פחות 256). צריך לבחור טיפוס שהטווח שלו מספיק, כמו `int`."
-  fixed: |
-    int count = 0;
-    for (int i = 0; i < 300; i++)
-    {
-        count++;
-    }
-    Console.WriteLine(count);
-
 - id: cs.basics.value-types.012
   type: output
   difficulty: 2
@@ -182,62 +36,186 @@
   prompt: מה יודפס?
   code: |
     bool isReady = 1;
-    if (isReady) Console.WriteLine("Ready");
-  options: ["Ready", "True", "לא יודפס כלום", "שגיאת קומפילציה"]
+    Console.WriteLine(isReady);
+  options: ["True", "1", "False", "שגיאת קומפילציה"]
   answer: 3
-  explanation: "ב-C# `bool` הוא טיפוס נפרד לגמרי ממספרים: אין המרה בין `int` ל-`bool`, לא מרומזת ולא מפורשת. לכן `bool isReady = 1;` היא שגיאת קומפילציה. בשפות כמו C ו-Python 1 נחשב \"אמת\", אבל לא ב-C#. כותבים `true` או `false`."
+  explanation: "ב-C# `bool` הוא טיפוס נפרד לגמרי ממספרים: אין המרה בין `int` ל-`bool`. לכן `bool isReady = 1;` היא שגיאת קומפילציה. בשפות כמו C ו-Python 1 נחשב \"אמת\", אבל לא ב-C#. כותבים `true` או `false`."
   optionExplanations:
-    "0": "זה היה קורה ב-C או ב-Python, שבהן 1 נחשב אמת. ב-C# `bool` מקבל רק `true` או `false`."
+    "0": "זה היה קורה בשפה שבה 1 נחשב אמת. ב-C# `bool` מקבל רק `true` או `false`."
+    "1": "משתנה `bool` לא יכול להחזיק מספר, ולכן התוכנית לא מתקמפלת."
+    "2": "אין המרה של 1 ל-`bool` בכלל, לא ל-`True` ולא ל-`False`."
 
-- id: cs.basics.value-types.013
+- id: cs.basics.value-types.017
   type: single
-  difficulty: 2
-  prompt: "בהינתן `int zero = 0;`, מה קורה בחישוב `5 / zero` ומה קורה בחישוב `5.0 / zero`?"
-  options:
-    - "`5 / zero` זורק `DivideByZeroException`, ו-`5.0 / zero` מחזיר אינסוף (`Infinity`)"
-    - "שני החישובים זורקים `DivideByZeroException`"
-    - "שני החישובים מחזירים אינסוף (`Infinity`)"
-    - "`5 / zero` מחזיר 0, ו-`5.0 / zero` מחזיר אינסוף (`Infinity`)"
+  difficulty: 1
+  prompt: "באיזה טיפוס הכי מתאים לשמור ממוצע ציונים, למשל `87.5`?"
+  options: ["`double`", "`int`", "`char`", "`bool`"]
   answer: 0
-  explanation: "חלוקת שלמים באפס אין לה ערך מתאים, ולכן נזרקת `DivideByZeroException`. ב-`5.0 / zero` אחד האופרנדים `double`, והחישוב נעשה לפי תקן הנקודה הצפה (IEEE 754), שבו לחלוקה באפס יש תוצאה מוגדרת: אינסוף חיובי. לכן ב-`double` לא נזרקת חריגה."
+  explanation: "`double` שומר מספרים עם חלק עשרוני. ממוצע של ציונים שלמים יכול לצאת לא שלם, ולכן `double` מתאים לו. `int` שומר רק מספרים שלמים."
   optionExplanations:
-    "1": "ב-`double` חלוקה באפס לא זורקת. התוצאה היא `double.PositiveInfinity`."
-    "2": "ל-`int` אין ערך שמייצג אינסוף, ולכן חלוקת שלמים באפס זורקת חריגה."
-    "3": "C# לא מחזיר 0 בשקט בחלוקה באפס. זה היה מסתיר באג."
+    "1": "`int` שומר רק מספרים שלמים, ולכן לא יכול להחזיק `87.5`."
+    "2": "`char` שומר תו אחד, כמו `'A'`, ולא מספר עם נקודה עשרונית."
+    "3": "`bool` שומר רק `true` או `false`."
 
-- id: cs.basics.value-types.014
+- id: cs.basics.value-types.018
+  type: single
+  difficulty: 1
+  prompt: באיזה טיפוס הכי מתאים לשמור את התשובה לשאלה "האם התלמיד עבר את המבחן"?
+  options: ["`bool`", "`int`", "`string`", "`char`"]
+  answer: 0
+  explanation: "`bool` הוא טיפוס בוליאני (Boolean) עם שני ערכים בלבד: `true` ו-`false`. הוא מתאים בדיוק לשאלות של כן ולא, וגם לתוצאה של השוואה כמו `grade >= 55`."
+  optionExplanations:
+    "1": "אפשר לשמור 0 ו-1, אבל `int` מאפשר גם 7 או 100-, וזה לא אומר כלום. `bool` מגביל לשני הערכים הנכונים."
+    "2": "מחרוזת כמו `\"yes\"` עלולה להיכתב גם `\"Yes\"` או `\"y\"`. `bool` מונע את הבלבול."
+    "3": "`char` כמו `'y'` הוא תו ולא ערך אמת. הוא לא מתאים לתוצאה של השוואה."
+
+- id: cs.basics.value-types.019
+  type: single
+  difficulty: 1
+  prompt: "איזה מהערכים הבאים הוא ערך חוקי לטיפוס `char`?"
+  options: ["`'x'`", "`\"x\"`", "`'xy'`", "`x`"]
+  answer: 0
+  explanation: "`char` מחזיק תו אחד בדיוק, והוא נכתב בין גרשים בודדים: `'x'`. מירכאות כפולות יוצרות `string`, גם כשיש בתוכן תו אחד."
+  optionExplanations:
+    "1": "`\"x\"` הוא מחרוזת (`string`) באורך 1, לא `char`."
+    "2": "`char` מחזיק תו אחד בלבד. `'xy'` הוא שגיאת קומפילציה."
+    "3": "בלי גרשים, `x` הוא שם של משתנה ולא תו."
+
+- id: cs.basics.value-types.020
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    double d = 7;
+    Console.WriteLine(d);
+  options: ["7", "7.0", "7.00", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "מותר להציב `int` ב-`double`, ו-`d` מקבל את הערך 7.0. אבל כשמדפיסים `double` שאין לו חלק עשרוני, C# מדפיס אותו בלי נקודה: `7`. הערך הוא עדיין `double`."
+  optionExplanations:
+    "1": "C# לא מוסיף `.0` בהדפסה של `double` שלם. מודפס `7`."
+    "2": "שתי ספרות אחרי הנקודה מופיעות רק כשמבקשים עיצוב מיוחד."
+    "3": "הצבה של `int` ב-`double` חוקית, כי אין בה אובדן מידע."
+
+- id: cs.basics.value-types.021
   type: output
   difficulty: 2
   tags: [compile-error]
   prompt: מה יודפס?
   code: |
-    decimal price = 19.90;
-    Console.WriteLine(price);
-  options: ["19.90", "19.9", "20", "שגיאת קומפילציה"]
+    int total = 10 / 4.0;
+    Console.WriteLine(total);
+  options: ["2", "2.5", "3", "שגיאת קומפילציה"]
   answer: 3
-  explanation: "ליטרל עשרוני בלי סיומת, כמו `19.90`, הוא `double`. אין המרה מרומזת מ-`double` ל-`decimal`, כי היא עלולה לאבד מידע, ולכן זו שגיאת קומפילציה. ליטרל `decimal` נכתב עם הסיומת `m`: `19.90m`."
+  explanation: "`4.0` הוא `double`, ולכן התוצאה של `10 / 4.0` היא `double` (2.5). אין המרה מרומזת מ-`double` ל-`int`, כי היא מאבדת את החלק העשרוני, ולכן זו שגיאת קומפילציה. צריך משתנה `double` או המרה מפורשת."
   optionExplanations:
-    "0": "עם `19.90m` זה אכן היה הפלט, כי `decimal` שומר את האפס שבסוף. בלי הסיומת `m` הקוד לא מתקמפל."
-    "1": "`19.9` הוא איך ש-`double` היה מודפס, אבל אי אפשר להציב `double` ל-`decimal` בלי המרה מפורשת."
+    "0": "C# לא חותך את 2.5 בשקט. בלי המרה מפורשת הקוד לא מתקמפל."
+    "1": "2.5 היא אכן תוצאת החלוקה, אבל אי אפשר לשמור אותה ב-`int`."
+    "2": "אין עיגול אוטומטי. הקוד לא מתקמפל בכלל."
 
-- id: cs.basics.value-types.015
-  type: truefalse
+- id: cs.basics.value-types.022
+  type: output
   difficulty: 3
-  prompt: "`long` ו-`double` תופסים שניהם 64 ביט, ולכן כל ערך של `long` אפשר לייצג בדיוק ב-`double`."
-  answer: false
-  explanation: "`double` מקדיש חלק מ-64 הביטים למעריך (Exponent), ולכן נשארים לו רק 53 ביט של דיוק. מספרים שלמים גדולים מ-2 בחזקת 53 (בערך 9 ביליארד) לא תמיד ניתנים לייצוג מדויק ב-`double` ומעוגלים. גודל זהה בזיכרון לא אומר דיוק זהה."
+  prompt: מה יודפס?
+  code: |
+    char c = '7';
+    int n = c - '0';
+    Console.WriteLine(n + 1);
+  options: ["8", "56", "71", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "הספרות `'0'` עד `'9'` מופיעות ברצף בטבלת התווים, ולכן `c - '0'` נותן את המרחק של התו מ-`'0'`, כלומר את הספרה עצמה: 7. זו דרך נפוצה להפוך תו של ספרה למספר. `7 + 1` הוא 8."
+  optionExplanations:
+    "1": "56 הוא `'7' + 1` בלי החיסור של `'0'`, כי הקוד של `'7'` הוא 55."
+    "2": "אין כאן שרשור. גם `c` וגם `'0'` הם תווים, וחיסור ביניהם נותן מספר."
+    "3": "חיסור בין שני `char` חוקי, והתוצאה היא `int`."
 
-- id: cs.basics.value-types.016
+- id: cs.basics.value-types.023
+  type: truefalse
+  difficulty: 1
+  prompt: "משתנה מטיפוס `char` מחזיק תו אחד בדיוק, ומשתנה מטיפוס `string` יכול להחזיק רצף של תווים, גם ריק."
+  answer: true
+  explanation: "`char` הוא תו בודד, כמו `'A'` או `'7'`. `string` הוא רצף של תווים באורך כלשהו, כולל המחרוזת הריקה `\"\"`."
+
+- id: cs.basics.value-types.024
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string s = "5";
+    int n = 5;
+    Console.WriteLine(s + n);
+    Console.WriteLine(n + n);
+  options: ["55\n10", "10\n10", "55\n55", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "כשאחד הצדדים של `+` הוא `string`, מתבצע שרשור (Concatenation): `\"5\" + 5` נותן את הטקסט `55`. כששני הצדדים מספרים, `+` הוא חיבור רגיל: 10. הטיפוס של הערכים קובע מה `+` עושה."
+  optionExplanations:
+    "1": "`s` הוא מחרוזת, ולכן `s + n` משרשר ולא מחבר."
+    "2": "`n + n` הוא חיבור של שני `int`, ולכן התוצאה 10."
+    "3": "חיבור של `string` ו-`int` חוקי: המספר מומר לטקסט ומשורשר."
+
+- id: cs.basics.value-types.025
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine('a' + 'b');
+  options: ["195", "ab", "a b", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`'a'` ו-`'b'` הם `char`, לא מחרוזות. בחיבור של שני תווים כל אחד מומר לקוד המספרי שלו (97 ו-98), והתוצאה היא המספר 195. כדי לקבל `ab` צריך שלפחות צד אחד יהיה `string`, למשל `\"a\" + 'b'`."
+  optionExplanations:
+    "1": "שרשור קורה רק כשאחד הצדדים הוא `string`. שני `char` מתחברים כמו מספרים."
+    "2": "אין רווח בשום מקום בביטוי, וגם אין שרשור."
+    "3": "חיבור של שני `char` חוקי, והתוצאה היא `int`."
+
+- id: cs.basics.value-types.026
+  type: single
+  difficulty: 2
+  prompt: איזו מההצהרות הבאות לא מתקמפלת?
+  options:
+    - "`bool ok = 5 == 5;`"
+    - "`bool ok = true;`"
+    - "`bool ok = \"true\";`"
+    - "`string ok = \"true\";`"
+  answer: 2
+  explanation: "`\"true\"` הוא מחרוזת, ולא ערך בוליאני. משתנה `bool` מקבל רק `true`, `false` או תוצאה של ביטוי השוואה כמו `5 == 5`. מחרוזת אפשר לשמור רק במשתנה `string`."
+  optionExplanations:
+    "0": "`5 == 5` הוא ביטוי השוואה שערכו `true`, ולכן ההצהרה חוקית."
+    "1": "`true` בלי מירכאות הוא הערך הבוליאני עצמו."
+    "3": "`ok` כאן הוא `string`, ולכן מותר לשמור בו את הטקסט `\"true\"`."
+
+- id: cs.basics.value-types.027
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס את הממוצע של הציונים 85 ו-90, כלומר `87.5`. איזו שורה צריך לתקן?"
+  code: |
+    int sum = 85 + 90;
+    double average = sum / 2;
+    Console.WriteLine(average);
+  answer: 2
+  explanation: "`sum / 2` היא חלוקה בין שני `int`, ולכן התוצאה שלמה (87) עוד לפני שהיא נשמרת ב-`double`. הטיפוס של המשתנה שמקבל את התוצאה לא משנה את סוג החלוקה. צריך שאחד הצדדים יהיה `double`: `sum / 2.0`."
+  fixed: |
+    int sum = 85 + 90;
+    double average = sum / 2.0;
+    Console.WriteLine(average);
+
+- id: cs.basics.value-types.028
   type: output
   difficulty: 1
   prompt: מה יודפס?
   code: |
-    Console.WriteLine(sizeof(int));
-    Console.WriteLine(sizeof(long));
-  options: ["4\n8", "32\n64", "4\n4", "2\n4"]
+    double x = 2.5;
+    double y = x * 2;
+    Console.WriteLine(y);
+  options: ["5", "5.0", "4", "שגיאת קומפילציה"]
   answer: 0
-  explanation: "`sizeof` מחזיר את הגודל בבתים (Bytes). `int` תופס 4 בתים (32 ביט) ו-`long` תופס 8 בתים (64 ביט). ב-C# הגדלים האלה קבועים בכל מחשב ובכל מערכת הפעלה, בניגוד ל-C."
+  explanation: "`2.5 * 2` הוא 5.0, ו-`y` הוא `double`. כשמדפיסים `double` בלי חלק עשרוני, C# מדפיס אותו בלי נקודה: `5`."
   optionExplanations:
-    "1": "32 ו-64 הם הגדלים בביטים. `sizeof` מחזיר בתים, וכל בית הוא 8 ביט."
-    "2": "`long` גדול פי שניים מ-`int`: 8 בתים לעומת 4."
-    "3": "2 בתים הוא הגודל של `short`, לא של `int`."
+    "1": "C# לא מוסיף `.0` בהדפסה של `double` שלם."
+    "2": "אין חיתוך של 2.5 ל-2 לפני הכפל. `x` הוא `double` ושומר את 2.5 במלואו."
+    "3": "כפל של `double` ב-`int` חוקי, והתוצאה היא `double`."
+
+- id: cs.basics.value-types.029
+  type: truefalse
+  difficulty: 2
+  prompt: "בקוד C# אפשר לכתוב את הערך הבוליאני גם `True` וגם `true`, כי זה אותו ערך."
+  answer: false
+  explanation: "C# מבחין בין אותיות גדולות לקטנות (Case Sensitive). מילת המפתח היא `true` באותיות קטנות, ו-`True` בקוד היא שגיאת קומפילציה. מה שמבלבל הוא ש-`Console.WriteLine` מדפיס `True` עם אות גדולה."

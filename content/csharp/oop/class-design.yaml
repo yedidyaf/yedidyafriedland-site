@@ -1,0 +1,456 @@
+- id: cs.oop.class-design.001
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "תלמיד שומר שם ומערך של ציונים, ויודע לחשב את הממוצע שלו. כיתה שומרת מערך של תלמידים, ויודעת למצוא את התלמיד המצטיין."
+  targets:
+    - id: Student
+      desc: תלמיד אחד, השם והציונים שלו
+    - id: Classroom
+      desc: כיתה, מערך של תלמידים
+  items:
+    - label: "public Student(string name)"
+      answer: Student
+      why: "בנאי נמצא תמיד במחלקה שהוא יוצר ממנה עצמים."
+    - label: "public void AddGrade(int grade)"
+      answer: Student
+      why: "הציונים שמורים אצל התלמיד, ולכן הוספת ציון היא פעולה שלו."
+    - label: "public double GetAverage()"
+      answer: Student
+      why: "הממוצע מחושב מהציונים של תלמיד אחד, והם נמצאים אצלו."
+    - label: "public void AddStudent(Student s)"
+      answer: Classroom
+      why: "הכיתה מחזיקה את מערך התלמידים, ולכן היא מוסיפה אליו."
+    - label: "public Student BestStudent()"
+      answer: Classroom
+      why: "כדי למצוא את המצטיין צריך לעבור על כל התלמידים, ורק הכיתה מחזיקה את כולם."
+  explanation: "פעולה שייכת למחלקה שמחזיקה את הנתונים שהיא צריכה. מה שנוגע לתלמיד אחד נמצא ב-`Student`, ומה שנוגע לכמה תלמידים יחד נמצא ב-`Classroom`, שמחזיקה אותם."
+
+- id: cs.oop.class-design.002
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "ספר שומר כותר, שם מחבר ומצב השאלה. ספרייה שומרת מערך של ספרים, מאפשרת למצוא ספר לפי כותר, וסופרת כמה ספרים פנויים להשאלה."
+  targets:
+    - id: Book
+      desc: ספר אחד
+    - id: Library
+      desc: ספרייה, מערך של ספרים
+  items:
+    - label: "public Book(string title, string author)"
+      answer: Book
+      why: "הבנאי יוצר ספר ושומר את הכותר והמחבר שלו."
+    - label: "public bool IsBorrowed()"
+      answer: Book
+      why: "מצב ההשאלה הוא נתון של ספר מסוים."
+    - label: "public void Borrow()"
+      answer: Book
+      why: "השאלה משנה את המצב של ספר אחד, ולכן הפעולה אצלו."
+    - label: "public void AddBook(Book b)"
+      answer: Library
+      why: "הספרייה מחזיקה את המערך ומוסיפה אליו."
+    - label: "public Book FindByTitle(string title)"
+      answer: Library
+      why: "חיפוש עובר על כל הספרים, ורק הספרייה מחזיקה את כולם."
+    - label: "public int CountAvailable()"
+      answer: Library
+      why: "הספירה עוברת על כל הספרים ושואלת כל אחד `IsBorrowed()`."
+  explanation: "הספר אחראי על הנתונים שלו: כותר, מחבר ומצב השאלה. הספרייה אחראית על האוסף: הוספה, חיפוש וספירה. שימו לב ש-`CountAvailable` משתמשת ב-`IsBorrowed` של כל ספר, במקום לגשת ישירות לשדות שלו."
+
+- id: cs.oop.class-design.003
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "לכל חשבון בנק יש מספר ויתרה, ואפשר להפקיד בו ולמשוך ממנו. ללקוח יש שם ומערך של חשבונות. הבנק מחזיק מערך של לקוחות, מוצא לקוח לפי שם וסופר לקוחות שהיתרה הכוללת שלהם עוברת סכום מסוים."
+  targets:
+    - id: Account
+      desc: חשבון אחד ויתרתו
+    - id: Customer
+      desc: לקוח והחשבונות שלו
+    - id: Bank
+      desc: הבנק וכל הלקוחות
+  items:
+    - label: "public void Deposit(double amount)"
+      answer: Account
+      why: "הפקדה משנה את היתרה של חשבון אחד."
+    - label: "public bool Withdraw(double amount)"
+      answer: Account
+      why: "רק החשבון יודע את היתרה שלו, ולכן הוא מחליט אם יש מספיק כסף ומחזיר `true` או `false`."
+    - label: "public void OpenAccount(Account a)"
+      answer: Customer
+      why: "הלקוח מחזיק את מערך החשבונות שלו."
+    - label: "public double TotalBalance()"
+      answer: Customer
+      why: "סכום היתרות של לקוח מחושב מהחשבונות שלו, והם אצלו."
+    - label: "public Customer FindCustomer(string name)"
+      answer: Bank
+      why: "רק הבנק מחזיק את כל הלקוחות."
+    - label: "public int CountRichCustomers(double limit)"
+      answer: Bank
+      why: "הבנק עובר על הלקוחות ושואל כל אחד `TotalBalance()`."
+  explanation: "שלוש רמות: חשבון, לקוח שמחזיק חשבונות, ובנק שמחזיק לקוחות. כל רמה מחשבת את מה שנוגע לה ונעזרת ברמה שמתחתיה: הבנק לא מחבר יתרות של חשבונות בעצמו, אלא שואל כל לקוח."
+
+- id: cs.oop.class-design.004
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "רכב בחניון נשמר עם מספר רישוי ושעת כניסה. החניון מחזיק מערך של מקומות חניה ומחיר לשעה. הוא מכניס רכב אם יש מקום, מוציא רכב לפי מספר רישוי ומחשב כמה לשלם, ויודע כמה מקומות פנויים."
+  targets:
+    - id: Car
+      desc: רכב אחד בחניון
+    - id: ParkingLot
+      desc: החניון, מקומות החניה והמחיר
+  items:
+    - label: "public Car(string plate, int entryHour)"
+      answer: Car
+      why: "הבנאי יוצר רכב עם מספר הרישוי ושעת הכניסה שלו."
+    - label: "public string GetPlate()"
+      answer: Car
+      why: "מספר הרישוי הוא נתון של הרכב."
+    - label: "public int GetEntryHour()"
+      answer: Car
+      why: "שעת הכניסה שמורה ברכב."
+    - label: "public bool Park(Car c)"
+      answer: ParkingLot
+      why: "רק החניון יודע אם יש מקום פנוי במערך המקומות."
+    - label: "public double Leave(string plate, int exitHour)"
+      answer: ParkingLot
+      why: "החניון מוצא את הרכב, משחרר את המקום ומחשב תשלום לפי המחיר לשעה, שנמצא אצלו."
+    - label: "public int FreeSpots()"
+      answer: ParkingLot
+      why: "ספירת המקומות הפנויים עוברת על המערך של החניון."
+  explanation: "הרכב מחזיק רק את הנתונים שלו. החישוב של `Leave` צריך גם את שעת הכניסה (מהרכב) וגם את המחיר לשעה (מהחניון), ולכן הוא בחניון, שמחזיק את הרכב ויכול לשאול אותו `GetEntryHour()`."
+
+- id: cs.oop.class-design.005
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "מוצר בחנות שומר שם, מחיר וכמות במלאי. פריט בעגלה שומר מוצר וכמות, ויודע לחשב את המחיר שלו. העגלה מחזיקה מערך של פריטים ומחשבת את הסכום לתשלום."
+  targets:
+    - id: Product
+      desc: מוצר בחנות
+    - id: CartItem
+      desc: מוצר וכמות שנבחרה
+    - id: Cart
+      desc: עגלת הקניות
+  items:
+    - label: "public double GetPrice()"
+      answer: Product
+      why: "המחיר של יחידה אחת הוא נתון של המוצר."
+    - label: "public bool InStock(int amount)"
+      answer: Product
+      why: "הכמות במלאי שמורה במוצר, ולכן הוא בודק אם יש מספיק."
+    - label: "public CartItem(Product p, int quantity)"
+      answer: CartItem
+      why: "בנאי של פריט: מחבר מוצר לכמות שנבחרה."
+    - label: "public double GetSubtotal()"
+      answer: CartItem
+      why: "מחיר הפריט הוא מחיר המוצר כפול הכמות, ושניהם נמצאים בפריט."
+    - label: "public void Add(CartItem item)"
+      answer: Cart
+      why: "העגלה מחזיקה את מערך הפריטים."
+    - label: "public double GetTotal()"
+      answer: Cart
+      why: "העגלה מחברת את `GetSubtotal()` של כל הפריטים."
+  explanation: "המחלקה `CartItem` מחברת בין מוצר לכמות, וכך כל מחלקה נשארת פשוטה: המוצר לא יודע כמה ממנו קנו, והעגלה לא מחשבת בעצמה מחיר של כל שורה."
+
+- id: cs.oop.class-design.006
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "במרפאה יש רופאים ומטופלים. תור מחבר מטופל לרופא ביום ובשעה מסוימים. המרפאה מחזיקה מערך של תורים, קובעת תור רק אם הרופא פנוי בזמן הזה, וסופרת כמה תורים יש לכל רופא."
+  targets:
+    - id: Patient
+      desc: מטופל
+    - id: Doctor
+      desc: רופא
+    - id: Appointment
+      desc: תור אחד
+    - id: Clinic
+      desc: המרפאה וכל התורים
+  items:
+    - label: "public int GetAge()"
+      answer: Patient
+      why: "הגיל הוא נתון של המטופל."
+    - label: "public string GetSpecialty()"
+      answer: Doctor
+      why: "התמחות היא נתון של הרופא."
+    - label: "public Appointment(Patient p, Doctor d, int day, int hour)"
+      answer: Appointment
+      why: "בנאי של תור: מחבר מטופל, רופא, יום ושעה."
+    - label: "public bool IsAt(int day, int hour)"
+      answer: Appointment
+      why: "היום והשעה שמורים בתור, ולכן הוא בודק אם הוא בזמן הזה."
+    - label: "public bool IsDoctorFree(Doctor d, int day, int hour)"
+      answer: Clinic
+      why: "כדי לדעת אם רופא פנוי צריך לעבור על כל התורים, והם נמצאים במרפאה. הרופא לא מחזיק את התורים."
+    - label: "public bool Book(Patient p, Doctor d, int day, int hour)"
+      answer: Clinic
+      why: "המרפאה בודקת עם `IsDoctorFree`, יוצרת תור ומוסיפה אותו למערך שלה."
+    - label: "public int CountAppointments(Doctor d)"
+      answer: Clinic
+      why: "הספירה עוברת על מערך התורים של המרפאה."
+  explanation: "המפתח הוא לשאול איפה הנתונים: התורים שמורים במרפאה, ולכן כל פעולה שעוברת על תורים נמצאת בה, גם אם השם שלה מזכיר רופא. התור עצמו יודע רק על עצמו."
+
+- id: cs.oop.class-design.007
+  type: architecture
+  difficulty: 1
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "שחקן בקבוצת כדורגל שומר שם ומספר שערים. קבוצה שומרת מערך של שחקנים (עד 11), ויודעת למצוא את מלך השערים ולחשב כמה שערים הבקיעה הקבוצה כולה."
+  targets:
+    - id: Player
+      desc: שחקן אחד
+    - id: Team
+      desc: הקבוצה, מערך של שחקנים
+  items:
+    - label: "public void ScoreGoal()"
+      answer: Player
+      why: "שער מוסיף 1 למונה השערים של השחקן שהבקיע."
+    - label: "public int GetGoals()"
+      answer: Player
+      why: "מספר השערים שמור בשחקן."
+    - label: "public bool AddPlayer(Player p)"
+      answer: Team
+      why: "הקבוצה מחזיקה את המערך, ומחזירה `false` אם כבר יש בה 11 שחקנים."
+    - label: "public Player TopScorer()"
+      answer: Team
+      why: "צריך להשוות בין כל השחקנים, והקבוצה מחזיקה את כולם."
+    - label: "public int TotalGoals()"
+      answer: Team
+      why: "הקבוצה מחברת את `GetGoals()` של כל השחקנים."
+  explanation: "מה שנוגע לשחקן אחד נמצא ב-`Player`. מה שדורש לעבור על כמה שחקנים נמצא ב-`Team`, שמחזיקה אותם במערך."
+
+- id: cs.oop.class-design.008
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "לכל עובד יש שם ומשכורת בסיס. מנהל הוא עובד שמקבל גם בונוס, ויש לו צוות של עובדים. החברה מחזיקה מערך של כל העובדים, מקבלת עובדים חדשים ומחשבת את סך המשכורות."
+  targets:
+    - id: Employee
+      desc: עובד, מחלקת הבסיס
+    - id: Manager
+      desc: "מנהל, `Manager : Employee`"
+    - id: Company
+      desc: החברה וכל העובדים
+  items:
+    - label: "public Employee(string name, double baseSalary)"
+      answer: Employee
+      why: "הבנאי של מחלקת הבסיס שומר את הנתונים שמשותפים לכל העובדים."
+    - label: "public virtual double GetSalary()"
+      answer: Employee
+      why: "`virtual` מוגדר במחלקת הבסיס, כדי שהיורשות יוכלו לדרוס."
+    - label: "public override double GetSalary()"
+      answer: Manager
+      why: "המנהל דורס את חישוב המשכורת ומוסיף את הבונוס."
+    - label: "public void AddToTeam(Employee e)"
+      answer: Manager
+      why: "רק למנהל יש צוות, ולכן הפעולה רק אצלו."
+    - label: "public void Hire(Employee e)"
+      answer: Company
+      why: "החברה מחזיקה את מערך כל העובדים."
+    - label: "public double TotalPayroll()"
+      answer: Company
+      why: "החברה קוראת ל-`GetSalary()` של כל עובד. בזכות הפולימורפיזם, למנהלים תיקרא הגרסה עם הבונוס."
+  explanation: "מה שמשותף לכל העובדים נמצא במחלקת הבסיס, ומה שמיוחד למנהל נמצא ב-`Manager`. `TotalPayroll` לא צריכה לבדוק מי מנהל: הקריאה `GetSalary()` מפעילה בכל עובד את הגרסה המתאימה."
+
+- id: cs.oop.class-design.009
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "ציור מחזיק מערך של צורות ומחשב את סכום השטחים שלהן. כל צורה יודעת לחשב את השטח שלה. יש עיגולים (לפי רדיוס) ומלבנים (לפי רוחב וגובה), ואפשר לבדוק אם מלבן הוא ריבוע."
+  targets:
+    - id: Shape
+      desc: "מחלקה מופשטת, `abstract class Shape`"
+    - id: Circle
+      desc: "עיגול, `Circle : Shape`"
+    - id: Rectangle
+      desc: "מלבן, `Rectangle : Shape`"
+    - id: Drawing
+      desc: ציור, מערך של צורות
+  items:
+    - label: "public abstract double Area()"
+      answer: Shape
+      why: "פעולה מופשטת מוגדרת במחלקה המופשטת, וכל צורה חייבת לממש אותה."
+    - label: "public Circle(double radius)"
+      answer: Circle
+      why: "בנאי של עיגול, שומר את הרדיוס."
+    - label: "public double GetRadius()"
+      answer: Circle
+      why: "רק לעיגול יש רדיוס."
+    - label: "public Rectangle(double width, double height)"
+      answer: Rectangle
+      why: "בנאי של מלבן, שומר רוחב וגובה."
+    - label: "public bool IsSquare()"
+      answer: Rectangle
+      why: "השאלה אם הרוחב שווה לגובה רלוונטית רק למלבן."
+    - label: "public void Add(Shape s)"
+      answer: Drawing
+      why: "הציור מחזיק את מערך הצורות. הפרמטר מטיפוס `Shape` מקבל כל צורה."
+    - label: "public double TotalArea()"
+      answer: Drawing
+      why: "הציור קורא ל-`Area()` של כל צורה, בלי לדעת איזו צורה היא."
+  explanation: "הפעולה המשותפת `Area` מוגדרת כמופשטת בבסיס, ופעולות שמתאימות רק לסוג אחד נמצאות רק בו. `Drawing` עובדת מול `Shape` ולא מול כל צורה בנפרד, ולכן צורה חדשה לא מחייבת לשנות אותה."
+
+- id: cs.oop.class-design.010
+  type: architecture
+  difficulty: 2
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "בספרייה יש חברים וספרים. השאלה שומרת איזה חבר לקח איזה ספר ובאיזה יום, ויודעת אם היא באיחור (יותר מ-14 ימים). הספרייה מחזיקה מערך של השאלות, וחבר יכול לשאול ספר רק אם יש לו פחות משלוש השאלות."
+  targets:
+    - id: Member
+      desc: חבר ספרייה
+    - id: Book
+      desc: ספר
+    - id: Loan
+      desc: השאלה אחת
+    - id: Library
+      desc: הספרייה וכל ההשאלות
+  items:
+    - label: "public string GetName()"
+      answer: Member
+      why: "השם הוא נתון של החבר."
+    - label: "public string GetTitle()"
+      answer: Book
+      why: "הכותר הוא נתון של הספר."
+    - label: "public Loan(Member m, Book b, int day)"
+      answer: Loan
+      why: "בנאי של השאלה: מחבר חבר, ספר ויום."
+    - label: "public bool IsLate(int today)"
+      answer: Loan
+      why: "יום ההשאלה שמור בהשאלה, ולכן היא יודעת לחשב אם עברו יותר מ-14 ימים."
+    - label: "public int CountLoans(Member m)"
+      answer: Library
+      why: "ההשאלות שמורות בספרייה, ולכן הספירה עוברת על המערך שלה."
+    - label: "public bool CanBorrow(Member m)"
+      answer: Library
+      why: "ההחלטה תלויה במספר ההשאלות של החבר, והספרייה מחשבת אותו עם `CountLoans`."
+  explanation: "החבר לא מחזיק את ההשאלות שלו, ולכן כל שאלה על השאלות נשאלת את הספרייה. `IsLate` נמצאת בהשאלה, כי היא צריכה רק את הנתונים של השאלה אחת."
+
+- id: cs.oop.class-design.011
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "מערכת שעות של בית ספר: לכל מורה יש שם ומספר שעות מקסימלי בשבוע. שיעור שומר מורה, מקצוע, יום ושעה. מערכת השעות מחזיקה מערך של שיעורים, מוסיפה שיעור רק אם אין התנגשות, וסופרת כמה שעות יש לכל מורה."
+  targets:
+    - id: Teacher
+      desc: מורה
+    - id: Lesson
+      desc: שיעור אחד
+    - id: Timetable
+      desc: מערכת השעות
+  items:
+    - label: "public string GetName()"
+      answer: Teacher
+      why: "השם הוא נתון של המורה."
+    - label: "public int GetMaxHours()"
+      answer: Teacher
+      why: "המקסימום השבועי הוא נתון של המורה."
+    - label: "public Lesson(Teacher t, string subject, int day, int hour)"
+      answer: Lesson
+      why: "בנאי של שיעור."
+    - label: "public bool Collides(Lesson other)"
+      answer: Lesson
+      why: "שיעור יכול להשוות את עצמו לשיעור אחר: אותו מורה, אותו יום ואותה שעה. אין צורך בשאר השיעורים."
+    - label: "public bool Add(Lesson lesson)"
+      answer: Timetable
+      why: "מערכת השעות עוברת על השיעורים שלה ובודקת `Collides` מול כל אחד לפני ההוספה."
+    - label: "public int HoursOf(Teacher t)"
+      answer: Timetable
+      why: "כדי לספור שעות של מורה צריך את כל השיעורים, והם במערכת השעות."
+  explanation: "`Collides` משווה בין שני שיעורים בלבד, ולכן היא בשיעור. `Add` צריכה את כל השיעורים, ולכן היא במערכת השעות ומשתמשת ב-`Collides`. כך כל פעולה נמצאת במקום שבו יש לה את הנתונים."
+
+- id: cs.oop.class-design.012
+  type: architecture
+  difficulty: 3
+  prompt: שבצו כל פעולה במחלקה שאליה היא שייכת.
+  requirement: "משחק איקס-עיגול: הלוח הוא מערך דו־ממדי של 3 על 3 תווים. כל שחקן שומר שם וסימן (X או O). המשחק מחזיק את הלוח ואת שני השחקנים, ויודע של מי התור."
+  targets:
+    - id: Board
+      desc: הלוח
+    - id: Player
+      desc: שחקן
+    - id: Game
+      desc: המשחק, הלוח והשחקנים
+  items:
+    - label: "public bool Place(int row, int col, char symbol)"
+      answer: Board
+      why: "הלוח מחזיק את המערך, ולכן הוא שם סימן במשבצת ומחזיר `false` אם היא תפוסה."
+    - label: "public bool IsFull()"
+      answer: Board
+      why: "הבדיקה עוברת על כל המשבצות של הלוח."
+    - label: "public bool HasWinner(char symbol)"
+      answer: Board
+      why: "הבדיקה של שורות, עמודות ואלכסונים צריכה רק את המערך של הלוח."
+    - label: "public char GetSymbol()"
+      answer: Player
+      why: "הסימן הוא נתון של השחקן."
+    - label: "public Player CurrentPlayer()"
+      answer: Game
+      why: "רק המשחק יודע של מי התור."
+    - label: "public void NextTurn()"
+      answer: Game
+      why: "המשחק מחליף את התור בין שני השחקנים שהוא מחזיק."
+  explanation: "הלוח אחראי על המשבצות ולא יודע מי משחק. המשחק מחזיק את הלוח ואת השחקנים ומנהל את התורות. הפרדה כזו מאפשרת, למשל, לשנות את גודל הלוח בלי לגעת בניהול התורות."
+
+- id: cs.oop.class-design.013
+  type: single
+  difficulty: 1
+  prompt: "במחלקה `Student` יש מערך ציונים פרטי. באיזו מחלקה הכי נכון לכתוב את הפעולה `GetAverage()`, שמחשבת את ממוצע הציונים של תלמיד?"
+  options:
+    - "`Student`, כי הציונים שמורים בה"
+    - "`Classroom`, כי היא מחזיקה את התלמידים"
+    - "`Program`, כי שם נמצאת `Main`"
+    - "בכל מחלקה שצריכה את הממוצע, כעותק נפרד"
+  answer: 0
+  explanation: "פעולה שייכת למחלקה שמחזיקה את הנתונים שהיא צריכה. הציונים פרטיים ב-`Student`, ולכן רק היא יכולה לחשב מהם ממוצע בלי לחשוף את המערך החוצה."
+  optionExplanations:
+    "1": "הכיתה יכולה לשאול כל תלמיד `GetAverage()`, אבל הציונים לא שלה."
+    "2": "`Main` מפעילה את התוכנית, ולא מחזיקה את הנתונים של התלמידים."
+    "3": "עותקים של אותה פעולה הם שכפול קוד: כל תיקון יצטרך להיעשות בכמה מקומות."
+
+- id: cs.oop.class-design.014
+  type: single
+  difficulty: 2
+  prompt: "ספרייה מחזיקה מערך של ספרים, ולכל ספר יש שם מחבר. באיזו מחלקה הכי נכון לכתוב את הפעולה `CountByAuthor(string author)`, שסופרת כמה ספרים יש מאותו מחבר?"
+  options:
+    - "`Library`, כי רק היא מחזיקה את כל הספרים"
+    - "`Book`, כי שם המחבר שמור בספר"
+    - "`Author`, מחלקה חדשה שתחזיק עותק של כל הספרים"
+    - "`Program`, כי הספירה היא חלק מהפלט"
+  answer: 0
+  explanation: "הספירה צריכה לעבור על כל הספרים, ולכן היא בספרייה. כל ספר תורם את החלק שלו: הספרייה שואלת כל ספר `GetAuthor()` ומשווה."
+  optionExplanations:
+    "1": "ספר אחד יודע רק את המחבר שלו, ולא כמה ספרים אחרים יש מאותו מחבר."
+    "2": "עותק נוסף של כל הספרים יוצר שני מקומות שצריך לעדכן ביחד."
+    "3": "`Main` משתמשת בתוצאה, אבל החישוב שייך למחלקה שמחזיקה את הנתונים."
+
+- id: cs.oop.class-design.015
+  type: truefalse
+  difficulty: 2
+  prompt: "כשמתכננים מחלקות, כדאי לשים פעולה במחלקה שמחזיקה את רוב הנתונים שהפעולה צריכה."
+  answer: true
+  explanation: "זה עיקרון מומחה המידע (Information Expert). פעולה שנמצאת ליד הנתונים שלה לא צריכה לבקש אותם ממחלקות אחרות, והשדות יכולים להישאר `private`. כשפעולה צריכה נתונים מכמה עצמים, היא נמצאת במחלקה שמחזיקה את כולם, ונעזרת בפעולות שלהם."
+
+- id: cs.oop.class-design.016
+  type: hierarchy
+  difficulty: 2
+  prompt: "בבית חולים יש חדרים ועובדים. רופאים ואחיות הם עובדים, ומטופל הוא אדם. לכל זוג, בחרו את היחס הנכון."
+  targets:
+    - id: is-a
+      desc: "ירושה - Inheritance"
+    - id: has-a
+      desc: "הרכבה - Composition"
+  items:
+    - label: "Hospital ו-Room"
+      answer: has-a
+      why: "בבית חולים יש חדרים. חדר הוא לא סוג של בית חולים."
+    - label: "Doctor ו-Employee"
+      answer: is-a
+    - label: "Nurse ו-Employee"
+      answer: is-a
+    - label: "Hospital ו-Employee"
+      answer: has-a
+      why: "בית החולים מחזיק מערך של עובדים."
+    - label: "Patient ו-Person"
+      answer: is-a
+  explanation: "בתכנון מחלקות מתוך דרישה, \"X הוא Y\" בטקסט מרמז על ירושה, ו-\"ל-X יש Y\" או \"ב-X יש Y\" מרמז על הרכבה. כך מזהים את היחסים עוד לפני שכותבים קוד."

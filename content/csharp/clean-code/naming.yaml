@@ -5,7 +5,7 @@
   code: |
     class Rental
     {
-        public decimal Calc(int d, decimal p)
+        public double Calc(int d, double p)
         {
             return d * p;
         }
@@ -16,7 +16,7 @@
     - "מתודה ארוכה - Long Method"
     - "רשימת פרמטרים ארוכה - Long Parameter List"
   answer: 0
-  explanation: "השמות `Calc`, `d` ו-`p` לא מסבירים מה מחושב ומה המשמעות של כל פרמטר. שם שמסביר כוונה (Intention-Revealing Name), למשל `CalculateTotalPrice(int days, decimal pricePerDay)`, חוסך מהקורא לנחש ולקרוא את גוף המתודה."
+  explanation: "השמות `Calc`, `d` ו-`p` לא מסבירים מה מחושב ומה המשמעות של כל פרמטר. שם שמסביר כוונה (Intention-Revealing Name), למשל `CalculateTotalPrice(int days, double pricePerDay)`, חוסך מהקורא לנחש ולקרוא את גוף המתודה."
   optionExplanations:
     "1": "אין בקוד מספר מילולי בלי שם; יש רק הכפלה של שני פרמטרים."
     "2": "המתודה היא שורה אחת."
@@ -48,48 +48,32 @@
     "0": "`flag` הוא שם כללי שלא אומר מה בדיוק נכון כשהערך הוא `true`."
     "2": "`ageCheckResult` מתאר את התהליך (בדיקת גיל) ולא את המשמעות; `if (ageCheckResult)` לא מסביר מה התגלה בבדיקה."
 
-- id: cs.clean-code.naming.003
-  type: single
-  difficulty: 1
-  prompt: "איזה שם מתאים לממשק (Interface) של רכיב ששולח התראות, לפי מוסכמות השמות של מיקרוסופט?"
-  options:
-    - "NotificationSenderInterface"
-    - "iNotificationSender"
-    - "INotificationSender"
-    - "NotificationSender"
-  answer: 2
-  explanation: "ב-.NET שם של ממשק מתחיל ב-`I` גדולה ואחריה שם ב-PascalCase, כמו `IDisposable` ו-`IComparable`. כך רואים מיד שמדובר בחוזה ולא במחלקה, ומחלקה שמממשת אותו יכולה לקבל שם מדויק כמו `EmailNotificationSender`."
-  optionExplanations:
-    "0": "הסיומת `Interface` ארוכה ולא מקובלת; המוסכמה היא הקידומת `I`."
-    "1": "שמות טיפוסים ב-C# נכתבים ב-PascalCase, ולכן גם הקידומת היא `I` גדולה."
-    "3": "בלי הקידומת `I` השם נראה כמו שם של מחלקה, ולא של ממשק."
-
 - id: cs.clean-code.naming.004
   type: single
   difficulty: 2
   prompt: לפי מוסכמות השמות של מיקרוסופט, מה נכון לגבי השמות בקוד?
   code: |
-    class OrderService
+    class OrderCounter
     {
-        private readonly List<string> _items = new();
+        private int _total;
 
-        public int CountItems(string orderId)
+        public void AddItems(int itemCount)
         {
-            int itemCount = _items.Count(item => item.StartsWith(orderId));
-            return itemCount;
+            int newTotal = _total + itemCount;
+            _total = newTotal;
         }
     }
   options:
-    - "הפרמטר צריך להיות OrderId, כי הוא חלק מהחתימה הציבורית של המתודה"
-    - "המשתנה המקומי צריך להיות ItemCount, כי כל שם ב-C# נכתב ב-PascalCase"
+    - "הפרמטר צריך להיות ItemCount, כי הוא חלק מהחתימה הציבורית של המתודה"
+    - "המשתנה המקומי צריך להיות NewTotal, כי כל שם ב-C# נכתב ב-PascalCase"
     - "כל השמות תקינים: PascalCase למחלקה ולמתודה, camelCase לפרמטר ולמשתנה המקומי, ו-camelCase עם קו תחתון לשדה הפרטי"
-    - "השדה צריך להיות Items, כי שדות נכתבים בדיוק כמו מאפיינים"
+    - "השדה צריך להיות Total, כי כל שם שמוגדר ישירות בתוך מחלקה נכתב ב-PascalCase"
   answer: 2
-  explanation: "ב-C# טיפוסים ומתודות נכתבים ב-PascalCase, פרמטרים ומשתנים מקומיים ב-camelCase, ושדות פרטיים ב-camelCase עם קידומת `_`. הקידומת מבדילה מיד בין שדה של האובייקט לבין משתנה מקומי."
+  explanation: "ב-C# מחלקות ומתודות נכתבות ב-PascalCase, פרמטרים ומשתנים מקומיים ב-camelCase, ושדות פרטיים ב-camelCase עם קידומת `_`. הקידומת מבדילה מיד בין שדה של העצם לבין משתנה מקומי."
   optionExplanations:
     "0": "פרמטרים נכתבים תמיד ב-camelCase, גם במתודה ציבורית."
-    "1": "PascalCase שמור לטיפוסים ולחברים כמו מתודות ומאפיינים; משתנה מקומי נכתב ב-camelCase."
-    "3": "PascalCase מתאים למאפיין ציבורי. שדה פרטי נכתב `_items`, וכך לא מתבלבלים בינו לבין מאפיין."
+    "1": "PascalCase שמור למחלקות, למתודות ולקבועים; משתנה מקומי נכתב ב-camelCase."
+    "3": "שדה פרטי נכתב ב-camelCase, ולפי מוסכמות מיקרוסופט עם קו תחתון: `_total`."
 
 - id: cs.clean-code.naming.005
   type: cleaner
@@ -154,15 +138,15 @@
   difficulty: 1
   prompt: הקוד אמור להדפיס את המחיר לתשלום אחרי ההנחה. איזו שורה צריך לתקן?
   code: |
-    decimal priceBeforeDiscount = 200m;
-    decimal discountRate = 0.1m;
-    decimal priceAfterDiscount = priceBeforeDiscount * (1 - discountRate);
+    double priceBeforeDiscount = 200;
+    double discountRate = 0.1;
+    double priceAfterDiscount = priceBeforeDiscount * (1 - discountRate);
     Console.WriteLine($"To pay: {priceBeforeDiscount}");
   answer: 4
   fixed: |
-    decimal priceBeforeDiscount = 200m;
-    decimal discountRate = 0.1m;
-    decimal priceAfterDiscount = priceBeforeDiscount * (1 - discountRate);
+    double priceBeforeDiscount = 200;
+    double discountRate = 0.1;
+    double priceAfterDiscount = priceBeforeDiscount * (1 - discountRate);
     Console.WriteLine($"To pay: {priceAfterDiscount}");
   explanation: "השורה מדפיסה את המחיר לפני ההנחה. בזכות שמות מדויקים, הבאג נקרא כמו משפט שגוי: «לתשלום: המחיר לפני ההנחה». אם המשתנים היו נקראים `p1` ו-`p2`, היה קשה הרבה יותר לראות אותו."
 
@@ -172,22 +156,22 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      List<string> listOfStrings = new() { "Dana", "Avi" };
-      foreach (string str in listOfStrings)
-          Console.WriteLine(str);
+      string[] stringArray = { "Dana", "Avi" };
+      for (int i = 0; i < stringArray.Length; i++)
+          Console.WriteLine(stringArray[i]);
     - |
-      List<string> l = new() { "Dana", "Avi" };
-      foreach (string s in l)
-          Console.WriteLine(s);
+      string[] a = { "Dana", "Avi" };
+      for (int i = 0; i < a.Length; i++)
+          Console.WriteLine(a[i]);
     - |
-      List<string> studentNames = new() { "Dana", "Avi" };
-      foreach (string name in studentNames)
-          Console.WriteLine(name);
+      string[] studentNames = { "Dana", "Avi" };
+      for (int i = 0; i < studentNames.Length; i++)
+          Console.WriteLine(studentNames[i]);
   answer: 2
-  explanation: "שם טוב מתאר את המשמעות של הנתונים, לא את הטיפוס שלהם. `studentNames` אומר מה יש ברשימה, והשם ביחיד `name` לכל איבר הופך את הלולאה לקריאה כמו משפט."
+  explanation: "שם טוב מתאר את המשמעות של הנתונים, לא את הטיפוס שלהם. `studentNames` אומר מה יש במערך, ושם ברבים מתאים למערך שמחזיק הרבה ערכים."
   optionExplanations:
-    "0": "`listOfStrings` ו-`str` חוזרים על הטיפוס, שהקומפיילר כבר יודע, ולא אומרים של מי השמות."
-    "1": "`l` ו-`s` לא אומרים כלום, ו-`l` גם נראית כמו הספרה 1."
+    "0": "`stringArray` חוזר על הטיפוס, שהקומפיילר כבר יודע, ולא אומר של מי השמות."
+    "1": "`a` לא אומר כלום על התוכן."
 
 - id: cs.clean-code.naming.010
   type: single
@@ -196,11 +180,11 @@
   code: |
     class ReportPrinter
     {
-        public void PrintNumbered(List<string> lines)
+        public void PrintNumbered(string[] lines)
         {
-            for (int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
-                string tmp = lines[i].Trim();
+                string tmp = lines[i].ToUpper();
                 Console.WriteLine($"{i + 1}. {tmp}");
             }
         }
@@ -211,10 +195,10 @@
     - "lines"
     - "PrintNumbered"
   answer: 1
-  explanation: "אורך השם צריך להתאים לטווח ההכרה (Scope) ולחשיבות שלו. `tmp` לא אומר מה המשתנה מחזיק; `trimmedLine` היה מסביר. לעומת זאת, `i` כאינדקס של לולאת `for` קצרה הוא מוסכמה שכולם מכירים."
+  explanation: "אורך השם צריך להתאים לטווח ההכרה (Scope) ולחשיבות שלו. `tmp` לא אומר מה המשתנה מחזיק; `upperLine` היה מסביר. לעומת זאת, `i` כאינדקס של לולאת `for` קצרה הוא מוסכמה שכולם מכירים."
   optionExplanations:
     "0": "`i` כאינדקס בלולאת `for` קצרה הוא מוסכמה מוכרת; שם ארוך יותר לא היה מוסיף מידע."
-    "2": "`lines` הוא שם ברבים שמתאר בדיוק את תוכן הרשימה."
+    "2": "`lines` הוא שם ברבים שמתאר בדיוק את תוכן המערך."
     "3": "`PrintNumbered` אומר בדיוק מה המתודה עושה: מדפיסה שורות ממוספרות."
 
 - id: cs.clean-code.naming.011
@@ -223,25 +207,19 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      class HttpSettings
-      {
-          public int Timeout { get; set; } = 30;
-      }
+      int timeLimit = 30;
+      Console.WriteLine($"You have {timeLimit} to answer");
     - |
-      class HttpSettings
-      {
-          public int T { get; set; } = 30; // seconds
-      }
+      int t = 30; // seconds
+      Console.WriteLine($"You have {t} to answer");
     - |
-      class HttpSettings
-      {
-          public int TimeoutInSeconds { get; set; } = 30;
-      }
+      int timeLimitInSeconds = 30;
+      Console.WriteLine($"You have {timeLimitInSeconds} to answer");
   answer: 2
-  explanation: "כשמספר מייצג כמות עם יחידות, היחידה היא חלק מהמשמעות ושייכת לשם: `TimeoutInSeconds`. מי שכותב `settings.Timeout = 5000` עלול לחשוב שמדובר במילישניות. אם אפשר לשנות טיפוס, `TimeSpan` מבטא את היחידה בטיפוס עצמו."
+  explanation: "כשמספר מייצג כמות עם יחידות, היחידה היא חלק מהמשמעות ושייכת לשם: `timeLimitInSeconds`. מי שקורא `timeLimit = 2` עלול לחשוב שמדובר בדקות, וזה מקור קלאסי לבאגים."
   optionExplanations:
-    "0": "`Timeout` קצר ונקי למראה, אבל לא אומר אם מדובר בשניות או במילישניות, וזה מקור קלאסי לבאגים."
-    "1": "ההערה נמצאת רק בהגדרה; במקום שבו משתמשים ב-`T` לא רואים אותה."
+    "0": "`timeLimit` נקי למראה, אבל לא אומר אם מדובר בשניות או בדקות."
+    "1": "ההערה נמצאת רק בשורת ההגדרה; במקומות אחרים שבהם משתמשים ב-`t` לא רואים אותה."
 
 - id: cs.clean-code.naming.012
   type: single
@@ -250,21 +228,25 @@
   code: |
     class Helper
     {
-        public int DoStuff(List<int> data)
+        public int DoStuff(int[] data)
         {
-            return data.Count(x => x > 0);
+            int result = 0;
+            for (int i = 0; i < data.Length; i++)
+                if (data[i] > 0)
+                    result++;
+            return result;
         }
     }
   options:
-    - "ProcessList"
+    - "ProcessArray"
     - "CountPositiveNumbers"
     - "Count"
     - "HandleData"
   answer: 1
-  explanation: "המתודה סופרת מספרים חיוביים, ו-`CountPositiveNumbers` אומר בדיוק את זה. פעלים כלליים כמו `Process` ו-`Handle` מתאימים לכל מתודה, ולכן לא מוסרים כלום. גם `Helper` ו-`data` הם שמות כלליים שכדאי להחליף."
+  explanation: "המתודה סופרת מספרים חיוביים, ו-`CountPositiveNumbers` אומר בדיוק את זה. פעלים כלליים כמו `Process` ו-`Handle` מתאימים לכל מתודה, ולכן לא מוסרים כלום. גם `Helper`, `data` ו-`result` הם שמות כלליים שכדאי להחליף."
   optionExplanations:
-    "0": "`Process` לא אומר מה נעשה ברשימה."
-    "2": "`Count` לא אומר מה נספר, ומתבלבל עם `Count` של LINQ."
+    "0": "`Process` לא אומר מה נעשה במערך."
+    "2": "`Count` לא אומר מה נספר."
     "3": "`HandleData` כללי לגמרי; כל מתודה מטפלת בנתונים כלשהם."
 
 - id: cs.clean-code.naming.013
@@ -272,23 +254,34 @@
   difficulty: 2
   prompt: מה הבעיה בשמות המתודות?
   code: |
-    class StoreRepository
+    class Store
     {
-        public string GetCustomer(int id) => $"Customer {id}";
-        public string FetchOrder(int id) => $"Order {id}";
-        public string RetrieveProduct(int id) => $"Product {id}";
+        public string GetCustomer(int id)
+        {
+            return $"Customer {id}";
+        }
+
+        public string FetchOrder(int id)
+        {
+            return $"Order {id}";
+        }
+
+        public string RetrieveProduct(int id)
+        {
+            return $"Product {id}";
+        }
     }
   options:
     - "שמות של מתודות צריכים להיות שמות עצם, למשל Customer, Order ו-Product"
     - "השמות ארוכים מדי; עדיף Cust, Ord ו-Prod"
-    - "חסרה למתודות הקידומת I"
+    - "צריך להוסיף לכל שם את הסיומת Method, כדי שיהיה ברור שאלה מתודות"
     - "שלוש מילים שונות מתארות אותה פעולה; עדיף לבחור מילה אחת, למשל Get, ולהשתמש בה בעקביות"
   answer: 3
-  explanation: "מילה אחת לכל מושג (One Word per Concept): אם `Get`, `Fetch` ו-`Retrieve` עושות אותו דבר, הקורא יחפש הבדל שלא קיים. כשהאוצר מילים עקבי, אפשר לנחש את שם המתודה הבאה בלי לחפש."
+  explanation: "מילה אחת לכל מושג (One Word per Concept): אם `Get`, `Fetch` ו-`Retrieve` עושות אותו דבר, הקורא יחפש הבדל שלא קיים. כשאוצר המילים עקבי, אפשר לנחש את שם המתודה הבאה בלי לחפש."
   optionExplanations:
-    "0": "מתודה מבצעת פעולה, ולכן שמה מתחיל בפועל; שם עצם מתאים למאפיין או למחלקה."
+    "0": "מתודה מבצעת פעולה, ולכן שמה מתחיל בפועל; שם עצם מתאים למחלקה."
     "1": "השמות קצרים וברורים; קיצורים רק יפגעו בקריאות."
-    "2": "הקידומת `I` שמורה לשמות של ממשקים, לא למתודות."
+    "2": "הסוגריים בקריאה כבר מראים שזו מתודה; הסיומת רק מאריכה את השם."
 
 - id: cs.clean-code.naming.014
   type: cleaner
@@ -296,37 +289,22 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      var feature = new Feature { IsDisabled = false };
-      if (!feature.IsDisabled)
+      bool isDisabled = false;
+      if (!isDisabled)
           Console.WriteLine("Running");
-
-      class Feature
-      {
-          public bool IsDisabled { get; set; }
-      }
     - |
-      var feature = new Feature { IsEnabled = true };
-      if (feature.IsEnabled)
+      bool isEnabled = true;
+      if (isEnabled)
           Console.WriteLine("Running");
-
-      class Feature
-      {
-          public bool IsEnabled { get; set; }
-      }
     - |
-      var feature = new Feature { IsNotEnabled = false };
-      if (feature.IsNotEnabled == false)
+      bool isNotEnabled = false;
+      if (isNotEnabled == false)
           Console.WriteLine("Running");
-
-      class Feature
-      {
-          public bool IsNotEnabled { get; set; }
-      }
   answer: 1
-  explanation: "שם בוליאני חיובי (`IsEnabled`) נקרא ישירות בתנאי. שם שלילי מכריח את הקורא לבצע היפוך בראש, וכשמוסיפים עליו `!` או `== false` מתקבלת שלילה כפולה שקל לטעות בה."
+  explanation: "שם בוליאני חיובי (`isEnabled`) נקרא ישירות בתנאי. שם שלילי מכריח את הקורא לבצע היפוך בראש, וכשמוסיפים עליו `!` או `== false` מתקבלת שלילה כפולה שקל לטעות בה."
   optionExplanations:
-    "0": "`!feature.IsDisabled` היא שלילה של שם שלילי: «לא מושבת». זה עובד, אבל קשה יותר לקריאה מ-«מופעל»."
-    "2": "`IsNotEnabled == false` היא שלילה כפולה; גם השם שלילי וגם ההשוואה ל-`false` מיותרת."
+    "0": "`!isDisabled` היא שלילה של שם שלילי: «לא מושבת». זה עובד, אבל קשה יותר לקריאה מ-«מופעל»."
+    "2": "`isNotEnabled == false` היא שלילה כפולה; גם השם שלילי וגם ההשוואה ל-`false` מיותרת."
 
 - id: cs.clean-code.naming.015
   type: single
@@ -335,28 +313,45 @@
   code: |
     class Library
     {
-        private readonly List<Book> _books = new();
+        private Book[] books = new Book[100];
+        private int bookCount = 0;
 
-        public List<Book> Find(DateTime today) =>
-            _books.Where(b => !b.IsReturned && b.DueDate < today).ToList();
+        public int Find(int today)
+        {
+            int result = 0;
+            for (int i = 0; i < bookCount; i++)
+                if (!books[i].IsReturned() && books[i].GetDueDay() < today)
+                    result++;
+            return result;
+        }
     }
 
     class Book
     {
-        public bool IsReturned { get; set; }
-        public DateTime DueDate { get; set; }
+        private bool returned;
+        private int dueDay;
+
+        public bool IsReturned()
+        {
+            return returned;
+        }
+
+        public int GetDueDay()
+        {
+            return dueDay;
+        }
     }
   options:
-    - "GetBooksWhereNotReturnedAndDueDateBeforeToday"
-    - "GetOverdueBooks"
-    - "GetBooks2"
-    - "GetLateItemsList"
+    - "CountBooksWhereNotReturnedAndDueDayBeforeToday"
+    - "CountOverdueBooks"
+    - "CountBooks2"
+    - "CountLateItemsNumber"
   answer: 1
-  explanation: "שם טוב משתמש בשפת התחום (Domain Language) ואומר מה מקבלים, לא איך זה מחושב. בספרייה לספר כזה קוראים «באיחור» (Overdue). אם כלל האיחור ישתנה, השם `GetOverdueBooks` עדיין יהיה נכון."
+  explanation: "שם טוב משתמש בשפת התחום (Domain Language) ואומר מה מקבלים, לא איך זה מחושב. בספרייה לספר כזה קוראים «באיחור» (Overdue). אם כלל האיחור ישתנה, השם `CountOverdueBooks` עדיין יהיה נכון."
   optionExplanations:
     "0": "השם מעתיק את המימוש למילים. הוא ארוך, וכל שינוי בתנאי יהפוך אותו לשקר."
-    "2": "מספר בשם לא אומר כלום על ההבדל בין `GetBooks` ל-`GetBooks2`."
-    "3": "`Items` כללי מדי, ו-`List` חוזר על טיפוס ההחזרה שכבר מופיע בחתימה."
+    "2": "מספר בשם לא אומר כלום על ההבדל בין `CountBooks` ל-`CountBooks2`."
+    "3": "`Items` כללי מדי, ו-`Number` חוזר על מה ש-`Count` כבר אומר."
 
 - id: cs.clean-code.naming.016
   type: bug
@@ -372,7 +367,10 @@
             count = count;
         }
 
-        public int Value => count;
+        public int GetValue()
+        {
+            return count;
+        }
     }
   answer: 7
   fixed: |
@@ -385,6 +383,25 @@
             this.count = count;
         }
 
-        public int Value => count;
+        public int GetValue()
+        {
+            return count;
+        }
     }
-  explanation: "בתוך הבנאי, `count` מתייחס לפרמטר, שמסתיר (Shadowing) את השדה בעל אותו שם. לכן `count = count` משים את הפרמטר לעצמו, והשדה נשאר `0`. התיקון הוא `this.count = count`, אבל המוסכמה של שדה פרטי עם קו תחתון (`_count`) מונעת את הבלבול מראש."
+  explanation: "בתוך הבנאי, `count` מתייחס לפרמטר, שמסתיר (Shadowing) את השדה בעל אותו שם. לכן `count = count` משים את הפרמטר לעצמו, והשדה נשאר `0`. התיקון הוא `this.count = count`; מוסכמה של שדה פרטי עם קו תחתון (`_count`) גם מונעת את הבלבול מראש."
+
+- id: cs.clean-code.naming.017
+  type: single
+  difficulty: 1
+  prompt: מתודה מקבלת מספר שלם ומחזירה `true` אם הוא זוגי. איזה שם הכי מתאים לה?
+  options:
+    - "Even"
+    - "CheckNumber"
+    - "IsEven"
+    - "EvenOrNot"
+  answer: 2
+  explanation: "מתודה שמחזירה `bool` נקראת כמו שאלת כן/לא: `IsEven`, `HasTicket`, `CanVote`. כך הקריאה בתנאי נשמעת כמו משפט: `if (IsEven(number))`."
+  optionExplanations:
+    "0": "`Even` הוא תואר בלבד; לא ברור אם המתודה בודקת, מחזירה מספר זוגי או משהו אחר."
+    "1": "`CheckNumber` לא אומר מה בודקים ומה המשמעות של `true`."
+    "3": "`EvenOrNot` מסורבל ולא תואם את המוסכמה של `Is` למתודה בוליאנית."

@@ -128,22 +128,19 @@
 - id: py.strings.formatting.009
   type: cleaner
   difficulty: 2
-  prompt: כל הגרסאות מחזירות את אותה מחרוזת. איזו גרסה נקייה יותר?
+  prompt: כל הגרסאות מדפיסות את אותה שורה. איזו גרסה נקייה יותר?
   options:
     - |
-      def describe(name, count, price):
-          return f"{name}: {count} x {price:.2f}"
+      print(f"{name}: {count} x {price:.2f}")
     - |
-      def describe(name, count, price):
-          return name + ": " + str(count) + " x " + format(price, ".2f")
+      print(name + ": " + str(count) + " x " + format(price, ".2f"))
     - |
-      def describe(name, count, price):
-          return "%s: %s x %.2f" % (name, count, price)
+      print("{}: {} x {:.2f}".format(name, count, price))
   answer: 0
-  explanation: "f-string מציגה את המשתנים במקום שבו הם מופיעים בטקסט, כך שרואים מיד איך התוצאה תיראה. אין צורך בהמרות `str` ובשרשור, ואין צורך להתאים סדר של ערכים לסימנים."
+  explanation: "f-string מציגה את המשתנים במקום שבו הם מופיעים בטקסט, כך שרואים מיד איך התוצאה תיראה. אין צורך בהמרות `str` ובשרשור, ואין צורך להתאים סדר של ערכים לסוגריים מסולסלים ריקים."
   optionExplanations:
     "1": "שרשור עם `+` ו-`str` מפזר את הטקסט בין מירכאות רבות, וקל לשכוח רווח או המרה."
-    "2": "עיצוב עם `%` הוא סגנון ישן. צריך לעקוב אחרי סדר הערכים בטאפל כדי לדעת מה נכנס לאן."
+    "2": "עם `format` צריך לעקוב אחרי סדר הערכים כדי לדעת מה נכנס לכל `{}`."
 
 - id: py.strings.formatting.010
   type: output
@@ -165,32 +162,34 @@
 - id: py.strings.formatting.011
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה להדפיס סכום עם שתי ספרות אחרי הנקודה, למשל `Total: 12.50`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס סכום עם שתי ספרות אחרי הנקודה: `Total: 12.50`. איזו שורה צריך לתקן?"
   code: |
-    def print_total(prices):
-        total = sum(prices)
-        print(f"Total: {total:.2}")
-  answer: 3
+    price = 7.25
+    shipping = 5.25
+    total = price + shipping
+    print(f"Total: {total:.2}")
+  answer: 4
   explanation: "בלי האות `f` בסוף מפרט העיצוב, `.2` פירושו שתי ספרות משמעותיות בסך הכול, ולא שתי ספרות אחרי הנקודה. לכן 12.5 מוצג כ-`1.2e+01`. `.2f` קובע עיצוב של נקודה קבועה (Fixed-Point) עם שתי ספרות אחרי הנקודה."
   fixed: |
-    def print_total(prices):
-        total = sum(prices)
-        print(f"Total: {total:.2f}")
+    price = 7.25
+    shipping = 5.25
+    total = price + shipping
+    print(f"Total: {total:.2f}")
 
 - id: py.strings.formatting.012
   type: bug
   difficulty: 1
-  prompt: "הפונקציה אמורה להחזיר ברכה עם השם, למשל `Hello, Dana!`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס ברכה עם השם: `Hello, Dana!`. איזו שורה צריך לתקן?"
   code: |
-    def greet(name):
-        message = "Hello, {name}!"
-        return message
+    name = "Dana"
+    message = "Hello, {name}!"
+    print(message)
   answer: 2
-  explanation: "חסרה האות `f` לפני המירכאות. בלעדיה זו מחרוזת רגילה, והפונקציה מחזירה את הטקסט `Hello, {name}!` כמו שהוא."
+  explanation: "חסרה האות `f` לפני המירכאות. בלעדיה זו מחרוזת רגילה, ומודפס הטקסט `Hello, {name}!` כמו שהוא."
   fixed: |
-    def greet(name):
-        message = f"Hello, {name}!"
-        return message
+    name = "Dana"
+    message = f"Hello, {name}!"
+    print(message)
 
 - id: py.strings.formatting.013
   type: single

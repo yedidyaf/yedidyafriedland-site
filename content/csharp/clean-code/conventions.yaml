@@ -19,64 +19,32 @@
   difficulty: 3
   prompt: איזה שם בקוד לא תואם את מוסכמות השמות של מיקרוסופט?
   code: |
-    public class CustomerService
+    public class CustomerList
     {
         public const int MaxCustomers = 100;
-        private readonly List<string> _customers = new();
+        private int _count;
 
-        public int customerCount => _customers.Count;
+        public int getCount()
+        {
+            return _count;
+        }
 
-        public void AddCustomer(string name) => _customers.Add(name);
+        public void AddCustomer(string name)
+        {
+            _count++;
+        }
     }
   options:
     - "MaxCustomers"
-    - "_customers"
-    - "customerCount"
+    - "_count"
+    - "getCount"
     - "AddCustomer"
   answer: 2
-  explanation: "`customerCount` הוא מאפיין ציבורי, ומאפיינים נכתבים ב-PascalCase: `CustomerCount`. שאר השמות תקינים: קבוע ציבורי ומתודה ב-PascalCase, ושדה פרטי ב-camelCase עם קו תחתון."
+  explanation: "`getCount` היא מתודה ציבורית, ומתודות נכתבות ב-PascalCase: `GetCount`. שאר השמות תקינים: קבוע ציבורי ומתודה ב-PascalCase, ושדה פרטי ב-camelCase עם קו תחתון."
   optionExplanations:
     "0": "קבועים ב-C# נכתבים ב-PascalCase, לא באותיות גדולות."
     "1": "שדה פרטי נכתב ב-camelCase עם קידומת `_`; זו בדיוק המוסכמה."
     "3": "מתודה ציבורית ב-PascalCase עם פועל בתחילתה; תקין."
-
-- id: cs.clean-code.conventions.003
-  type: cleaner
-  difficulty: 2
-  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
-  options:
-    - |
-      class ProfileService
-      {
-          public async Task<string> LoadProfile(int userId)
-          {
-              await Task.Delay(10);
-              return $"user-{userId}";
-          }
-      }
-    - |
-      class ProfileService
-      {
-          public async Task<string> LoadProfileAsync(int userId)
-          {
-              await Task.Delay(10);
-              return $"user-{userId}";
-          }
-      }
-    - |
-      class ProfileService
-      {
-          public async Task<string> loadProfileAsync(int userId)
-          {
-              await Task.Delay(10);
-              return $"user-{userId}";
-          }
-      }
-  answer: 1
-  explanation: "המוסכמה ב-.NET היא שמתודה אסינכרונית שמחזירה `Task` מסתיימת ב-`Async`, כמו `ReadAllTextAsync`. כך מי שקורא לה רואה מיד שצריך `await`, ושם המתודה ב-PascalCase כמו כל מתודה."
-  optionExplanations:
-    "0": "בלי הסיומת `Async` קל לשכוח `await` ולקבל `Task` במקום מחרוזת."
-    "2": "שמות מתודות נכתבים ב-PascalCase, גם כשהן אסינכרוניות."
 
 - id: cs.clean-code.conventions.004
   type: truefalse
@@ -84,22 +52,6 @@
   prompt: בדומה ל-Java, הקומפיילר של C# מחייב ששם הקובץ יהיה זהה לשם המחלקה הציבורית שבו.
   answer: false
   explanation: "C# לא אוכפת קשר בין שם הקובץ לשם המחלקה. זו מוסכמה, ולא דרישה של הקומפיילר: טיפוס אחד בכל קובץ, ושם הקובץ כשם הטיפוס (`OrderService` בקובץ `OrderService.cs`). כך קל למצוא כל מחלקה בפרויקט."
-
-- id: cs.clean-code.conventions.005
-  type: single
-  difficulty: 3
-  prompt: "לפי מוסכמות הקוד של מיקרוסופט, באיזו שורה עדיף לכתוב טיפוס מפורש במקום `var`?"
-  options:
-    - "var orders = new List<string>();"
-    - "var greeting = \"Hello\";"
-    - "var total = ComputeTotal(cart);"
-    - "var count = 0;"
-  answer: 2
-  explanation: "מיקרוסופט ממליצה על `var` כשהטיפוס ברור מצד ימין של ההשמה: בנאי (`new List<string>()`) או ליטרל. כשהערך מגיע ממתודה, הקורא לא יודע אם `total` הוא `decimal`, `double` או טיפוס אחר, ולכן עדיף `decimal total = ComputeTotal(cart);`."
-  optionExplanations:
-    "0": "הטיפוס כתוב בצד ימין; כתיבה שלו גם משמאל הייתה רק חזרה."
-    "1": "ליטרל של מחרוזת מראה את הטיפוס בבירור."
-    "3": "ליטרל שלם הוא `int`, וזה ברור מצד ימין."
 
 - id: cs.clean-code.conventions.006
   type: single
@@ -147,63 +99,6 @@
     "0": "הכול בשורה אחת: קשה לקרוא ולשים נקודת עצירה על פקודה מסוימת."
     "2": "שתי פקודות בכל שורה; קל לפספס את השנייה בקריאה מהירה."
 
-- id: cs.clean-code.conventions.008
-  type: single
-  difficulty: 2
-  prompt: "איזו תגית XML מתאימה במקום `<??>`, לתיעוד הערך שהמתודה מחזירה?"
-  code: |
-    public class TaxCalculator
-    {
-        private const decimal VatRate = 0.18m;
-
-        /// <summary>Calculates the VAT for a net amount.</summary>
-        /// <param name="netAmount">The amount before VAT.</param>
-        /// <??>The VAT amount.</??>
-        public decimal CalculateVat(decimal netAmount) => netAmount * VatRate;
-    }
-  options:
-    - "<return>"
-    - "<returns>"
-    - "<result>"
-    - "<value>"
-  answer: 1
-  explanation: "הערות תיעוד XML (XML Documentation Comments) מתחילות ב-`///`. `<summary>` מתאר את החבר, `<param>` כל פרמטר, ו-`<returns>` את הערך המוחזר. Visual Studio מציג אותן ב-IntelliSense למי שקורא למתודה."
-  optionExplanations:
-    "0": "התגית היא `<returns>` עם s בסוף; `<return>` לא מוכרת לכלים."
-    "2": "`<result>` היא לא תגית תיעוד של C#."
-    "3": "`<value>` מתעדת את הערך של מאפיין (Property), לא את מה שמתודה מחזירה."
-
-- id: cs.clean-code.conventions.009
-  type: cleaner
-  difficulty: 2
-  prompt: המחלקה היא חלק מספרייה ציבורית שמפתחים אחרים משתמשים בה. איזו גרסה נקייה יותר?
-  options:
-    - |
-      public static class Temperature
-      {
-          // Converts Celsius to Fahrenheit
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
-      }
-    - |
-      public static class Temperature
-      {
-          /// <summary>Converts a temperature from Celsius to Fahrenheit.</summary>
-          /// <param name="celsius">Temperature in degrees Celsius.</param>
-          /// <returns>Temperature in degrees Fahrenheit.</returns>
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
-      }
-    - |
-      public static class Temperature
-      {
-          /* Converts Celsius to Fahrenheit */
-          public static double ToFahrenheit(double celsius) => celsius * 9 / 5 + 32;
-      }
-  answer: 1
-  explanation: "חברים ציבוריים של ספרייה מתעדים בהערות XML עם `///`. המהדר והעורך מכירים אותן: הן מוצגות ב-IntelliSense ליד כל קריאה, ואפשר לייצר מהן תיעוד. הערה רגילה נראית רק למי שפותח את קוד המקור."
-  optionExplanations:
-    "0": "הערה רגילה עם `//` לא מוצגת למשתמשי הספרייה ב-IntelliSense."
-    "2": "גם הערת בלוק עם `/* */` היא הערה רגילה שהכלים מתעלמים ממנה."
-
 - id: cs.clean-code.conventions.010
   type: single
   difficulty: 2
@@ -211,14 +106,14 @@
   options:
     - "String מהיר יותר, כי הוא שם המחלקה האמיתית"
     - "string הוא טיפוס ערך, ו-String הוא טיפוס הפניה"
-    - "שניהם אותו טיפוס, System.String, והמוסכמה היא להשתמש במילה השמורה string, גם בקריאות כמו string.Join"
-    - "string מתאים להצהרה על משתנים, אבל חובה לכתוב String כשקוראים למתודה סטטית כמו String.Join"
+    - "שניהם אותו טיפוס, System.String, והמוסכמה היא להשתמש במילה השמורה string, גם בקריאות כמו string.Compare"
+    - "string מתאים להצהרה על משתנים, אבל חובה לכתוב String כשקוראים למתודה סטטית כמו String.Compare"
   answer: 2
-  explanation: "`string` הוא כינוי (Alias) של `System.String`, בדיוק כמו ש-`int` הוא `System.Int32`. אין הבדל בביצועים או בהתנהגות. מוסכמות מיקרוסופט ממליצות להשתמש במילות המפתח של השפה בכל מקום: `string name`, `string.Join(...)`, `int.Parse(...)`."
+  explanation: "`string` הוא כינוי (Alias) של `System.String`, בדיוק כמו ש-`int` הוא `System.Int32`. אין הבדל בביצועים או בהתנהגות. מוסכמות מיקרוסופט ממליצות להשתמש במילות המפתח של השפה בכל מקום: `string name`, `string.Compare(...)`, `int.Parse(...)`."
   optionExplanations:
     "0": "הקומפיילר מתרגם את שניהם לאותו טיפוס בדיוק; אין הבדל בביצועים."
     "1": "שניהם אותו טיפוס, ומחרוזת היא טיפוס הפניה."
-    "3": "`string.Join` עובד ומקובל; המוסכמה היא מילת המפתח גם בקריאה למתודות סטטיות."
+    "3": "`string.Compare` עובד ומקובל; המוסכמה היא מילת המפתח גם בקריאה למתודות סטטיות."
 
 - id: cs.clean-code.conventions.011
   type: cleaner
@@ -230,82 +125,51 @@
       {
           private int Visits;
 
-          public void RecordVisit() => Visits++;
-          public string Describe() => $"{Visits} visits";
+          public void RecordVisit()
+          {
+              Visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{Visits} visits";
+          }
       }
     - |
       class PageCounter
       {
           private int m_visits;
 
-          public void RecordVisit() => m_visits++;
-          public string Describe() => $"{m_visits} visits";
+          public void RecordVisit()
+          {
+              m_visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{m_visits} visits";
+          }
       }
     - |
       class PageCounter
       {
           private int _visits;
 
-          public void RecordVisit() => _visits++;
-          public string Describe() => $"{_visits} visits";
+          public void RecordVisit()
+          {
+              _visits++;
+          }
+
+          public string Describe()
+          {
+              return $"{_visits} visits";
+          }
       }
   answer: 2
   explanation: "מוסכמות מיקרוסופט: שדה פרטי נכתב ב-camelCase עם קידומת `_`. כך רואים מיד בתוך מתודה שמדובר בשדה של האובייקט ולא במשתנה מקומי או בפרמטר."
   optionExplanations:
     "0": "`Visits` ב-PascalCase נראה כמו מאפיין ציבורי."
     "1": "הקידומת `m_` היא מוסכמה ישנה מ-C++, ולא מקובלת ב-C# מודרני."
-
-- id: cs.clean-code.conventions.012
-  type: single
-  difficulty: 2
-  prompt: "איזו הצהרה של `enum` תואמת את מוסכמות השמות של .NET?"
-  options:
-    - "enum OrderStatuses { Pending, Shipped, Delivered }"
-    - "enum EOrderStatus { PENDING, SHIPPED, DELIVERED }"
-    - "enum orderStatus { pending, shipped, delivered }"
-    - "enum OrderStatus { Pending, Shipped, Delivered }"
-  answer: 3
-  explanation: "גם שם ה-`enum` וגם הערכים שלו נכתבים ב-PascalCase, בלי קידומת. שם `enum` רגיל הוא ביחיד, כי משתנה מהטיפוס מחזיק ערך אחד: `OrderStatus status`. שם ברבים שמור ל-`enum` עם `[Flags]`, שבו משלבים כמה ערכים."
-  optionExplanations:
-    "0": "שם ברבים מתאים רק ל-`[Flags]`; כאן להזמנה יש סטטוס אחד בכל רגע."
-    "1": "הקידומת `E` ואותיות גדולות בערכים לא מקובלות ב-.NET."
-    "2": "שמות טיפוסים וערכי `enum` נכתבים ב-PascalCase."
-
-- id: cs.clean-code.conventions.013
-  type: single
-  difficulty: 3
-  prompt: "זו תחילת הקובץ `Services/ReceiptBuilder.cs` בפרויקט `Shop`. איזו גרסה תואמת את מוסכמות C#?"
-  options:
-    - |
-      namespace Shop.Services;
-
-      using System.Text;
-
-      public class ReceiptBuilder
-    - |
-      using System.Text;
-
-      namespace Shop.Services;
-
-      public class ReceiptBuilder
-    - |
-      using System.Text;
-
-      namespace Shop.Services.ReceiptBuilder;
-
-      public class ReceiptBuilder
-    - |
-      using System.Text;
-
-      namespace shop.services;
-
-      public class ReceiptBuilder
-  answer: 1
-  explanation: "מבנה הקובץ המקובל: הנחיות `using` בראש הקובץ, מחוץ ל-namespace, ואחריהן namespace ברמת הקובץ (File-Scoped Namespace) שתואם את התיקייה: `Shop.Services`. כל השמות ב-PascalCase."
-  optionExplanations:
-    "0": "מוסכמות מיקרוסופט ממליצות למקם את הנחיות `using` מחוץ ל-namespace, בראש הקובץ."
-    "2": "namespace באותו שם כמו מחלקה שבתוכו יוצר שם מבלבל, `Shop.Services.ReceiptBuilder.ReceiptBuilder`, וההנחיות של .NET מזהירות מפניו."
-    "3": "גם רכיבי namespace נכתבים ב-PascalCase."
 
 - id: cs.clean-code.conventions.014
   type: cleaner
@@ -323,12 +187,15 @@
     - |
       string name = "Dana";
       int quantity = 3;
-      Console.WriteLine(string.Format("{0} ordered {1} items", name, quantity));
+      Console.Write(name);
+      Console.Write(" ordered ");
+      Console.Write(quantity);
+      Console.WriteLine(" items");
   answer: 1
-  explanation: "מוסכמות מיקרוסופט ממליצות על אינטרפולציה (String Interpolation) לבניית מחרוזות קצרות. הערכים מופיעים בדיוק במקום שבו יודפסו, ואין צורך לספור אינדקסים או לחפש רווחים חסרים."
+  explanation: "מוסכמות מיקרוסופט ממליצות על אינטרפולציה (String Interpolation) לבניית מחרוזות קצרות. הערכים מופיעים בדיוק במקום שבו יודפסו, והמשפט כולו נקרא ברצף אחד."
   optionExplanations:
     "0": "שרשור עם `+` מפזר את המשפט בין מרכאות, וקל לשכוח רווח."
-    "2": "עם `string.Format` צריך להתאים בין `{0}` ו-`{1}` לבין רשימת הארגומנטים, וקל לטעות בסדר."
+    "2": "ארבע פקודות הדפסה למשפט אחד: קשה לראות מה יודפס בסוף."
 
 - id: cs.clean-code.conventions.015
   type: output
@@ -369,8 +236,126 @@
     - "Htmlparser"
     - "HTML_Parser"
   answer: 1
-  explanation: "בהנחיות של .NET, ראשי תיבות של שלוש אותיות ומעלה נכתבים כמילה רגילה ב-PascalCase: `HtmlParser`, `XmlReader`, `HttpClient`. רק ראשי תיבות של שתי אותיות נשארים באותיות גדולות, כמו `IOException`."
+  explanation: "בהנחיות של .NET, ראשי תיבות של שלוש אותיות ומעלה נכתבים כמילה רגילה ב-PascalCase: `HtmlParser`, `XmlReader`, `HttpClient`. רק ראשי תיבות של שתי אותיות נשארים באותיות גדולות, כמו `IO` ב-`System.IO`."
   optionExplanations:
     "0": "ראשי תיבות ארוכים באותיות גדולות מקשים לראות איפה נגמרת מילה אחת ומתחילה הבאה."
     "2": "`Parser` היא מילה נפרדת, ולכן מתחילה באות גדולה."
-    "3": "קו תחתון לא משמש בשמות טיפוסים ב-C#."
+    "3": "קו תחתון לא משמש בשמות של מחלקות ב-C#."
+
+- id: cs.clean-code.conventions.017
+  type: single
+  difficulty: 1
+  prompt: לפי מוסכמות השמות של מיקרוסופט, איך נכתב שם של פרמטר שמחזיק את שם התלמיד?
+  options:
+    - "StudentName"
+    - "studentName"
+    - "student_name"
+    - "STUDENTNAME"
+  answer: 1
+  explanation: "פרמטרים ומשתנים מקומיים נכתבים ב-camelCase: המילה הראשונה באות קטנה, וכל מילה נוספת מתחילה באות גדולה. PascalCase שמור למחלקות, למתודות ולקבועים."
+  optionExplanations:
+    "0": "PascalCase מתאים למחלקות ולמתודות, לא לפרמטרים."
+    "2": "קו תחתון בין מילים (snake_case) מקובל ב-Python, לא ב-C#."
+    "3": "אותיות גדולות בלבד מקשות לראות איפה מילה נגמרת, ולא משמשות בשמות ב-C#."
+
+- id: cs.clean-code.conventions.018
+  type: cleaner
+  difficulty: 1
+  prompt: לפי מוסכמות הקוד של מיקרוסופט ל-C#, איזו גרסה נקייה יותר?
+  options:
+    - |
+      int sum = 0;
+      for (int i = 1; i <= 5; i++)
+      {
+      sum += i;
+      Console.WriteLine(sum);
+      }
+    - |
+      int sum = 0;
+      for (int i = 1; i <= 5; i++)
+      {
+          sum += i;
+          Console.WriteLine(sum);
+      }
+    - |
+      int sum = 0;
+        for (int i = 1; i <= 5; i++)
+      {
+          sum += i;
+              Console.WriteLine(sum);
+      }
+  answer: 1
+  explanation: "כל רמת קינון מוזחת בארבעה רווחים, וכל השורות באותה רמה מתחילות באותו טור. ההזחה מראה במבט אחד אילו פקודות נמצאות בתוך הלולאה."
+  optionExplanations:
+    "0": "גוף הלולאה לא מוזח, ולכן קשה לראות אילו פקודות חוזרות."
+    "2": "הזחה לא עקבית מטעה: היא מרמזת על מבנה שלא קיים בקוד."
+
+- id: cs.clean-code.conventions.019
+  type: truefalse
+  difficulty: 2
+  prompt: הקומפיילר של C# מתעלם מהזחה, ולכן קוד עם הזחה שגויה יכול לעבור קומפילציה ולרוץ.
+  answer: true
+  explanation: "ב-C# המבנה נקבע לפי סוגריים מסולסלים ונקודה-פסיק, לא לפי הזחה (בניגוד ל-Python). לכן הזחה שגויה לא תיתפס על ידי הקומפיילר, אבל היא עלולה להטעות את מי שקורא את הקוד ולהסתיר באגים."
+
+- id: cs.clean-code.conventions.020
+  type: single
+  difficulty: 2
+  prompt: איזו הערה כתובה לפי מוסכמות ההערות של מיקרוסופט ל-C#?
+  options:
+    - |
+      int average = sum / count; //average
+    - |
+      //compute the average
+      int average = sum / count;
+    - |
+      // Compute the average of the grades.
+      int average = sum / count;
+    - |
+      /******* AVERAGE *******/
+      int average = sum / count;
+  answer: 2
+  explanation: "לפי המוסכמות: הערה בשורה משלה מעל הקוד, ולא בסוף שורת קוד; רווח אחד אחרי `//`; הטקסט מתחיל באות גדולה ומסתיים בנקודה. הערה מסודרת קלה לקריאה ולא נבלעת בקוד."
+  optionExplanations:
+    "0": "ההערה בסוף שורת קוד ובלי רווח אחרי `//`, וגם רק חוזרת על שם המשתנה."
+    "1": "חסר רווח אחרי `//`, והטקסט לא מתחיל באות גדולה."
+    "3": "מסגרת של כוכביות היא קישוט שלא מקובל במוסכמות של C#."
+
+- id: cs.clean-code.conventions.021
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[] grades = { 40, 50, 75 };
+    int failed = 0;
+    for (int i = 0; i < grades.Length; i++)
+        if (grades[i] < 55)
+            Console.WriteLine("Failed: " + grades[i]);
+            failed++;
+    Console.WriteLine(failed);
+  options:
+    - "Failed: 40\nFailed: 50\n2"
+    - "Failed: 40\nFailed: 50\n1"
+    - "Failed: 40\nFailed: 50\n3"
+    - "שגיאת קומפילציה"
+  answer: 1
+  explanation: "בלי סוגריים מסולסלים, גוף הלולאה הוא רק פקודת ה-`if`, וגוף ה-`if` הוא רק ההדפסה. `failed++` נמצא אחרי הלולאה, למרות ההזחה, ולכן הוא רץ פעם אחת בלבד. זו הסיבה שהמוסכמות ממליצות על סוגריים מסולסלים גם סביב פקודה אחת."
+  optionExplanations:
+    "0": "זה מה שההזחה מרמזת, אבל הקומפיילר מתעלם מהזחה: `failed++` לא נמצא בתוך ה-`if`."
+    "2": "`failed++` לא נמצא גם בתוך הלולאה, ולכן הוא לא רץ שלוש פעמים."
+    "3": "הקוד תקין תחבירית; הזחה מטעה לא גורמת לשגיאת קומפילציה ב-C#."
+
+- id: cs.clean-code.conventions.022
+  type: single
+  difficulty: 2
+  prompt: איזה שם מתאים למחלקה שמייצגת תלמיד אחד, לפי מוסכמות השמות של מיקרוסופט?
+  options:
+    - "student"
+    - "Students"
+    - "clsStudent"
+    - "Student"
+  answer: 3
+  explanation: "שם של מחלקה נכתב ב-PascalCase, ביחיד ובלי קידומות: `Student`. כל עצם של המחלקה הוא תלמיד אחד, ולכן `Student s = new Student(...)` נקרא בטבעיות. שם ברבים מתאים למשתנה שמחזיק אוסף, למשל `Student[] students`."
+  optionExplanations:
+    "0": "שמות של מחלקות נכתבים ב-PascalCase, כלומר מתחילים באות גדולה."
+    "1": "שם ברבים מטעה: נראה שהמחלקה מייצגת קבוצה של תלמידים."
+    "2": "קידומת `cls` היא סימן הונגרי (Hungarian Notation) ישן שלא מקובל ב-C#."

@@ -5,20 +5,20 @@
   code: |
     class PriceCalculator
     {
-        private const decimal StudentDiscount = 0.2m;
-        private const decimal SeniorDiscount = 0.3m;
+        private const double StudentDiscount = 0.2;
+        private const double SeniorDiscount = 0.3;
 
-        public decimal StudentPrice(decimal price)
+        public double StudentPrice(double price)
         {
             if (price < 0)
-                throw new ArgumentOutOfRangeException(nameof(price));
+                return 0;
             return price * (1 - StudentDiscount);
         }
 
-        public decimal SeniorPrice(decimal price)
+        public double SeniorPrice(double price)
         {
             if (price < 0)
-                throw new ArgumentOutOfRangeException(nameof(price));
+                return 0;
             return price * (1 - SeniorDiscount);
         }
     }
@@ -28,7 +28,7 @@
     - "שכפול קוד - Duplicated Code"
     - "רשימת פרמטרים ארוכה - Long Parameter List"
   answer: 2
-  explanation: "שתי המתודות זהות חוץ משיעור ההנחה. כל שינוי בבדיקה או בנוסחה יצטרך להיעשות פעמיים. חלצו מתודה משותפת (Extract Method), למשל `ApplyDiscount(decimal price, decimal rate)`, ושתי המתודות יקראו לה."
+  explanation: "שתי המתודות זהות חוץ משיעור ההנחה. כל שינוי בבדיקה או בנוסחה יצטרך להיעשות פעמיים. חלצו מתודה משותפת (Extract Method), למשל `ApplyDiscount(double price, double rate)`, ושתי המתודות יקראו לה."
   optionExplanations:
     "0": "שיעורי ההנחה כבר מוגדרים כקבועים עם שם."
     "1": "המחלקה קטנה ועוסקת בנושא אחד: חישוב מחירים."
@@ -44,15 +44,21 @@
       {
           public void Register(string email)
           {
-              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
-                  throw new ArgumentException("Invalid email.", nameof(email));
+              if (email.Length < 5 || !email.Contains("@"))
+              {
+                  Console.WriteLine("Invalid email");
+                  return;
+              }
               Console.WriteLine($"Registered {email}");
           }
 
           public void ChangeEmail(string email)
           {
-              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
-                  throw new ArgumentException("Invalid email.", nameof(email));
+              if (email.Length < 5 || !email.Contains("@"))
+              {
+                  Console.WriteLine("Invalid email");
+                  return;
+              }
               Console.WriteLine($"Changed to {email}");
           }
       }
@@ -61,24 +67,31 @@
       {
           public void Register(string email)
           {
-              EnsureValidEmail(email);
+              if (!IsValidEmail(email))
+              {
+                  Console.WriteLine("Invalid email");
+                  return;
+              }
               Console.WriteLine($"Registered {email}");
           }
 
           public void ChangeEmail(string email)
           {
-              EnsureValidEmail(email);
+              if (!IsValidEmail(email))
+              {
+                  Console.WriteLine("Invalid email");
+                  return;
+              }
               Console.WriteLine($"Changed to {email}");
           }
 
-          private static void EnsureValidEmail(string email)
+          private static bool IsValidEmail(string email)
           {
-              if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
-                  throw new ArgumentException("Invalid email.", nameof(email));
+              return email.Length >= 5 && email.Contains("@");
           }
       }
   answer: 1
-  explanation: "הכלל «מהי כתובת מייל תקינה» הוא ידע אחד, ולכן צריך לגור במקום אחד. כשיחמירו את הבדיקה, ישנו רק את `EnsureValidEmail`, ואין סכנה ששתי המתודות יבדקו דברים שונים."
+  explanation: "הכלל «מהי כתובת מייל תקינה» הוא ידע אחד, ולכן צריך לגור במקום אחד. כשיחמירו את הבדיקה, ישנו רק את `IsValidEmail`, ואין סכנה ששתי המתודות יבדקו דברים שונים."
   optionExplanations:
     "0": "הבדיקה משוכפלת; שינוי עתידי יחייב לזכור לעדכן שני מקומות."
 
@@ -89,15 +102,27 @@
   code: |
     int[] mathGrades = { 90, 80 };
     int[] englishGrades = { 70, 100, 85 };
-    Console.WriteLine($"Math: {mathGrades.Sum() / (double)mathGrades.Length}");
-    Console.WriteLine($"English: {englishGrades.Sum() / (double)mathGrades.Length}");
-  answer: 4
+    int mathSum = 0;
+    for (int i = 0; i < mathGrades.Length; i++)
+        mathSum += mathGrades[i];
+    int englishSum = 0;
+    for (int i = 0; i < englishGrades.Length; i++)
+        englishSum += englishGrades[i];
+    Console.WriteLine($"Math: {mathSum / (double)mathGrades.Length}");
+    Console.WriteLine($"English: {englishSum / (double)mathGrades.Length}");
+  answer: 10
   fixed: |
     int[] mathGrades = { 90, 80 };
     int[] englishGrades = { 70, 100, 85 };
-    Console.WriteLine($"Math: {mathGrades.Sum() / (double)mathGrades.Length}");
-    Console.WriteLine($"English: {englishGrades.Sum() / (double)englishGrades.Length}");
-  explanation: "השורה הועתקה מהשורה הקודמת, ורק חלק מהשמות עודכן: הסכום של אנגלית מחולק במספר הציונים במתמטיקה. זה באג קלאסי של העתק-הדבק. כשהחישוב כתוב פעם אחת, למשל עם `grades.Average()` או מתודה `Average(int[] grades)`, אין מה לשכוח לעדכן."
+    int mathSum = 0;
+    for (int i = 0; i < mathGrades.Length; i++)
+        mathSum += mathGrades[i];
+    int englishSum = 0;
+    for (int i = 0; i < englishGrades.Length; i++)
+        englishSum += englishGrades[i];
+    Console.WriteLine($"Math: {mathSum / (double)mathGrades.Length}");
+    Console.WriteLine($"English: {englishSum / (double)englishGrades.Length}");
+  explanation: "השורה הועתקה מהשורה הקודמת, ורק חלק מהשמות עודכן: הסכום של אנגלית מחולק במספר הציונים במתמטיקה. זה באג קלאסי של העתק-הדבק. כשהחישוב כתוב פעם אחת, במתודה `Average(int[] grades)`, אין מה לשכוח לעדכן."
 
 - id: cs.clean-code.dry.004
   type: single
@@ -106,11 +131,15 @@
   code: |
     class Validation
     {
-        public bool IsValidUserName(string userName) =>
-            userName.Length >= 3 && userName.Length <= 20;
+        public bool IsValidUserName(string userName)
+        {
+            return userName.Length >= 3 && userName.Length <= 20;
+        }
 
-        public bool IsValidProductCode(string code) =>
-            code.Length >= 3 && code.Length <= 20;
+        public bool IsValidProductCode(string code)
+        {
+            return code.Length >= 3 && code.Length <= 20;
+        }
     }
   options:
     - "לאחד אותן למתודה אחת IsValidLength ולקרוא לה משני המקומות"
@@ -130,20 +159,22 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      Console.WriteLine("{0,-10}|{1,5}", "Apples", 3);
-      Console.WriteLine("{0,-10}|{1,5}", "Bananas", 12);
-      Console.WriteLine("{0,-10}|{1,5}", "Cherries", 40);
+      Console.WriteLine("Apples: " + 3 + " units");
+      Console.WriteLine("Bananas: " + 12 + " units");
+      Console.WriteLine("Cherries: " + 40 + " units");
     - |
       PrintRow("Apples", 3);
       PrintRow("Bananas", 12);
       PrintRow("Cherries", 40);
 
-      static void PrintRow(string product, int quantity) =>
-          Console.WriteLine("{0,-10}|{1,5}", product, quantity);
+      static void PrintRow(string product, int quantity)
+      {
+          Console.WriteLine(product + ": " + quantity + " units");
+      }
   answer: 1
-  explanation: "פורמט השורה הוא ידע אחד: רוחב העמודות והמפריד. כשהוא כתוב במתודה אחת עם שם, שינוי רוחב עמודה נעשה במקום אחד, והקריאות אומרות מה הן עושות: `PrintRow`."
+  explanation: "המבנה של שורה בדוח הוא ידע אחד: המפריד והמילה `units`. כשהוא כתוב במתודה אחת עם שם, שינוי שלו נעשה במקום אחד, והקריאות אומרות מה הן עושות: `PrintRow`."
   optionExplanations:
-    "0": "מחרוזת הפורמט משוכפלת שלוש פעמים; שינוי שלה מחייב לעדכן כל שורה ולא לפספס אף אחת."
+    "0": "מבנה השורה משוכפל שלוש פעמים; שינוי שלו מחייב לעדכן כל שורה ולא לפספס אף אחת."
 
 - id: cs.clean-code.dry.006
   type: cleaner
@@ -153,19 +184,38 @@
     - |
       class Notifier
       {
-          public string WelcomeMessage(string name) => $"Welcome, {name}!";
-          public string GoodbyeMessage(string name) => $"Goodbye, {name}.";
+          public string WelcomeMessage(string name)
+          {
+              return $"Welcome, {name}!";
+          }
+
+          public string GoodbyeMessage(string name)
+          {
+              return $"Goodbye, {name}.";
+          }
       }
     - |
       class Notifier
       {
-          public string WelcomeMessage(string name) => BuildMessage(name, true);
-          public string GoodbyeMessage(string name) => BuildMessage(name, false);
+          public string WelcomeMessage(string name)
+          {
+              return BuildMessage(name, true);
+          }
+
+          public string GoodbyeMessage(string name)
+          {
+              return BuildMessage(name, false);
+          }
 
           private static string BuildMessage(string name, bool isWelcome)
           {
-              string greeting = isWelcome ? "Welcome" : "Goodbye";
-              string ending = isWelcome ? "!" : ".";
+              string greeting = "Goodbye";
+              string ending = ".";
+              if (isWelcome)
+              {
+                  greeting = "Welcome";
+                  ending = "!";
+              }
               return $"{greeting}, {name}{ending}";
           }
       }
@@ -181,18 +231,18 @@
   code: |
     class InvoiceService
     {
-        private const decimal VatRate = 0.18m;
+        private const double VatRate = 0.18;
 
-        public void Print(decimal subtotal, decimal discount)
+        public void Print(double subtotal, double discount)
         {
-            decimal total = (subtotal - discount) * (1 + VatRate);
-            Console.WriteLine($"Total: {total:F2}");
+            double total = (subtotal - discount) * (1 + VatRate);
+            Console.WriteLine($"Total: {total}");
         }
 
-        public void Email(decimal subtotal, decimal discount, string address)
+        public void Email(double subtotal, double discount, string address)
         {
-            decimal total = (subtotal - discount) * (1 + VatRate);
-            Console.WriteLine($"To {address}: total {total:F2}");
+            double total = (subtotal - discount) * (1 + VatRate);
+            Console.WriteLine($"To {address}: total {total}");
         }
     }
   options:
@@ -229,46 +279,53 @@
   prompt: איזו גרסה נקייה יותר?
   options:
     - |
-      class Product
+      class Rectangle
       {
-          public string Name { get; }
-          public decimal Price { get; }
-          public int Stock { get; }
+          private double width;
+          private double height;
 
-          public Product(string name, decimal price)
+          public Rectangle(double width, double height)
           {
-              Name = name;
-              Price = price;
-              Stock = 0;
+              this.width = width;
+              this.height = height;
           }
 
-          public Product(string name, decimal price, int stock)
+          public double GetArea()
           {
-              Name = name;
-              Price = price;
-              Stock = stock;
+              return width * height;
+          }
+
+          public override string ToString()
+          {
+              return "Area: " + (width * height);
           }
       }
     - |
-      class Product
+      class Rectangle
       {
-          public string Name { get; }
-          public decimal Price { get; }
-          public int Stock { get; }
+          private double width;
+          private double height;
 
-          public Product(string name, decimal price) : this(name, price, 0) { }
-
-          public Product(string name, decimal price, int stock)
+          public Rectangle(double width, double height)
           {
-              Name = name;
-              Price = price;
-              Stock = stock;
+              this.width = width;
+              this.height = height;
+          }
+
+          public double GetArea()
+          {
+              return width * height;
+          }
+
+          public override string ToString()
+          {
+              return "Area: " + GetArea();
           }
       }
   answer: 1
-  explanation: "שרשור בנאים עם `: this(...)` משאיר את האתחול במקום אחד. כשיוסיפו בדיקה, למשל שהמחיר לא שלילי, היא תחול על שני הבנאים בלי לשכפל אותה."
+  explanation: "הנוסחה של השטח היא ידע אחד, ולכן כתובה פעם אחת ב-`GetArea`. כש-`ToString` קוראת לה, אי אפשר שהשטח המודפס והשטח המחושב יהיו שונים, גם אם הנוסחה תשתנה."
   optionExplanations:
-    "0": "האתחול משוכפל בשני הבנאים; בדיקה שתתווסף לאחד מהם בלבד תיצור אובייקטים לא תקינים דרך השני."
+    "0": "הנוסחה משוכפלת; תיקון ב-`GetArea` בלבד ישאיר את `ToString` עם חישוב ישן."
 
 - id: cs.clean-code.dry.010
   type: bug
@@ -278,37 +335,45 @@
     class Pricing
     {
         private const int BulkQuantity = 10;
-        private const decimal BulkPriceFactor = 0.9m;
+        private const double BulkPriceFactor = 0.9;
 
-        public decimal OnlineTotal(decimal price, int quantity)
+        public double OnlineTotal(double price, int quantity)
         {
-            decimal total = price * quantity;
-            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+            double total = price * quantity;
+            if (quantity >= BulkQuantity)
+                total = total * BulkPriceFactor;
+            return total;
         }
 
-        public decimal StoreTotal(decimal price, int quantity)
+        public double StoreTotal(double price, int quantity)
         {
-            decimal total = price * quantity;
-            return quantity > BulkQuantity ? total * BulkPriceFactor : total;
+            double total = price * quantity;
+            if (quantity > BulkQuantity)
+                total = total * BulkPriceFactor;
+            return total;
         }
     }
-  answer: 15
+  answer: 17
   fixed: |
     class Pricing
     {
         private const int BulkQuantity = 10;
-        private const decimal BulkPriceFactor = 0.9m;
+        private const double BulkPriceFactor = 0.9;
 
-        public decimal OnlineTotal(decimal price, int quantity)
+        public double OnlineTotal(double price, int quantity)
         {
-            decimal total = price * quantity;
-            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+            double total = price * quantity;
+            if (quantity >= BulkQuantity)
+                total = total * BulkPriceFactor;
+            return total;
         }
 
-        public decimal StoreTotal(decimal price, int quantity)
+        public double StoreTotal(double price, int quantity)
         {
-            decimal total = price * quantity;
-            return quantity >= BulkQuantity ? total * BulkPriceFactor : total;
+            double total = price * quantity;
+            if (quantity >= BulkQuantity)
+                total = total * BulkPriceFactor;
+            return total;
         }
     }
   explanation: "בסניף נכתב `>` במקום `>=`, ולכן מי שקונה בדיוק 10 יחידות לא מקבל הנחה. זה מה שקורה כשאותו כלל משוכפל: העותקים מתרחקים זה מזה. מתודה אחת, למשל `ApplyBulkDiscount(total, quantity)`, הייתה מבטיחה כלל אחד לשני הערוצים."
@@ -328,11 +393,11 @@
     - |
       class OrderService
       {
-          private const decimal MemberPriceFactor = 0.9m;
+          private const double MemberPriceFactor = 0.9;
 
-          public decimal Checkout(decimal price, bool isMember)
+          public double Checkout(double price, bool isMember)
           {
-              decimal total;
+              double total;
               if (isMember)
               {
                   total = price * MemberPriceFactor;
@@ -349,17 +414,19 @@
     - |
       class OrderService
       {
-          private const decimal MemberPriceFactor = 0.9m;
+          private const double MemberPriceFactor = 0.9;
 
-          public decimal Checkout(decimal price, bool isMember)
+          public double Checkout(double price, bool isMember)
           {
-              decimal total = isMember ? price * MemberPriceFactor : price;
+              double total = price;
+              if (isMember)
+                  total = price * MemberPriceFactor;
               Console.WriteLine("Saving order...");
               return total;
           }
       }
   answer: 1
-  explanation: "כששני הענפים של `if` מסתיימים באותה פקודה, היא לא שייכת לתנאי. מוציאים אותה החוצה (Consolidate Duplicate Conditional Fragments), ונשאר רק מה שבאמת שונה: חישוב המחיר."
+  explanation: "כששני הענפים של `if` מסתיימים באותה פקודה, היא לא שייכת לתנאי. מוציאים אותה החוצה (Consolidate Duplicate Conditional Fragments), ובתוך התנאי נשאר רק מה שבאמת שונה: חישוב המחיר."
   optionExplanations:
     "0": "ההדפסה משוכפלת בשני הענפים, והקורא צריך להשוות ביניהם כדי לגלות מה שונה."
 
@@ -395,11 +462,27 @@
   code: |
     class Invoice
     {
-        public decimal Net { get; set; }
+        private double net;
 
-        public decimal Vat() => Net * 0.18m;
-        public decimal Gross() => Net * 1.18m;
-        public string Summary() => $"VAT: {Net * 0.18m}, Gross: {Net + Net * 0.18m}";
+        public Invoice(double net)
+        {
+            this.net = net;
+        }
+
+        public double Vat()
+        {
+            return net * 0.18;
+        }
+
+        public double Gross()
+        {
+            return net * 1.18;
+        }
+
+        public string Summary()
+        {
+            return $"VAT: {net * 0.18}, Gross: {net + net * 0.18}";
+        }
     }
   options:
     - "1"
@@ -407,11 +490,11 @@
     - "3"
     - "4"
   answer: 3
-  explanation: "אותו ידע מופיע ארבע פעמים: שלוש פעמים `0.18m` ופעם אחת בצורה אחרת, `1.18m`, שקל לפספס בחיפוש. עם קבוע אחד `VatRate`, ועם `Gross() => Net + Vat()` ו-`Summary` שמשתמשת ב-`Vat()` וב-`Gross()`, השינוי הוא במקום אחד."
+  explanation: "אותו ידע מופיע ארבע פעמים: שלוש פעמים `0.18` ופעם אחת בצורה אחרת, `1.18`, שקל לפספס בחיפוש. עם קבוע אחד `VatRate`, עם `Gross` שמחזירה `net + Vat()`, ועם `Summary` שמשתמשת ב-`Vat()` וב-`Gross()`, השינוי הוא במקום אחד."
   optionExplanations:
     "0": "זה המצב הרצוי, אבל כאן השיעור לא מוגדר במקום אחד."
     "1": "יש יותר מופעים: גם ב-`Summary`, ושם השיעור מופיע פעמיים."
-    "2": "קל לפספס את `1.18m` ב-`Gross`, שהוא אותו שיעור בצורה אחרת."
+    "2": "קל לפספס את `1.18` ב-`Gross`, שהוא אותו שיעור בצורה אחרת."
 
 - id: cs.clean-code.dry.015
   type: single
@@ -420,20 +503,26 @@
   code: |
     class UserForm
     {
-        public bool IsValid(string userName) => userName.Length <= 20;
+        public bool IsValid(string userName)
+        {
+            return userName.Length <= 20;
+        }
 
-        public string Hint() => "Up to 20 characters";
+        public string Hint()
+        {
+            return "Up to 20 characters";
+        }
     }
   options:
     - "לא, כי אין בקוד שתי שורות זהות"
-    - "כן: שתי המתודות משתמשות ב-=>, וזה שכפול תחבירי"
+    - "כן: שתי המתודות מתחילות ב-public, וזה שכפול תחבירי"
     - "לא, כי אחד המופעים נמצא בתוך מחרוזת, ומחרוזות לא נחשבות קוד"
     - "כן: הידע «אורך מקסימלי 20» מופיע פעמיים, ואם ישנו אותו במקום אחד ההודעה תשקר"
   answer: 3
   explanation: "שכפול של ידע לא חייב להיראות כמו שורות זהות. אם הכלל ישתנה ל-30 רק ב-`IsValid`, המשתמש יראה הודעה שגויה. קבוע אחד `MaxUserNameLength`, שמשמש גם בבדיקה וגם בהודעה (`$\"Up to {MaxUserNameLength} characters\"`), פותר את זה."
   optionExplanations:
     "0": "DRY עוסק בידע, לא בטקסט זהה; כאן אותו מספר מופיע בשני מקומות."
-    "1": "תחביר משותף הוא לא ידע; אין סיבה להימנע משימוש ב-`=>`."
+    "1": "תחביר משותף הוא לא ידע; אין סיבה להימנע מ-`public`."
     "2": "המספר בתוך ההודעה הוא אותו כלל עסקי, ולכן הוא חלק מהשכפול."
 
 - id: cs.clean-code.dry.016
@@ -441,28 +530,50 @@
   difficulty: 2
   prompt: "הקוד אמור להעתיק את כתובת המשלוח לכתובת החיוב ולהדפיס `Haifa 3100000`. איזו שורה צריך לתקן?"
   code: |
-    var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
-    var billing = new Address();
-    billing.City = shipping.City;
-    billing.ZipCode = billing.ZipCode;
-    Console.WriteLine($"{billing.City} {billing.ZipCode}");
+    Address shipping = new Address("Haifa", "3100000");
+    Address billing = new Address("", "");
+    billing.SetCity(shipping.GetCity());
+    billing.SetZipCode(billing.GetZipCode());
+    Console.WriteLine(billing.GetCity() + " " + billing.GetZipCode());
 
     class Address
     {
-        public string City { get; set; }
-        public string ZipCode { get; set; }
+        private string city;
+        private string zipCode;
+
+        public Address(string city, string zipCode)
+        {
+            this.city = city;
+            this.zipCode = zipCode;
+        }
+
+        public string GetCity() { return city; }
+        public void SetCity(string city) { this.city = city; }
+        public string GetZipCode() { return zipCode; }
+        public void SetZipCode(string zipCode) { this.zipCode = zipCode; }
     }
   answer: 4
   fixed: |
-    var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
-    var billing = new Address();
-    billing.City = shipping.City;
-    billing.ZipCode = shipping.ZipCode;
-    Console.WriteLine($"{billing.City} {billing.ZipCode}");
+    Address shipping = new Address("Haifa", "3100000");
+    Address billing = new Address("", "");
+    billing.SetCity(shipping.GetCity());
+    billing.SetZipCode(shipping.GetZipCode());
+    Console.WriteLine(billing.GetCity() + " " + billing.GetZipCode());
 
     class Address
     {
-        public string City { get; set; }
-        public string ZipCode { get; set; }
+        private string city;
+        private string zipCode;
+
+        public Address(string city, string zipCode)
+        {
+            this.city = city;
+            this.zipCode = zipCode;
+        }
+
+        public string GetCity() { return city; }
+        public void SetCity(string city) { this.city = city; }
+        public string GetZipCode() { return zipCode; }
+        public void SetZipCode(string zipCode) { this.zipCode = zipCode; }
     }
-  explanation: "השורה הועתקה מהשורה הקודמת ורק חלק ממנה עודכן, ולכן `billing.ZipCode` מקבל את עצמו (`null`). העתקה ידנית של שדה אחרי שדה חוזרת על אותו דפוס ומזמינה באגים כאלה; מתודה אחת כמו `CopyFrom(Address other)`, או `record` עם `with`, כותבת את ההעתקה פעם אחת."
+  explanation: "השורה הועתקה מהשורה הקודמת ורק חלק ממנה עודכן, ולכן `billing` מקבל את המיקוד הריק של עצמו. העתקה ידנית של שדה אחרי שדה חוזרת על אותו דפוס ומזמינה באגים כאלה; בנאי מעתיק (Copy Constructor) `Address(Address other)` כותב את ההעתקה פעם אחת."

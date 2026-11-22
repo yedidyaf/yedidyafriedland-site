@@ -224,21 +224,21 @@
 - id: py.data-structures.lists.015
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להחזיר רשימה חדשה שבה כל ערך מוכפל ב-2, בלי לשנות את הרשימה שהתקבלה. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור ליצור רשימה חדשה שבה כל ערך מוכפל ב-2, בלי לשנות את הרשימה המקורית, ולהדפיס `[1, 2, 3] [2, 4, 6]`. איזו שורה צריך לתקן?"
   code: |
-    def doubled(values):
-        result = values
-        for i in range(len(result)):
-            result[i] *= 2
-        return result
+    values = [1, 2, 3]
+    result = values
+    for i in range(len(result)):
+        result[i] *= 2
+    print(values, result)
   answer: 2
-  explanation: "`result = values` לא יוצר רשימה חדשה, אלא הפניה לאותה רשימה. הלולאה משנה את הרשימה המקורית של מי שקרא לפונקציה. צריך להעתיק קודם: `result = values.copy()`."
+  explanation: "`result = values` לא יוצר רשימה חדשה, אלא שם נוסף לאותה רשימה. הלולאה משנה את הרשימה המקורית, ומודפס `[2, 4, 6] [2, 4, 6]`. צריך להעתיק קודם: `result = values.copy()`."
   fixed: |
-    def doubled(values):
-        result = values.copy()
-        for i in range(len(result)):
-            result[i] *= 2
-        return result
+    values = [1, 2, 3]
+    result = values.copy()
+    for i in range(len(result)):
+        result[i] *= 2
+    print(values, result)
 
 - id: py.data-structures.lists.016
   type: bug
