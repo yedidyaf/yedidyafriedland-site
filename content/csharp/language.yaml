@@ -12,8 +12,8 @@ simulation:
   blueprint:
     basics: 4
     control-flow: 5
-    strings: 3
     collections: 3
+    strings: 3
     methods: 4
     oop: 7
     clean-code: 4
@@ -64,6 +64,15 @@ chapters:
         title_he: שליטה בלולאות
         title_en: Loop Control
         summary_he: break, continue, לולאות מקוננות, ותנאי עצירה.
+  - id: collections
+    title_he: מערכים
+    title_en: Arrays
+    description_he: מערכים חד־ממדיים ודו־ממדיים. אורך קבוע, אינדקסים, מעבר בלולאה, מערך מונים וחיפוש.
+    topics:
+      - id: arrays
+        title_he: מערכים
+        title_en: Arrays
+        summary_he: יצירת מערך, אורך קבוע, ערכי ברירת מחדל, מעבר בלולאה, מערך מונים, מערך דו־ממדי ו-IndexOutOfRangeException.
   - id: strings
     title_he: מחרוזות
     title_en: Strings
@@ -81,15 +90,6 @@ chapters:
         title_he: מתודות מחרוזת
         title_en: String Methods
         summary_he: Substring, IndexOf, Contains, ToUpper, Replace, Split, CompareTo ועוד, ומה כל אחת מחזירה.
-  - id: collections
-    title_he: מערכים
-    title_en: Arrays
-    description_he: מערכים חד־ממדיים ודו־ממדיים. אורך קבוע, אינדקסים, מעבר בלולאה, מערך מונים וחיפוש.
-    topics:
-      - id: arrays
-        title_he: מערכים
-        title_en: Arrays
-        summary_he: יצירת מערך, אורך קבוע, ערכי ברירת מחדל, מעבר בלולאה, מערך מונים, מערך דו־ממדי ו-IndexOutOfRangeException.
   - id: methods
     title_he: מתודות
     title_en: Methods

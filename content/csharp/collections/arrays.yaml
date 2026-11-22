@@ -49,32 +49,6 @@
     "2": "המערך עצמו קיים (נוצר עם `new`), ולכן אין כאן הפניה ל-`null`."
     "3": "C# בודקת גבולות בכל גישה למערך ולא מחזירה ערך ברירת מחדל מחוץ לגבולות."
 
-- id: cs.collections.arrays.004
-  type: truefalse
-  difficulty: 2
-  prompt: "האורך של מערך נקבע ביצירה ולא משתנה. `Array.Resize` לא מגדילה את המערך הקיים, אלא יוצרת מערך חדש, מעתיקה אליו את האיברים ומפנה את המשתנה אליו."
-  answer: true
-  explanation: "למערך יש אורך קבוע (Fixed Length). לכן `Array.Resize(ref arr, n)` מקבלת את המשתנה עם `ref`: היא יוצרת מערך חדש בגודל `n`, מעתיקה את האיברים ומחליפה את ההפניה. כשצריך אוסף שגדל וקטן, משתמשים ב-`List<T>`."
-
-- id: cs.collections.arrays.005
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    int[] a = { 1, 2, 3 };
-    int[] b = (int[])a.Clone();
-    int[] c = a;
-    b[0] = 10;
-    c[1] = 20;
-    Console.WriteLine(string.Join(",", a));
-  options: ["1,20,3", "10,20,3", "1,2,3", "10,2,3"]
-  answer: 0
-  explanation: "מערך הוא טיפוס הפניה (Reference Type). `c = a` מעתיק רק את ההפניה, ולכן `c[1] = 20` משנה את אותו מערך ש-`a` מפנה אליו. `Clone` יוצר מערך חדש, ולכן השינוי ב-`b` לא משפיע על `a`."
-  optionExplanations:
-    "1": "`Clone` יוצר עותק נפרד, ולכן `b[0] = 10` לא נוגע ב-`a`."
-    "2": "`c = a` לא מעתיק את המערך. `c` ו-`a` הם שני שמות לאותו מערך."
-    "3": "זו התוצאה אם חושבים ש-`Clone` מחזיר את אותו מערך ו-`c = a` יוצר עותק. בפועל זה הפוך."
-
 - id: cs.collections.arrays.006
   type: output
   difficulty: 2
@@ -82,13 +56,13 @@
   code: |
     int[] nums = { 1, 2, 3 };
     Console.WriteLine(nums);
-    Console.WriteLine(string.Join(", ", nums));
-  options: ["System.Int32[]\n1, 2, 3", "[1, 2, 3]\n1, 2, 3", "1 2 3\n1, 2, 3", "System.Int32[]\n123"]
+  options: ["System.Int32[]", "[1, 2, 3]", "1 2 3", "123"]
   answer: 0
-  explanation: "מערך לא דורס את `ToString`, ולכן הדפסה ישירה שלו מדפיסה את שם הטיפוס `System.Int32[]`. כדי להדפיס את האיברים משתמשים ב-`string.Join` עם מפריד."
+  explanation: "הדפסה ישירה של מערך לא מדפיסה את האיברים שלו, אלא את שם הטיפוס: `System.Int32[]`. כדי להדפיס את האיברים צריך לעבור עליהם בלולאה ולהדפיס כל אחד."
   optionExplanations:
     "1": "כך מדפיסה פייתון רשימה. ב-C# הדפסת מערך מציגה את שם הטיפוס."
-    "3": "`string.Join(\", \", nums)` שם את המפריד `\", \"` בין האיברים, ולכן מתקבל `1, 2, 3`."
+    "2": "`Console.WriteLine` לא עוברת על האיברים בעצמה. צריך לולאה."
+    "3": "האיברים לא מודפסים בכלל, גם לא צמודים."
 
 - id: cs.collections.arrays.007
   type: output
@@ -105,25 +79,6 @@
   optionExplanations:
     "1": "`Length` לא מחזיר את מספר השורות. הוא סופר את כל התאים בכל הממדים."
     "2": "`GetLength(0)` מחזיר את הממד הראשון בהגדרה `[2, 3]`, כלומר 2."
-
-- id: cs.collections.arrays.008
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    int[][] rows = new int[3][];
-    rows[0] = new int[] { 1, 2 };
-    rows[1] = new int[4];
-    Console.WriteLine(rows.Length);
-    Console.WriteLine(rows[1].Length);
-    Console.WriteLine(rows[2] == null);
-  options: ["3\n4\nTrue", "3\n0\nTrue", "6\n4\nFalse", "3\n4\nFalse"]
-  answer: 0
-  explanation: "מערך משונן (Jagged Array) הוא מערך של מערכים. `new int[3][]` יוצר 3 תאים מסוג `int[]`, וכל אחד מהם מתחיל כ-`null` עד שמציבים בו מערך. לכן `rows[2]` הוא `null`, ו-`rows[1]` הוא מערך באורך 4."
-  optionExplanations:
-    "1": "`new int[4]` יוצר מערך באורך 4 שכל ערכיו 0. `Length` הוא מספר התאים ולא סכום הערכים."
-    "2": "`rows.Length` סופר רק את המערכים החיצוניים (3), ולא את כל המספרים שבתוכם."
-    "3": "התאים החיצוניים הם הפניות למערכים, וברירת המחדל שלהם היא `null`. לא נוצר מערך ריק אוטומטית."
 
 - id: cs.collections.arrays.009
   type: bug
@@ -161,7 +116,8 @@
         nums[i] = nums[j];
         nums[j] = temp;
     }
-    Console.WriteLine(string.Join(" ", nums));
+    for (int i = 0; i < nums.Length; i++)
+        Console.Write(nums[i] + " ");
   answer: 2
   explanation: "כל החלפה מטפלת בזוג: איבר מההתחלה ואיבר מהסוף. כשהלולאה עוברת על כל המערך, כל זוג מוחלף פעמיים, ובסוף המערך חוזר לסדר המקורי `1 2 3 4 5`. צריך לעצור באמצע: `i < nums.Length / 2`."
   fixed: |
@@ -173,7 +129,8 @@
         nums[i] = nums[j];
         nums[j] = temp;
     }
-    Console.WriteLine(string.Join(" ", nums));
+    for (int i = 0; i < nums.Length; i++)
+        Console.Write(nums[i] + " ");
 
 - id: cs.collections.arrays.011
   type: single
@@ -213,24 +170,6 @@
     "2": "זה מה שהיה קורה אילו ההשמה לעותק הייתה מותרת. אבל C# חוסמת אותה כבר בקומפילציה."
     "3": "`InvalidOperationException` נזרקת כששינוי מבנה של `List<T>` קורה בזמן `foreach`. כאן הקוד לא מגיע לריצה בכלל."
 
-- id: cs.collections.arrays.013
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    int[] nums = { 42, 7, 19, 3 };
-    Array.Sort(nums);
-    Console.WriteLine(nums[0] + " " + nums[3]);
-    Console.WriteLine(Array.IndexOf(nums, 42));
-    Console.WriteLine(Array.IndexOf(nums, 5));
-  options: ["3 42\n3\n-1", "3 42\n0\n-1", "42 3\n3\n-1", "3 42\n3\nIndexOutOfRangeException"]
-  answer: 0
-  explanation: "`Array.Sort` ממיינת את המערך עצמו בסדר עולה: `3 7 19 42`. אחרי המיון `42` נמצא באינדקס 3. `Array.IndexOf` מחזירה `-1` כשהערך לא נמצא, בלי לזרוק חריגה."
-  optionExplanations:
-    "1": "`0` היה המיקום של `42` לפני המיון. `Array.Sort` משנה את המערך במקום, ולכן המיקום השתנה."
-    "2": "מיון ברירת המחדל הוא בסדר עולה, מהקטן לגדול."
-    "3": "`IndexOf` לא זורקת חריגה על ערך חסר. היא מחזירה `-1`."
-
 - id: cs.collections.arrays.014
   type: single
   difficulty: 2
@@ -239,13 +178,13 @@
     - "`int[3] d = { 1, 2, 3 };`"
     - "`int[] a = new int[3] { 1, 2, 3 };`"
     - "`int[] b = { 1, 2, 3 };`"
-    - "`int[] c = [1, 2, 3];`"
+    - "`int[] c = new int[] { 1, 2, 3 };`"
   answer: 0
-  explanation: "ב-C# הגודל לא חלק מהטיפוס של המשתנה: הטיפוס הוא `int[]`, והגודל נקבע רק ביצירת המערך (`new int[3]`). שאר הצורות חוקיות: `new` עם גודל ורשימת ערכים, רשימת ערכים מקוצרת, וביטוי אוסף (Collection Expression) של C# 12."
+  explanation: "ב-C# הגודל לא חלק מהטיפוס של המשתנה: הטיפוס הוא `int[]`, והגודל נקבע רק ביצירת המערך (`new int[3]`). שאר הצורות חוקיות: `new` עם גודל וערכים, רשימת ערכים מקוצרת, ו-`new` בלי גודל, שבה הגודל נקבע לפי מספר הערכים."
   optionExplanations:
     "1": "מותר לציין גם גודל וגם ערכים, כל עוד מספר הערכים שווה לגודל."
     "2": "זו צורה מקוצרת וחוקית של אתחול מערך בהצהרה."
-    "3": "ביטויי אוסף עם סוגריים מרובעים נוספו ב-C# 12 וחוקיים למערכים."
+    "3": "בלי גודל בסוגריים, הקומפיילר סופר את הערכים וקובע גודל 3."
 
 - id: cs.collections.arrays.015
   type: cleaner
@@ -290,3 +229,107 @@
   prompt: "כמו בפייתון, `nums[-1]` מחזיר את האיבר האחרון במערך `nums`."
   answer: false
   explanation: "ב-C# אינדקס שלילי זורק `IndexOutOfRangeException` בזמן ריצה. כדי לגשת לאיבר האחרון כותבים `nums[nums.Length - 1]`, או משתמשים באופרטור האינדקס מהסוף: `nums[^1]`."
+
+- id: cs.collections.arrays.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[] digits = { 1, 3, 1, 2, 1 };
+    int[] counter = new int[4];
+    for (int i = 0; i < digits.Length; i++)
+    {
+        counter[digits[i]]++;
+    }
+    Console.WriteLine(counter[1]);
+    Console.WriteLine(counter[0]);
+  options: ["3\n0", "1\n1", "3\n1", "0\n3"]
+  answer: 0
+  explanation: "זה מערך מונים (Counter Array): כל ערך ב-`digits` משמש כאינדקס ב-`counter`, ושם מוסיפים 1. הספרה 1 מופיעה שלוש פעמים, ולכן `counter[1]` הוא 3. הספרה 0 לא מופיעה, ו-`counter[0]` נשאר בערך ברירת המחדל 0."
+  optionExplanations:
+    "1": "`counter[1]` סופר כמה פעמים הופיע הערך 1, ולא מה יש באינדקס 1 של `digits`."
+    "2": "0 לא מופיע ב-`digits`, ולכן `counter[0]` לא גדל אף פעם."
+    "3": "הסדר הפוך: השורה הראשונה מדפיסה את המונה של 1."
+
+- id: cs.collections.arrays.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int[] a = { 4, 9, 2, 9, 5 };
+    int maxIndex = 0;
+    for (int i = 1; i < a.Length; i++)
+    {
+        if (a[i] > a[maxIndex])
+            maxIndex = i;
+    }
+    Console.WriteLine(maxIndex);
+  options: ["1", "3", "9", "0"]
+  answer: 0
+  explanation: "הקוד שומר את האינדקס של האיבר הגדול ביותר. הערך 9 מופיע באינדקס 1 ובאינדקס 3, אבל ההשוואה היא `>` ולא `>=`, ולכן 9 השני לא נחשב גדול יותר והאינדקס הראשון נשאר."
+  optionExplanations:
+    "1": "באינדקס 3 התנאי `9 > 9` שקר, ולכן `maxIndex` לא מתעדכן."
+    "2": "מודפס האינדקס, לא הערך עצמו."
+    "3": "ב-`i = 1` מתקיים `9 > 4`, ולכן `maxIndex` מתעדכן ל-1."
+
+- id: cs.collections.arrays.019
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int[,] m = new int[2, 3];
+    int sum = 0;
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            m[i, j] = i + j;
+            sum += m[i, j];
+        }
+    }
+    Console.WriteLine(m[1, 2]);
+    Console.WriteLine(sum);
+  options: ["3\n9", "2\n9", "3\n6", "3\n15"]
+  answer: 0
+  explanation: "במערך דו־ממדי (2D Array) ניגשים לתא עם שני אינדקסים: שורה ועמודה. כל תא מקבל `i + j`: בשורה 0 הערכים 0, 1, 2 ובשורה 1 הערכים 1, 2, 3. התא `m[1, 2]` הוא 3, וסכום כל התאים הוא 9."
+  optionExplanations:
+    "1": "`m[1, 2]` הוא שורה 1 ועמודה 2, ולכן ערכו `1 + 2 = 3`."
+    "2": "6 הוא סכום השורה השנייה בלבד. הסכום כולל את שתי השורות."
+    "3": "הערכים הם `i + j`, לא `i * 3 + j`."
+
+- id: cs.collections.arrays.020
+  type: bug
+  difficulty: 2
+  prompt: "הקוד אמור להדפיס `True` אם `target` נמצא במערך. עבור 8 הוא מדפיס `False`. איזו שורה צריך לתקן?"
+  code: |
+    int[] nums = { 5, 8, 3 };
+    int target = 8;
+    bool found = false;
+    for (int i = 0; i < nums.Length; i++)
+    {
+        found = nums[i] == target;
+    }
+    Console.WriteLine(found);
+  answer: 6
+  explanation: "בכל סיבוב `found` נדרס בתוצאת ההשוואה של האיבר הנוכחי, ולכן בסוף הוא משקף רק את האיבר האחרון (3). דגל של חיפוש צריך להשתנות רק כשמוצאים: `if (nums[i] == target) found = true;`."
+  fixed: |
+    int[] nums = { 5, 8, 3 };
+    int target = 8;
+    bool found = false;
+    for (int i = 0; i < nums.Length; i++)
+    {
+        if (nums[i] == target) found = true;
+    }
+    Console.WriteLine(found);
+
+- id: cs.collections.arrays.021
+  type: single
+  difficulty: 1
+  prompt: "אחרי `int[] arr = new int[5];`, אילו אינדקסים חוקיים במערך?"
+  options: ["0 עד 4", "1 עד 5", "0 עד 5", "1 עד 4"]
+  answer: 0
+  explanation: "מערך בגודל 5 מכיל 5 איברים, והאינדקס הראשון הוא 0. לכן האינדקסים הם 0, 1, 2, 3 ו-4. ניסיון לגשת ל-`arr[5]` זורק `IndexOutOfRangeException`."
+  optionExplanations:
+    "1": "האינדקסים מתחילים מ-0, ולכן `arr[5]` מחוץ למערך."
+    "2": "יש רק 5 איברים, ולכן אין אינדקס 5."
+    "3": "גם 0 הוא אינדקס חוקי, והוא של האיבר הראשון."

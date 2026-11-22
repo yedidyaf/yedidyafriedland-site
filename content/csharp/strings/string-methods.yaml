@@ -32,23 +32,6 @@
     "2": "`Substring(0, 4)` מחזירה ארבעה תווים בלבד, ולכן `@` לא נכלל."
     "3": "0 הוא אינדקס תקין, של התו הראשון. לכן הערך שמסמן \"לא נמצא\" הוא `-1`."
 
-- id: cs.strings.string-methods.003
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    string csv = "red,,blue,";
-    string[] parts = csv.Split(',');
-    Console.WriteLine(parts.Length);
-    Console.WriteLine(csv.Split(',', StringSplitOptions.RemoveEmptyEntries).Length);
-  options: ["4\n2", "2\n2", "3\n2", "4\n4"]
-  answer: 0
-  explanation: "`Split` מחזירה את מה שיש בין כל שני מפרידים, גם אם זו מחרוזת ריקה. כאן מתקבלים `red`, `\"\"`, `blue` ו-`\"\"`: ארבעה חלקים. `StringSplitOptions.RemoveEmptyEntries` מסננת את החלקים הריקים, ונשארים שניים."
-  optionExplanations:
-    "1": "בלי `RemoveEmptyEntries` החלקים הריקים נשמרים במערך."
-    "2": "גם הפסיק האחרון יוצר חלק, מחרוזת ריקה אחריו. כל פסיק מוסיף חלק אחד."
-    "3": "`RemoveEmptyEntries` מסירה את שני החלקים הריקים, ולכן בשורה השנייה מודפס 2."
-
 - id: cs.strings.string-methods.004
   type: output
   difficulty: 2
@@ -135,25 +118,19 @@
 - id: cs.strings.string-methods.009
   type: bug
   difficulty: 1
-  prompt: "`GetDomain` אמורה להחזיר את הדומיין של כתובת מייל, למשל `mail.com` עבור `dana@mail.com`. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את הדומיין של כתובת המייל, כלומר `mail.com`. איזו שורה צריך לתקן?"
   code: |
-    Console.WriteLine(GetDomain("dana@mail.com"));
-
-    static string GetDomain(string email)
-    {
-        int at = email.IndexOf('@');
-        return email.Substring(at);
-    }
-  answer: 6
+    string email = "dana@mail.com";
+    int at = email.IndexOf('@');
+    string domain = email.Substring(at);
+    Console.WriteLine(domain);
+  answer: 3
   explanation: "`IndexOf` מחזירה את האינדקס של `@` עצמו, ו-`Substring(at)` מתחילה ממנו, ולכן התוצאה היא `@mail.com`. הדומיין מתחיל תו אחד אחרי, ב-`at + 1`."
   fixed: |
-    Console.WriteLine(GetDomain("dana@mail.com"));
-
-    static string GetDomain(string email)
-    {
-        int at = email.IndexOf('@');
-        return email.Substring(at + 1);
-    }
+    string email = "dana@mail.com";
+    int at = email.IndexOf('@');
+    string domain = email.Substring(at + 1);
+    Console.WriteLine(domain);
 
 - id: cs.strings.string-methods.010
   type: bug
@@ -212,22 +189,6 @@
     "2": "`Trim` מסירה רווחים רק בקצוות, לא באמצע."
     "3": "`Remove` מקבלת אינדקס ולא תו. התו `' '` מומר למספר 32, והקריאה מנסה למחוק הכול מאינדקס 32."
 
-- id: cs.strings.string-methods.013
-  type: single
-  difficulty: 2
-  prompt: "איזו בדיקה מחזירה `true` כש-`name` הוא `null`, מחרוזת ריקה, או מחרוזת שיש בה רק רווחים?"
-  options:
-    - "`string.IsNullOrWhiteSpace(name)`"
-    - "`string.IsNullOrEmpty(name)`"
-    - "`name.Trim() == \"\"`"
-    - "`name.Length == 0`"
-  answer: 0
-  explanation: "`string.IsNullOrWhiteSpace` היא מתודה סטטית, ולכן בטוחה גם כש-`name` הוא `null`. היא מכסה את שלושת המקרים בבדיקה אחת."
-  optionExplanations:
-    "1": "`IsNullOrEmpty` מחזירה `false` עבור `\"   \"`, כי מחרוזת של רווחים אינה ריקה."
-    "2": "כש-`name` הוא `null`, הקריאה ל-`Trim` זורקת `NullReferenceException`."
-    "3": "גם כאן `null` גורם ל-`NullReferenceException`, ומחרוזת של רווחים אורכה גדול מ-0."
-
 - id: cs.strings.string-methods.014
   type: truefalse
   difficulty: 1
@@ -270,3 +231,35 @@
   optionExplanations:
     "1": "המספר 8 הוא מספר קסם (Magic Number) שחייב להתאים לאורך הקידומת, ו-`Substring` תזרוק חריגה על מחרוזת שקצרה מ-8 תווים."
     "2": "`IndexOf(...) == 0` היא דרך עקיפה לשאול את אותה שאלה, והיא ממשיכה לחפש בכל המחרוזת גם כשההתחלה לא תואמת."
+
+- id: cs.strings.string-methods.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    Console.WriteLine("cat".CompareTo("cat"));
+    Console.WriteLine("apple".CompareTo("banana") < 0);
+  options: ["0\nTrue", "True\nTrue", "0\nFalse", "1\nTrue"]
+  answer: 0
+  explanation: "`CompareTo` משווה מחרוזות לפי סדר מילוני: היא מחזירה 0 כשהן שוות, מספר שלילי כשהמחרוזת הראשונה באה קודם, ומספר חיובי כשהיא באה אחרי. `apple` באה לפני `banana`, ולכן התוצאה שלילית וההשוואה `< 0` היא `True`."
+  optionExplanations:
+    "1": "`CompareTo` מחזירה מספר (`int`), לא `bool`. עבור מחרוזות שוות היא מחזירה 0."
+    "2": "`apple` באה לפני `banana` במילון, ולכן התוצאה שלילית."
+    "3": "מחרוזות שוות מחזירות 0, לא 1."
+
+- id: cs.strings.string-methods.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string s = "Hello";
+    Console.WriteLine(s.ToUpper());
+    Console.WriteLine(s.ToLower().IndexOf('h'));
+    Console.WriteLine(s);
+  options: ["HELLO\n0\nHello", "HELLO\n-1\nHello", "HELLO\n0\nhello", "HELLO\n0\nHELLO"]
+  answer: 0
+  explanation: "`ToUpper` ו-`ToLower` מחזירות מחרוזת חדשה ולא משנות את `s`. `s.ToLower()` היא `hello`, ושם `'h'` נמצא באינדקס 0. `s` עצמה נשארת `Hello`."
+  optionExplanations:
+    "1": "ה-`IndexOf` רץ על התוצאה של `ToLower`, שבה יש `h` קטנה בהתחלה."
+    "2": "`ToLower` לא משנה את `s`, אלא מחזירה מחרוזת חדשה."
+    "3": "גם `ToUpper` לא משנה את `s`. מחרוזות ב-C# אינן ניתנות לשינוי (Immutable)."
