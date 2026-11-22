@@ -1,4 +1,5 @@
 /** Turns loaded content into the JSON shapes the browser uses. Build-time only. */
+import { prepareLine } from './codewrap';
 import { highlightLines } from './highlight';
 import type { LoadedLanguage, LoadedChapter } from './content';
 import type { ChapterData, ClientQuestion, LanguageIndex } from './types';
@@ -22,6 +23,17 @@ export function languageIndex(lang: LoadedLanguage): LanguageIndex {
   };
 }
 
+/**
+ * Architecture labels are one-line strings. A Python label like
+ * "class Repo(Protocol): def get(self, id: int) -> Item" stands for a class header and
+ * its method, so it is shown as the two lines (with indentation) it would be in a file.
+ */
+export function labelSource(label: string, hl: string): string {
+  if (hl !== 'python') return label;
+  const m = /^(class\s+[^:]+:)\s+((?:async\s+)?def\s.+)$/.exec(label.trim());
+  return m ? `${m[1]}\n    ${m[2]}` : label;
+}
+
 export async function clientQuestion(q: LoadedChapter['topics'][number]['questions'][number], chapter: string, topic: string, hl: string): Promise<ClientQuestion> {
   const cq: ClientQuestion = { ...q, chapter, topic };
   if ('code' in q && q.code) cq.codeHtml = await highlightLines(q.code, hl);
@@ -31,7 +43,16 @@ export async function clientQuestion(q: LoadedChapter['topics'][number]['questio
     cq.optionsHtml = await Promise.all(q.options.map((o) => (isMultiline(o) ? highlightLines(o.replace(/\n+$/, ''), hl) : [])));
   if (q.type === 'bug' && q.fixed) cq.fixedHtml = await highlightLines(q.fixed, hl);
   if (q.type === 'architecture')
-    cq.itemsHtml = await Promise.all(q.items.map(async (i) => (await highlightLines(i.label, hl)).join(' ')));
+    cq.itemsHtml = await Promise.all(
+      q.items.map(async (i) =>
+        (await highlightLines(labelSource(i.label, hl), hl))
+          .map((line) => {
+            const { ind, html } = prepareLine(line);
+            return `<span class="sl" style="--ind:${ind}">${html}</span>`;
+          })
+          .join(''),
+      ),
+    );
   return cq;
 }
 
