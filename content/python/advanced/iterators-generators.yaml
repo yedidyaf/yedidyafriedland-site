@@ -184,7 +184,7 @@
 - id: py.advanced.iterators-generators.010
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להפיק את כל המספרים הזוגיים מ-0 ועד `limit` (לא כולל). באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להפיק את כל המספרים הזוגיים מ-0 ועד `limit` (לא כולל). איזו שורה צריך לתקן?
   code: |
     def evens(limit):
         for n in range(limit):
@@ -205,7 +205,7 @@
 - id: py.advanced.iterators-generators.011
   type: bug
   difficulty: 3
-  prompt: "האיטרטור אמור לספור לאחור מ-`start` עד 1 כולל. למשל, `list(Countdown(3))` צריך להחזיר `[3, 2, 1]`. באיזו שורה הבאג?"
+  prompt: "האיטרטור אמור לספור לאחור מ-`start` עד 1 כולל. למשל, `list(Countdown(3))` צריך להחזיר `[3, 2, 1]`. איזו שורה צריך לתקן?"
   code: |
     class Countdown:
         def __init__(self, start):

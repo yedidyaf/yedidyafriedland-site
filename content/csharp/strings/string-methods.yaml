@@ -135,7 +135,7 @@
 - id: cs.strings.string-methods.009
   type: bug
   difficulty: 1
-  prompt: "`GetDomain` אמורה להחזיר את הדומיין של כתובת מייל, למשל `mail.com` עבור `dana@mail.com`. באיזו שורה הבאג?"
+  prompt: "`GetDomain` אמורה להחזיר את הדומיין של כתובת מייל, למשל `mail.com` עבור `dana@mail.com`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(GetDomain("dana@mail.com"));
 
@@ -158,7 +158,7 @@
 - id: cs.strings.string-methods.010
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס כל תגית שמכילה את התו `#`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס כל תגית שמכילה את התו `#`. איזו שורה צריך לתקן?"
   code: |
     string[] tags = { "#urgent", "home", "#work" };
     foreach (string tag in tags)

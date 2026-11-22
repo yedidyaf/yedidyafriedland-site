@@ -205,7 +205,7 @@
 - id: py.exceptions.context-managers.009
   type: bug
   difficulty: 2
-  prompt: מנהל ההקשר אמור להדפיס `closed` ביציאה ולתת לכל חריגה מתוך הבלוק להמשיך הלאה. באיזו שורה הבאג?
+  prompt: מנהל ההקשר אמור להדפיס `closed` ביציאה ולתת לכל חריגה מתוך הבלוק להמשיך הלאה. איזו שורה צריך לתקן?
   code: |
     class Session:
         def __enter__(self):
@@ -230,7 +230,7 @@
 - id: py.exceptions.context-managers.010
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה לכתוב לקובץ את כל השורות ואחריהן שורה `END`. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לכתוב לקובץ את כל השורות ואחריהן שורה `END`. איזו שורה צריך לתקן?
   code: |
     def save_report(path, lines):
         with open(path, "w") as f:
@@ -249,7 +249,7 @@
 - id: py.exceptions.context-managers.011
   type: bug
   difficulty: 3
-  prompt: המחלקה אמורה לשמש ב-`with` ולהגדיל את רמת ההזחה בכניסה ולהקטין אותה ביציאה. באיזו שורה הבאג?
+  prompt: המחלקה אמורה לשמש ב-`with` ולהגדיל את רמת ההזחה בכניסה ולהקטין אותה ביציאה. איזו שורה צריך לתקן?
   code: |
     class Indent:
         def __init__(self):

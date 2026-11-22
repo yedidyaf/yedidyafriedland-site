@@ -126,7 +126,7 @@
 - id: cs.basics.casting.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את הממוצע המדויק, `4.25`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את הממוצע המדויק, `4.25`. איזו שורה צריך לתקן?"
   code: |
     int sum = 17;
     int count = 4;
@@ -143,7 +143,7 @@
 - id: cs.basics.casting.010
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור לעגל את המחיר לשלם הקרוב ולהדפיס `8`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לעגל את המחיר לשלם הקרוב ולהדפיס `8`. איזו שורה צריך לתקן?"
   code: |
     double price = 7.8;
     int rounded = (int)price;

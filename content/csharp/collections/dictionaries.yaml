@@ -161,7 +161,7 @@
 - id: cs.collections.dictionaries.009
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לספור כמה קולות קיבל כל צבע ולהדפיס `2`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לספור כמה קולות קיבל כל צבע ולהדפיס `2`. איזו שורה צריך לתקן?"
   code: |
     string[] votes = { "red", "blue", "red" };
     var tally = new Dictionary<string, int>();
@@ -184,7 +184,7 @@
 - id: cs.collections.dictionaries.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להוסיף איש קשר רק אם השם שלו עוד לא נמצא בספר הטלפונים, ולהדפיס `1`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להוסיף איש קשר רק אם השם שלו עוד לא נמצא בספר הטלפונים, ולהדפיס `1`. איזו שורה צריך לתקן?"
   code: |
     var phoneBook = new Dictionary<string, string>();
     phoneBook["Noa"] = "050-1234567";

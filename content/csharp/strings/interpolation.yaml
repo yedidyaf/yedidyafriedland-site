@@ -168,7 +168,7 @@
 - id: cs.strings.interpolation.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את סכום המחירים עם שתי ספרות אחרי הנקודה, למשל `Total: 29.74`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את סכום המחירים עם שתי ספרות אחרי הנקודה, למשל `Total: 29.74`. איזו שורה צריך לתקן?"
   code: |
     double[] prices = { 9.99, 15.5, 4.25 };
     double total = 0;
@@ -223,7 +223,7 @@
 - id: cs.strings.interpolation.013
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את הנתיב `C:\\new\\reports\\summary.csv`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את הנתיב `C:\\new\\reports\\summary.csv`. איזו שורה צריך לתקן?"
   code: |
     string folder = "C:\new\reports";
     string file = folder + @"\summary.csv";

@@ -486,7 +486,7 @@
 - id: cs.software-design.design-patterns.016
   type: bug
   difficulty: 1
-  prompt: "המחלקה `Logger` אמורה להיות Singleton: מופע אחד בלבד בכל התוכנית. באיזו שורה הבאג?"
+  prompt: "המחלקה `Logger` אמורה להיות Singleton: מופע אחד בלבד בכל התוכנית. איזו שורה צריך לתקן?"
   code: |
     public sealed class Logger
     {

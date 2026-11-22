@@ -149,7 +149,7 @@
 - id: py.clean-code.style.010
   type: bug
   difficulty: 1
-  prompt: הפונקציה אמורה להחזיר את סכום כל המחירים ברשימה. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להחזיר את סכום כל המחירים ברשימה. איזו שורה צריך לתקן?
   code: |
     def total(prices):
         result = 0
@@ -168,7 +168,7 @@
 - id: py.clean-code.style.011
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר `\"no discount\"` רק כשלא הועברה הנחה בכלל (`None`). הנחה של `0` היא ערך תקין, ועבורה צריך לחזור `\"0% off\"`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר `\"no discount\"` רק כשלא הועברה הנחה בכלל (`None`). הנחה של `0` היא ערך תקין, ועבורה צריך לחזור `\"0% off\"`. איזו שורה צריך לתקן?"
   code: |
     def describe_discount(discount=None):
         if not discount:

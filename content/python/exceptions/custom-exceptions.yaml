@@ -203,7 +203,7 @@
 - id: py.exceptions.custom-exceptions.011
   type: bug
   difficulty: 2
-  prompt: הקוד אמור לזרוק `InvalidEmailError` כשאין `@` בכתובת. באיזו שורה הבאג?
+  prompt: הקוד אמור לזרוק `InvalidEmailError` כשאין `@` בכתובת. איזו שורה צריך לתקן?
   code: |
     class InvalidEmailError:
         pass
@@ -228,7 +228,7 @@
 - id: py.exceptions.custom-exceptions.012
   type: bug
   difficulty: 2
-  prompt: כל שגיאות הספרייה אמורות להיתפס על ידי `except LibraryError`. באיזו שורה הבאג?
+  prompt: כל שגיאות הספרייה אמורות להיתפס על ידי `except LibraryError`. איזו שורה צריך לתקן?
   code: |
     class LibraryError(Exception):
         pass
@@ -261,7 +261,7 @@
 - id: py.exceptions.custom-exceptions.013
   type: bug
   difficulty: 3
-  prompt: "המחלקה אמורה לשמור את `used` ואת `limit`, ו-`print(e)` אמור להציג למשל `used 120 of 100`. באיזו שורה הבאג?"
+  prompt: "המחלקה אמורה לשמור את `used` ואת `limit`, ו-`print(e)` אמור להציג למשל `used 120 of 100`. איזו שורה צריך לתקן?"
   code: |
     class QuotaExceededError(Exception):
         def __init__(self, used, limit):

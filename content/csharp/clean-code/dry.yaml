@@ -85,7 +85,7 @@
 - id: cs.clean-code.dry.003
   type: bug
   difficulty: 2
-  prompt: הקוד אמור להדפיס את הממוצע של כל מקצוע. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את הממוצע של כל מקצוע. איזו שורה צריך לתקן?
   code: |
     int[] mathGrades = { 90, 80 };
     int[] englishGrades = { 70, 100, 85 };
@@ -273,7 +273,7 @@
 - id: cs.clean-code.dry.010
   type: bug
   difficulty: 3
-  prompt: באתר ובסניף, קנייה של 10 יחידות או יותר מקבלת הנחה של 10%. באיזו שורה הבאג?
+  prompt: באתר ובסניף, קנייה של 10 יחידות או יותר מקבלת הנחה של 10%. איזו שורה צריך לתקן?
   code: |
     class Pricing
     {
@@ -439,7 +439,7 @@
 - id: cs.clean-code.dry.016
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להעתיק את כתובת המשלוח לכתובת החיוב ולהדפיס `Haifa 3100000`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להעתיק את כתובת המשלוח לכתובת החיוב ולהדפיס `Haifa 3100000`. איזו שורה צריך לתקן?"
   code: |
     var shipping = new Address { City = "Haifa", ZipCode = "3100000" };
     var billing = new Address();

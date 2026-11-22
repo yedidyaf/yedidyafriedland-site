@@ -346,7 +346,7 @@
 - id: cs.exceptions.throwing.015
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה לזרוק חריגה כאשר הכמות קטנה או שווה ל-0. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לזרוק חריגה כאשר הכמות קטנה או שווה ל-0. איזו שורה צריך לתקן?"
   code: |
     class Order
     {
@@ -377,7 +377,7 @@
 - id: cs.exceptions.throwing.016
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה לעטוף שגיאת פורמט ב-`InvalidOperationException`, ולשמור את החריגה המקורית לצורך איתור התקלה. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לעטוף שגיאת פורמט ב-`InvalidOperationException`, ולשמור את החריגה המקורית לצורך איתור התקלה. איזו שורה צריך לתקן?"
   code: |
     class ConfigLoader
     {

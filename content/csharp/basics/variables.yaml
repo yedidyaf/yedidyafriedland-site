@@ -51,7 +51,7 @@
 - id: cs.basics.variables.005
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להחליף בין הערכים של `a` ו-`b` ולהדפיס `7 3`. באיזו שורה הבאג?
+  prompt: הקוד אמור להחליף בין הערכים של `a` ו-`b` ולהדפיס `7 3`. איזו שורה צריך לתקן?
   code: |
     int a = 3;
     int b = 7;
@@ -185,7 +185,7 @@
 - id: cs.basics.variables.013
   type: bug
   difficulty: 1
-  prompt: הקוד אמור לסכם שלוש רכישות ולהדפיס `60`. באיזו שורה הבאג?
+  prompt: הקוד אמור לסכם שלוש רכישות ולהדפיס `60`. איזו שורה צריך לתקן?
   code: |
     int total = 0;
     int purchase = 10;

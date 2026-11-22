@@ -202,7 +202,7 @@
 - id: cs.control-flow.loop-control.012
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס את כל המספרים שאינם שליליים, ולדלג רק על השליליים. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את כל המספרים שאינם שליליים, ולדלג רק על השליליים. איזו שורה צריך לתקן?
   code: |
     int[] values = { 4, -1, 7, -3, 9 };
     foreach (int v in values)
@@ -225,7 +225,7 @@
 - id: cs.control-flow.loop-control.013
   type: bug
   difficulty: 2
-  prompt: הקוד אמור להדפיס לוח כפל בגודל 3 על 3. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס לוח כפל בגודל 3 על 3. איזו שורה צריך לתקן?
   code: |
     for (int i = 1; i <= 3; i++)
     {
@@ -250,7 +250,7 @@
 - id: cs.control-flow.loop-control.014
   type: bug
   difficulty: 3
-  prompt: "המתודה אמורה לבדוק אם `n` הוא מספר ראשוני. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה לבדוק אם `n` הוא מספר ראשוני. איזו שורה צריך לתקן?"
   code: |
     bool IsPrime(int n)
     {

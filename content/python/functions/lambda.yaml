@@ -173,7 +173,7 @@
 - id: py.functions.lambda.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את המוצר היקר ביותר, `('book', 40)`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את המוצר היקר ביותר, `('book', 40)`. איזו שורה צריך לתקן?"
   code: |
     products = [("pen", 5), ("book", 40), ("bag", 25)]
     by_price = sorted(products, key=lambda p: p[0], reverse=True)
@@ -188,7 +188,7 @@
 - id: py.functions.lambda.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להשאיר רק את השמות שאינם ריקים ולהדפיס `['dana', 'yossi']`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להשאיר רק את השמות שאינם ריקים ולהדפיס `['dana', 'yossi']`. איזו שורה צריך לתקן?"
   code: |
     names = ["dana", "", "yossi", ""]
     non_empty = map(lambda n: n != "", names)

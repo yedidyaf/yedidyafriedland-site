@@ -156,7 +156,7 @@
 - id: cs.oop.classes-objects.008
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את שטח המלבן, 12, אבל מדפיס 0. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את שטח המלבן, 12, אבל מדפיס 0. איזו שורה צריך לתקן?"
   code: |
     var rect = new Rectangle(3, 4);
     Console.WriteLine(rect.Area());
@@ -204,7 +204,7 @@
 - id: cs.oop.classes-objects.010
   type: bug
   difficulty: 3
-  prompt: "לכל שחקן אמור להיות ניקוד משלו, ולכן הקוד אמור להדפיס 10. בפועל הוא מדפיס 15. באיזו שורה הבאג?"
+  prompt: "לכל שחקן אמור להיות ניקוד משלו, ולכן הקוד אמור להדפיס 10. בפועל הוא מדפיס 15. איזו שורה צריך לתקן?"
   code: |
     var a = new Player();
     var b = new Player();
@@ -268,7 +268,7 @@
 - id: cs.oop.classes-objects.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס 1, אבל נזרקת `NullReferenceException`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס 1, אבל נזרקת `NullReferenceException`. איזו שורה צריך לתקן?"
   code: |
     var cart = new Cart();
     cart.Add("apple");

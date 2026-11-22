@@ -135,7 +135,7 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
       const sel = answer?.kind === 'line' ? answer.line : undefined;
       return (
         <div>
-          <p class="hint muted">{locked ? '' : 'לחצו על השורה שבה נמצא הבאג.'}</p>
+          <p class="hint muted">{locked ? '' : 'לחצו על השורה שצריך לתקן.'}</p>
           <CodeBlock
             lines={q.codeHtml ?? []}
             numbers
@@ -208,7 +208,7 @@ function Feedback({ q, answer, correct }: { q: ClientQuestion; answer?: Answer; 
       <p class={`verdict ${correct ? 'ok' : 'no'}`}>
         {!answer ? 'לא עניתם על השאלה.' : correct ? 'נכון!' : 'לא נכון.'}
         {partial !== null && answer && !correct && <span class="muted"> שיבצתם נכון {Math.round(partial * 100)}% מהפריטים.</span>}
-        {q.type === 'bug' && answer && !correct && <span class="muted"> הבאג בשורה {q.answer}.</span>}
+        {q.type === 'bug' && answer && !correct && <span class="muted"> השורה שצריך לתקן היא {q.answer}.</span>}
       </p>
       {wrongWhy && (
         <div class="wrongwhy">

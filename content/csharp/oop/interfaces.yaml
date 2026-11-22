@@ -224,7 +224,7 @@
 - id: cs.oop.interfaces.010
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור למיין את השחקנים לפי ניקוד בסדר עולה ולהדפיס `Ben, Gal, Avi`, אבל מדפיס `Avi, Gal, Ben`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור למיין את השחקנים לפי ניקוד בסדר עולה ולהדפיס `Ben, Gal, Avi`, אבל מדפיס `Avi, Gal, Ben`. איזו שורה צריך לתקן?"
   code: |
     var players = new List<Player> { new("Avi", 30), new("Ben", 10), new("Gal", 20) };
     players.Sort();
@@ -259,7 +259,7 @@
 - id: cs.oop.interfaces.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס מחיר אחרי 20% הנחה לסטודנט, אבל מדפיס את המחיר המלא, 100. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס מחיר אחרי 20% הנחה לסטודנט, אבל מדפיס את המחיר המלא, 100. איזו שורה צריך לתקן?"
   code: |
     IDiscount discount = new StudentDiscount();
     Console.WriteLine(discount.Apply(100));

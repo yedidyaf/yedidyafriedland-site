@@ -152,7 +152,7 @@
 - id: py.basics.operators.013
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור להדפיס `True` אם `number` זוגי, ו-`False` אחרת. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `True` אם `number` זוגי, ו-`False` אחרת. איזו שורה צריך לתקן?"
   code: |
     number = 7
     is_even = number % 2 == 1
@@ -167,7 +167,7 @@
 - id: py.basics.operators.014
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את ממוצע שלושת הציונים: `90.0`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את ממוצע שלושת הציונים: `90.0`. איזו שורה צריך לתקן?"
   code: |
     a = 80
     b = 90
@@ -186,7 +186,7 @@
 - id: py.basics.operators.015
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס את ספרת האחדות, ספרת העשרות וספרת המאות של `4725`, כלומר `5 2 7`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את ספרת האחדות, ספרת העשרות וספרת המאות של `4725`, כלומר `5 2 7`. איזו שורה צריך לתקן?"
   code: |
     number = 4725
     units = number % 10

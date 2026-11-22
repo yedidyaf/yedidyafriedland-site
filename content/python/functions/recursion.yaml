@@ -151,7 +151,7 @@
 - id: py.functions.recursion.009
   type: bug
   difficulty: 1
-  prompt: "הפונקציה אמורה לחשב `base` בחזקת `exp`. בפועל היא נכשלת ב-`RecursionError`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה לחשב `base` בחזקת `exp`. בפועל היא נכשלת ב-`RecursionError`. איזו שורה צריך לתקן?"
   code: |
     def power(base, exp):
         if exp == 0:
@@ -168,7 +168,7 @@
 - id: py.functions.recursion.010
   type: bug
   difficulty: 2
-  prompt: "הפונקציה אמורה להחזיר את מכפלת המספרים ברשימה, למשל `product([2, 3, 4])` צריכה להחזיר 24. בפועל היא תמיד מחזירה 0. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להחזיר את מכפלת המספרים ברשימה, למשל `product([2, 3, 4])` צריכה להחזיר 24. בפועל היא תמיד מחזירה 0. איזו שורה צריך לתקן?"
   code: |
     def product(nums):
         if not nums:
@@ -185,7 +185,7 @@
 - id: py.functions.recursion.011
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה לבדוק אם מחרוזת היא פלינדרום (נקראת אותו דבר משני הכיוונים). בפועל `is_palindrome(\"abcba\")` מחזירה `False`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה לבדוק אם מחרוזת היא פלינדרום (נקראת אותו דבר משני הכיוונים). בפועל `is_palindrome(\"abcba\")` מחזירה `False`. איזו שורה צריך לתקן?"
   code: |
     def is_palindrome(s):
         if len(s) <= 1:

@@ -113,7 +113,7 @@
 - id: py.oop.classes-objects.006
   type: bug
   difficulty: 1
-  prompt: "המחלקה אמורה לשמור שם ומחיר של מוצר ולחשב מחיר אחרי הנחה. באיזו שורה הבאג?"
+  prompt: "המחלקה אמורה לשמור שם ומחיר של מוצר ולחשב מחיר אחרי הנחה. איזו שורה צריך לתקן?"
   code: |
     class Product:
         def __init__(self, name, price):
@@ -158,7 +158,7 @@
 - id: py.oop.classes-objects.008
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור ליצור חשבון עם יתרה 0, להפקיד 100 ולהדפיס `100`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור ליצור חשבון עם יתרה 0, להפקיד 100 ולהדפיס `100`. איזו שורה צריך לתקן?"
   code: |
     class BankAccount:
         def __init__(self, balance):

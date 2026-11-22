@@ -197,7 +197,7 @@
 - id: cs.control-flow.conditions.012
   type: bug
   difficulty: 1
-  prompt: "המתודה אמורה להחזיר `Pass` לכל ציון של 60 ומעלה. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר `Pass` לכל ציון של 60 ומעלה. איזו שורה צריך לתקן?"
   code: |
     string Result(int score)
     {
@@ -218,7 +218,7 @@
 - id: cs.control-flow.conditions.013
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה להחזיר `true` רק כאשר `name` אינו `null` ואינו מחרוזת ריקה, ואסור לה לזרוק חריגה. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר `true` רק כאשר `name` אינו `null` ואינו מחרוזת ריקה, ואסור לה לזרוק חריגה. איזו שורה צריך לתקן?"
   code: |
     bool IsValidName(string name)
     {
@@ -235,7 +235,7 @@
 - id: cs.control-flow.conditions.014
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור למשוך את הסכום מהחשבון רק אם יש בו מספיק כסף. באיזו שורה הבאג?"
+  prompt: "הקוד אמור למשוך את הסכום מהחשבון רק אם יש בו מספיק כסף. איזו שורה צריך לתקן?"
   code: |
     int balance = 100;
     int amount = 150;

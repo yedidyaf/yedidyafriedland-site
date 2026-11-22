@@ -153,7 +153,7 @@
 - id: py.control-flow.loop-control.009
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור להדפיס רק את המספר השלילי הראשון ברשימה. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס רק את המספר השלילי הראשון ברשימה. איזו שורה צריך לתקן?"
   code: |
     numbers = [5, 8, -2, 7, -9]
     for n in numbers:
@@ -172,7 +172,7 @@
 - id: py.control-flow.loop-control.010
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה להדפיס `found` אם `target` נמצא ב-`items`, ו-`not found` פעם אחת בלבד אם הוא לא נמצא. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה להדפיס `found` אם `target` נמצא ב-`items`, ו-`not found` פעם אחת בלבד אם הוא לא נמצא. איזו שורה צריך לתקן?"
   code: |
     def report(items, target):
         for item in items:
@@ -195,7 +195,7 @@
 - id: py.control-flow.loop-control.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס רק את השמות שאינם ריקים. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס רק את השמות שאינם ריקים. איזו שורה צריך לתקן?"
   code: |
     names = ["Dana", "", "Avi"]
     for name in names:

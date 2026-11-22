@@ -176,7 +176,7 @@
 - id: cs.oop.abstract-classes.008
   type: bug
   difficulty: 2
-  prompt: "`Discount` אמורה להחזיר את סכום ההנחה. לסטודנט יש 10% הנחה, ולכן המחיר הסופי של 200 צריך להיות 180, אבל מתקבל 20. באיזו שורה הבאג?"
+  prompt: "`Discount` אמורה להחזיר את סכום ההנחה. לסטודנט יש 10% הנחה, ולכן המחיר הסופי של 200 צריך להיות 180, אבל מתקבל 20. איזו שורה צריך לתקן?"
   code: |
     PriceCalculator calc = new StudentPrice();
     Console.WriteLine(calc.Final(200));
@@ -213,7 +213,7 @@
 - id: cs.oop.abstract-classes.009
   type: bug
   difficulty: 2
-  prompt: "דמי הניהול של חשבון חיסכון אמורים להיות 1% מהיתרה, כלומר 10 עבור יתרה של 1000, אבל עבור חשבון החיסכון מודפס אפס. באיזו שורה הבאג?"
+  prompt: "דמי הניהול של חשבון חיסכון אמורים להיות 1% מהיתרה, כלומר 10 עבור יתרה של 1000, אבל עבור חשבון החיסכון מודפס אפס. איזו שורה צריך לתקן?"
   code: |
     var accounts = new List<Account> { new Checking(1000), new Savings(1000) };
     foreach (var account in accounts)

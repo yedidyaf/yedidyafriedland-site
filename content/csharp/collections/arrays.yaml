@@ -128,7 +128,7 @@
 - id: cs.collections.arrays.009
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס את סכום המחירים במערך. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס את סכום המחירים במערך. איזו שורה צריך לתקן?
   code: |
     int[] prices = { 30, 45, 25 };
     int total = 0;
@@ -151,7 +151,7 @@
 - id: cs.collections.arrays.010
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להפוך את סדר האיברים במערך עצמו (In Place) ולהדפיס `5 4 3 2 1`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להפוך את סדר האיברים במערך עצמו (In Place) ולהדפיס `5 4 3 2 1`. איזו שורה צריך לתקן?"
   code: |
     int[] nums = { 1, 2, 3, 4, 5 };
     for (int i = 0; i < nums.Length; i++)

@@ -316,7 +316,7 @@
 - id: py.oop.abstract-classes.012
   type: bug
   difficulty: 3
-  prompt: "`Exporter` אמורה להיות מחלקה מופשטת: אסור ליצור ממנה מופע, וכל יורשת חייבת לממש `export`. אבל `Exporter()` עובד בלי שגיאה. באיזו שורה הבאג?"
+  prompt: "`Exporter` אמורה להיות מחלקה מופשטת: אסור ליצור ממנה מופע, וכל יורשת חייבת לממש `export`. אבל `Exporter()` עובד בלי שגיאה. איזו שורה צריך לתקן?"
   code: |
     from abc import ABC, abstractmethod
 
@@ -347,7 +347,7 @@
 - id: py.oop.abstract-classes.013
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את שטח העיגול, אבל כבר יצירת `Circle(2)` זורקת `TypeError`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את שטח העיגול, אבל כבר יצירת `Circle(2)` זורקת `TypeError`. איזו שורה צריך לתקן?"
   code: |
     from abc import ABC, abstractmethod
 

@@ -157,7 +157,7 @@
 - id: cs.advanced.async-await.008
   type: bug
   difficulty: 2
-  prompt: "המתודה אמורה להמתין שנייה בלי לחסום את התהליכון. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להמתין שנייה בלי לחסום את התהליכון. איזו שורה צריך לתקן?"
   code: |
     await RetryAsync();
     Console.WriteLine("done");
@@ -184,7 +184,7 @@
 - id: cs.advanced.async-await.009
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס `send failed` כשהשליחה נכשלת, אבל מודפס `sent`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס `send failed` כשהשליחה נכשלת, אבל מודפס `sent`. איזו שורה צריך לתקן?"
   code: |
     try
     {

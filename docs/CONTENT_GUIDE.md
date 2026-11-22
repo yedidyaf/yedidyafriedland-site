@@ -95,7 +95,10 @@ Exactly one option is correct under every reasonable reading.
 `code` (required), `answer` = 1-based line number of the single buggy line,
 optional `fixed` (the corrected full code, shown after answering; strongly recommended).
 - Exactly one line is wrong; fixing that line alone fixes the program.
-- The prompt states what the code is **supposed** to do.
+- The prompt states what the code is **supposed** to do, and always ends with
+  `איזו שורה צריך לתקן?` (never "where is the bug"). `answer` is the line to change,
+  which is not always the line where the program crashes or throws: e.g. a `catch`
+  of the wrong exception type is fixed on the `catch` line, not on the `int.Parse` line.
 - The bug should be a realistic logic bug (off-by-one, wrong operator, wrong
   variable, mutable default, missing `return`, wrong comparison...). The code must
   still parse/compile unless tagged `compile-error`.

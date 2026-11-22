@@ -233,7 +233,7 @@
 - id: py.advanced.modules-packages.014
   type: bug
   difficulty: 1
-  prompt: "כשמריצים את הקובץ ישירות, הוא אמור לקרוא ל-`main`. כשמייבאים אותו, `main` לא צריכה לרוץ. באיזו שורה הבאג?"
+  prompt: "כשמריצים את הקובץ ישירות, הוא אמור לקרוא ל-`main`. כשמייבאים אותו, `main` לא צריכה לרוץ. איזו שורה צריך לתקן?"
   code: |
     def main():
         print("Running report...")
@@ -252,7 +252,7 @@
 - id: py.advanced.modules-packages.015
   type: bug
   difficulty: 3
-  prompt: "הפונקציות אמורות לבנות נתיבים לקבצים בתוך תיקייה. באיזו שורה הבאג?"
+  prompt: "הפונקציות אמורות לבנות נתיבים לקבצים בתוך תיקייה. איזו שורה צריך לתקן?"
   code: |
     import os.path
 

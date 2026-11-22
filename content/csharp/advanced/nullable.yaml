@@ -187,7 +187,7 @@
 - id: cs.advanced.nullable.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה. לקוח בלי הנחה משלם 100. כאן הוא קורס. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את המחיר אחרי הנחה. לקוח בלי הנחה משלם 100. כאן הוא קורס. איזו שורה צריך לתקן?"
   code: |
     int? discount = GetDiscount("guest");
     int toPay = 100 - discount.Value;
@@ -206,7 +206,7 @@
 - id: cs.advanced.nullable.013
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס 1000 (משכורת בלי בונוס), אבל מודפס 0. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס 1000 (משכורת בלי בונוס), אבל מודפס 0. איזו שורה צריך לתקן?"
   code: |
     int? bonus = null;
     int salary = 1000;

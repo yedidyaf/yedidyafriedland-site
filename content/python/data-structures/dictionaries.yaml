@@ -209,7 +209,7 @@
 - id: py.data-structures.dictionaries.014
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה לספור כמה פעמים כל מילה מופיעה ברשימה. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לספור כמה פעמים כל מילה מופיעה ברשימה. איזו שורה צריך לתקן?
   code: |
     def count_words(words):
         counts = {}
@@ -228,7 +228,7 @@
 - id: py.data-structures.dictionaries.015
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס כל מוצר ואת המחיר שלו. באיזו שורה הבאג?
+  prompt: הקוד אמור להדפיס כל מוצר ואת המחיר שלו. איזו שורה צריך לתקן?
   code: |
     prices = {"tea": 8, "cake": 15}
     for name, price in prices:
@@ -243,7 +243,7 @@
 - id: py.data-structures.dictionaries.016
   type: bug
   difficulty: 3
-  prompt: "הפונקציה אמורה לקבץ מילים לפי האורך שלהן, למשל `{3: ['sun', 'sky'], 4: ['moon']}`. באיזו שורה הבאג?"
+  prompt: "הפונקציה אמורה לקבץ מילים לפי האורך שלהן, למשל `{3: ['sun', 'sky'], 4: ['moon']}`. איזו שורה צריך לתקן?"
   code: |
     def group_by_length(words):
         groups = {}

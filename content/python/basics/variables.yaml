@@ -163,7 +163,7 @@
 - id: py.basics.variables.012
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להחליף בין הערכים של `first` ו-`second` ולהדפיס `right left`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להחליף בין הערכים של `first` ו-`second` ולהדפיס `right left`. איזו שורה צריך לתקן?"
   code: |
     first = "left"
     second = "right"
@@ -220,7 +220,7 @@
 - id: py.basics.variables.016
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור לשמור את רשימת הציונים לפני ההוספה, ואז להדפיס `before: [80, 90]` ו-`after: [80, 90, 100]`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לשמור את רשימת הציונים לפני ההוספה, ואז להדפיס `before: [80, 90]` ו-`after: [80, 90, 100]`. איזו שורה צריך לתקן?"
   code: |
     scores = [80, 90]
     saved = scores

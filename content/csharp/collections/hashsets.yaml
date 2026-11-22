@@ -164,7 +164,7 @@
 - id: cs.collections.hashsets.011
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור לאסוף את כתובות המייל בלי כפילויות, לפי סדר ההופעה הראשונה, ולהדפיס `2`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור לאסוף את כתובות המייל בלי כפילויות, לפי סדר ההופעה הראשונה, ולהדפיס `2`. איזו שורה צריך לתקן?"
   code: |
     string[] emails = { "a@x.com", "b@x.com", "a@x.com" };
     var seen = new HashSet<string>();
@@ -191,7 +191,7 @@
 - id: cs.collections.hashsets.012
   type: bug
   difficulty: 3
-  prompt: "הקוד אמור להדפיס כמה מהמוזמנים החשובים הגיעו, מתוך כמה הוזמנו: `2 of 3 VIPs arrived`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס כמה מהמוזמנים החשובים הגיעו, מתוך כמה הוזמנו: `2 of 3 VIPs arrived`. איזו שורה צריך לתקן?"
   code: |
     var vip = new HashSet<int> { 101, 102, 103 };
     var present = new HashSet<int> { 102, 103, 200 };

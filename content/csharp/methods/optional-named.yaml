@@ -138,7 +138,7 @@
 - id: cs.methods.optional-named.008
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את המחיר של 3 יחידות במחיר 50 עם הנחה של 10%, כלומר `135`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את המחיר של 3 יחידות במחיר 50 עם הנחה של 10%, כלומר `135`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(Price(50, 10, 3));
 
@@ -161,7 +161,7 @@
 - id: cs.methods.optional-named.009
   type: bug
   difficulty: 1
-  prompt: "`Power(5)` אמורה להחזיר את הריבוע של 5, כלומר `25`, ו-`Power(2, 10)` אמורה להחזיר `1024`. באיזו שורה הבאג?"
+  prompt: "`Power(5)` אמורה להחזיר את הריבוע של 5, כלומר `25`, ו-`Power(2, 10)` אמורה להחזיר `1024`. איזו שורה צריך לתקן?"
   code: |
     Console.WriteLine(Power(5));
     Console.WriteLine(Power(2, 10));

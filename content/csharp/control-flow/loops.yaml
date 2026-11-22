@@ -186,7 +186,7 @@
 - id: cs.control-flow.loops.013
   type: bug
   difficulty: 1
-  prompt: "המתודה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר את סכום המספרים מ-1 עד `n`, כולל `n`. איזו שורה צריך לתקן?"
   code: |
     int SumTo(int n)
     {
@@ -213,7 +213,7 @@
 - id: cs.control-flow.loops.014
   type: bug
   difficulty: 2
-  prompt: "הקוד אמור להדפיס את איברי המערך בסדר הפוך: `4321`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס את איברי המערך בסדר הפוך: `4321`. איזו שורה צריך לתקן?"
   code: |
     int[] items = { 1, 2, 3, 4 };
     for (int i = items.Length; i >= 0; i--)
@@ -232,7 +232,7 @@
 - id: cs.control-flow.loops.015
   type: bug
   difficulty: 3
-  prompt: "המתודה אמורה להחזיר את האינדקס של `target` במערך, או `-1` אם הוא לא קיים בו. באיזו שורה הבאג?"
+  prompt: "המתודה אמורה להחזיר את האינדקס של `target` במערך, או `-1` אם הוא לא קיים בו. איזו שורה צריך לתקן?"
   code: |
     int IndexOf(int[] values, int target)
     {

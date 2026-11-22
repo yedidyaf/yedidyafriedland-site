@@ -401,7 +401,7 @@
 - id: cs.clean-code.code-smells.013
   type: bug
   difficulty: 2
-  prompt: תקופת הניסיון היא 14 ימים. באיזו שורה הבאג?
+  prompt: תקופת הניסיון היא 14 ימים. איזו שורה צריך לתקן?
   code: |
     class Subscription
     {
@@ -422,7 +422,7 @@
 - id: cs.clean-code.code-smells.014
   type: bug
   difficulty: 3
-  prompt: "המתודה עברה רפקטורינג מקינון עמוק לסעיפי שמירה (Guard Clauses). היא אמורה לזרוק `InvalidOperationException` רק כשאין מספיק מלאי. באיזו שורה הבאג?"
+  prompt: "המתודה עברה רפקטורינג מקינון עמוק לסעיפי שמירה (Guard Clauses). היא אמורה לזרוק `InvalidOperationException` רק כשאין מספיק מלאי. איזו שורה צריך לתקן?"
   code: |
     class Inventory
     {

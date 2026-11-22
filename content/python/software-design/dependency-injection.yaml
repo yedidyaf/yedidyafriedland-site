@@ -104,7 +104,7 @@
 - id: py.software-design.dependency-injection.005
   type: bug
   difficulty: 2
-  prompt: "הבדיקה מעבירה לשירות `FakeNotifier`, אבל בכל זאת נשלח אימייל אמיתי. באיזו שורה הבאג?"
+  prompt: "הבדיקה מעבירה לשירות `FakeNotifier`, אבל בכל זאת נשלח אימייל אמיתי. איזו שורה צריך לתקן?"
   code: |
     class OrderService:
         def __init__(self, repo, notifier):

@@ -197,7 +197,7 @@
 - id: py.exceptions.raising.012
   type: bug
   difficulty: 1
-  prompt: הפונקציה אמורה לזרוק `ValueError` כשהעוצמה מחוץ לטווח 0 עד 100. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לזרוק `ValueError` כשהעוצמה מחוץ לטווח 0 עד 100. איזו שורה צריך לתקן?
   code: |
     def set_volume(percent):
         if percent < 0 or percent > 100:
@@ -214,7 +214,7 @@
 - id: py.exceptions.raising.013
   type: bug
   difficulty: 2
-  prompt: הפונקציה אמורה להדפיס הודעה ביומן כשההמרה נכשלת, ואז להעביר את אותה שגיאה לקוד שקרא לה. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה להדפיס הודעה ביומן כשההמרה נכשלת, ואז להעביר את אותה שגיאה לקוד שקרא לה. איזו שורה צריך לתקן?
   code: |
     def load_config(text):
         try:
@@ -235,7 +235,7 @@
 - id: py.exceptions.raising.014
   type: bug
   difficulty: 3
-  prompt: הפונקציה אמורה לזרוק `ValueError` חדשה עם הודעה ברורה, משורשרת לחריגה המקורית. באיזו שורה הבאג?
+  prompt: הפונקציה אמורה לזרוק `ValueError` חדשה עם הודעה ברורה, משורשרת לחריגה המקורית. איזו שורה צריך לתקן?
   code: |
     def parse_price(text):
         try:

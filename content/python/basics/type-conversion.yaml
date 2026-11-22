@@ -151,7 +151,7 @@
 - id: py.basics.type-conversion.013
   type: bug
   difficulty: 2
-  prompt: "המחיר והכמות מגיעים מטופס כטקסט. הקוד אמור להדפיס את המחיר הכולל, `50.0`. באיזו שורה הבאג?"
+  prompt: "המחיר והכמות מגיעים מטופס כטקסט. הקוד אמור להדפיס את המחיר הכולל, `50.0`. איזו שורה צריך לתקן?"
   code: |
     price = "12.50"
     quantity = "4"
@@ -168,7 +168,7 @@
 - id: py.basics.type-conversion.014
   type: bug
   difficulty: 1
-  prompt: "הקוד אמור להדפיס, למשל, `You are 26 years old`. באיזו שורה הבאג?"
+  prompt: "הקוד אמור להדפיס, למשל, `You are 26 years old`. איזו שורה צריך לתקן?"
   code: |
     birth_year = input("Birth year: ")
     age = 2026 - int(birth_year)
@@ -185,7 +185,7 @@
 - id: py.basics.type-conversion.015
   type: bug
   difficulty: 3
-  prompt: "הטקסט `answer` מגיע מקובץ הגדרות ומכיל `\"True\"` או `\"False\"`. הקוד אמור להדפיס `Subscribed: False` כשהטקסט הוא `\"False\"`. באיזו שורה הבאג?"
+  prompt: "הטקסט `answer` מגיע מקובץ הגדרות ומכיל `\"True\"` או `\"False\"`. הקוד אמור להדפיס `Subscribed: False` כשהטקסט הוא `\"False\"`. איזו שורה צריך לתקן?"
   code: |
     answer = "False"
     is_subscribed = bool(answer)
