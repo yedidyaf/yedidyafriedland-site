@@ -71,7 +71,7 @@
   code: |
     class OrderService
     {
-        private readonly List<string> _items = new();
+        private List<string> _items = new();
 
         public int CountItems(string orderId)
         {
@@ -346,7 +346,7 @@
   code: |
     class Library
     {
-        private readonly List<Book> _books = new();
+        private List<Book> _books = new();
 
         public List<Book> Find(DateTime today) =>
             _books.Where(b => !b.IsReturned && b.DueDate < today).ToList();

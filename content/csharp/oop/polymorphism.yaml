@@ -70,16 +70,16 @@
   difficulty: 1
   prompt: "בקוד `Animal a = new Dog(); a.Speak();`, מה התנאי לכך שתרוץ הגרסה של `Speak` שמוגדרת ב-`Dog`?"
   options:
-    - "`Speak` מוגדרת `virtual` (או `abstract`) ב-`Animal`, ו-`Dog` דורסת אותה עם `override`"
-    - "מספיק ש-`Dog` תגדיר מתודה `Speak` עם המילה `new`"
-    - "מספיק שהאובייקט נוצר עם `new Dog()`, בלי קשר להגדרת המתודות"
-    - "`Dog` צריכה להיות מוגדרת `sealed`"
+    - "`Speak` מוגדרת `virtual` ב-`Animal`, ו-`Dog` דורסת אותה עם `override`"
+    - "מספיק ש-`Dog` תגדיר פעולה `Speak` עם אותה חתימה, בלי `override`"
+    - "מספיק שהעצם נוצר עם `new Dog()`, בלי קשר להגדרת הפעולות"
+    - "צריך להגדיר את `a` מטיפוס `object`"
   answer: 0
-  explanation: "קישור דינמי (Dynamic Dispatch) קורה רק למתודות וירטואליות. `virtual` בבסיס מאפשר דריסה, ו-`override` ביורשת מבצע אותה. בלי זוג המילים האלה, הקומפיילר בוחר את המתודה לפי טיפוס ההפניה, `Animal`."
+  explanation: "הבחירה בזמן ריצה לפי הטיפוס האמיתי של העצם (Dynamic Dispatch) קורית רק לפעולות וירטואליות. `virtual` בבסיס מאפשר דריסה, ו-`override` ביורשת מבצע אותה. בלי זוג המילים האלה, הקומפיילר בוחר את הפעולה לפי טיפוס ההפניה, `Animal`."
   optionExplanations:
-    "1": "`new` מסתיר את המתודה של הבסיס ולא דורס אותה. דרך הפניה מטיפוס `Animal` תרוץ הגרסה של `Animal`."
-    "2": "כשהמתודה לא וירטואלית, הטיפוס האמיתי של האובייקט לא משפיע על הבחירה."
-    "3": "`sealed` רק מונע ירושה מ-`Dog`. הוא לא קשור לבחירת המתודה."
+    "1": "בלי `override` הפעולה ב-`Dog` רק מסתירה את זו של הבסיס. דרך הפניה מטיפוס `Animal` תרוץ הגרסה של `Animal`."
+    "2": "כשהפעולה לא וירטואלית, הטיפוס האמיתי של העצם לא משפיע על הבחירה."
+    "3": "ל-`object` אין פעולה `Speak`, ולכן הקריאה לא תתקמפל."
 
 - id: cs.oop.polymorphism.005
   type: truefalse
@@ -335,7 +335,7 @@
 - id: cs.oop.polymorphism.011
   type: cleaner
   difficulty: 2
-  prompt: איזו גרסה נקייה יותר?
+  prompt: שתי הגרסאות מחשבות שטח של צורות. איזו נקייה יותר?
   options:
     - |
       class Shape
@@ -348,19 +348,21 @@
 
       class Circle : Shape
       {
-          public double Radius { get; init; }
+          private double radius;
+
           public override double Area()
           {
-              return Math.PI * Radius * Radius;
+              return Math.PI * radius * radius;
           }
       }
 
       class Square : Shape
       {
-          public double Side { get; init; }
+          private double side;
+
           public override double Area()
           {
-              return Side * Side;
+              return side * side;
           }
       }
     - |
@@ -368,17 +370,35 @@
       {
           public double Area()
           {
-              if (this is Circle c) return Math.PI * c.Radius * c.Radius;
-              if (this is Square s) return s.Side * s.Side;
+              if (this is Circle)
+                  return ((Circle)this).AreaOfCircle();
+              if (this is Square)
+                  return ((Square)this).AreaOfSquare();
               return 0;
           }
       }
 
-      class Circle : Shape { public double Radius { get; init; } }
+      class Circle : Shape
+      {
+          private double radius;
 
-      class Square : Shape { public double Side { get; init; } }
+          public double AreaOfCircle()
+          {
+              return Math.PI * radius * radius;
+          }
+      }
+
+      class Square : Shape
+      {
+          private double side;
+
+          public double AreaOfSquare()
+          {
+              return side * side;
+          }
+      }
   answer: 0
-  explanation: "בגרסה הפולימורפית כל צורה יודעת לחשב את השטח של עצמה. הוספת `Triangle` היא מחלקה חדשה עם `override`, בלי לגעת בקוד קיים. זה עקרון פתוח/סגור (Open/Closed)."
+  explanation: "בגרסה הפולימורפית כל צורה יודעת לחשב את השטח של עצמה. הוספת `Triangle` היא מחלקה חדשה עם `override`, בלי לגעת בקוד קיים."
   optionExplanations:
     "1": "שרשרת בדיקות `is` מחליפה את הפולימורפיזם: מחלקת הבסיס צריכה להכיר כל יורשת, וכל צורה חדשה מחייבת לשנות את `Shape`. צורה ששוכחים להוסיף מחזירה 0 בשקט."
 

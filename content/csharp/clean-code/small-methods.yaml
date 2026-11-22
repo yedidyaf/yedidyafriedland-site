@@ -30,7 +30,7 @@
   code: |
     class LoginService
     {
-        private readonly Dictionary<string, string> _passwordHashes = new();
+        private Dictionary<string, string> _passwordHashes = new();
         public string CurrentUser { get; private set; }
 
         public bool CheckPassword(string userName, string passwordHash)
