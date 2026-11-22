@@ -7,6 +7,7 @@ import { href } from '../../../../lib/url';
 import { bilingual } from '../../../../lib/text';
 import { QUESTION_TYPE_LABELS, type QuestionType } from '../../../../lib/schema';
 import { SITE } from '../../../../site';
+import { personId } from '../../../../lib/seo';
 
 export function getStaticPaths() {
   return getContent().flatMap((l) =>
@@ -44,7 +45,7 @@ const jsonLd = [
     educationalLevel: 'beginner to intermediate',
     inLanguage: 'he',
     description: topic.summary_he,
-    author: { '@type': 'Person', name: SITE.name_en },
+    author: { '@type': 'Person', '@id': personId(Astro.site), name: SITE.name_he, alternateName: SITE.name_en },
   },
   {
     '@context': 'https://schema.org',

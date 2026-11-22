@@ -54,3 +54,14 @@ CI (`.github/workflows/ci.yml`) runs all of the above on every push and pull req
 | `BASE_PATH` | `/` | sub-path hosting (GitHub Pages preview) |
 | `PUBLIC_CF_BEACON_TOKEN` | empty | Cloudflare Web Analytics; no script when empty |
 | `PUBLIC_NOINDEX` | empty | `1` adds `noindex` to every page |
+| `PUBLIC_GOOGLE_SITE_VERIFICATION` | empty | Search Console HTML-tag token (only if not verifying by DNS) |
+
+## Search and link previews
+
+- Every page has a canonical URL, `hreflang="he"`, Open Graph and Twitter tags with the
+  1200x630 `public/og.png` (WhatsApp, Facebook, LinkedIn, Telegram previews).
+- Every page carries one JSON-LD graph (`src/lib/seo.ts`): a `Person` (Hebrew and English name,
+  LinkedIn in `sameAs`) and a `WebSite` that points to him by `@id`. `/about/` is his `ProfilePage`.
+- `sitemap-index.xml` and `robots.txt` are generated; exam, progress and settings pages are `noindex`.
+- If `og.png` changes, keep it 1200x630 and under 300 KB (WhatsApp ignores bigger images).
+
