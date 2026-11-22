@@ -19,13 +19,14 @@
     int i = 5;
     int a = i++;
     int b = ++i;
-    Console.WriteLine($"{a} {b} {i}");
+    Console.WriteLine(a + " " + b + " " + i);
   options: ["5 7 7", "6 7 7", "5 6 6", "6 6 7"]
   answer: 0
   explanation: "`i++` (Postfix) מחזיר את הערך הנוכחי ורק אחר כך מגדיל, ולכן `a` הוא 5 ו-`i` הופך ל-6. `++i` (Prefix) מגדיל קודם ומחזיר את הערך החדש, ולכן `i` הופך ל-7 ו-`b` הוא 7."
   optionExplanations:
     "1": "`i++` מחזיר את הערך שלפני ההגדלה, ולכן `a` מקבל 5 ולא 6."
     "2": "גם `i++` וגם `++i` מגדילים את `i`. אחרי שתי ההגדלות `i` הוא 7."
+    "3": "`a` מקבל את הערך שלפני ההגדלה הראשונה, 5."
 
 - id: cs.basics.operators.003
   type: output
@@ -44,58 +45,13 @@
   type: single
   difficulty: 2
   prompt: איזה מהביטויים הבאים ערכו `3.5`?
-  options: ["`7 / 2.0`", "`7 / 2`", "`(double)(7 / 2)`", "`7 / 2 * 1.0`"]
+  options: ["`7 / 2.0`", "`7 / 2`", "`7 / 2 + 0.0`", "`7 / 2 * 1.0`"]
   answer: 0
-  explanation: "חלוקה עשרונית מתבצעת כשלפחות אחד האופרנדים הוא מטיפוס עשרוני. ב-`7 / 2.0` המחלק הוא `double`, ולכן התוצאה 3.5. בכל שאר הביטויים החלוקה `7 / 2` מתבצעת קודם בין שני `int` ומחזירה 3, ומה שבא אחריה כבר לא מחזיר את החלק שאבד."
+  explanation: "חלוקה עשרונית מתבצעת כשלפחות אחד הצדדים של החלוקה הוא `double`. ב-`7 / 2.0` המחלק הוא `double`, ולכן התוצאה 3.5. בכל שאר הביטויים החלוקה `7 / 2` מתבצעת קודם בין שני `int` ומחזירה 3, ומה שבא אחריה כבר לא מחזיר את החלק שאבד."
   optionExplanations:
-    "1": "שני האופרנדים `int`, ולכן זו חלוקה שלמה שמחזירה 3."
-    "2": "הסוגריים גורמים לחלוקה השלמה להתבצע קודם (3), וההמרה ל-`double` מגיעה מאוחר מדי ונותנת 3.0."
+    "1": "שני הצדדים `int`, ולכן זו חלוקה שלמה שמחזירה 3."
+    "2": "החלוקה מתבצעת לפני החיבור ונותנת 3. הוספת `0.0` הופכת את התוצאה ל-`double`, אבל ערכה 3."
     "3": "`7 / 2` מחושב ראשון ונותן 3, ורק אז הכפל ב-1.0 הופך אותו ל-3.0."
-
-- id: cs.basics.operators.005
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    Console.WriteLine(-7 % 3);
-    Console.WriteLine(7 % -3);
-  options: ["-1\n1", "2\n-2", "2\n1", "-1\n-1"]
-  answer: 0
-  explanation: "ב-C# לשארית (Remainder), כשהיא לא אפס, יש תמיד אותו סימן כמו למחולק, המספר השמאלי. `-7 / 3` הוא 2- (עיגול לכיוון אפס), ו-`-7 - (3 * -2)` הוא 1-. באותו אופן `7 % -3` הוא 1. זה שונה מ-Python, שבה סימן השארית הוא כמו סימן המחלק."
-  optionExplanations:
-    "1": "זו התשובה של Python, שבה `-7 % 3` הוא 2. ב-C# האופרטור `%` שומר על סימן המחולק."
-    "2": "בשורה הראשונה המחולק שלילי, ולכן גם השארית שלילית: 1-."
-    "3": "בשורה השנייה המחולק 7 חיובי, ולכן השארית חיובית, למרות שהמחלק שלילי."
-
-- id: cs.basics.operators.006
-  type: output
-  difficulty: 1
-  prompt: מה יודפס?
-  code: |
-    string name = null;
-    string display = name ?? "Guest";
-    Console.WriteLine(display);
-  options: ["Guest", "null", "NullReferenceException", "שגיאת קומפילציה"]
-  answer: 0
-  explanation: "האופרטור `??` (Null-coalescing) מחזיר את הצד השמאלי אם הוא לא `null`, ואחרת את הצד הימני. `name` הוא `null`, ולכן `display` מקבל `\"Guest\"`."
-  optionExplanations:
-    "1": "`??` נועד בדיוק להחליף `null` בערך חלופי, ולכן `display` לא נשאר `null`."
-    "2": "`??` רק בודק אם הערך `null` ולא ניגש לאובייקט, ולכן לא נזרקת חריגה."
-
-- id: cs.basics.operators.007
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    string a = "";
-    string b = null;
-    Console.WriteLine((a ?? "X") + "|" + (b ?? "Y"));
-  options: ["|Y", "X|Y", "X|", "|"]
-  answer: 0
-  explanation: "`??` בודק רק `null`. מחרוזת ריקה `\"\"` היא ערך תקין שאינו `null`, ולכן `a ?? \"X\"` מחזיר את המחרוזת הריקה. `b` הוא `null`, ולכן `b ?? \"Y\"` מחזיר `\"Y\"`. התוצאה היא `|Y`."
-  optionExplanations:
-    "1": "מחרוזת ריקה אינה `null`. כדי לטפל גם במחרוזת ריקה צריך `string.IsNullOrEmpty`."
-    "2": "זה הפוך: `a` אינו `null` ונשאר ריק, ודווקא `b` מוחלף."
 
 - id: cs.basics.operators.008
   type: single
@@ -120,14 +76,15 @@
   code: |
     bool a = true;
     bool b = false;
-    Console.WriteLine(a ^ b);
+    Console.WriteLine(a && b);
     Console.WriteLine(!a || b);
   options: ["True\nFalse", "False\nFalse", "True\nTrue", "False\nTrue"]
-  answer: 0
-  explanation: "`^` הוא XOR (או בלעדי): הוא מחזיר `true` רק כשבדיוק אחד מהצדדים אמת, וכאן `a` אמת ו-`b` שקר, ולכן `True`. ב-`!a || b`, `!a` הוא `false` וגם `b` הוא `false`, ולכן `False`."
+  answer: 1
+  explanation: "`&&` (וגם) מחזיר `true` רק כששני הצדדים אמת. `b` שקר, ולכן `a && b` הוא `False`. ב-`!a || b` האופרטור `!` הופך את `a` ל-`false`, וגם `b` הוא `false`, ולכן גם `||` (או) מחזיר `False`."
   optionExplanations:
-    "1": "`^` ב-C# אינו חזקה. על `bool` הוא XOR, ומחזיר `true` כשהערכים שונים."
-    "2": "`!` הופך את `a` ל-`false` לפני ה-`||`, וגם `b` שקר, ולכן התוצאה `False`."
+    "0": "`&&` דורש ששני הצדדים יהיו אמת. מספיק ש-`b` שקר כדי שהתוצאה תהיה `False`."
+    "2": "`&&` עם צד אחד שקר נותן `False`, ו-`!a` הוא `false` ולא `true`."
+    "3": "`!` הופך את `a` ל-`false` לפני ה-`||`, וגם `b` שקר, ולכן התוצאה `False`."
 
 - id: cs.basics.operators.010
   type: bug
@@ -161,23 +118,6 @@
     double percent = 100.0 * correct / total;
     Console.WriteLine(percent);
 
-- id: cs.basics.operators.012
-  type: bug
-  difficulty: 3
-  prompt: "הקוד אמור לספור שני מבקרים ולהדפיס `2`. איזו שורה צריך לתקן?"
-  code: |
-    int visitors = 0;
-    visitors++;
-    visitors = visitors++;
-    Console.WriteLine(visitors);
-  answer: 3
-  explanation: "`visitors++` מגדיל את המשתנה ל-2, אבל מחזיר את הערך הישן, 1. ההצבה `visitors = ...` מתבצעת אחרונה ודורסת את ההגדלה בערך הישן, ולכן מודפס `1`. כדי להגדיל כותבים רק `visitors++;`, בלי הצבה."
-  fixed: |
-    int visitors = 0;
-    visitors++;
-    visitors++;
-    Console.WriteLine(visitors);
-
 - id: cs.basics.operators.013
   type: single
   difficulty: 1
@@ -196,40 +136,89 @@
   answer: false
   explanation: "`++x` (Prefix) מגדיל קודם ומחזיר את הערך החדש. מי שמחזיר את הערך הישן הוא `x++` (Postfix). אם `x` הוא 5, `++x` מחזיר 6 ו-`x++` מחזיר 5, ובשני המקרים `x` הופך ל-6."
 
-- id: cs.basics.operators.015
-  type: truefalse
-  difficulty: 2
-  prompt: "אחרי `name ??= \"Guest\";` המשתנה `name` מקבל את `\"Guest\"` רק אם ערכו הקודם היה `null`."
-  answer: true
-  explanation: "`??=` (Null-coalescing Assignment) הוא קיצור של `name = name ?? \"Guest\";`. אם `name` לא `null`, ערכו נשאר כמו שהוא. זו דרך מקובלת לתת ערך ברירת מחדל רק כשחסר ערך."
-
-- id: cs.basics.operators.016
-  type: cleaner
-  difficulty: 2
-  prompt: איזו גרסה נקייה יותר?
-  options:
-    - |
-      string name = Console.ReadLine();
-      string display = name ?? "Guest";
-      Console.WriteLine(display);
-    - |
-      string name = Console.ReadLine();
-      string display;
-      if (name == null)
-      {
-          display = "Guest";
-      }
-      else
-      {
-          display = name;
-      }
-      Console.WriteLine(display);
-    - |
-      string name = Console.ReadLine();
-      string display = name != null ? name : "Guest";
-      Console.WriteLine(display);
+- id: cs.basics.operators.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int x = 10;
+    x += 5;
+    x -= 3;
+    x *= 2;
+    Console.WriteLine(x);
+  options: ["24", "12", "17", "14"]
   answer: 0
-  explanation: "`??` נבנה בדיוק בשביל המקרה הזה: \"הערך, ואם הוא `null` אז ברירת מחדל\". שורה אחת שאומרת את הכוונה ישירות, בלי לחזור על שם המשתנה ובלי לפזר את ההצבה על פני כמה ענפים."
+  explanation: "אופרטורי ההצבה המקוצרים פועלים על הערך הנוכחי: `x += 5` זהה ל-`x = x + 5`. הערך עובר 10, 15, 12 ולבסוף 24."
   optionExplanations:
-    "1": "הצהרה בלי ערך ושני ענפים בשביל ברירת מחדל אחת. זה נכון, אבל מסתיר כוונה פשוטה בתוך מבנה ארוך."
-    "2": "האופרטור הטרנרי עובד, אבל חוזר על `name` פעמיים. `??` עושה את אותו דבר בצורה קצרה וברורה יותר."
+    "1": "12 הוא הערך לפני השורה האחרונה. `x *= 2` מכפיל אותו ל-24."
+    "2": "`*=` מכפיל ב-2, ולא מוסיף 2 או 5."
+    "3": "כל שורה פועלת על התוצאה של השורה הקודמת, לא על הערך ההתחלתי 10."
+
+- id: cs.basics.operators.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int n = 1234;
+    Console.WriteLine(n % 10);
+    Console.WriteLine(n / 10);
+  options: ["4\n123", "1\n234", "4\n123.4", "123\n4"]
+  answer: 0
+  explanation: "שארית החלוקה ב-10 היא ספרת האחדות: `1234 % 10` הוא 4. חלוקה שלמה ב-10 מורידה את ספרת האחדות: `1234 / 10` הוא 123. השילוב הזה הוא הדרך הנפוצה לפרק מספר לספרות."
+  optionExplanations:
+    "1": "`% 10` נותן את הספרה האחרונה, לא הראשונה."
+    "2": "`n` ו-10 הם `int`, ולכן החלוקה שלמה והחלק העשרוני נחתך."
+    "3": "הסדר הפוך: השורה הראשונה מדפיסה את השארית."
+
+- id: cs.basics.operators.019
+  type: single
+  difficulty: 2
+  prompt: "איזה ביטוי בודק אם המספר השלם `num` הוא זוגי?"
+  options: ["`num % 2 == 0`", "`num / 2 == 0`", "`num % 2 == 1`", "`num / 2 == 1`"]
+  answer: 0
+  explanation: "מספר זוגי מתחלק ב-2 בלי שארית, ולכן `num % 2` שווה 0. האופרטור `%` מחזיר את השארית, ו-`/` מחזיר את המנה."
+  optionExplanations:
+    "1": "`num / 2 == 0` בודק אם המנה היא 0, וזה נכון רק עבור 0 ו-1, לא עבור כל מספר זוגי."
+    "2": "שארית 1 פירושה מספר אי־זוגי (חיובי), כלומר ההפך ממה שנדרש."
+    "3": "`num / 2 == 1` נכון רק עבור 2 ו-3."
+
+- id: cs.basics.operators.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    bool a = 5 > 3;
+    bool b = 2 == 3;
+    Console.WriteLine(a && b);
+    Console.WriteLine(a || b);
+    Console.WriteLine(!b);
+  options: ["False\nTrue\nTrue", "True\nTrue\nFalse", "False\nFalse\nTrue", "True\nFalse\nTrue"]
+  answer: 0
+  explanation: "`a` הוא `true` (5 גדול מ-3) ו-`b` הוא `false` (2 לא שווה ל-3). `&&` דורש ששני הצדדים יהיו אמת, ולכן `False`. `||` מסתפק בצד אחד אמת, ולכן `True`. `!b` הופך `false` ל-`True`."
+  optionExplanations:
+    "1": "`&&` מחזיר `true` רק כששני הצדדים אמת, ו-`b` שקר."
+    "2": "`||` מספיק לו ש-`a` אמת, ולכן התוצאה `True`."
+    "3": "`a && b` הוא `False` ו-`a || b` הוא `True`, ולא להפך."
+
+- id: cs.basics.operators.021
+  type: truefalse
+  difficulty: 1
+  prompt: "בביטוי `x = 5` האופרטור `=` בודק אם `x` שווה ל-5."
+  answer: false
+  explanation: "`=` הוא אופרטור הצבה (Assignment): הוא שם את 5 בתוך `x`. כדי להשוות משתמשים ב-`==`, למשל `x == 5`, שמחזיר `true` או `false`."
+
+- id: cs.basics.operators.022
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int a = 5;
+    int b = a++ + a;
+    Console.WriteLine(a + " " + b);
+  options: ["6 11", "6 10", "5 10", "6 12"]
+  answer: 0
+  explanation: "הביטוי מחושב משמאל לימין. `a++` מחזיר 5 ומגדיל את `a` ל-6 מיד. לכן ה-`a` שבצד הימני של החיבור כבר שווה 6, ו-`b` הוא `5 + 6 = 11`."
+  optionExplanations:
+    "1": "ההגדלה של `a++` קורית מיד אחרי שהערך נקרא, ולא בסוף השורה. ה-`a` השני כבר 6."
+    "2": "`a++` מגדיל את `a`, ולכן בהדפסה `a` הוא 6."
+    "3": "`a++` מחזיר את הערך הישן 5, ולא את 6."

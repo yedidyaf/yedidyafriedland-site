@@ -71,141 +71,6 @@
     "0": "זה היה הפלט ב-C או ב-Java, שבהן יש נפילה. C# אוסרת אותה כבר בקומפילציה."
     "1": "C# לא מוסיפה `break` בעצמה. היא דורשת שתכתבו אותו."
 
-- id: cs.control-flow.switch.004
-  type: output
-  difficulty: 1
-  prompt: מה יודפס?
-  code: |
-    string size = "M";
-    decimal price = size switch
-    {
-        "S" => 10m,
-        "M" => 12.5m,
-        "L" => 15m,
-        _ => 0m
-    };
-    Console.WriteLine(price);
-  options: ["10", "12.5", "0", "12.5m"]
-  answer: 1
-  explanation: "ביטוי `switch` (Switch Expression) בודק את הזרועות לפי הסדר ומחזיר את הערך של הזרוע הראשונה שמתאימה. `\"M\"` מתאים לזרוע השנייה, והערך `12.5m` מוצב ב-`price`. הסיומת `m` רק מסמנת ליטרל מטיפוס `decimal` ואינה חלק מהפלט."
-  optionExplanations:
-    "0": "`10` הוא הערך של `\"S\"`. נבחרת הזרוע שהתבנית שלה מתאימה, לא הראשונה ברשימה."
-    "2": "`0` היה מתקבל רק אם אף זרוע לא הייתה מתאימה, ואז הזרוע `_` נבחרת."
-    "3": "`m` היא סיומת של ליטרל בקוד המקור. היא לא מודפסת."
-
-- id: cs.control-flow.switch.005
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    int temp = 30;
-    string feel = temp switch
-    {
-        < 0 => "freezing",
-        < 20 => "cold",
-        < 30 => "nice",
-        _ => "hot"
-    };
-    Console.WriteLine(feel);
-  options: ["nice", "hot", "cold", "freezing"]
-  answer: 1
-  explanation: "תבניות יחס (Relational Patterns) כמו `< 30` משוות את הערך לקבוע. הזרועות נבדקות לפי הסדר: 30 אינו קטן מ-0, מ-20 או מ-30 (`<` לא כולל שוויון), ולכן נבחרת `_` ומודפס `hot`."
-  optionExplanations:
-    "0": "`< 30` לא מתקיים עבור 30 עצמו. כדי לכלול אותו צריך `<= 30`."
-    "2": "30 אינו קטן מ-20."
-
-- id: cs.control-flow.switch.006
-  type: single
-  difficulty: 3
-  prompt: מה יקרה כשהקוד ירוץ?
-  code: |
-    int level = 4;
-    string name = level switch
-    {
-        1 => "low",
-        2 => "medium",
-        3 => "high"
-    };
-    Console.WriteLine(name);
-  options:
-    - "הקוד מתקמפל עם אזהרה, ובזמן ריצה נזרקת `SwitchExpressionException` כי אף זרוע לא מתאימה"
-    - "שגיאת קומפילציה, כי ביטוי `switch` חייב לכלול זרוע `_`"
-    - "`name` יקבל `null` ותודפס שורה ריקה"
-    - "`name` יקבל את הערך של הזרוע האחרונה, ויודפס `high`"
-  answer: 0
-  explanation: "כשביטוי `switch` לא מכסה את כל הערכים האפשריים, הקומפיילר מוציא אזהרה (CS8509) ולא שגיאה. אם בזמן ריצה אף זרוע לא מתאימה, נזרקת `SwitchExpressionException`. לכן כמעט תמיד מוסיפים זרוע `_` אחרונה, שמחזירה ערך ברירת מחדל או זורקת חריגה עם הודעה ברורה."
-  optionExplanations:
-    "1": "ביטוי שאינו ממצה (Exhaustive) הוא אזהרה בלבד. הבעיה מתגלה רק בזמן ריצה."
-    "2": "ביטוי `switch` לא מחזיר ערך ברירת מחדל בשקט. ערך שלא מכוסה זורק חריגה."
-    "3": "אין «זרוע אחרונה כברירת מחדל». רק זרוע שהתבנית שלה מתאימה יכולה להיבחר."
-
-- id: cs.control-flow.switch.007
-  type: single
-  difficulty: 1
-  prompt: "מה המשמעות של `_` בזרוע האחרונה של ביטוי ה-`switch`?"
-  code: |
-    int code = 5;
-    string label = code switch
-    {
-        1 => "one",
-        _ => "other"
-    };
-  options:
-    - "משתנה בשם `_` שמקבל את הערך של `code`, ואפשר להשתמש בו בצד ימין של הזרוע"
-    - "זרוע שמתאימה רק לערך `0`, ערך ברירת המחדל של `int`"
-    - "זרוע שמתאימה רק כאשר `code` הוא `null`"
-    - "תבנית השלכה (Discard) שמתאימה לכל ערך שלא התאים לזרועות הקודמות"
-  answer: 3
-  explanation: "`_` היא תבנית השלכה: היא מתאימה לכל ערך, ולכן היא המקבילה של `default` במשפט `switch` קלאסי. מקומה בסוף, כי זרוע שמתאימה לכל ערך «בולעת» את כל מה שאחריה; זרוע שנכתבת אחרי `_` היא שגיאת קומפילציה."
-  optionExplanations:
-    "0": "`_` כאן לא יוצר משתנה. כדי לקבל את הערך במשתנה כותבים תבנית כמו `var x => ...`."
-    "1": "`_` מתאים לכל ערך, לא רק ל-0."
-    "2": "`int` אינו יכול להיות `null`, ו-`_` מתאים לכל ערך ולא רק ל-`null`."
-
-- id: cs.control-flow.switch.008
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    object item = 42;
-    string kind = item switch
-    {
-        string s => $"text of length {s.Length}",
-        int n when n > 100 => "big number",
-        int n => $"number {n}",
-        _ => "something else"
-    };
-    Console.WriteLine(kind);
-  options: ["big number", "text of length 2", "number 42", "something else"]
-  answer: 2
-  explanation: "תבנית טיפוס (Type Pattern) כמו `int n` בודקת אם הערך הוא מהטיפוס הזה, ואם כן מציבה אותו במשתנה חדש. `42` הוא `int`, אבל המשמר `when n > 100` לא מתקיים, ולכן הזרוע מדולגת ונבחרת הזרוע הבאה, `int n`."
-  optionExplanations:
-    "0": "`when` הוא תנאי נוסף: הזרוע נבחרת רק אם גם הטיפוס מתאים וגם התנאי אמת, ו-42 לא גדול מ-100."
-    "1": "`42` נשמר ב-`object` כ-`int`, לא כמחרוזת, ולכן `string s` לא מתאים."
-    "3": "`_` נבחר רק אם אף זרוע קודמת לא התאימה, וכאן `int n` מתאימה."
-
-- id: cs.control-flow.switch.009
-  type: output
-  difficulty: 3
-  prompt: מה יודפס?
-  code: |
-    int x = 0, y = 5;
-    string position = (x, y) switch
-    {
-        (0, 0) => "origin",
-        (0, _) => "on Y axis",
-        (_, 0) => "on X axis",
-        _ => "elsewhere"
-    };
-    Console.WriteLine(position);
-  options: ["on X axis", "on Y axis", "elsewhere", "origin"]
-  answer: 1
-  explanation: "תבנית טאפל (Tuple Pattern) בודקת כמה ערכים בבת אחת, ו-`_` בתוך הסוגריים פירושו «כל ערך במקום הזה». `(0, 5)` לא מתאים ל-`(0, 0)`, אבל מתאים ל-`(0, _)`: הרכיב הראשון 0 והשני כלשהו."
-  optionExplanations:
-    "0": "`(_, 0)` דורש שהרכיב השני יהיה 0, וכאן `y` הוא 5."
-    "2": "`_` הכללי נבחר רק אם אף זרוע קודמת לא מתאימה, ו-`(0, _)` מתאימה."
-    "3": "`(0, 0)` דורש ששני הרכיבים יהיו 0."
-
 - id: cs.control-flow.switch.010
   type: output
   difficulty: 3
@@ -232,22 +97,6 @@
     "2": "רק `case` אחד רץ, וגם אין נפילה מ-`default` הלאה בזכות ה-`break`."
     "3": "מותר לכתוב את `default` בכל מקום בתוך ה-`switch`."
 
-- id: cs.control-flow.switch.011
-  type: single
-  difficulty: 2
-  prompt: "מה ההבדל המרכזי בין משפט `switch` (Switch Statement) לביטוי `switch` (Switch Expression)?"
-  options:
-    - "ביטוי `switch` מאפשר נפילה (Fall-through) מזרוע לזרוע, ומשפט `switch` לא"
-    - "ביטוי `switch` עובד רק על מספרים שלמים, ומשפט `switch` עובד גם על מחרוזות"
-    - "ביטוי `switch` מחשב ומחזיר ערך שאפשר להציב במשתנה, ומשפט `switch` מריץ פקודות בכל `case`"
-    - "במשפט `switch` אי אפשר להשתמש בתבניות כמו `> 10`, רק בביטוי `switch`"
-  answer: 2
-  explanation: "ביטוי `switch` הוא ביטוי: כל זרוע היא `pattern => value`, אין בו `break`, והתוצאה מוחזרת ואפשר להציב אותה במשתנה. משפט `switch` הוא פקודה שמריצה קוד בכל `case`. שניהם תומכים במחרוזות ובתבניות, ובאף אחד מהם אין נפילה."
-  optionExplanations:
-    "0": "בביטוי `switch` כל זרוע מחזירה ערך אחד ואין נפילה כלל. גם במשפט `switch` אין נפילה מ-`case` שיש בו פקודות."
-    "1": "שניהם עובדים על מחרוזות, על מספרים, על `enum` ועל תבניות טיפוס."
-    "3": "מאז C# 9 מותר לכתוב גם במשפט `switch` תבניות כמו `case > 10:`."
-
 - id: cs.control-flow.switch.012
   type: truefalse
   difficulty: 1
@@ -255,147 +104,315 @@
   answer: false
   explanation: "`default` אופציונלי במשפט `switch`. בלעדיו, אם אף `case` לא מתאים, פשוט לא קורה כלום והתוכנית ממשיכה אחרי ה-`switch`. בביטוי `switch` המצב שונה: ערך שאף זרוע לא מכסה זורק חריגה בזמן ריצה, ולכן שם כמעט תמיד מוסיפים `_`."
 
-- id: cs.control-flow.switch.013
-  type: bug
-  difficulty: 1
-  prompt: "המתודה אמורה להחזיר `C` לציונים 70 עד 79, כולל 70. איזו שורה צריך לתקן?"
-  code: |
-    string Grade(int score) => score switch
-    {
-        >= 90 => "A",
-        >= 80 => "B",
-        > 70 => "C",
-        _ => "F"
-    };
-  answer: 5
-  explanation: "`> 70` לא כולל את 70, כך שציון 70 בדיוק נופל לזרוע `_` ומקבל `F`. התבנית הנכונה היא `>= 70`. סדר הזרועות עצמו נכון: מהגבול הגבוה לנמוך, כי הזרוע הראשונה שמתאימה היא שנבחרת."
-  fixed: |
-    string Grade(int score) => score switch
-    {
-        >= 90 => "A",
-        >= 80 => "B",
-        >= 70 => "C",
-        _ => "F"
-    };
-
-- id: cs.control-flow.switch.014
-  type: bug
-  difficulty: 2
-  prompt: "המתודה אמורה לזהות פקודות בלי תלות באותיות גדולות או קטנות, כך ש-`START`, `Start` ו-`start` יחזירו כולן `Starting`. איזו שורה צריך לתקן?"
-  code: |
-    string Handle(string command)
-    {
-        switch (command)
-        {
-            case "start":
-                return "Starting";
-            case "stop":
-                return "Stopping";
-            default:
-                return "Unknown";
-        }
-    }
-  answer: 3
-  explanation: "השוואת מחרוזות ב-`switch` היא מדויקת ורגישה לגודל אותיות (Case-sensitive): `\"START\"` אינו שווה ל-`\"start\"`, ולכן הוא מגיע ל-`default`. מנרמלים את הקלט לפני ההשוואה, למשל עם `command.ToLower()`, וכותבים את ה-`case` באותיות קטנות. שימו לב שגם `return` מסיים `case`, ולכן אין צורך ב-`break`."
-  fixed: |
-    string Handle(string command)
-    {
-        switch (command.ToLower())
-        {
-            case "start":
-                return "Starting";
-            case "stop":
-                return "Stopping";
-            default:
-                return "Unknown";
-        }
-    }
-
 - id: cs.control-flow.switch.015
   type: bug
   difficulty: 3
-  prompt: "המתודה מקבלת מספר חודש (1 עד 12) ואמורה להחזיר את הרבעון שלו: חודשים 1 עד 3 הם `Q1`, חודשים 4 עד 6 הם `Q2`, וכן הלאה. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס את הרבעון של החודש: חודשים 1 עד 3 הם `Q1`, חודשים 4 עד 6 הם `Q2`, וכן הלאה. עבור חודש 3 הוא מדפיס `Q2`. איזו שורה צריך לתקן?"
   code: |
-    string Quarter(int month)
+    int month = 3;
+    switch (month / 3)
     {
-        switch (month / 3)
-        {
-            case 0:
-                return "Q1";
-            case 1:
-                return "Q2";
-            case 2:
-                return "Q3";
-            default:
-                return "Q4";
-        }
+        case 0:
+            Console.WriteLine("Q1");
+            break;
+        case 1:
+            Console.WriteLine("Q2");
+            break;
+        case 2:
+            Console.WriteLine("Q3");
+            break;
+        default:
+            Console.WriteLine("Q4");
+            break;
     }
-  answer: 3
-  explanation: "`month / 3` היא חלוקה שלמה. עבור חודש 3 מתקבל 1 ולכן `Q2`, ועבור חודש 6 מתקבל 2 ולכן `Q3`: החודש האחרון של כל רבעון מסווג לא נכון. הביטוי `(month - 1) / 3` ממפה את 1 עד 3 ל-0, את 4 עד 6 ל-1 וכן הלאה. כשבודקים `switch` על ביטוי מחושב, כדאי לבדוק בראש את ערכי הגבול."
+  answer: 2
+  explanation: "`month / 3` נותן 0 רק לחודשים 1 ו-2, אבל 1 לחודש 3, ולכן חודש 3 נופל לרבעון הלא נכון. החודשים מתחילים מ-1, וצריך להזיז אותם לפני החלוקה: `(month - 1) / 3` נותן 0 לחודשים 1 עד 3, 1 לחודשים 4 עד 6, וכן הלאה."
   fixed: |
-    string Quarter(int month)
+    int month = 3;
+    switch ((month - 1) / 3)
     {
-        switch ((month - 1) / 3)
-        {
-            case 0:
-                return "Q1";
-            case 1:
-                return "Q2";
-            case 2:
-                return "Q3";
-            default:
-                return "Q4";
-        }
+        case 0:
+            Console.WriteLine("Q1");
+            break;
+        case 1:
+            Console.WriteLine("Q2");
+            break;
+        case 2:
+            Console.WriteLine("Q3");
+            break;
+        default:
+            Console.WriteLine("Q4");
+            break;
     }
 
-- id: cs.control-flow.switch.016
+- id: cs.control-flow.switch.017
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int choice = 2;
+    switch (choice)
+    {
+        case 1:
+            Console.WriteLine("Add");
+            break;
+        case 2:
+            Console.WriteLine("Remove");
+            break;
+        default:
+            Console.WriteLine("Unknown");
+            break;
+    }
+  options: ["Remove", "Add", "Unknown", "Remove\nUnknown"]
+  answer: 0
+  explanation: "`switch` משווה את `choice` לכל `case` לפי הסדר. הערך 2 מתאים ל-`case 2`, ולכן מודפס `Remove`, ו-`break` מסיים את ה-`switch`."
+  optionExplanations:
+    "1": "`case 1` מתאים רק כש-`choice` שווה 1."
+    "2": "`default` רץ רק כשאף `case` לא מתאים, וכאן `case 2` מתאים."
+    "3": "`break` יוצא מה-`switch`, ולכן `default` לא רץ אחרי `case 2`."
+
+- id: cs.control-flow.switch.018
+  type: output
+  difficulty: 1
+  prompt: מה יודפס?
+  code: |
+    int x = 9;
+    switch (x)
+    {
+        case 1:
+            Console.WriteLine("One");
+            break;
+        case 2:
+            Console.WriteLine("Two");
+            break;
+        default:
+            Console.WriteLine("Other");
+            break;
+    }
+  options: ["Other", "One", "לא יודפס כלום", "Two"]
+  answer: 0
+  explanation: "אף `case` לא מתאים לערך 9, ולכן רץ הבלוק של `default`. `default` הוא הענף של \"כל השאר\", בדומה ל-`else` בסוף שרשרת `if`."
+  optionExplanations:
+    "1": "`case 1` רץ רק כשהערך בדיוק 1."
+    "2": "יש כאן `default`, ולכן תמיד יודפס משהו."
+    "3": "`case 2` רץ רק כשהערך בדיוק 2."
+
+- id: cs.control-flow.switch.019
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    char op = '*';
+    int a = 6;
+    int b = 3;
+    int result = 0;
+    switch (op)
+    {
+        case '+':
+            result = a + b;
+            break;
+        case '-':
+            result = a - b;
+            break;
+        case '*':
+            result = a * b;
+            break;
+    }
+    Console.WriteLine(result);
+  options: ["18", "9", "0", "3"]
+  answer: 0
+  explanation: "אפשר לעשות `switch` על `char`. הערך `'*'` מתאים ל-`case '*'`, ולכן `result` מקבל `6 * 3`, כלומר 18."
+  optionExplanations:
+    "1": "9 הוא התוצאה של `case '+'`, אבל `op` הוא `'*'`."
+    "2": "יש `case` שמתאים ל-`'*'`, ולכן `result` מתעדכן."
+    "3": "3 הוא התוצאה של `case '-'`."
+
+- id: cs.control-flow.switch.020
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    string color = "Red";
+    switch (color)
+    {
+        case "red":
+            Console.WriteLine("Stop");
+            break;
+        case "green":
+            Console.WriteLine("Go");
+            break;
+        default:
+            Console.WriteLine("Unknown");
+            break;
+    }
+  options: ["Unknown", "Stop", "Go", "שגיאת קומפילציה"]
+  answer: 0
+  explanation: "`switch` על מחרוזת משווה בדיוק, תו אחרי תו, ומבחין בין אותיות גדולות לקטנות. `\"Red\"` שונה מ-`\"red\"`, ולכן אף `case` לא מתאים ורץ `default`."
+  optionExplanations:
+    "1": "ההשוואה רגישה לאותיות גדולות וקטנות, ו-`R` שונה מ-`r`."
+    "2": "`case \"green\"` לא קרוב בכלל לערך `\"Red\"`."
+    "3": "מותר לעשות `switch` על `string`."
+
+- id: cs.control-flow.switch.021
+  type: bug
+  difficulty: 1
+  prompt: "הקוד אמור להדפיס `Weekend` לימים 6 ו-7, ו-`Weekday` לשאר הימים. עבור יום 7 הוא מדפיס `Weekday`. איזו שורה צריך לתקן?"
+  code: |
+    int day = 7;
+    switch (day)
+    {
+        case 5:
+        case 6:
+            Console.WriteLine("Weekend");
+            break;
+        default:
+            Console.WriteLine("Weekday");
+            break;
+    }
+  answer: 4
+  explanation: "שתי תוויות `case` צמודות חולקות את אותו בלוק. כאן התוויות הן 5 ו-6, ולכן יום 7 נופל ל-`default`. צריך להחליף את `case 5:` ב-`case 7:`."
+  fixed: |
+    int day = 7;
+    switch (day)
+    {
+        case 6:
+        case 7:
+            Console.WriteLine("Weekend");
+            break;
+        default:
+            Console.WriteLine("Weekday");
+            break;
+    }
+
+- id: cs.control-flow.switch.022
+  type: truefalse
+  difficulty: 2
+  prompt: "מותר לכתוב `case x:` כאשר `x` הוא משתנה רגיל שערכו נקבע בזמן ריצה."
+  code: |
+    int x = 5;
+    int n = 5;
+    switch (n)
+    {
+        case x:
+            Console.WriteLine("match");
+            break;
+    }
+  tags: [compile-error]
+  answer: false
+  explanation: "הערך שאחרי `case` חייב להיות קבוע (Constant) שידוע בזמן קומפילציה, כמו `5`, `'A'` או `\"red\"`, או קבוע שהוגדר עם `const`. משתנה רגיל אסור, והקוד לא מתקמפל. להשוואה למשתנה משתמשים ב-`if`."
+
+- id: cs.control-flow.switch.023
+  type: single
+  difficulty: 1
+  prompt: "מתי רץ הבלוק של `default` במשפט `switch`?"
+  options:
+    - "כשאף `case` לא מתאים לערך"
+    - "תמיד, אחרי ה-`case` שמתאים"
+    - "רק כשהערך הוא 0"
+    - "לפני שבודקים את ה-`case` הראשון"
+  answer: 0
+  explanation: "`default` הוא הענף של \"כל השאר\": הוא רץ רק כשאף אחת מתוויות ה-`case` לא שווה לערך. הוא לא חובה, ואם אין `default` ואף `case` לא מתאים, פשוט לא קורה כלום."
+  optionExplanations:
+    "1": "אחרי `case` שמתאים יש `break`, שיוצא מה-`switch`. `default` לא רץ בנוסף."
+    "2": "`default` לא קשור לערך 0. הוא מטפל בכל ערך שלא הופיע ב-`case`."
+    "3": "הסדר של הבדיקה לא משנה: `default` נבחר רק אם אף `case` לא התאים."
+
+- id: cs.control-flow.switch.024
   type: cleaner
   difficulty: 2
-  prompt: איזו גרסה נקייה יותר?
+  prompt: כל הגרסאות מדפיסות את אותו דבר. איזו גרסה נקייה יותר?
   options:
     - |
-      string StatusText(int code)
+      int day = 2;
+      if (day == 1)
+          Console.WriteLine("Sunday");
+      else if (day == 2)
+          Console.WriteLine("Monday");
+      else if (day == 3)
+          Console.WriteLine("Tuesday");
+      else
+          Console.WriteLine("Other");
+    - |
+      int day = 2;
+      switch (day)
       {
-          if (code == 200)
-              return "OK";
-          else if (code == 404)
-              return "Not Found";
-          else if (code == 500)
-              return "Server Error";
-          else
-              return "Unknown";
+          case 1:
+              Console.WriteLine("Sunday");
+              break;
+          case 2:
+              Console.WriteLine("Monday");
+              break;
+          case 3:
+              Console.WriteLine("Tuesday");
+              break;
+          default:
+              Console.WriteLine("Other");
+              break;
       }
     - |
-      string StatusText(int code) => code switch
-      {
-          200 => "OK",
-          404 => "Not Found",
-          500 => "Server Error",
-          _ => "Unknown"
-      };
-    - |
-      string StatusText(int code)
-      {
-          string text;
-          switch (code)
-          {
-              case 200:
-                  text = "OK";
-                  break;
-              case 404:
-                  text = "Not Found";
-                  break;
-              case 500:
-                  text = "Server Error";
-                  break;
-              default:
-                  text = "Unknown";
-                  break;
-          }
-          return text;
-      }
+      int day = 2;
+      if (day == 1)
+          Console.WriteLine("Sunday");
+      if (day == 2)
+          Console.WriteLine("Monday");
+      if (day == 3)
+          Console.WriteLine("Tuesday");
+      if (day != 1 && day != 2 && day != 3)
+          Console.WriteLine("Other");
   answer: 1
-  explanation: "כשממפים ערך אחד לתוצאה לפי ערכים קבועים, ביטוי `switch` הוא הקצר והברור ביותר: כל מקרה בשורה אחת, אין `break`, אין משתנה ביניים, והקורא רואה מיד שזו טבלת מיפוי."
+  explanation: "כשבודקים משתנה אחד מול רשימה של ערכים קבועים, `switch` מבטא את הכוונה ישירות: כל ערך ומה עושים בו, ו-`default` לכל השאר. שרשרת `if` עובדת, אבל חוזרת על `day ==` בכל שורה."
   optionExplanations:
-    "0": "שרשרת `if` / `else if` חוזרת על `code ==` בכל ענף ומסתירה את העובדה שזה מיפוי פשוט."
-    "2": "משפט `switch` עם משתנה עזר ו-`break` בכל `case` מכפיל את מספר השורות בלי להוסיף מידע."
+    "0": "השרשרת נכונה, אבל חוזרת על `day ==` בכל ענף. `switch` מתאים יותר להשוואה של משתנה אחד לערכים קבועים."
+    "2": "`if` נפרדים בודקים את כל התנאים גם אחרי שנמצאה התאמה, והתנאי האחרון משכפל את כל הקודמים."
+
+- id: cs.control-flow.switch.025
+  type: output
+  difficulty: 3
+  prompt: מה יודפס?
+  code: |
+    int n = 17;
+    switch (n % 3)
+    {
+        case 0:
+            Console.WriteLine("zero");
+            break;
+        case 1:
+            Console.WriteLine("one");
+            break;
+        case 2:
+            Console.WriteLine("two");
+            break;
+    }
+  options: ["two", "one", "zero", "לא יודפס כלום"]
+  answer: 0
+  explanation: "אפשר לעשות `switch` על ביטוי, לא רק על משתנה. `17 % 3` הוא 2 (כי `17 = 3 * 5 + 2`), ולכן רץ `case 2`."
+  optionExplanations:
+    "1": "השארית של 17 ב-3 היא 2, לא 1."
+    "2": "17 לא מתחלק ב-3 בלי שארית."
+    "3": "השארית ב-3 היא תמיד 0, 1 או 2, ולכן אחד המקרים תמיד מתאים."
+
+- id: cs.control-flow.switch.026
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int x = 2;
+    switch (x)
+    {
+        case 1:
+        case 2:
+        case 3:
+            Console.WriteLine("small");
+            break;
+        case 4:
+            Console.WriteLine("big");
+            break;
+    }
+    Console.WriteLine("end");
+  options: ["small\nend", "small", "small\nbig\nend", "end"]
+  answer: 0
+  explanation: "תוויות `case` צמודות בלי קוד ביניהן חולקות את אותו בלוק, ולכן 1, 2 ו-3 כולם מדפיסים `small`. `break` יוצא מה-`switch`, והתוכנית ממשיכה לשורה שאחריו ומדפיסה `end`."
+  optionExplanations:
+    "1": "`break` יוצא רק מה-`switch`, לא מהתוכנית. השורה שאחרי ה-`switch` רצה."
+    "2": "`break` מונע מעבר ל-`case 4`."
+    "3": "`case 2` מתאים, והוא חולק את הבלוק של `case 3`."

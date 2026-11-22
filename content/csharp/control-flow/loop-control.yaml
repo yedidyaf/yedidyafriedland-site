@@ -45,7 +45,7 @@
         {
             if (j == 2)
                 break;
-            Console.Write($"{i}{j} ");
+            Console.Write(i + "" + j + " ");
         }
     }
   options: ["11", "11 21 31", "11 13 21 23 31 33", "11 12 21 22 31 32"]
@@ -126,33 +126,6 @@
     "1": "50 הוא הגבול בתנאי, לא ערך ש-`n` מקבל. `n` הוא תמיד חזקה של 3."
     "2": "אחרי `break` הלולאה נגמרת מיד, ולכן אין הכפלה נוספת ל-243."
 
-- id: cs.control-flow.loop-control.007
-  type: output
-  difficulty: 2
-  prompt: מה יודפס?
-  code: |
-    string FindPair(int target)
-    {
-        for (int i = 1; i <= 5; i++)
-        {
-            for (int j = i; j <= 5; j++)
-            {
-                if (i + j == target)
-                    return $"{i}+{j}";
-            }
-        }
-        return "none";
-    }
-
-    Console.WriteLine(FindPair(7));
-  options: ["3+4", "2+5", "2+5\n3+4", "none"]
-  answer: 1
-  explanation: "`return` יוצא מהמתודה כולה, ולכן הוא עוצר בבת אחת את שתי הלולאות. הזוג הראשון בסדר המעבר שסכומו 7 הוא `2+5` (כש-`i = 2` ו-`j = 5`), עוד לפני ש-`i` מגיע ל-3. העברת לולאות מקוננות למתודה ויציאה עם `return` היא הדרך הנקייה לצאת מכמה לולאות יחד."
-  optionExplanations:
-    "0": "`3+4` היה נמצא רק אחרי `2+5`, כי הלולאה החיצונית מגיעה ל-`i = 3` מאוחר יותר."
-    "2": "`return` לא רק יוצא מהלולאה, אלא מסיים את המתודה, ולכן מוחזרת תוצאה אחת בלבד."
-    "3": "`none` מוחזר רק אם הלולאות הסתיימו בלי למצוא זוג, וכאן נמצא זוג."
-
 - id: cs.control-flow.loop-control.008
   type: single
   difficulty: 1
@@ -202,24 +175,22 @@
 - id: cs.control-flow.loop-control.012
   type: bug
   difficulty: 1
-  prompt: הקוד אמור להדפיס את כל המספרים שאינם שליליים, ולדלג רק על השליליים. איזו שורה צריך לתקן?
+  prompt: "הקוד אמור להדפיס את המספרים מ-2- עד 2, ולדלג רק על המספרים השליליים. בפועל לא מודפס כלום. איזו שורה צריך לתקן?"
   code: |
-    int[] values = { 4, -1, 7, -3, 9 };
-    foreach (int v in values)
+    for (int i = -2; i <= 2; i++)
     {
-        if (v < 0)
+        if (i < 0)
             break;
-        Console.WriteLine(v);
+        Console.WriteLine(i);
     }
-  answer: 5
-  explanation: "`break` עוצר את הלולאה כולה במספר השלילי הראשון, ולכן רק 4 מודפס. כדי לדלג על איבר אחד ולהמשיך לבאים צריך `continue`."
+  answer: 4
+  explanation: "`break` עוצר את הלולאה כולה כבר במספר השלילי הראשון, ולכן שום דבר לא מודפס. כדי לדלג על סיבוב אחד ולהמשיך לבאים צריך `continue`."
   fixed: |
-    int[] values = { 4, -1, 7, -3, 9 };
-    foreach (int v in values)
+    for (int i = -2; i <= 2; i++)
     {
-        if (v < 0)
+        if (i < 0)
             continue;
-        Console.WriteLine(v);
+        Console.WriteLine(i);
     }
 
 - id: cs.control-flow.loop-control.013
@@ -250,78 +221,33 @@
 - id: cs.control-flow.loop-control.014
   type: bug
   difficulty: 3
-  prompt: "המתודה אמורה לבדוק אם `n` הוא מספר ראשוני. איזו שורה צריך לתקן?"
+  prompt: "הקוד אמור להדפיס `True` אם `n` הוא מספר ראשוני ו-`False` אחרת. עבור `n = 9` הוא מדפיס `True`. איזו שורה צריך לתקן?"
   code: |
-    bool IsPrime(int n)
+    int n = 9;
+    bool isPrime = n >= 2;
+    for (int d = 2; d * d < n; d++)
     {
-        if (n < 2)
-            return false;
-        for (int d = 2; d * d < n; d++)
+        if (n % d == 0)
         {
-            if (n % d == 0)
-                return false;
+            isPrime = false;
+            break;
         }
-        return true;
     }
-  answer: 5
-  explanation: "מספיק לבדוק מחלקים עד השורש של `n`, אבל את השורש עצמו חייבים לבדוק. עם `d * d < n`, עבור `n = 9` הלולאה לא בודקת את `d = 3`, כי `9 < 9` שקר, ו-9 מוחזר כראשוני (וכך גם 4, 25 ו-49). תנאי העצירה הנכון הוא `d * d <= n`."
+    Console.WriteLine(isPrime);
+  answer: 3
+  explanation: "מספיק לבדוק מחלקים עד השורש של `n`, אבל את השורש עצמו חייבים לבדוק. עם `d * d < n`, עבור `n = 9` הלולאה לא בודקת את `d = 3`, כי `9 < 9` שקר, ו-9 נחשב ראשוני (וכך גם 4, 25 ו-49). תנאי העצירה הנכון הוא `d * d <= n`."
   fixed: |
-    bool IsPrime(int n)
+    int n = 9;
+    bool isPrime = n >= 2;
+    for (int d = 2; d * d <= n; d++)
     {
-        if (n < 2)
-            return false;
-        for (int d = 2; d * d <= n; d++)
+        if (n % d == 0)
         {
-            if (n % d == 0)
-                return false;
+            isPrime = false;
+            break;
         }
-        return true;
     }
-
-- id: cs.control-flow.loop-control.015
-  type: cleaner
-  difficulty: 2
-  prompt: שלוש הגרסאות בודקות אם `target` נמצא במערך. איזו נקייה יותר?
-  options:
-    - |
-      bool Contains(int[] values, int target)
-      {
-          bool found = false;
-          for (int i = 0; i < values.Length; i++)
-          {
-              if (values[i] == target)
-                  found = true;
-          }
-          return found;
-      }
-    - |
-      bool Contains(int[] values, int target)
-      {
-          bool found = false;
-          int i = 0;
-          while (i < values.Length && !found)
-          {
-              if (values[i] == target)
-                  found = true;
-              i++;
-          }
-          return found;
-      }
-    - |
-      bool Contains(int[] values, int target)
-      {
-          foreach (int value in values)
-          {
-              if (value == target)
-                  return true;
-          }
-          return false;
-      }
-  answer: 2
-  explanation: "`return true` ברגע שהערך נמצא עוצר את החיפוש ומחזיר את התשובה בבת אחת, בלי משתנה דגל ובלי אינדקס. אם הלולאה הסתיימה, הערך לא נמצא. זו יציאה מוקדמת (Early Return), הדרך הקריאה ביותר לעצור לולאת חיפוש."
-  optionExplanations:
-    "0": "הגרסה ממשיכה לעבור על כל המערך גם אחרי שהערך נמצא, ומשתנה הדגל מוסיף מצב שהקורא צריך לעקוב אחריו."
-    "1": "תנאי עצירה כפול, דגל ואינדקס ידני משיגים את מה ש-`return` עושה בשורה אחת."
+    Console.WriteLine(isPrime);
 
 - id: cs.control-flow.loop-control.016
   type: single
@@ -343,3 +269,45 @@
     "0": "זה היה נכון בחשבון מדויק, אבל `double` צובר שגיאות עיגול, ו-`x` מדלג מעל `1.0` בלי להיות שווה לו."
     "2": "משתנה לולאה יכול להיות מכל טיפוס, גם `double`."
     "3": "`x` אף פעם לא שווה ל-`1.0`, ובכל מקרה תנאי `!=` לא היה מריץ סיבוב עם `x == 1.0`."
+
+- id: cs.control-flow.loop-control.017
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    int n = 0;
+    while (n < 100)
+    {
+        n += 7;
+        if (n % 5 == 0)
+            break;
+    }
+    Console.WriteLine(n);
+  options: ["35", "105", "100", "5"]
+  answer: 0
+  explanation: "`n` עולה בקפיצות של 7: 7, 14, 21, 28, 35. 35 הוא הראשון שמתחלק ב-5, ולכן `break` עוצר את הלולאה מיד, הרבה לפני שהתנאי `n < 100` נעשה שקר."
+  optionExplanations:
+    "1": "`break` עוצר את הלולאה כבר ב-35, ולכן `n` לא מגיע ל-105."
+    "2": "`n` עולה ב-7, ולכן הוא לא עובר בערך 100."
+    "3": "`n` מתחיל מ-0 ומקבל רק כפולות של 7."
+
+- id: cs.control-flow.loop-control.018
+  type: output
+  difficulty: 2
+  prompt: מה יודפס?
+  code: |
+    for (int i = 10; i > 0; i--)
+    {
+        if (i % 2 == 1)
+            continue;
+        if (i < 5)
+            break;
+        Console.Write(i + " ");
+    }
+  options: ["10 8 6", "10 8 6 4 2", "9 7 5", "10 8 6 4"]
+  answer: 0
+  explanation: "`continue` מדלג על המספרים האי־זוגיים. הזוגיים 10, 8 ו-6 מודפסים. כש-`i` הוא 4, הוא זוגי ולכן לא מדולג, אבל `4 < 5` ו-`break` עוצר את הלולאה לפני ההדפסה."
+  optionExplanations:
+    "1": "ב-`i = 4` התנאי `i < 5` מתקיים, ו-`break` עוצר את הלולאה."
+    "2": "`continue` מדלג דווקא על האי־זוגיים, ולכן הם לא מודפסים."
+    "3": "בדיקת ה-`break` באה לפני ההדפסה, ולכן 4 לא מודפס."
