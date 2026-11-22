@@ -4,8 +4,8 @@ export const SITE = {
   name_en: 'Yedidya Friedland',
   tagline_he: 'לומדים תכנות דרך מבחנים',
   tagline_en: 'Learn programming through tests',
+  email: 'fy4650@gmail.com',
   linkedin: 'https://www.linkedin.com/in/yedidya-friedland%F0%9F%92%AB-252a67277',
-  email: 'hello@yedidyafriedland.com',
   /** Cloudflare Web Analytics token (cookieless). Empty = no analytics script. */
   cfBeaconToken: import.meta.env.PUBLIC_CF_BEACON_TOKEN ?? '',
 };

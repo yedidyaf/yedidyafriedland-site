@@ -32,7 +32,7 @@ export function websiteLd(site: URL | undefined) {
     '@type': 'WebSite',
     '@id': websiteId(site),
     name: siteName,
-    alternateName: [SITE.name_he, SITE.name_en, 'yedidyafriedland.com'],
+    alternateName: [SITE.name_he, SITE.name_en],
     url: absUrl('/', site),
     description: `${SITE.tagline_he}: תרגול Python ו-C# עם הסבר אחרי כל שאלה.`,
     inLanguage: 'he',
