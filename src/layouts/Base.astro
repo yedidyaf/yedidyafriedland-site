@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE, siteName } from '../site';
+import { personLd, websiteLd } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -10,19 +11,23 @@ interface Props {
   /** JSON-LD objects for this page */
   jsonLd?: object[];
   noindex?: boolean;
+  /** Use the title as is, without the " | site name" suffix (home page). */
+  rawTitle?: boolean;
 }
-const { title, description, jsonLd = [], noindex = false } = Astro.props;
-const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+const { title, description, jsonLd = [], noindex = false, rawTitle = false } = Astro.props;
+const fullTitle = rawTitle || title === siteName ? title : `${title} | ${siteName}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const ogImage = new URL(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/og.png`, Astro.site).toString();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const ogImage = new URL(`${base}/og.png`, Astro.site).toString();
+const ogImageAlt = `${SITE.name_he} - ${SITE.name_en}: ${SITE.tagline_he}. Python ו-C#, עם הסבר אחרי כל שאלה.`;
+const isNoindex = noindex || import.meta.env.PUBLIC_NOINDEX === '1';
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION ?? '';
+// One graph for the whole site: every page points to the same Person and WebSite (by @id),
+// so Google can connect "ידידיה פרידלנד" / "Yedidya Friedland" searches to this site.
 const ld = [
   {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: siteName,
-    url: new URL(import.meta.env.BASE_URL, Astro.site).toString(),
-    inLanguage: 'he',
-    author: { '@type': 'Person', name: SITE.name_en, alternateName: SITE.name_he },
+    '@graph': [personLd(Astro.site), websiteLd(Astro.site)],
   },
   ...jsonLd,
 ];
@@ -35,7 +40,10 @@ const ld = [
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {(noindex || import.meta.env.PUBLIC_NOINDEX === '1') && <meta name="robots" content="noindex" />}
+    <link rel="alternate" hreflang="he" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+    {isNoindex ? <meta name="robots" content="noindex" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
     <meta name="author" content={`${SITE.name_he} (${SITE.name_en})`} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="he_IL" />
@@ -44,9 +52,18 @@ const ld = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
-    <link rel="sitemap" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/sitemap-index.xml`} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="sitemap" href={`${base}/sitemap-index.xml`} />
     <meta name="theme-color" content="#1b2a41" />
     <script is:inline>
       try {

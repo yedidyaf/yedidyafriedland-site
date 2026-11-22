@@ -106,3 +106,15 @@ test('multi-line code options keep their line breaks', async ({ page }) => {
   }
   throw new Error('braces question not found');
 });
+
+test('pages carry share preview and search metadata', async ({ page }) => {
+  await page.goto('/about/');
+  const meta = (sel: string) => page.locator(sel).getAttribute('content');
+  expect(await page.title()).toContain('ידידיה פרידלנד');
+  expect(await meta('meta[property="og:image"]')).toMatch(/^https?:\/\/.+\/og\.png$/);
+  expect(await meta('meta[property="og:image:width"]')).toBe('1200');
+  expect(await meta('meta[property="og:locale"]')).toBe('he_IL');
+  const graphs = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const person = graphs.map((g) => JSON.parse(g)).flatMap((g) => g['@graph'] ?? [g]).find((o) => o['@type'] === 'Person');
+  expect(person).toMatchObject({ name: 'ידידיה פרידלנד', alternateName: 'Yedidya Friedland' });
+});

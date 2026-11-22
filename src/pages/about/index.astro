@@ -2,19 +2,21 @@
 import Base from '../../layouts/Base.astro';
 import { href } from '../../lib/url';
 import { SITE } from '../../site';
+import { absUrl, personId, websiteId } from '../../lib/seo';
+// The Person itself is described once in the layout; this page is his profile page.
 const jsonLd = [
   {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: SITE.name_en,
-    alternateName: SITE.name_he,
-    jobTitle: 'Software Developer and Programming Lecturer',
-    email: `mailto:${SITE.email}`,
-    sameAs: [SITE.linkedin],
+    '@type': 'ProfilePage',
+    name: `${SITE.name_he} - ${SITE.name_en}`,
+    url: absUrl('/about/', Astro.site),
+    inLanguage: 'he',
+    isPartOf: { '@id': websiteId(Astro.site) },
+    mainEntity: { '@id': personId(Astro.site) },
   },
 ];
 ---
-<Base title={`אודות - ${SITE.name_he}`} description={`${SITE.name_he} (${SITE.name_en}), מפתח תוכנה ומרצה לתכנות. תרגול Python ו-C# דרך מבחנים עם הסברים.`} jsonLd={jsonLd}>
+<Base title={`אודות ${SITE.name_he} - About ${SITE.name_en}`} rawTitle description={`${SITE.name_he} (${SITE.name_en}), מפתח תוכנה ומרצה לתכנות. תרגול Python ו-C# דרך מבחנים עם הסברים.`} jsonLd={jsonLd}>
   <div class="container prose">
     <h1 style="margin-top:24px">אודות - About</h1>
     <p class="lead">
