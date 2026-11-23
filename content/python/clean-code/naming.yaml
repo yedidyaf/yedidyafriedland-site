@@ -286,3 +286,20 @@
     "0": "`validate_email` נשמע כמו פעולה שזורקת חריגה כשהכתובת לא תקינה, או מחזירה כתובת מנורמלת."
     "1": "`check_email` לא אומר מה פירוש התוצאה: האם `True` אומר שהכתובת תקינה או שנמצאה בה בעיה?"
     "2": "`email_validator` הוא שם עצם, ומתאים יותר למחלקה או לאובייקט מאשר לפונקציה שמחזירה תשובה."
+
+- id: py.clean-code.naming.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחשב כמה תלמידים עברו את המבחן."
+  code: |
+    PASSING_GRADE = 56
+    grades = [90, 45, 72, 55, 100]
+    passed_count = 0
+    for grade in grades:
+        if grade >= PASSING_GRADE:
+            passed_count += 1
+    print(passed_count)
+  output: "3"
+  anyOrder: [[1, 2, 3]]
+  explanation: "שמות טובים מספרים את האלגוריתם: `PASSING_GRADE` הוא קבוע במקום מספר קסם (Magic Number), `grades` ו-`grade` מבהירים מה הרשימה ומה האיבר, ו-`passed_count` אומר מה סופרים. האלגוריתם עצמו הוא ספירה בתנאי."

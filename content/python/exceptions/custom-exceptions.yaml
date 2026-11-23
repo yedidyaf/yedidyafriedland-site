@@ -348,3 +348,23 @@
     "1": "`isinstance` בודק גם מחלקות בסיס, לא רק את הסוג המדויק."
     "2": "ירושה היא טרנזיטיבית: אם `AppError` יורשת מ-`Exception`, גם `AuthError` יורשת ממנה."
     "3": "`ValueError` לא נמצאת בשרשרת הירושה של `AuthError`. שתיהן חריגות, אבל אחת לא יורשת מהשנייה."
+
+- id: py.exceptions.custom-exceptions.017
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שמשיכה גדולה מהיתרה תזרוק חריגה מותאמת ותיתפס."
+  code: |
+    class InsufficientFundsError(Exception):
+        pass
+    def withdraw(balance, amount):
+        if amount > balance:
+            raise InsufficientFundsError("not enough money")
+        return balance - amount
+    try:
+        withdraw(50, 80)
+    except InsufficientFundsError as e:
+        print(e)
+  output: "not enough money"
+  anyOrder: [[[1, 2], [3, 6]]]
+  explanation: "חריגה מותאמת (Custom Exception) היא מחלקה שיורשת מ-`Exception`. הפונקציה זורקת אותה כשהמשיכה גדולה מהיתרה, וה-`except` תופס אותה לפי השם שלה. את המחלקה ואת הפונקציה אפשר להגדיר בכל סדר, כי `InsufficientFundsError` נדרשת רק כשהפונקציה רצה."

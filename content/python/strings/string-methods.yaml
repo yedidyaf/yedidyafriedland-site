@@ -231,3 +231,19 @@
     "1": "11 הוא אורך המחרוזת אחרי `strip`. אבל `strip` לא שינתה את `s`, היא החזירה מחרוזת חדשה."
     "2": "`replace` בלי ארגומנט שלישי מחליפה את כל המופעים, לא רק את הראשון."
     "3": "`lower` הופכת את כל האותיות לקטנות, כולל `H` ו-`W`."
+
+- id: py.strings.string-methods.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תספור כמה מילים במשפט מתחילות באות גדולה."
+  code: |
+    text = "Python is Fun and Easy"
+    count = 0
+    for word in text.split():
+        if word[0].isupper():
+            count += 1
+    print(count)
+  output: "3"
+  anyOrder: [[1, 2]]
+  explanation: "`split()` מפרק את המשפט לרשימת מילים לפי רווחים, ו-`word[0].isupper()` בודק את האות הראשונה של כל מילה. זה אלגוריתם ספירה רגיל: מונה לפני הלולאה, הגדלה בתוך התנאי, הדפסה אחרי הלולאה."

@@ -271,3 +271,18 @@
   optionExplanations:
     "1": "הערות עם טיפוסים הן תיעוד שכלים לא קוראים, ושקל לשכוח לעדכן כשהחתימה משתנה."
     "2": "`Any` מבטל את הבדיקה: הוא אומר לכלים שכל ערך מותר, ולכן הרמזים לא מוסיפים מידע."
+
+- id: py.advanced.type-hints.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהפונקציה עם רמזי הטיפוס תחשב את אורך המילה הארוכה ביותר."
+  code: |
+    def longest(words: list[str]) -> int:
+        best = 0
+        for word in words:
+            best = max(best, len(word))
+        return best
+    print(longest(["hi", "python", "code"]))
+  output: "6"
+  explanation: "רמזי טיפוס (Type Hints) מתעדים שהפונקציה מקבלת רשימת מחרוזות ומחזירה מספר שלם. האלגוריתם הוא מקסימום רץ: `best` מתחיל ב-0 ומתעדכן לפי אורך כל מילה. ה-`return` אחרי הלולאה."

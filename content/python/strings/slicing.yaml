@@ -224,3 +224,18 @@
     "1": "`-2` הוא אינדקס 4 (`e`), ולכן מתקבל `eca`."
     "2": "אינדקס 1 הוא `stop` ולא נכלל, ולכן מתקבל רק `fd`."
     "3": "מתחילים באינדקס 1 והולכים אחורה, ולכן מתקבל רק `b`."
+
+- id: py.strings.slicing.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תבדוק אם המילה היא פלינדרום (נקראת אותו דבר משני הכיוונים)."
+  code: |
+    word = "level"
+    reversed_word = word[::-1]
+    if word == reversed_word:
+        print("palindrome")
+    else:
+        print("not palindrome")
+  output: "palindrome"
+  explanation: "החיתוך `word[::-1]` (צעד -1) יוצר עותק הפוך של המחרוזת. פלינדרום (Palindrome) הוא מילה ששווה להיפוך של עצמה, ולכן משווים את המילה להיפוך שלה. את ההיפוך מחשבים לפני ההשוואה, כי משתמשים בו בתנאי."

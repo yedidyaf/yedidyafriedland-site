@@ -18,7 +18,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { collectSnippets, normOutput, report, type Snippet } from './lib';
+import { collectSnippets, normOutput, orderVariantProblems, report, type Snippet } from './lib';
 
 const TYPE_DECL = /^(?:\[[^\]]*\]\s*)*(?:(?:public|internal|private|protected|abstract|sealed|static|partial|file|readonly|unsafe|ref)\s+)*(?:class|struct|interface|record|enum|delegate)\b/;
 
@@ -62,14 +62,23 @@ using System.Text.Json;
 public static class __Runner {
   public static void Main(string[] args) {
     var ids = args;
+    var timeoutMs = int.Parse(Environment.GetEnvironmentVariable("VERIFY_TIMEOUT_MS") ?? "10000");
+    var stopOnTimeout = Environment.GetEnvironmentVariable("VERIFY_STOP_ON_TIMEOUT") == "1";
     var results = new Dictionary<string, string>();
     var realOut = Console.Out;
+    var progress = Environment.GetEnvironmentVariable("VERIFY_PROGRESS") == "1";
     foreach (var ns in ids) {
+      // progress mode: a crash (stack overflow) kills the process, so record where we are
+      if (progress) File.WriteAllText("current.txt", ns);
       var asm = typeof(__Runner).Assembly;
       var main = asm.GetTypes().Where(t => t.Namespace == ns)
         .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
         .FirstOrDefault(m => m.Name == "Main");
-      if (main == null) { results[ns] = "__NO_MAIN__"; continue; }
+      if (main == null) {
+        results[ns] = "__NO_MAIN__";
+        if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, results[ns] }) + "\\n");
+        continue;
+      }
       var sw = new StringWriter();
       Console.SetOut(sw);
       try {
@@ -80,7 +89,16 @@ public static class __Runner {
             if (ret is System.Threading.Tasks.Task t) t.GetAwaiter().GetResult();
           } catch (TargetInvocationException e) { throw e.InnerException!; }
         });
-        if (!task.Wait(TimeSpan.FromSeconds(10))) { results[ns] = "__TIMEOUT__"; continue; }
+        if (!task.Wait(TimeSpan.FromMilliseconds(timeoutMs))) {
+          results[ns] = "__TIMEOUT__";
+          // a runaway snippet keeps running and writing; stop here so it cannot pollute the next one
+          if (stopOnTimeout) {
+            Console.SetOut(realOut);
+            if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, "__TIMEOUT__" }) + "\\n");
+            Environment.Exit(0);
+          }
+          continue;
+        }
       } catch (AggregateException ae) {
         var ex = ae.InnerException!;
         sw.Flush();
@@ -89,6 +107,7 @@ public static class __Runner {
         sw.Write(ex.GetType().Name);
       } finally { Console.SetOut(realOut); }
       results[ns] = sw.ToString();
+      if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, results[ns] }) + "\\n");
     }
     File.WriteAllText("results.json", JsonSerializer.Serialize(results));
   }
@@ -175,7 +194,94 @@ function main() {
     if (c.status === 0) failures.push(`${s.id}: tagged compile-error but it compiles`);
   }
 
+  // 4) order questions: near-miss arrangements must not print the expected output.
+  const compiled = new Set(nsOf.values());
+  failures.push(...checkOrderVariants(snippets.filter((s) => s.variants && compiled.has(s)), tmp));
+
   report('C#', failures, snippets.length);
+}
+
+/** Build all variants into one project, dropping the ones that do not compile, then run the rest. */
+function checkOrderVariants(snippets: Snippet[], tmp: string): string[] {
+  const failures: string[] = [];
+  if (!snippets.length) return failures;
+  const proj = path.join(tmp, 'variants');
+  fs.mkdirSync(proj);
+  fs.writeFileSync(path.join(proj, 'Verify.csproj'), CSPROJ);
+  fs.writeFileSync(path.join(proj, '__Runner.cs'), RUNNER);
+  const owner = new Map<string, { s: Snippet; idx: number }>();
+  const all: [string, Snippet, number][] = [];
+  let k = 0;
+  for (const s of snippets)
+    [...s.variants!, ...s.accepted!].forEach((code, idx) => {
+      const ns = `V_${k++}`;
+      owner.set(ns, { s, idx });
+      all.push([ns, s, idx]);
+      fs.writeFileSync(path.join(proj, `${ns}.cs`), wrapSnippet(code, ns));
+    });
+  // Most variants do not compile (a brace moved, a variable used before its declaration).
+  // Remove the failing files and rebuild until the rest compiles.
+  for (let round = 0; ; round++) {
+    const b = dotnet(['build', '-c', 'Release', '-nologo', '-v', 'q', '-clp:NoSummary'], proj);
+    if (b.status === 0) break;
+    const bad = new Set<string>();
+    for (const m of (b.stdout + b.stderr).matchAll(/(V_\d+)\.cs\(\d+,\d+\): error/g)) bad.add(m[1]);
+    if (!bad.size || round > 20) {
+      failures.push(`order variants: build failed without a mappable error:\n${(b.stdout + b.stderr).slice(-2000)}`);
+      return failures;
+    }
+    for (const ns of bad) {
+      fs.rmSync(path.join(proj, `${ns}.cs`));
+      owner.delete(ns);
+    }
+    if (!owner.size) break;
+  }
+  const dll = path.join(proj, 'bin', 'Release', 'net8.0', 'Verify.dll');
+  let pending = owner.size ? [...owner.keys()] : [];
+  const results: Record<string, string> = {};
+  // Run in a child process that records each result; a variant that times out ends the
+  // process (it would keep writing), and one that overflows the stack crashes it. Either
+  // way, record it and start again with the variants that have not run yet.
+  const jsonl = path.join(proj, 'results.jsonl');
+  const current = path.join(proj, 'current.txt');
+  while (pending.length) {
+    fs.rmSync(jsonl, { force: true });
+    fs.rmSync(current, { force: true });
+    const r = spawnSync('dotnet', [dll, ...pending], {
+      cwd: proj,
+      encoding: 'utf8',
+      maxBuffer: 1 << 28,
+      env: { ...process.env, VERIFY_TIMEOUT_MS: '1000', VERIFY_STOP_ON_TIMEOUT: '1', VERIFY_PROGRESS: '1' },
+    });
+    if (fs.existsSync(jsonl))
+      for (const line of fs.readFileSync(jsonl, 'utf8').split('\n').filter(Boolean)) {
+        const [ns, out] = JSON.parse(line) as [string, string];
+        results[ns] = out;
+      }
+    if (r.status !== 0) {
+      const crashed = fs.existsSync(current) ? fs.readFileSync(current, 'utf8').trim() : '';
+      if (!crashed || crashed in results) {
+        failures.push(`order variants: runner failed:\n${(r.stdout + r.stderr).slice(-2000)}`);
+        return failures;
+      }
+      results[crashed] = '__CRASH__';
+    }
+    const before = pending.length;
+    pending = pending.filter((ns) => !(ns in results));
+    if (pending.length === before) {
+      failures.push(`order variants: runner made no progress:\n${(r.stdout + r.stderr).slice(-2000)}`);
+      return failures;
+    }
+  }
+  const outputs = new Map<Snippet, (string | null)[]>();
+  for (const [ns, s, idx] of all) {
+    const raw = results[ns];
+    const out = outputs.get(s) ?? [];
+    out[idx] = raw === undefined || raw === '__NO_MAIN__' ? null : raw === '__TIMEOUT__' || raw === '__CRASH__' ? raw : normOutput(raw);
+    outputs.set(s, out);
+  }
+  for (const [s, out] of outputs) failures.push(...orderVariantProblems(s, out));
+  return failures;
 }
 
 if (process.argv[1]?.endsWith('verify-csharp.ts')) main();

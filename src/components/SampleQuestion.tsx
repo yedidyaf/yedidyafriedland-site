@@ -3,21 +3,20 @@ import { useState } from 'preact/hooks';
 import QuestionCard from './QuestionCard';
 import { isComplete, type Answer } from '../lib/scoring';
 import type { ClientQuestion } from '../lib/types';
-import { rng, shuffle } from '../lib/exam';
+import { rng, scrambleLines, seedFromId, shuffle } from '../lib/exam';
 
-/** Stable per-question option order, identical on the server and in the browser. */
+/** Stable per-question option (or line) order, identical on the server and in the browser. */
 function orderFor(q: ClientQuestion): number[] | undefined {
+  if (q.type === 'order') return scrambleLines(q.code, q.anyOrder, rng(seedFromId(q.id)));
   if (!('options' in q)) return undefined;
-  let h = 2166136261;
-  for (const c of q.id) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
-  return shuffle(q.options.map((_, i) => i), rng(h));
+  return shuffle(q.options.map((_, i) => i), rng(seedFromId(q.id)));
 }
 
 export default function SampleQuestion({ q, number }: { q: ClientQuestion; number: number }) {
   const [answer, setAnswer] = useState<Answer | undefined>();
   const [done, setDone] = useState(false);
   const order = orderFor(q);
-  const autoCheck = q.type !== 'architecture' && q.type !== 'hierarchy';
+  const autoCheck = q.type !== 'architecture' && q.type !== 'hierarchy' && q.type !== 'order';
   const onAnswer = (a: Answer) => {
     setAnswer(a);
     if (autoCheck) setDone(true);

@@ -333,3 +333,74 @@
     "1": "האינדקסים מתחילים מ-0, ולכן `arr[5]` מחוץ למערך."
     "2": "יש רק 5 איברים, ולכן אין אינדקס 5."
     "3": "גם 0 הוא אינדקס חוקי, והוא של האיבר הראשון."
+
+- id: cs.collections.arrays.022
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמצא את המספר הגדול במערך."
+  code: |
+    int[] numbers = { 4, 17, 9, 23, 11 };
+    int max = numbers[0];
+    for (int i = 1; i < numbers.Length; i++)
+    {
+        if (numbers[i] > max)
+            max = numbers[i];
+    }
+    Console.WriteLine(max);
+  output: "23"
+  explanation: "אלגוריתם המקסימום: מתחילים מהאיבר הראשון (לא מ-0, כי כל האיברים יכולים להיות שליליים), ולכן הלולאה מתחילה מ-`i = 1`. כל איבר גדול יותר מחליף את `max`. ההדפסה מחוץ ללולאה."
+
+- id: cs.collections.arrays.023
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תהפוך את סדר האיברים במערך, בלי מערך נוסף."
+  code: |
+    int[] arr = { 1, 2, 3, 4, 5 };
+    for (int i = 0; i < arr.Length / 2; i++)
+    {
+        int temp = arr[i];
+        arr[i] = arr[arr.Length - 1 - i];
+        arr[arr.Length - 1 - i] = temp;
+    }
+    for (int i = 0; i < arr.Length; i++)
+        Console.Write(arr[i] + " ");
+  output: "5 4 3 2 1"
+  explanation: "היפוך במקום (In-place): מחליפים את האיבר ה-`i` מההתחלה עם האיבר ה-`i` מהסוף, בעזרת משתנה עזר. עוברים רק על חצי המערך (`arr.Length / 2`), כי מעבר על כולו היה מחליף כל זוג פעמיים ומחזיר את המערך למצבו המקורי."
+
+- id: cs.collections.arrays.024
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תספור בעזרת מערך מונים כמה פעמים מופיע כל ערך בין 0 ל-3."
+  code: |
+    int[] values = { 3, 1, 3, 0, 3, 1 };
+    int[] counts = new int[4];
+    for (int i = 0; i < values.Length; i++)
+        counts[values[i]]++;
+    for (int k = 0; k < counts.Length; k++)
+        Console.Write(counts[k] + " ");
+  output: "1 2 0 3"
+  anyOrder: [[1, 2]]
+  explanation: "מערך מונים (Counting Array): התא `counts[v]` סופר כמה פעמים הופיע הערך `v`, ולכן `counts[values[i]]++` מגדיל את המונה הנכון בלי `if`. קודם סופרים את כל הערכים, ורק אחר כך מדפיסים את המונים."
+
+- id: cs.collections.arrays.025
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמיין את המערך במיון בועות (Bubble Sort)."
+  code: |
+    int[] a = { 5, 2, 4, 1 };
+    for (int i = 0; i < a.Length - 1; i++)
+        for (int j = 0; j < a.Length - 1 - i; j++)
+            if (a[j] > a[j + 1])
+            {
+                int temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+    for (int k = 0; k < a.Length; k++)
+        Console.Write(a[k] + " ");
+  output: "1 2 4 5"
+  explanation: "מיון בועות משווה כל זוג שכנים ומחליף אותם אם הם בסדר הפוך. אחרי כל סיבוב של הלולאה החיצונית, האיבר הגדול ביותר שנשאר \"מבעבע\" לסוף, ולכן הלולאה הפנימית קצרה ב-`i` בכל פעם. ההחלפה דורשת משתנה עזר: שומרים את `a[j]` לפני שדורסים אותו."

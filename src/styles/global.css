@@ -361,6 +361,33 @@ details.sample summary { cursor: pointer; font-weight: 600; color: var(--text); 
 .chip[disabled] { cursor: default; }
 .match .why { margin: 6px 0 0; font-size: .93rem; color: var(--muted); }
 
+/* order the lines: each line is a paper strip the learner moves */
+.order .goal { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-bottom: 12px; padding: 10px 14px; background: var(--surface-2); border: 1px dashed var(--border); }
+.order .goal pre.out { flex: 1 1 12em; }
+.order-list { list-style: none; padding: 6px 0; }
+.order-list .oline { display: flex; align-items: center; gap: 4px; padding: 0 8px 0 16px; min-height: 44px; border-bottom: 1px dashed var(--code-border); background: var(--code-bg); }
+.order-list .oline:last-child { border-bottom: 0; }
+.order-list .oline[draggable='true'] { cursor: grab; }
+.order-list .oline .src { cursor: pointer; padding-top: 6px; padding-bottom: 6px; }
+.order-list .oline:hover .src { background: var(--surface-2); }
+.order-list .oline.sel { background: var(--pen-soft); box-shadow: inset 3px 0 0 var(--pen); }
+.order-list .oline.dragging { opacity: .45; }
+.order-list .oline.right { background: var(--success-soft); box-shadow: inset 3px 0 0 var(--success); }
+.order-list .oline.wrong { background: var(--danger-soft); box-shadow: inset 3px 0 0 var(--pen); }
+.order-list .oline.right .mark { color: var(--success); }
+.order-list .oline.wrong .mark { color: var(--pen); }
+.order-list .mark { flex: none; font-weight: 700; padding-inline: 6px; font-family: var(--font); }
+.order-list .moves { display: flex; gap: 2px; flex: none; }
+.order-list .mv { font: inherit; font-size: .8rem; width: 36px; height: 36px; border: 1.5px solid var(--border); border-radius: 0; background: var(--surface); color: var(--text); cursor: pointer; }
+.order-list .mv:hover:not([disabled]) { border-color: var(--text); }
+.order-list .mv[disabled] { opacity: .3; cursor: default; }
+.order-list .src:focus-visible { outline: 2px solid var(--pen); outline-offset: -2px; }
+@media (max-width: 520px) {
+  .order-list .oline { padding-left: 8px; }
+  .order-list .moves { flex-direction: column; }
+  .order-list .mv { width: 40px; height: 30px; }
+}
+
 /* feedback reads like the teacher's note in the margin */
 .feedback { margin-top: 20px; border-top: 1px dashed var(--text); padding-top: 16px; }
 .verdict { font-family: var(--serif); font-weight: 700; font-size: 1.25rem; margin-bottom: 8px; }

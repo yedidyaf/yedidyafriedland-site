@@ -15,7 +15,11 @@ import {
   type ChapterMeta,
   type TopicMeta,
   type Question,
+  ORDER_MIN_LINES,
+  ORDER_MAX_LINES,
+  orderLines,
 } from './schema';
+import { unitLines } from './scoring';
 
 export interface LoadedTopic extends TopicMeta {
   questions: Question[];
@@ -77,6 +81,34 @@ export function checkQuestion(q: Question, file: string, expectedPrefix: string)
       const labels = new Set(q.items.map((i) => i.label));
       if (labels.size !== q.items.length) p.push(`${where}: duplicate item labels`);
       for (const it of q.items) if (!ids.has(it.answer)) p.push(`${where}: item "${it.label}" answer "${it.answer}" is not a target`);
+      break;
+    }
+    case 'order': {
+      const lines = orderLines(q.code);
+      if (lines.length < ORDER_MIN_LINES || lines.length > ORDER_MAX_LINES)
+        p.push(`${where}: order questions take ${ORDER_MIN_LINES}-${ORDER_MAX_LINES} lines (has ${lines.length})`);
+      if (lines.some((l) => !l.trim())) p.push(`${where}: order code must not contain blank lines`);
+      if (new Set(lines).size === 1) p.push(`${where}: order code lines are all identical`);
+      let combos = 1;
+      const groups = (q.anyOrder ?? []).map((g) => g.map(unitLines));
+      groups.forEach((blocks, gi) => {
+        const flat = blocks.flat();
+        const txt = JSON.stringify(q.anyOrder![gi]);
+        if (blocks.some((b) => !b.length)) p.push(`${where}: anyOrder ${txt}: a range must go from low to high`);
+        if (flat.some((v, i) => i > 0 && v !== flat[i - 1] + 1)) p.push(`${where}: anyOrder ${txt}: units must be adjacent, in line order`);
+        if (flat.some((v) => v >= lines.length)) p.push(`${where}: anyOrder ${txt} is out of range`);
+        // two groups may overlap only when one lies inside a single unit of the other
+        groups.forEach((other, oi) => {
+          if (oi <= gi) return;
+          const a = new Set(flat);
+          const b = other.flat();
+          if (!b.some((v) => a.has(v))) return;
+          const inside = (inner: number[], outer: number[][]) => outer.some((u) => inner.every((v) => u.includes(v)));
+          if (!inside(b, blocks) && !inside(flat, other)) p.push(`${where}: anyOrder groups overlap without nesting`);
+        });
+        for (let k = 2; k <= blocks.length; k++) combos *= k;
+      });
+      if (combos > 720) p.push(`${where}: anyOrder allows ${combos} orders, at most 720`);
       break;
     }
   }

@@ -405,3 +405,23 @@
     "0": "`B` לפני `A` מתאים לכך ש-`B` יורשת מ-`A`. ה-MRO הוא `C`, `B`, `A`, `object`, והגדרה כזאת חוקית (אם כי מיותרת)."
     "2": "ירושה פשוטה מ-`B` תמיד חוקית. `C` מקבלת גם את `A` דרך `B`."
     "3": "ירושה פשוטה מ-`A` חוקית, גם אם יש מחלקות אחרות שיורשות ממנה."
+
+- id: py.oop.inheritance.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמחלקה `Rectangle` תירש מ-`Shape` ותדרוס את חישוב השטח."
+  code: |
+    class Shape:
+        def area(self):
+            return 0
+    class Rectangle(Shape):
+        def __init__(self, width, height):
+            self.width = width
+            self.height = height
+        def area(self):
+            return self.width * self.height
+    print(Shape().area(), Rectangle(3, 4).area())
+  output: "0 12"
+  anyOrder: [[6, 7], [[5, 7], [8, 9]]]
+  explanation: "מחלקת הבסיס `Shape` חייבת להיות מוגדרת לפני `Rectangle(Shape)`, כי בשורה הזו פייתון כבר צריך אותה. `Rectangle` דורסת (Override) את `area` ומחשבת רוחב כפול גובה, ואילו `Shape` עצמה מחזירה 0. הבנאי עם `width` ו-`height` שייך ל-`Rectangle`: ב-`Shape` הוא היה מונע את `Shape()` בלי ארגומנטים."

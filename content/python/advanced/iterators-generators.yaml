@@ -316,3 +316,18 @@
   optionExplanations:
     "1": "הסוגריים המרובעים בונים רשימה שלמה בזיכרון רק כדי לסכום אותה ולזרוק אותה."
     "2": "שתי לולאות ורשימת עזר עושות ידנית את מה ש-`sum` עם ביטוי גנרטור עושה בשורה אחת."
+
+- id: py.advanced.iterators-generators.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהגנרטור ייצר את המספרים הזוגיים עד הגבול."
+  code: |
+    def evens(limit):
+        n = 0
+        while n <= limit:
+            yield n
+            n += 2
+    print(list(evens(8)))
+  output: "[0, 2, 4, 6, 8]"
+  explanation: "גנרטור (Generator) מחזיר ערכים אחד אחד עם `yield`, וממשיך מאותה נקודה בקריאה הבאה. ה-`yield` בא לפני הקידום, כדי ש-0 ייכלל. `list` מריץ את הגנרטור עד הסוף ואוסף את כל הערכים."

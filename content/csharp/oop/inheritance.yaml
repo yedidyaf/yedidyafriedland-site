@@ -483,3 +483,29 @@
   prompt: "מחלקה יורשת מקבלת את כל הפעולות ה-`public` של מחלקת הבסיס שלה."
   answer: true
   explanation: "ירושה (Inheritance) פירושה שהמחלקה היורשת מקבלת את מה שהוגדר במחלקת הבסיס. פעולות `public` אפשר להפעיל על עצם של היורשת כאילו הוגדרו בה."
+
+- id: cs.oop.inheritance.022
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שכל בנאי ידפיס את שם המחלקה שלו, ויצירת `Dog` תפעיל קודם את הבנאי של `Animal`."
+  code: |
+    Animal a = new Animal();
+    Dog d = new Dog();
+    class Animal
+    {
+        public Animal()
+        {
+            Console.WriteLine("Animal");
+        }
+    }
+    class Dog : Animal
+    {
+        public Dog()
+        {
+            Console.WriteLine("Dog");
+        }
+    }
+  output: "Animal\nAnimal\nDog"
+  anyOrder: [[[3, 9], [10, 16]]]
+  explanation: "בנאי של מחלקה יורשת מפעיל קודם את הבנאי של מחלקת הבסיס, ורק אחר כך את הגוף שלו. לכן `new Animal()` מדפיס `Animal`, ו-`new Dog()` מדפיס `Animal` ואחריו `Dog`. ב-C# סדר הגדרת המחלקות בקובץ לא משנה."

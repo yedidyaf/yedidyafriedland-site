@@ -9,6 +9,7 @@ import { inline, prose } from '../lib/text';
 import { QUESTION_TYPE_LABELS } from '../lib/schema';
 import { isCorrect, partialScore, type Answer } from '../lib/scoring';
 import type { ClientQuestion } from '../lib/types';
+import OrderBoard, { linesInPlace } from './OrderBoard';
 
 interface Props {
   q: ClientQuestion;
@@ -65,7 +66,7 @@ export default function QuestionCard({ q, answer, onAnswer, order, mode, number,
         </div>
       )}
 
-      {q.codeHtml && q.type !== 'bug' && <CodeBlock lines={q.codeHtml} numbers={q.codeHtml.length > 4} />}
+      {q.codeHtml && q.type !== 'bug' && q.type !== 'order' && <CodeBlock lines={q.codeHtml} numbers={q.codeHtml.length > 4} />}
 
       <div class="qbody">{renderBody(q, answer, onAnswer, order, locked)}</div>
 
@@ -147,6 +148,8 @@ function renderBody(q: ClientQuestion, answer: Answer | undefined, onAnswer: Pro
         </div>
       );
     }
+    case 'order':
+      return <OrderBoard q={q} answer={answer} order={order} locked={locked} onAnswer={onAnswer} />;
     case 'architecture':
     case 'hierarchy': {
       const picks = answer?.kind === 'match' ? answer.picks : {};
@@ -209,6 +212,12 @@ function Feedback({ q, answer, correct }: { q: ClientQuestion; answer?: Answer; 
         {!answer ? 'לא עניתם על השאלה.' : correct ? 'נכון!' : 'לא נכון.'}
         {partial !== null && answer && !correct && <span class="muted"> שיבצתם נכון {Math.round(partial * 100)}% מהפריטים.</span>}
         {q.type === 'bug' && answer && !correct && <span class="muted"> השורה שצריך לתקן היא {q.answer}.</span>}
+        {q.type === 'order' && answer?.kind === 'order' && !correct && (
+          <span class="muted">
+            {' '}
+            {linesInPlace(q, answer.lines)} מתוך {answer.lines.length} השורות במקום הנכון.
+          </span>
+        )}
       </p>
       {wrongWhy && (
         <div class="wrongwhy">
@@ -220,6 +229,12 @@ function Feedback({ q, answer, correct }: { q: ClientQuestion; answer?: Answer; 
         <strong>הסבר</strong>
         <Html as="div" html={prose(q.explanation)} />
       </div>
+      {q.type === 'order' && !correct && q.codeHtml && (
+        <div class="fixed">
+          <strong>הסדר הנכון</strong>
+          <CodeBlock lines={q.codeHtml} numbers />
+        </div>
+      )}
       {q.type === 'bug' && q.fixedHtml && (
         <div class="fixed">
           <strong>הקוד המתוקן</strong>

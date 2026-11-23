@@ -222,3 +222,34 @@
     "1": "ההגדלה של `a++` קורית מיד אחרי שהערך נקרא, ולא בסוף השורה. ה-`a` השני כבר 6."
     "2": "`a++` מגדיל את `a`, ולכן בהדפסה `a` הוא 6."
     "3": "`a++` מחזיר את הערך הישן 5, ולא את 6."
+
+- id: cs.basics.operators.023
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תדפיס את המספר 473 בסדר ספרות הפוך."
+  code: |
+    int n = 473;
+    int ones = n % 10;
+    n = n / 10;
+    int tens = n % 10;
+    n = n / 10;
+    Console.WriteLine(ones * 100 + tens * 10 + n);
+  output: "374"
+  explanation: "פירוק מספר לספרות: `n % 10` נותן את ספרת האחדות, ו-`n / 10` בין שני `int` הוא חילוק שלמים (Integer Division) שמוחק אותה. כל ספרה נשמרת לפני שמוחקים אותה, ולכן כל `n % 10` בא לפני ה-`n / 10` שאחריו. אחרי שתי מחיקות נשארת ב-`n` ספרת המאות."
+
+- id: cs.basics.operators.024
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמיר 7384 שניות לשעות, דקות ושניות."
+  code: |
+    int total = 7384;
+    int seconds = total % 60;
+    total = total / 60;
+    int minutes = total % 60;
+    int hours = total / 60;
+    Console.WriteLine(hours + ":" + minutes + ":" + seconds);
+  output: "2:3:4"
+  anyOrder: [[4, 5]]
+  explanation: "האלגוריתם עובד כמו פירוק לספרות, רק בבסיס 60: `total % 60` נותן את השניות שלא נכנסו לדקה שלמה, ו-`total / 60` הופך את `total` לדקות. את השניות שומרים לפני העדכון של `total`, אחרת מקבלים שארית של דקות. אחרי העדכון, `% 60` נותן דקות ו-`/ 60` נותן שעות, ואת שתי השורות האלה אפשר לכתוב בכל סדר."

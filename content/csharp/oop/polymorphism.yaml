@@ -671,3 +671,30 @@
     "1": "`Area` וירטואלית ונדרסה, ולכן לא נקראת הגרסה של `Shape` שמחזירה 0."
     "2": "גם הריבוע הקטן, שצלעו 1, נכנס לסכום."
     "3": "השטח של `Square(2)` הוא 4, לא 2."
+
+- id: cs.oop.polymorphism.021
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שכל עצם במערך ישמיע את הקול של המחלקה שלו."
+  code: |
+    Animal[] animals = { new Animal(), new Dog() };
+    for (int i = 0; i < animals.Length; i++)
+        Console.WriteLine(animals[i].Speak());
+    class Animal
+    {
+        public virtual string Speak()
+        {
+            return "...";
+        }
+    }
+    class Dog : Animal
+    {
+        public override string Speak()
+        {
+            return "Woof";
+        }
+    }
+  output: "...\nWoof"
+  anyOrder: [[[4, 10], [11, 17]]]
+  explanation: "רב-צורתיות (Polymorphism): המערך מטיפוס `Animal[]`, אבל הקריאה `Speak()` מריצה את הגרסה של המחלקה האמיתית של כל עצם. `virtual` במחלקת הבסיס מאפשר דריסה, ו-`override` במחלקה היורשת דורס. החלפה ביניהם היא שגיאת קומפילציה."

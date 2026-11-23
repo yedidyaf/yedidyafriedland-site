@@ -285,3 +285,31 @@
     "1": "התשובות הפוכות. 3 הוא אי זוגי, ושתי השרשראות מגיעות למקרי הבסיס שמחזירים בהתאם."
     "2": "`is_odd(3)` מסתיימת ב-`is_even(0)`, שמחזירה `True`."
     "3": "בכל קריאה `n` קטן ב-1, ולכן מגיעים ל-0 אחרי 3 קריאות בלבד."
+
+- id: py.functions.recursion.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהפונקציה הרקורסיבית תחשב עצרת."
+  code: |
+    def factorial(n):
+        if n <= 1:
+            return 1
+        return n * factorial(n - 1)
+    print(factorial(5))
+  output: "120"
+  explanation: "בכל פונקציה רקורסיבית (Recursion) תנאי העצירה (Base Case) בא לפני הקריאה הרקורסיבית. אם הקריאה באה קודם, הפונקציה קוראת לעצמה בלי סוף ונזרקת `RecursionError`."
+
+- id: py.functions.recursion.018
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהפונקציה הרקורסיבית תחשב את סכום הספרות של מספר."
+  code: |
+    def digit_sum(n):
+        if n < 10:
+            return n
+        return n % 10 + digit_sum(n // 10)
+    print(digit_sum(4072))
+  output: "13"
+  explanation: "הצעד הרקורסיבי מפריד את ספרת האחדות (`n % 10`) ומעביר את שאר המספר (`n // 10`) לקריאה הבאה. מספר חד-ספרתי הוא מקרה הבסיס: סכום הספרות שלו הוא הוא עצמו."

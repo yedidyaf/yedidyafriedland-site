@@ -330,3 +330,23 @@
     "1": "הערך המוחזר נשמר ב-`s`, ולכן מודפסת התוצאה ולא הארגומנט."
     "2": "`Length` סופר תווים, ויש 6."
     "3": "`times` קובע כמה פעמים הלולאה רצה, ולא מוצמד לטקסט."
+
+- id: cs.methods.parameters.027
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמתודה תכפיל כל איבר במערך שהיא מקבלת, והשינוי ייראה גם בקוד שקרא לה."
+  code: |
+    int[] values = { 1, 2, 3 };
+    ArrayUtils.DoubleAll(values);
+    Console.WriteLine(values[0] + values[1] + values[2]);
+    class ArrayUtils
+    {
+        public static void DoubleAll(int[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] *= 2;
+        }
+    }
+  output: "12"
+  explanation: "מערך הוא טיפוס הפניה (Reference Type): המתודה מקבלת הפניה לאותו מערך, ולכן השינוי שלה נראה גם אחרי הקריאה. הסכום מודפס אחרי הקריאה ל-`DoubleAll`: לפניה הוא היה 6."

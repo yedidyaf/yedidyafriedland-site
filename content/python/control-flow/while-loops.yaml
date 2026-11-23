@@ -275,3 +275,36 @@
   explanation: "כשמספר הסיבובים ידוע מראש, `for` עם `range` מבטאת את הכוונה בשורה אחת. אין מונה לאתחל ואין קידום שאפשר לשכוח, ולכן אין סכנה ללולאה אינסופית."
   optionExplanations:
     "1": "מונה ידני ב-`while` דורש שלושה חלקים נפרדים: אתחול, תנאי וקידום. שכחה של אחד מהם היא באג נפוץ."
+
+- id: py.control-flow.while-loops.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: סדרו את השורות כך שהתוכנית תחשב את סכום הספרות של המספר.
+  code: |
+    n = 4072
+    total = 0
+    while n > 0:
+        total += n % 10
+        n //= 10
+    print(total)
+  output: "13"
+  anyOrder: [[1, 2]]
+  explanation: "האלגוריתם מפרק מספר לספרות: `n % 10` נותן את ספרת האחדות, ו-`n //= 10` מוחק אותה. מחברים לפני שמוחקים, אחרת הספרה האחרונה הולכת לאיבוד. הצובר `total` מאותחל לפני הלולאה, וההדפסה באה אחריה."
+
+- id: py.control-flow.while-loops.018
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחשב את המחלק המשותף הגדול (GCD) של 48 ו-18 באלגוריתם של אוקלידס."
+  code: |
+    a = 48
+    b = 18
+    while b != 0:
+        remainder = a % b
+        a = b
+        b = remainder
+    print(a)
+  output: "6"
+  anyOrder: [[1, 2]]
+  explanation: "אלגוריתם אוקלידס (Euclidean Algorithm): מחליפים את הזוג (`a`, `b`) בזוג (`b`, `a % b`) עד ש-`b` מתאפס, ואז `a` הוא ה-GCD. השארית מחושבת ונשמרת לפני ש-`a` ו-`b` משתנים, ו-`a = b` חייב לבוא לפני `b = remainder`, אחרת הערך הישן של `b` אובד."

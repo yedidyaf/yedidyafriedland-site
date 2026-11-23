@@ -296,3 +296,39 @@
   explanation: "כשמספר הסיבובים ידוע מראש, `for` מרכזת בשורה אחת את כל מה שמנהל את הלולאה: ערך התחלתי, תנאי וקידום. כך רואים מיד כמה פעמים היא רצה."
   optionExplanations:
     "1": "`while (true)` עם `break` מפזר את תנאי העצירה בתוך הגוף, והקורא צריך לחפש אותו."
+
+- id: cs.control-flow.loops.024
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: סדרו את השורות כך שהתוכנית תחשב את סכום הספרות של המספר.
+  code: |
+    int n = 4072;
+    int sum = 0;
+    while (n > 0)
+    {
+        sum += n % 10;
+        n /= 10;
+    }
+    Console.WriteLine(sum);
+  output: "13"
+  anyOrder: [[1, 2]]
+  explanation: "האלגוריתם מפרק מספר לספרות: `n % 10` נותן את ספרת האחדות, ו-`n /= 10` (חילוק שלמים) מוחק אותה. מחברים לפני שמוחקים, אחרת ספרת האחדות הולכת לאיבוד. הצובר `sum` מאותחל לפני הלולאה, וההדפסה באה אחרי הסוגר שסוגר אותה."
+
+- id: cs.control-flow.loops.025
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תהפוך את סדר הספרות של 1234."
+  code: |
+    int n = 1234;
+    int reversed = 0;
+    while (n > 0)
+    {
+        reversed = reversed * 10 + n % 10;
+        n /= 10;
+    }
+    Console.WriteLine(reversed);
+  output: "4321"
+  anyOrder: [[1, 2]]
+  explanation: "בכל סיבוב לוקחים את ספרת האחדות (`n % 10`), מזיזים את מה שכבר נבנה מקום אחד שמאלה (`reversed * 10`) ומוסיפים אותה. רק אחרי זה מוחקים את הספרה מ-`n`. אם מוחקים קודם, ספרת האחדות 4 הולכת לאיבוד."
