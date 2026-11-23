@@ -236,3 +236,17 @@
     total = total + 10
     total = total + 5
     print(total)
+
+- id: py.basics.variables.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחליף בין ערכי `a` ו-`b` בעזרת משתנה עזר."
+  code: |
+    a, b = 5, 8
+    temp = a
+    a = b
+    b = temp
+    print(a, b)
+  output: "8 5"
+  explanation: "החלפת ערכים בעזרת משתנה עזר (Temporary Variable): קודם שומרים את `a` ב-`temp`, כי ההשמה `a = b` דורסת אותו. אחר כך `b` מקבל את הערך השמור. אם מבצעים `a = b` לפני ששמרו את `a`, הערך 5 אובד ושני המשתנים יהיו 8. בפייתון אפשר גם לכתוב `a, b = b, a`, אבל חשוב להבין את האלגוריתם."

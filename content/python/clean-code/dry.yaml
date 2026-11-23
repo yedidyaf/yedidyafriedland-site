@@ -384,3 +384,18 @@
         if total >= FREE_SHIPPING_MIN:
             return "Free shipping!"
         return "Add more items for free shipping"
+
+- id: py.clean-code.dry.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שפונקציית עזר אחת תחליף שלושה חישובים כפולים של מחיר עם מע\"מ."
+  code: |
+    VAT = 0.18
+    def with_vat(price):
+        return round(price * (1 + VAT), 2)
+    for price in [100, 50, 20]:
+        print(with_vat(price))
+  output: "118.0\n59.0\n23.6"
+  anyOrder: [[1, [2, 3]]]
+  explanation: "DRY (Don't Repeat Yourself): במקום לכתוב את הנוסחה שלוש פעמים, כותבים אותה פעם אחת בפונקציה וקוראים לה בלולאה. גם שיעור המע\"מ מוגדר פעם אחת כקבוע (`VAT`), כך ששינוי שלו נעשה במקום אחד."

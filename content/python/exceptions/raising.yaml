@@ -301,3 +301,20 @@
   explanation: "בדיקת שמירה (Guard Clause) בודקת את הקלט בתחילת הפונקציה וזורקת חריגה מיד. אחריה נשאר רק המסלול התקין, בלי `else` ובלי הזחה נוספת, והקורא רואה מיד מה הפונקציה דורשת מהקלט."
   optionExplanations:
     "1": "הטיפול בשגיאה נדחק לסוף, והמסלול התקין עטוף בתנאי. כשמתווספות בדיקות, מבנה כזה מוביל לקינון עמוק."
+
+- id: py.exceptions.raising.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהפונקציה תחשב ממוצע, ותזרוק חריגה על רשימה ריקה."
+  code: |
+    def average(numbers):
+        if len(numbers) == 0:
+            raise ValueError("empty list")
+        return sum(numbers) / len(numbers)
+    try:
+        print(average([]))
+    except ValueError as e:
+        print("error:", e)
+  output: "error: empty list"
+  explanation: "הבדיקה של קלט לא תקין באה בתחילת הפונקציה, לפני החישוב: בלעדיה, `sum([]) / 0` היה זורק `ZeroDivisionError` עם הודעה פחות ברורה. `raise` זורק את החריגה לקוד שקרא לפונקציה, וה-`except` שם תופס אותה ומדפיס את ההודעה."

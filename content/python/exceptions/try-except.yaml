@@ -308,3 +308,21 @@
   explanation: "בלוק `try` צריך לעטוף רק את השורה שעלולה לזרוק את החריגה שמטפלים בה, כאן הגישה למילון. כך ברור לקורא מאיפה מגיעה `KeyError`, ושינוי עתידי בחישוב לא יסתיר בטעות `KeyError` אחרת."
   optionExplanations:
     "1": "בלוק `try` רחב מדי: הוא עוטף גם את החישוב, ולא ברור איזו שורה אמורה לזרוק `KeyError`."
+
+- id: py.exceptions.try-except.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תסכום רק את הערכים שהם מספרים, ותדלג על השאר."
+  code: |
+    values = ["10", "abc", "5", "7x"]
+    total = 0
+    for v in values:
+        try:
+            total += int(v)
+        except ValueError:
+            print("skipped", v)
+    print(total)
+  output: "skipped abc\nskipped 7x\n15"
+  anyOrder: [[1, 2]]
+  explanation: "ההמרה `int(v)` נמצאת בתוך `try`, כי היא זו שעלולה לזרוק `ValueError`. כשההמרה נכשלת, `+=` לא מתבצע והתוכנית ממשיכה לערך הבא במקום לקרוס. הסכום מודפס פעם אחת, אחרי הלולאה."

@@ -378,3 +378,25 @@
   optionExplanations:
     "1": "שכפול קוד (Duplicated Code): אותה הדפסה כתובה בכל פונקציה, וכל שינוי בפורמט דורש לעדכן את כולן."
     "2": "עדיין צריך לזכור לקרוא ל-`log` בכל פונקציה ולהקליד את שמה ידנית, ושם שגוי לא ייתפס."
+
+- id: py.advanced.decorators.017
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהדקורטור יספור כמה פעמים נקראה הפונקציה."
+  code: |
+    def counted(func):
+        def wrapper(*args):
+            wrapper.calls += 1
+            return func(*args)
+        wrapper.calls = 0
+        return wrapper
+    @counted
+    def square(x):
+        return x * x
+    square(3)
+    square(4)
+    print(square.calls)
+  output: "2"
+  anyOrder: [[10, 11]]
+  explanation: "הדקורטור (Decorator) עוטף את `square` בפונקציה `wrapper` שמגדילה מונה ואז קוראת לפונקציה המקורית. המונה מאותחל אחרי הגדרת `wrapper` ולפני שהיא מוחזרת. `@counted` חייב לבוא ישירות לפני `def square`."

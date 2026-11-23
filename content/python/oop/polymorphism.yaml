@@ -392,3 +392,20 @@
   prompt: "פולימורפיזם (Polymorphism) פירושו שאותה קריאה, למשל `shape.area()`, יכולה להריץ קוד שונה לפי סוג האובייקט."
   answer: true
   explanation: "פולימורפיזם, «רב צורתיות», מאפשר לכתוב קוד אחד שעובד עם אובייקטים מסוגים שונים. כל אובייקט מגיב לקריאה לפי ההגדרה במחלקה שלו, והקוד הקורא לא צריך לבדוק את הסוג."
+
+- id: py.oop.polymorphism.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שכל חיה ברשימה תשמיע את הקול שלה."
+  code: |
+    class Animal:
+        def speak(self):
+            return "..."
+    class Dog(Animal):
+        def speak(self):
+            return "Woof"
+    for animal in [Animal(), Dog()]:
+        print(animal.speak())
+  output: "...\nWoof"
+  explanation: "רב-צורתיות (Polymorphism): הלולאה קוראת לאותה מתודה `speak` על כל אובייקט, וכל אובייקט מריץ את הגרסה של המחלקה שלו. `Dog` מוגדרת אחרי `Animal` כי היא יורשת ממנה, והלולאה באה אחרי שתי המחלקות כי היא יוצרת מהן אובייקטים."

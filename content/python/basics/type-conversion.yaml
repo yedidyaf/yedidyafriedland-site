@@ -211,3 +211,18 @@
   optionExplanations:
     "1": "`bool` על מחרוזת בודקת אם היא ריקה, ולא אם היא נראית כמו אפס."
     "3": "אחרי `float(y)` הערך הוא המספר `0.0`, ואפס הוא שקרי בכל טיפוס מספרי."
+
+- id: py.basics.type-conversion.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמיר משך זמן בדקות, שמגיע כמחרוזת, לתצוגה של שעות ודקות."
+  code: |
+    text = "135"
+    minutes = int(text)
+    hours = minutes // 60
+    rest = minutes % 60
+    print(str(hours) + ":" + str(rest))
+  output: "2:15"
+  anyOrder: [[3, 4]]
+  explanation: "אי אפשר לחשב עם המחרוזת `\"135\"`, ולכן קודם ממירים אותה למספר עם `int`. אחר כך מחשבים שעות ודקות, ובהדפסה ממירים בחזרה למחרוזת עם `str`, כי `+` בין מחרוזת למספר זורק `TypeError`."

@@ -301,3 +301,18 @@
   explanation: "החזרה מוקדמת (Early Return) מחזירה את התשובה ברגע שהיא ידועה. כך אין צורך במשתנה עזר ובקינון, וכל מקרה נקרא בשורה אחת. שתי הגרסאות מחזירות בדיוק אותו ערך לכל מספר."
   optionExplanations:
     "1": "משתנה עזר ו-`if` מקונן בתוך `else` מוסיפים שורות ורמת הזחה בלי להוסיף מידע."
+
+- id: py.functions.defining-functions.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהפונקציה תבדוק אם מספר גדול מ-1 הוא ראשוני."
+  code: |
+    def is_prime(n):
+        for d in range(2, n):
+            if n % d == 0:
+                return False
+        return True
+    print(is_prime(13), is_prime(15))
+  output: "True False"
+  explanation: "מחפשים מחלק בין 2 ל-`n - 1`: מחלק אחד מספיק כדי להחזיר `False` מיד. רק אם הלולאה הסתיימה בלי למצוא מחלק מחזירים `True`, ולכן `return True` נמצא אחרי הלולאה ולא בתוכה. אם הוא בתוך הלולאה, הפונקציה תחזיר תשובה כבר אחרי בדיקת המחלק 2."

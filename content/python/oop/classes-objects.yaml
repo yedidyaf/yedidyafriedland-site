@@ -319,3 +319,25 @@
   optionExplanations:
     "0": "שלוש החלפות מצב מתחילות ב-`False` ומסתיימות ב-`True`. מספר זוגי של החלפות היה מחזיר ל-`False`."
     "2": "`toggle` אכן מחזירה `None`, אבל מדפיסים את התכונה `is_on`, ולא את מה שהמתודה מחזירה."
+
+- id: py.oop.classes-objects.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמשיכה השנייה תידחה כי אין מספיק כסף בחשבון."
+  code: |
+    class BankAccount:
+        def __init__(self, balance):
+            self.balance = balance
+        def withdraw(self, amount):
+            if amount <= self.balance:
+                self.balance -= amount
+            else:
+                print("declined", amount)
+    account = BankAccount(100)
+    account.withdraw(30)
+    account.withdraw(80)
+    print(account.balance)
+  output: "declined 80\n70"
+  anyOrder: [[[2, 3], [4, 8]]]
+  explanation: "המחלקה מגדירה את המצב (`balance`) ב-`__init__` ואת ההתנהגות ב-`withdraw`. סדר המתודות בתוך מחלקה לא משנה. הסדר של הקריאות כן משנה: אחרי משיכה של 30 נשארים 70, ולכן משיכה של 80 נדחית. בסדר ההפוך, 80 היה מצליח ו-30 נדחה."

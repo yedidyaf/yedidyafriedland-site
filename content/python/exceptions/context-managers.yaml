@@ -341,3 +341,20 @@
   explanation: "`with` עושה בדיוק את מה ש-`try` ו-`finally` עושים כאן: סוגר את הקובץ בכל מקרה. הוא קצר יותר, ואי אפשר לשכוח בו את הסגירה או לכתוב אותה במקום הלא נכון."
   optionExplanations:
     "1": "הקוד נכון, אבל הוא מממש ידנית את מה שמנהל ההקשר של הקובץ כבר עושה."
+
+- id: py.exceptions.context-managers.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמחלקה תדפיס הודעה בכניסה לבלוק `with` וביציאה ממנו."
+  code: |
+    class Section:
+        def __enter__(self):
+            print("start")
+        def __exit__(self, exc_type, exc, tb):
+            print("end")
+    with Section():
+        print("work")
+  output: "start\nwork\nend"
+  anyOrder: [[[2, 3], [4, 5]]]
+  explanation: "מנהל הקשר (Context Manager) מגדיר `__enter__`, שרץ בכניסה לבלוק `with`, ו-`__exit__`, שרץ ביציאה ממנו, גם אם נזרקה חריגה. לכן `work` מודפס בין `start` ל-`end`, וזה לא תלוי בסדר המתודות במחלקה."

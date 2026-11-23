@@ -258,3 +258,34 @@
         if n < 0:
             nums.remove(n)
     print(nums)
+
+- id: py.data-structures.lists.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמצא את המספר הגדול ברשימה בלי להשתמש ב-`max`."
+  code: |
+    numbers = [4, 17, 9, 23, 11]
+    biggest = numbers[0]
+    for x in numbers:
+        if x > biggest:
+            biggest = x
+    print(biggest)
+  output: "23"
+  explanation: "אלגוריתם המקסימום: מתחילים מהאיבר הראשון (לא מ-0, כי כל האיברים יכולים להיות שליליים), ועוברים על כל האיברים. כל איבר גדול יותר מחליף את `biggest`. ההדפסה מחוץ ללולאה."
+
+- id: py.data-structures.lists.018
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמיין את הרשימה במיון בועות (Bubble Sort)."
+  code: |
+    nums = [5, 2, 4, 1]
+    n = len(nums)
+    for i in range(n - 1):
+        for j in range(n - 1 - i):
+            if nums[j] > nums[j + 1]:
+                nums[j], nums[j + 1] = nums[j + 1], nums[j]
+    print(nums)
+  output: "[1, 2, 4, 5]"
+  explanation: "מיון בועות (Bubble Sort) משווה כל זוג שכנים ומחליף אותם אם הם בסדר הפוך. אחרי כל סיבוב של הלולאה החיצונית, האיבר הגדול ביותר שנשאר \"מבעבע\" לסוף, ולכן הלולאה הפנימית קצרה ב-`i` בכל פעם. `n` מחושב לפני הלולאות כי שתיהן משתמשות בו."

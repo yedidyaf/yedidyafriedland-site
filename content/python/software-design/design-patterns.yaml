@@ -403,3 +403,20 @@
       answer: pricing_service.py
       why: "הלוגיקה מקבלת את ספק השערים כהפשטה ואת המאגר מבחוץ, ולא יודעת על XML או על SQL."
   explanation: "המתאם מסתיר את הספרייה הזרה, והמאגר מסתיר את המסד. שירות התמחור תלוי ב-`RateProvider` ובמאגר, ולא ב-XML או ב-SQL, ולכן ספק שערים חדש הוא מתאם חדש, ושום קוד אחר לא משתנה."
+
+- id: py.software-design.design-patterns.017
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תמיין ציונים עם אסטרטגיית השוואה שמועברת כפרמטר."
+  code: |
+    def by_score(student):
+        return student[1]
+    def rank(students, key):
+        ordered = sorted(students, key=key, reverse=True)
+        return [name for name, score in ordered]
+    students = [("Dana", 81), ("Avi", 95), ("Noa", 88)]
+    print(rank(students, by_score))
+  output: "['Avi', 'Noa', 'Dana']"
+  anyOrder: [[[1, 2], [3, 5], 6]]
+  explanation: "תבנית האסטרטגיה (Strategy Pattern): `rank` לא יודעת לפי מה ממיינים, היא מקבלת את פונקציית ההשוואה `key` כפרמטר. כך אפשר למיין לפי שם או לפי ציון בלי לשנות את `rank`. `sorted` עם `reverse=True` ממיין מהגבוה לנמוך."

@@ -340,3 +340,21 @@
   prompt: פונקציה שעושה דבר אחד חייבת להיות קצרה מחמש שורות.
   answer: false
   explanation: "«דבר אחד» הוא עניין של אחריות, לא של מספר שורות. פונקציה של עשר שורות שכולן בונות טבלה אחת עושה דבר אחד. לעומת זאת, פונקציה של שתי שורות שמחשבת סכום וגם מוחקת את הקלט עושה שני דברים. פונקציות קצרות הן תוצאה טבעית של העיקרון, לא ההגדרה שלו."
+
+- id: py.clean-code.small-functions.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחשב ממוצע ציונים בעזרת שתי פונקציות קטנות."
+  code: |
+    def total(grades):
+        result = 0
+        for g in grades:
+            result += g
+        return result
+    def average(grades):
+        return total(grades) / len(grades)
+    print(average([80, 90, 100]))
+  output: "90.0"
+  anyOrder: [[[1, 5], [6, 7]]]
+  explanation: "כל פונקציה עושה דבר אחד (Single Responsibility): `total` סוכמת, ו-`average` משתמשת בה ומחלקת. אפשר להגדיר את שתיהן בכל סדר, כי `total` נדרשת רק כש-`average` רצה, אבל הקריאה ב-`print` חייבת לבוא אחרי שתי ההגדרות. `/` מחזיר תמיד `float`, ולכן `90.0`."

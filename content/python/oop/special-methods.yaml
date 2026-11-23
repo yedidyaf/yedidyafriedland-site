@@ -337,3 +337,22 @@
   explanation: "`__str__` משתלבת בכלים הרגילים של השפה: `print`, `str()` ו-f-strings משתמשים בה אוטומטית. מי שמשתמש במחלקה לא צריך לזכור שם מתודה מיוחד."
   optionExplanations:
     "0": "מתודה כמו `to_string` ממציאה מחדש את מה ש-`__str__` כבר עושה. שכחה לקרוא לה תדפיס את תצוגת ברירת המחדל הלא קריאה."
+
+- id: py.oop.special-methods.017
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמחלקה תתמוך בחיבור וקטורים עם `+` ובהדפסה קריאה."
+  code: |
+    class Vector:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+        def __add__(self, other):
+            return Vector(self.x + other.x, self.y + other.y)
+        def __str__(self):
+            return f"({self.x}, {self.y})"
+    print(Vector(1, 2) + Vector(3, 5))
+  output: "(4, 7)"
+  anyOrder: [[3, 4], [[2, 4], [5, 6], [7, 8]]]
+  explanation: "`__add__` מגדירה מה עושה `+` בין שני וקטורים: מחברת רכיב-רכיב ומחזירה וקטור חדש. `__str__` מגדירה מה `print` מציג. סדר המתודות בתוך המחלקה לא משנה, אבל כל `return` חייב להיות בתוך המתודה שלו."

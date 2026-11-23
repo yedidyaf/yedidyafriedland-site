@@ -264,3 +264,21 @@
             groups[key] = []
         groups[key].append(w)
     print(groups)
+
+- id: py.data-structures.dictionaries.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תספור כמה פעמים מופיעה כל אות במילה."
+  code: |
+    text = "banana"
+    counts = {}
+    for ch in text:
+        if ch in counts:
+            counts[ch] += 1
+        else:
+            counts[ch] = 1
+    print(counts)
+  output: "{'b': 1, 'a': 3, 'n': 2}"
+  anyOrder: [[1, 2]]
+  explanation: "ספירת שכיחויות (Frequency Count) במילון: אם התו כבר מפתח במילון מגדילים את המונה שלו, ואם לא, יוצרים אותו עם 1. החלפת שני הענפים זורקת `KeyError`, כי `+= 1` על מפתח שעוד לא קיים נכשל. מילון שומר את סדר ההכנסה, ולכן `b` מודפס ראשון."
