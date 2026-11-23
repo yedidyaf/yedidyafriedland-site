@@ -122,6 +122,26 @@ export const ArchitectureSchema = z.object({
 /** Class relationships: for each class/pair pick parent / relation kind. */
 export const HierarchySchema = z.object({ type: z.literal('hierarchy'), ...matchBase }).strict();
 
+/**
+ * Parsons problem: `code` is the correct program; the learner gets its lines shuffled
+ * (indentation kept) and puts them back in order so the program prints `output`.
+ */
+export const OrderSchema = z.object({
+  type: z.literal('order'),
+  ...base,
+  code: z.string().min(1),
+  /** exact output of the correct program, shown as the goal; verified in CI */
+  output: z.string().min(1),
+  /**
+   * Parts of `code` whose order among themselves does not matter. Each group lists adjacent
+   * units, and a unit is a 1-based line number or an inclusive line range [from, to].
+   * [[1, 2]]: the first two lines are independent assignments.
+   * [[[2, 3], [4, 6]]]: the block of lines 2-3 and the block of lines 4-6 may swap
+   * (e.g. two methods of a class).
+   */
+  anyOrder: z.array(z.array(z.union([z.number().int().positive(), z.tuple([z.number().int().positive(), z.number().int().positive()])])).min(2)).optional(),
+}).strict();
+
 export const QuestionSchema = z.discriminatedUnion('type', [
   SingleSchema,
   OutputSchema,
@@ -131,6 +151,7 @@ export const QuestionSchema = z.discriminatedUnion('type', [
   BugSchema,
   ArchitectureSchema,
   HierarchySchema,
+  OrderSchema,
 ]);
 
 export const TopicFileSchema = z.array(QuestionSchema);
@@ -152,6 +173,18 @@ export const QUESTION_TYPE_LABELS: Record<QuestionType, { he: string; en: string
   hierarchy: { he: 'יחסי מחלקות', en: 'Class Relationships' },
   cleaner: { he: 'איזה קוד נקי יותר', en: 'Cleaner Code' },
   smell: { he: 'זיהוי ריח קוד', en: 'Code Smell' },
+  order: { he: 'סידור שורות קוד', en: 'Code Ordering' },
 };
+
+/** Limits for `order` questions: enough lines to think, few enough for a phone screen. */
+export const ORDER_MIN_LINES = 4;
+export const ORDER_MAX_LINES = 14;
+
+export type OrderUnit = number | [number, number];
+
+/** Lines of an `order` question's code, as the learner sees them (trailing newline dropped). */
+export function orderLines(code: string): string[] {
+  return code.replace(/\r\n?/g, '\n').replace(/\n+$/, '').split('\n');
+}
 
 export const MIN_QUESTIONS_PER_TOPIC = 15;

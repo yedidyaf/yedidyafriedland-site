@@ -1,7 +1,8 @@
 /** Exam construction and grading. Pure logic, no DOM. */
 import type { ClientQuestion, LanguageIndex } from './types';
 import type { ActiveExam, ExamMode, ExamSummary, State } from './storage';
-import { isCorrect, type Answer } from './scoring';
+import { isCorrect, isOrderCorrect, type Answer } from './scoring';
+import { orderLines, type OrderUnit } from './schema';
 
 export function rng(seed: number) {
   let a = seed >>> 0;
@@ -88,6 +89,8 @@ export function createExam(opts: {
   for (const q of opts.questions) {
     if (q.type === 'single' || q.type === 'output' || q.type === 'smell' || q.type === 'cleaner') {
       order[q.id] = shuffle(q.options.map((_, i) => i), rand);
+    } else if (q.type === 'order') {
+      order[q.id] = scrambleLines(q.code, q.anyOrder, rand);
     }
   }
   return {
@@ -138,4 +141,23 @@ export function timeLeft(exam: ActiveExam, now = new Date()): number | null {
   if (!exam.timeLimitSec) return null;
   const elapsed = (now.getTime() - new Date(exam.startedAt).getTime()) / 1000;
   return Math.max(0, Math.ceil(exam.timeLimitSec - elapsed));
+}
+
+/** A shuffled starting order for an `order` question that is never already correct. */
+export function scrambleLines(code: string, anyOrder: OrderUnit[][] | undefined, rand: () => number): number[] {
+  const n = orderLines(code).length;
+  const ident = Array.from({ length: n }, (_, i) => i);
+  for (let tries = 0; tries < 50; tries++) {
+    const o = shuffle(ident, rand);
+    if (!isOrderCorrect(code, o, anyOrder)) return o;
+  }
+  // practically unreachable: rotate by one, which always moves every line
+  return ident.map((i) => (i + 1) % n);
+}
+
+/** A stable 32-bit seed from a question id (FNV-1a), identical on the server and in the browser. */
+export function seedFromId(id: string): number {
+  let h = 2166136261;
+  for (const c of id) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0;
+  return h;
 }
