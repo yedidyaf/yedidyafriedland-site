@@ -263,3 +263,21 @@
     "1": "ה-`IndexOf` רץ על התוצאה של `ToLower`, שבה יש `h` קטנה בהתחלה."
     "2": "`ToLower` לא משנה את `s`, אלא מחזירה מחרוזת חדשה."
     "3": "גם `ToUpper` לא משנה את `s`. מחרוזות ב-C# אינן ניתנות לשינוי (Immutable)."
+
+- id: cs.strings.string-methods.019
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תספור כמה מילים במשפט מתחילות באות גדולה."
+  code: |
+    string[] words = "Python is Fun and Easy".Split(' ');
+    int count = 0;
+    for (int i = 0; i < words.Length; i++)
+    {
+        if (char.IsUpper(words[i][0]))
+            count++;
+    }
+    Console.WriteLine(count);
+  output: "3"
+  anyOrder: [[1, 2]]
+  explanation: "`Split(' ')` מפרק את המשפט למערך של מילים לפי רווחים, ו-`words[i][0]` הוא התו הראשון של המילה ה-`i`. `char.IsUpper` בודקת אם הוא אות גדולה. זה אלגוריתם ספירה רגיל: מונה לפני הלולאה, הגדלה בתוך התנאי, הדפסה אחרי הלולאה."

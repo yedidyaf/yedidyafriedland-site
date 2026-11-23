@@ -365,3 +365,23 @@
     "1": "`x` הוא עותק. שינוי שלו לא משנה את `a`."
     "2": "המתודה מחזירה `x + 1`, כלומר 7, ולא את `x` עצמו."
     "3": "`a` לא מושפע ממה שקורה ל-`x` בתוך המתודה."
+
+- id: cs.methods.defining-methods.023
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמתודה תבדוק אם מספר גדול מ-1 הוא ראשוני."
+  code: |
+    Console.WriteLine(IsPrime(13) + " " + IsPrime(15));
+    static bool IsPrime(int n)
+    {
+        for (int d = 2; d < n; d++)
+        {
+            if (n % d == 0)
+                return false;
+        }
+        return true;
+    }
+  output: "True False"
+  anyOrder: [[1, [2, 10]]]
+  explanation: "מחפשים מחלק בין 2 ל-`n - 1`: מחלק אחד מספיק כדי להחזיר `false` מיד. רק אם הלולאה הסתיימה בלי למצוא מחלק מחזירים `true`, ולכן `return true` נמצא אחרי הלולאה ולא בתוכה. אם הוא בתוך הלולאה, המתודה תחזיר תשובה כבר אחרי בדיקת המחלק 2."

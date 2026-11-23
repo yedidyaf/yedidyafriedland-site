@@ -178,7 +178,7 @@ export const QUESTION_TYPE_LABELS: Record<QuestionType, { he: string; en: string
 
 /** Limits for `order` questions: enough lines to think, few enough for a phone screen. */
 export const ORDER_MIN_LINES = 4;
-export const ORDER_MAX_LINES = 14;
+export const ORDER_MAX_LINES = 18;
 
 export type OrderUnit = number | [number, number];
 

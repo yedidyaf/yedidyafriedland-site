@@ -541,3 +541,31 @@
             return grade;
         }
     }
+
+- id: cs.oop.classes-objects.021
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמחלקה תשמור את הערך הגדול ביותר שהוכנס אליה."
+  code: |
+    int[] values = { 4, 9, 7 };
+    MaxTracker tracker = new MaxTracker();
+    for (int i = 0; i < values.Length; i++)
+        tracker.Add(values[i]);
+    Console.WriteLine(tracker.GetMax());
+    class MaxTracker
+    {
+        private int max = 0;
+        public void Add(int x)
+        {
+            if (x > max)
+                max = x;
+        }
+        public int GetMax()
+        {
+            return max;
+        }
+    }
+  output: "9"
+  anyOrder: [[1, 2], [8, [9, 13], [14, 17]]]
+  explanation: "השדה הפרטי (Private Field) `max` שומר את המצב של העצם בין קריאה לקריאה. `Add` מעדכנת אותו רק כשמגיע ערך גדול יותר, ו-`GetMax` מחזירה אותו. סדר האיברים בתוך המחלקה לא משנה, אבל הקריאה ל-`GetMax` חייבת לבוא אחרי הלולאה שמוסיפה את כל הערכים."

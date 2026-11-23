@@ -461,3 +461,25 @@
         return name.Substring(0, 1).ToUpper() + name.Substring(1);
     }
   explanation: "`Capitalize` לא משנה את הקלט, כי מחרוזות ב-C# אינן ניתנות לשינוי (Immutable); היא מחזירה מחרוזת חדשה. זה עיצוב טוב, בלי תופעות לוואי, אבל מי שקורא לה חייב להשתמש בערך שחוזר. כאן הוא נזרק, והמערך מודפס כמו שהיה: `dana,avi`."
+
+- id: cs.clean-code.small-methods.017
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחשב ממוצע בעזרת שתי מתודות קטנות."
+  code: |
+    Console.WriteLine(Average(new int[] { 80, 90, 100 }));
+    static int Sum(int[] arr)
+    {
+        int sum = 0;
+        for (int i = 0; i < arr.Length; i++)
+            sum += arr[i];
+        return sum;
+    }
+    static double Average(int[] arr)
+    {
+        return (double)Sum(arr) / arr.Length;
+    }
+  output: "90"
+  anyOrder: [[1, [2, 8], [9, 12]]]
+  explanation: "כל מתודה עושה דבר אחד: `Sum` סוכמת, ו-`Average` משתמשת בה ומחלקת. ההמרה `(double)` מונעת חילוק שלמים. 90.0 מודפס ב-C# בתור `90`."

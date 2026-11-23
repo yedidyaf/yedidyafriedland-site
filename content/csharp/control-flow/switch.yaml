@@ -416,3 +416,24 @@
     "1": "`break` יוצא רק מה-`switch`, לא מהתוכנית. השורה שאחרי ה-`switch` רצה."
     "2": "`break` מונע מעבר ל-`case 4`."
     "3": "`case 2` מתאים, והוא חולק את הבלוק של `case 3`."
+
+- id: cs.control-flow.switch.027
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמחשבון יבצע את הפעולה שב-`op`."
+  code: |
+    int a = 12, b = 4;
+    char op = '/';
+    switch (op)
+    {
+        case '+':
+            Console.WriteLine(a + b);
+            break;
+        case '/':
+            Console.WriteLine(a / b);
+            break;
+    }
+  output: "3"
+  anyOrder: [[1, 2], [[5, 7], [8, 10]]]
+  explanation: "`switch` קופץ ישר ל-`case` שמתאים לערך של `op`, ו-`break` מסיים את ה-`switch`. סדר ה-`case`-ים לא משנה, אבל כל פעולה חייבת להיות מתחת ל-`case` שלה. אם מחליפים בין שתי ההדפסות, `'/'` ידפיס 16 במקום 3."

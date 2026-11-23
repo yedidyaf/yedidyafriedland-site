@@ -50,7 +50,7 @@ describe('order questions', () => {
   it('validates line count, blank lines and anyOrder blocks', () => {
     const bad = { ...q, code: 'a = 1\n\nprint(a)', anyOrder: [[1, 3]] } as Question;
     const p = checkQuestion(bad, 'f', 'py.a.b').join('\n');
-    expect(p).toContain('4-14 lines');
+    expect(p).toContain('4-18 lines');
     expect(p).toContain('blank lines');
     expect(p).toContain('adjacent');
     expect(checkQuestion(q, 'f', 'py.a.b')).toEqual([]);

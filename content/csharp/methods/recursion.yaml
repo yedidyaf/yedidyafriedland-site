@@ -324,3 +324,37 @@
     "1": "4 הוא רק מקרה הבסיס. הקריאות שמעליו משוות אותו לאיברים הקודמים."
     "2": "3 הוא האיבר הראשון, אבל 9 גדול ממנו."
     "3": "הרקורסיה נעצרת באינדקס האחרון, `a.Length - 1`, ולא חורגת ממנו."
+
+- id: cs.methods.recursion.019
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמתודה הרקורסיבית תחשב עצרת."
+  code: |
+    Console.WriteLine(Factorial(5));
+    static int Factorial(int n)
+    {
+        if (n <= 1)
+            return 1;
+        return n * Factorial(n - 1);
+    }
+  output: "120"
+  anyOrder: [[1, [2, 7]]]
+  explanation: "בכל מתודה רקורסיבית (Recursion) תנאי העצירה (Base Case) בא לפני הקריאה הרקורסיבית. אם הקריאה באה קודם, המתודה קוראת לעצמה בלי סוף ונזרקת `StackOverflowException`."
+
+- id: cs.methods.recursion.020
+  type: order
+  difficulty: 3
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהמתודה הרקורסיבית תחשב את סכום הספרות של מספר."
+  code: |
+    Console.WriteLine(DigitSum(4072));
+    static int DigitSum(int n)
+    {
+        if (n < 10)
+            return n;
+        return n % 10 + DigitSum(n / 10);
+    }
+  output: "13"
+  anyOrder: [[1, [2, 7]]]
+  explanation: "הצעד הרקורסיבי מפריד את ספרת האחדות (`n % 10`) ומעביר את שאר המספר (`n / 10`) לקריאה הבאה. מספר חד-ספרתי הוא מקרה הבסיס: סכום הספרות שלו הוא הוא עצמו."

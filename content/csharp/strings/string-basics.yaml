@@ -274,3 +274,40 @@
     "1": "`s[n]` מחוץ לגבולות. האינדקס האחרון קטן ב-1 מהאורך."
     "2": "`n + 1` רחוק עוד יותר מהסוף."
     "3": "1 הוא האינדקס של התו השני."
+
+- id: cs.strings.string-basics.024
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תבדוק אם המילה היא פלינדרום (נקראת אותו דבר משני הכיוונים)."
+  code: |
+    string word = "hello";
+    bool isPalindrome = true;
+    for (int i = 0; i < word.Length / 2; i++)
+    {
+        if (word[i] != word[word.Length - 1 - i])
+            isPalindrome = false;
+    }
+    Console.WriteLine(isPalindrome);
+  output: "False"
+  anyOrder: [[1, 2]]
+  explanation: "משווים את התו ה-`i` מההתחלה לתו ה-`i` מהסוף. מניחים שהמילה פלינדרום (דגל `true`), ומספיק זוג אחד שונה כדי להפוך את הדגל ל-`false`: ב-`hello` כבר `h` ו-`o` שונים. ההדפסה באה אחרי הלולאה. לפני הלולאה הדגל עדיין `True`."
+
+- id: cs.strings.string-basics.025
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תספור את התנועות (vowels) במילה."
+  code: |
+    string word = "programming";
+    int count = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+        char c = word[i];
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+            count++;
+    }
+    Console.WriteLine(count);
+  output: "3"
+  anyOrder: [[1, 2]]
+  explanation: "מעבר על מחרוזת תו אחרי תו עם אינדקס, מ-0 עד `word.Length - 1`. התו נשמר ב-`c` לפני הבדיקה, והמונה גדל רק כשהתו הוא תנועה. ב-`programming` יש `o`, `a` ו-`i`."

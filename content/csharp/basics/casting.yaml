@@ -229,3 +229,17 @@
     int total = 8;
     int percent = (int)(correct * 100.0 / total);
     Console.WriteLine(percent);
+
+- id: cs.basics.casting.023
+  type: order
+  difficulty: 2
+  tags: [algorithm]
+  prompt: "סדרו את השורות כך שהתוכנית תחשב ממוצע של שלושה ציונים, ותדפיס את החלק השלם שלו ואת הממוצע מעוגל לשתי ספרות."
+  code: |
+    int a = 7, b = 8, c = 10;
+    int sum = a + b + c;
+    double average = (double)sum / 3;
+    int whole = (int)average;
+    Console.WriteLine(whole + " " + Math.Round(average, 2));
+  output: "8 8.33"
+  explanation: "`sum / 3` בין שני `int` היה נותן 8 בלי שבר. ההמרה המפורשת (Explicit Cast) `(double)sum` הופכת את החילוק לעשרוני: 25 / 3 = 8.333... אחר כך `(int)average` חותך את השבר ונותן 8. כל שורה משתמשת בתוצאה של השורה שלפניה, ולכן הסדר קבוע."

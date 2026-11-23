@@ -3,7 +3,9 @@ import { expect, test, type Page } from '@playwright/test';
 /** Answers the current question with *some* answer, whatever its type. */
 async function answerSomething(page: Page) {
   const card = page.locator('.qcard').first();
-  if (await card.locator('.chip').count()) {
+  if (await card.locator('.order-list').count()) {
+    await card.locator('.order-list .mv').nth(1).click();
+  } else if (await card.locator('.chip').count()) {
     const items = card.locator('.item');
     for (let i = 0; i < (await items.count()); i++) await items.nth(i).locator('.chip').first().click();
   } else if (await card.locator('.opt').count()) {
@@ -44,6 +46,27 @@ test('topic practice: answer, get feedback, finish, see results and progress', a
   await expect(page.getByText('היסטוריית מבחנים')).toBeVisible();
   await page.goto('/python/');
   await expect(page.locator('[data-topic="python/basics/variables"]')).not.toHaveText('לא התחלתם');
+});
+
+test('order question: move lines, check, see the correct order', async ({ page }) => {
+  await page.goto('/exam/?lang=python&mode=topic&chapter=control-flow&topic=for-loops&count=17');
+  const palette = page.locator('.palette button');
+  await expect(palette.first()).toBeVisible();
+  for (let i = 0; i < (await palette.count()); i++) {
+    await palette.nth(i).click();
+    if (await page.locator('.order-list').count()) break;
+  }
+  const lines = page.locator('.order-list .oline');
+  await expect(lines).toHaveCount(5);
+  await expect(page.getByRole('button', { name: 'בדיקה' })).toBeDisabled();
+  const first = await lines.first().locator('.src').textContent();
+  // tap a line, then tap where it should go
+  await lines.nth(0).locator('.src').click();
+  await lines.nth(4).locator('.src').click();
+  await expect(lines.nth(4).locator('.src')).toHaveText(first!);
+  await page.getByRole('button', { name: 'בדיקה' }).click();
+  await expect(page.locator('.feedback .verdict')).toBeVisible();
+  await expect(page.locator('.order-list .mark')).toHaveCount(5);
 });
 
 test('an open exam survives a reload', async ({ page }) => {

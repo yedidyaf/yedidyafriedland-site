@@ -66,12 +66,19 @@ public static class __Runner {
     var stopOnTimeout = Environment.GetEnvironmentVariable("VERIFY_STOP_ON_TIMEOUT") == "1";
     var results = new Dictionary<string, string>();
     var realOut = Console.Out;
+    var progress = Environment.GetEnvironmentVariable("VERIFY_PROGRESS") == "1";
     foreach (var ns in ids) {
+      // progress mode: a crash (stack overflow) kills the process, so record where we are
+      if (progress) File.WriteAllText("current.txt", ns);
       var asm = typeof(__Runner).Assembly;
       var main = asm.GetTypes().Where(t => t.Namespace == ns)
         .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
         .FirstOrDefault(m => m.Name == "Main");
-      if (main == null) { results[ns] = "__NO_MAIN__"; continue; }
+      if (main == null) {
+        results[ns] = "__NO_MAIN__";
+        if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, results[ns] }) + "\\n");
+        continue;
+      }
       var sw = new StringWriter();
       Console.SetOut(sw);
       try {
@@ -85,7 +92,11 @@ public static class __Runner {
         if (!task.Wait(TimeSpan.FromMilliseconds(timeoutMs))) {
           results[ns] = "__TIMEOUT__";
           // a runaway snippet keeps running and writing; stop here so it cannot pollute the next one
-          if (stopOnTimeout) { Console.SetOut(realOut); File.WriteAllText("results.json", JsonSerializer.Serialize(results)); Environment.Exit(0); }
+          if (stopOnTimeout) {
+            Console.SetOut(realOut);
+            if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, "__TIMEOUT__" }) + "\\n");
+            Environment.Exit(0);
+          }
           continue;
         }
       } catch (AggregateException ae) {
@@ -96,6 +107,7 @@ public static class __Runner {
         sw.Write(ex.GetType().Name);
       } finally { Console.SetOut(realOut); }
       results[ns] = sw.ToString();
+      if (progress) File.AppendAllText("results.jsonl", JsonSerializer.Serialize(new[] { ns, results[ns] }) + "\\n");
     }
     File.WriteAllText("results.json", JsonSerializer.Serialize(results));
   }
@@ -227,25 +239,45 @@ function checkOrderVariants(snippets: Snippet[], tmp: string): string[] {
   const dll = path.join(proj, 'bin', 'Release', 'net8.0', 'Verify.dll');
   let pending = owner.size ? [...owner.keys()] : [];
   const results: Record<string, string> = {};
+  // Run in a child process that records each result; a variant that times out ends the
+  // process (it would keep writing), and one that overflows the stack crashes it. Either
+  // way, record it and start again with the variants that have not run yet.
+  const jsonl = path.join(proj, 'results.jsonl');
+  const current = path.join(proj, 'current.txt');
   while (pending.length) {
+    fs.rmSync(jsonl, { force: true });
+    fs.rmSync(current, { force: true });
     const r = spawnSync('dotnet', [dll, ...pending], {
       cwd: proj,
       encoding: 'utf8',
       maxBuffer: 1 << 28,
-      env: { ...process.env, VERIFY_TIMEOUT_MS: '1000', VERIFY_STOP_ON_TIMEOUT: '1' },
+      env: { ...process.env, VERIFY_TIMEOUT_MS: '1000', VERIFY_STOP_ON_TIMEOUT: '1', VERIFY_PROGRESS: '1' },
     });
+    if (fs.existsSync(jsonl))
+      for (const line of fs.readFileSync(jsonl, 'utf8').split('\n').filter(Boolean)) {
+        const [ns, out] = JSON.parse(line) as [string, string];
+        results[ns] = out;
+      }
     if (r.status !== 0) {
-      failures.push(`order variants: runner failed:\n${(r.stdout + r.stderr).slice(-2000)}`);
+      const crashed = fs.existsSync(current) ? fs.readFileSync(current, 'utf8').trim() : '';
+      if (!crashed || crashed in results) {
+        failures.push(`order variants: runner failed:\n${(r.stdout + r.stderr).slice(-2000)}`);
+        return failures;
+      }
+      results[crashed] = '__CRASH__';
+    }
+    const before = pending.length;
+    pending = pending.filter((ns) => !(ns in results));
+    if (pending.length === before) {
+      failures.push(`order variants: runner made no progress:\n${(r.stdout + r.stderr).slice(-2000)}`);
       return failures;
     }
-    Object.assign(results, JSON.parse(fs.readFileSync(path.join(proj, 'results.json'), 'utf8')));
-    pending = pending.filter((ns) => !(ns in results));
   }
   const outputs = new Map<Snippet, (string | null)[]>();
   for (const [ns, s, idx] of all) {
     const raw = results[ns];
     const out = outputs.get(s) ?? [];
-    out[idx] = raw === undefined || raw === '__NO_MAIN__' ? null : raw === '__TIMEOUT__' ? '__TIMEOUT__' : normOutput(raw);
+    out[idx] = raw === undefined || raw === '__NO_MAIN__' ? null : raw === '__TIMEOUT__' || raw === '__CRASH__' ? raw : normOutput(raw);
     outputs.set(s, out);
   }
   for (const [s, out] of outputs) failures.push(...orderVariantProblems(s, out));

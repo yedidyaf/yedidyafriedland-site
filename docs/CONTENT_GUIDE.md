@@ -54,7 +54,7 @@ Common to all types:
 | field | rules |
 | --- | --- |
 | `id` | see above |
-| `type` | one of `single`, `output`, `bug`, `truefalse`, `smell`, `cleaner`, `architecture`, `hierarchy` |
+| `type` | one of `single`, `output`, `bug`, `truefalse`, `smell`, `cleaner`, `architecture`, `hierarchy`, `order` |
 | `difficulty` | 1, 2 or 3 |
 | `tags` | optional list of short English tags; special tags below |
 | `prompt` | the question in Hebrew. For `output` always exactly `מה יודפס?` unless the code needs context |
@@ -103,6 +103,51 @@ optional `fixed` (the corrected full code, shown after answering; strongly recom
   variable, mutable default, missing `return`, wrong comparison...). The code must
   still parse/compile unless tagged `compile-error`.
 - Count lines from the first line of `code` (no leading blank line).
+
+### `order` - Code Ordering (Parsons problem)
+
+The learner gets the lines of a short program shuffled (each line keeps its indentation)
+and moves them back into the order that prints the goal output. Tag `algorithm`; use it
+for real algorithms (swap, digits, max, counting, sorting, search, recursion...).
+
+```yaml
+- id: py.control-flow.for-loops.017
+  type: order
+  difficulty: 1
+  tags: [algorithm]
+  prompt: סדרו את השורות כך שהתוכנית תחשב 5 עצרת (1·2·3·4·5).
+  code: |            # the CORRECT program, 4-18 lines, no blank lines
+    n = 5
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    print(result)
+  output: "120"      # exact output, shown to the learner as the goal; verified in CI
+  anyOrder: [[1, 2]] # optional: parts whose order does not matter
+  explanation: ...
+```
+
+- The prompt starts with `סדרו את השורות כך ש...` and says what the program computes.
+- `output` must be what the code prints (checked like `output` questions).
+- **Exactly one arrangement may be correct**, apart from what `anyOrder` declares.
+  The verifiers try every move of one line or of a block of up to 4 lines and every swap
+  of two lines; if any of them prints the same output, the build fails. Fix it by
+  declaring the freedom in `anyOrder` or by changing the code (combine independent
+  assignments into one line, choose input values that exercise every branch, make
+  every call change the state, print a value that depends on the order).
+- `anyOrder` is a list of groups. A group lists adjacent units, in line order; a unit is a
+  1-based line number or an inclusive range `[from, to]`. `[[1, 2]]`: the first two lines
+  may swap. `[[[2, 3], [4, 6]]]`: two methods may swap. A group may sit inside one unit
+  of another group (methods that swap inside a class that swaps with another class).
+  At most 720 accepted orders in total.
+- Lines are compared by text, so identical lines (two `}` at the same depth) are interchangeable.
+- C#: indentation does not change the meaning, but learners place lines by their look, so
+  the verifier ignores arrangements that are visibly mis-indented, open a bare or empty
+  block, or leave unreachable code after `break`/`return`. Use Allman braces and
+  4-space indentation. Local functions can sit anywhere among top-level statements, so
+  use them only with a single statement before them (declare that with `anyOrder`),
+  otherwise put the method in a class after the statements.
+- Keep every line meaningful. No comments, no blank lines.
 
 ### `truefalse` - True / False
 

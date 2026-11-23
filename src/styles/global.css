@@ -382,6 +382,11 @@ details.sample summary { cursor: pointer; font-weight: 600; color: var(--text); 
 .order-list .mv:hover:not([disabled]) { border-color: var(--text); }
 .order-list .mv[disabled] { opacity: .3; cursor: default; }
 .order-list .src:focus-visible { outline: 2px solid var(--pen); outline-offset: -2px; }
+@media (max-width: 520px) {
+  .order-list .oline { padding-left: 8px; }
+  .order-list .moves { flex-direction: column; }
+  .order-list .mv { width: 40px; height: 30px; }
+}
 
 /* feedback reads like the teacher's note in the margin */
 .feedback { margin-top: 20px; border-top: 1px dashed var(--text); padding-top: 16px; }
