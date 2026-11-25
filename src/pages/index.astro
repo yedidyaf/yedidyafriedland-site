@@ -2,114 +2,61 @@
 import Base from '../layouts/Base.astro';
 import { getContent } from '../lib/content';
 import { href } from '../lib/url';
-import { SITE, siteName } from '../site';
+import { siteName } from '../site';
 import { bidi } from '../lib/text';
 const langs = getContent();
 const count = (l: (typeof langs)[number]) => l.chapters.reduce((n, c) => n + c.topics.reduce((m, t) => m + t.questions.length, 0), 0);
 const total = langs.reduce((n, l) => n + count(l), 0);
-const sim = langs[0].simulation;
 const description = `לומדים Python ו-C# דרך מבחנים: ${total} שאלות עם הסבר מלא, מבחני סימולציה, קוד נקי, OOP וארכיטקטורה. בחינם, בלי הרשמה.`;
 ---
 <Base title={`${siteName} | תרגול Python ו-C# דרך מבחנים`} rawTitle description={description}>
-  <section class="home-hero container">
-    <div class="hero-text">
-      <p class="eyebrow">גיליון 01 · לימוד דרך מבחנים</p>
-      <h1>
-        לומדים תכנות דרך
-        <span class="circled">מבחנים<svg viewBox="0 0 200 70" preserveAspectRatio="none" aria-hidden="true"><path d="M12 38 C 20 8, 180 4, 190 32 C 198 58, 30 66, 14 44 C 8 34, 40 20, 70 16" /></svg></span>
-      </h1>
-      <p class="lead">
-        כמו תרגול למבחן התאוריה, רק בתכנות. עונים על שאלה, ומיד מקבלים הסבר: למה התשובה נכונה ומה הטעות שמאחורי התשובות האחרות.
-        כל קטע קוד באתר נבדק בהרצה אמיתית. זה לא מחליף לימוד מסודר, אלא דרך טובה לתרגל לצדו.
-      </p>
-      <div class="row-actions">
-        {langs.map((l, i) => (
-          <a class={`btn lg${i ? ' secondary' : ''}`} href={href(`/${l.id}/`)}>מתחילים ב{l.title_he} - {bidi(l.title_en)}</a>
-        ))}
-      </div>
-    </div>
+  <section class="home container">
+    <p class="eyebrow">לימוד תכנות דרך מבחנים</p>
+    <h1>
+      באיזו שפה
+      <span class="circled">מתרגלים?<svg viewBox="0 0 200 70" preserveAspectRatio="none" aria-hidden="true"><path d="M12 38 C 20 8, 180 4, 190 32 C 198 58, 30 66, 14 44 C 8 34, 40 20, 70 16" /></svg></span>
+    </h1>
+    <p class="lead">בחרו שפה, ואחר כך פרק. אחרי כל שאלה מופיע הסבר מלא.</p>
 
-    <aside class="cover-sheet" aria-labelledby="sim-title">
-      <div class="cover-head">
-        <h2 id="sim-title">מבחן סימולציה - Simulation</h2>
-        <span class="stamp" aria-hidden="true">טופס א׳</span>
-      </div>
-      <dl class="cover-facts">
-        <div><dt>שאלות</dt><dd>{sim.questions}</dd></div>
-        <div><dt>דקות</dt><dd>{sim.minutes}</dd></div>
-        <div><dt>ציון עובר</dt><dd class="pass">{sim.passScore}</dd></div>
-      </dl>
-      <p class="cover-note">בלי הרשמה ובלי איסוף מידע. התוצאות נשמרות רק בדפדפן שלכם.</p>
-      <div class="cover-actions">
-        {langs.map((l) => (
-          <a class="btn pen" href={href(`/exam/?lang=${l.id}&mode=simulation`)}>{bidi(l.title_en)}</a>
-        ))}
-      </div>
-    </aside>
-  </section>
-
-  <section class="container section" aria-labelledby="contents">
-    <h2 id="contents">תוכן העניינים - Contents</h2>
-    <ol class="toc">
+    <ul class="choices" aria-label="בחירת שפה">
       {langs.map((l, i) => (
         <li>
-          <div class="toc-head">
-            <span class="toc-num">0{i + 1}</span>
-            <a class="lang-card" href={href(`/${l.id}/`)}><h3>{l.title_he} <span class="en">- {bidi(l.title_en)}</span></h3></a>
-            <span class="leader" aria-hidden="true"></span>
-            <span class="badge">{count(l)} שאלות · {l.chapters.length} פרקים</span>
-          </div>
-          <p class="toc-desc muted">{l.description_he} <span class="en-term">{bidi(l.version.includes(l.title_en) ? l.version : `${l.title_en} ${l.version}`)}</span></p>
-          <ol class="topic-list chapters-mini">
-            {l.chapters.map((c) => (
-              <li><a href={href(`/${l.id}/${c.id}/`)}>{c.title_he} - {bidi(c.title_en)}</a></li>
-            ))}
-          </ol>
+          <a class="lang-card" href={href(`/${l.id}/`)}>
+            <span class="sheet-num" aria-hidden="true">טופס {i === 0 ? 'א׳' : 'ב׳'}</span>
+            <span class="lang-name" dir="ltr">{l.title_en}</span>
+            <span class="lang-he">{l.title_he}</span>
+            <span class="lang-desc">{l.description_he}</span>
+            <span class="lang-meta">{l.chapters.length} פרקים · {count(l)} שאלות</span>
+            <span class="go">לבחירת פרק <span aria-hidden="true">←</span></span>
+          </a>
         </li>
       ))}
-    </ol>
-  </section>
-
-  <section class="container section">
-    <h2>איך זה עובד</h2>
-    <ol class="steps">
-      <li><div><strong>בוחרים נושא.</strong> כל שפה מחולקת לפרקים ולנושאים, מסוגי נתונים ועד ארכיטקטורה.</div></li>
-      <li><div><strong>עונים על שאלות.</strong> חיזוי פלט, מציאת באג, בחירת הקוד הנקי יותר, שיבוץ חתימות בקבצים ובניית יחסי ירושה.</div></li>
-      <li><div><strong>לומדים מההסבר.</strong> אחרי כל תשובה מופיע הסבר קצר, ובשאלות באג גם הקוד המתוקן.</div></li>
-      <li><div><strong>נבחנים בסימולציה.</strong> {sim.questions} שאלות, {sim.minutes} דקות, ציון עובר {sim.passScore}. מד המוכנות מראה מתי אתם מוכנים.</div></li>
-    </ol>
-  </section>
-
-  <section class="container">
-    <div class="card cta">
-      <h2>מי עומד מאחורי האתר</h2>
-      <p>{SITE.name_he} ({SITE.name_en}), מפתח תוכנה ומרצה לתכנות. בניתי את האתר כדי שכל אחד יוכל להתאמן ברצינות, בעברית ובחינם, לצד קורס או לימוד מסודר.</p>
-      <a class="btn secondary" href={href('/about/')}>עוד עליי</a>
-    </div>
+    </ul>
+    <p class="muted small note">בחינם ובלי הרשמה. ההתקדמות נשמרת רק בדפדפן שלכם.</p>
   </section>
 </Base>
 <style>
-  .home-hero { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; padding-top: 64px; padding-bottom: 24px; }
-  .hero-text { flex: 999 1 480px; min-width: 0; }
-  .hero-text h1 { font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.1; margin-bottom: .4em; }
-  .hero-text .lead { margin-bottom: 1.4em; color: var(--muted); }
+  .home { padding-top: 56px; padding-bottom: 8px; text-align: center; }
+  .home h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.15; margin-bottom: .35em; }
+  .home .lead { color: var(--muted); margin: 0 auto 2em; max-width: 36em; }
   .circled { position: relative; display: inline-block; white-space: nowrap; }
   .circled svg { position: absolute; inset: -14px -20px -10px -20px; width: calc(100% + 40px); height: calc(100% + 24px); overflow: visible; }
   .circled path { fill: none; stroke: var(--pen); stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-  .cover-sheet { flex: 1 1 300px; background: var(--surface); border: 2px solid var(--text); box-shadow: var(--shadow-ink); padding: 24px; }
-  .cover-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px dashed var(--text); padding-bottom: 12px; }
-  .cover-head h2 { font-size: 1.25rem; margin: 0; }
-  .stamp { font-weight: 700; font-size: .8rem; color: var(--pen); border: 1.5px solid var(--pen); padding: 2px 8px; transform: rotate(-5deg); white-space: nowrap; }
-  .cover-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 18px 0 0; text-align: center; }
-  .cover-facts dt { font-size: .85rem; color: var(--muted); }
-  .cover-facts dd { margin: 2px 0 0; font-family: var(--serif); font-weight: 900; font-size: 2.5rem; line-height: 1.1; }
-  .cover-facts dd.pass { color: var(--pen); }
-  .cover-note { font-size: .95rem; color: var(--muted); margin: 16px 0; }
-  .cover-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
-  .lang-card { text-decoration: none; color: var(--text); }
-  .lang-card:hover h3 { color: var(--pen); }
-  .toc-head h3 { font-size: 1.5rem; }
-  .chapters-mini { display: flex; flex-wrap: wrap; gap: 2px 22px; }
-  .chapters-mini li { min-height: 32px; }
-  .chapters-mini a { font-size: .97rem; }
+  .choices { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 28px; max-width: 860px; }
+  .lang-card {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%;
+    padding: 40px 24px 28px; text-decoration: none; color: var(--text);
+    background: var(--surface); border: 2px solid var(--text); box-shadow: var(--shadow-ink);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .lang-card:hover, .lang-card:focus-visible { transform: translate(-2px, -2px); }
+  .lang-card:hover .go, .lang-card:focus-visible .go { color: var(--pen); }
+  .sheet-num { position: absolute; top: 12px; inset-inline-start: 14px; font-weight: 700; font-size: .8rem; color: var(--pen); border: 1.5px solid var(--pen); padding: 2px 8px; transform: rotate(-5deg); }
+  .lang-name { font-family: var(--mono); font-weight: 700; font-size: clamp(2.4rem, 7vw, 3.2rem); line-height: 1.1; }
+  .lang-he { font-family: var(--serif); font-weight: 900; font-size: 1.3rem; }
+  .lang-desc { color: var(--muted); font-size: .97rem; max-width: 26em; margin-top: 6px; }
+  .lang-meta { font-size: .9rem; margin-top: 4px; border-top: 1px dashed var(--border); padding-top: 10px; }
+  .go { margin-top: 14px; font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+  .note { margin-top: 28px; }
+  @media (prefers-reduced-motion: reduce) { .lang-card { transition: none; } .lang-card:hover { transform: none; } }
 </style>

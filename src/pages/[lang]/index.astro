@@ -21,49 +21,66 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
 
     <div id="resume" class="notice" hidden></div>
 
-    <div class="grid cols-3" style="margin:20px 0">
-      <div class="card stat">
-        <span class="l">מוכנות למבחן</span>
-        <span class="v" id="readiness">0%</span>
-        <div class="progressbar"><div id="readiness-bar" style="width:0%"></div></div>
-        <span class="l small" style="margin-top:6px">ממוצע השליטה בפרקים, לפי משקל כל פרק במבחן.</span>
-      </div>
+    <h2 class="chap-title">הפרקים - Chapters</h2>
+    <p class="muted hint">לחצו על פרק כדי לראות את הנושאים שבו ולבחור מה לתרגל.</p>
+    <ol class="chapters">
+      {lang.chapters.map((c, i) => {
+        const n = c.topics.reduce((m, t) => m + t.questions.length, 0);
+        return (
+          <li>
+            <details class="chapter" id={`ch-${c.id}`}>
+              <summary>
+                <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="ch-name"><h3>{bilingual(c.title_he, c.title_en)}</h3></span>
+                <span class="ch-meta muted">{c.topics.length} נושאים · {n} שאלות</span>
+                <span class="chev" aria-hidden="true"></span>
+              </summary>
+              <div class="ch-body">
+                <p class="muted ch-desc">{c.description_he}</p>
+                <div class="row-actions">
+                  <a class="btn sm" href={href(`/exam/?lang=${lang.id}&mode=chapter&chapter=${c.id}`)}>מבחן על כל הפרק</a>
+                  <a class="btn sm secondary" href={href(`/${lang.id}/new/?ch=${c.id}`)}>מבחן מותאם</a>
+                  <a class="btn sm ghost" href={href(`/${lang.id}/${c.id}/`)}>עמוד הפרק</a>
+                </div>
+                <ul class="topic-list">
+                  {c.topics.map((t) => (
+                    <li>
+                      <a href={href(`/${lang.id}/${c.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a>
+                      <span class="leader" aria-hidden="true"></span>
+                      <span class="badge none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
+                      <a class="btn sm secondary practice" href={href(`/exam/?lang=${lang.id}&mode=topic&chapter=${c.id}&topic=${t.id}`)} aria-label={`לתרגל: ${t.title_he}`}>לתרגל</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          </li>
+        );
+      })}
+    </ol>
+
+    <h2 class="full-title">מבחנים על כל החומר - Full exams</h2>
+    <div class="grid cols-3">
       <div class="card stack">
-        <h2 style="margin:0">מבחן סימולציה</h2>
+        <h3 style="margin:0">מבחן סימולציה</h3>
         <p class="muted" style="margin:0">{sim.questions} שאלות מכל הפרקים, {sim.minutes} דקות, ציון עובר {sim.passScore}. ההסברים מופיעים בסוף.</p>
-        <a class="btn" href={href(`/exam/?lang=${lang.id}&mode=simulation`)}>להתחיל סימולציה</a>
+        <a class="btn pen" href={href(`/exam/?lang=${lang.id}&mode=simulation`)}>להתחיל סימולציה</a>
       </div>
       <div class="card stack">
-        <h2 style="margin:0">תרגול חופשי</h2>
+        <h3 style="margin:0">תרגול חופשי</h3>
         <p class="muted" style="margin:0">בחרו פרקים, מספר שאלות ומתי לראות הסברים. או תרגלו רק את השאלות שטעיתם בהן.</p>
         <div class="row-actions">
           <a class="btn secondary" href={href(`/${lang.id}/new/`)}>לבנות מבחן</a>
           <a class="btn ghost" href={href(`/exam/?lang=${lang.id}&mode=mistakes`)}>תרגול טעויות</a>
         </div>
       </div>
+      <div class="card stat">
+        <span class="l">מוכנות למבחן</span>
+        <span class="v" id="readiness">0%</span>
+        <div class="progressbar"><div id="readiness-bar" style="width:0%"></div></div>
+        <span class="l small" style="margin-top:6px">ממוצע השליטה בפרקים, לפי משקל כל פרק במבחן.</span>
+      </div>
     </div>
-
-    <h2>הפרקים - Chapters</h2>
-    <ol class="toc">
-      {lang.chapters.map((c, i) => (
-        <li>
-          <div class="toc-head">
-            <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
-            <h3><a href={href(`/${lang.id}/${c.id}/`)}>{bilingual(c.title_he, c.title_en)}</a></h3>
-          </div>
-          <p class="toc-desc muted">{c.description_he}</p>
-          <ul class="topic-list">
-            {c.topics.map((t) => (
-              <li>
-                <a href={href(`/${lang.id}/${c.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a>
-                <span class="leader" aria-hidden="true"></span>
-                <span class="badge none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ol>
   </div>
   <script type="application/json" id="lang-data" set:html={JSON.stringify({ id: lang.id, blueprint: sim.blueprint, chapters: lang.chapters.map((c) => ({ id: c.id, topics: c.topics.map((t) => ({ id: t.id })) })), topicKeys })} />
 </Base>
@@ -83,6 +100,8 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
   const rd = readiness(data.chapters, data.blueprint, s.topics, (c: string, t: string) => `${data.id}/${c}/${t}`);
   document.getElementById('readiness')!.textContent = `${rd}%`;
   (document.getElementById('readiness-bar') as HTMLElement).style.width = `${rd}%`;
+  const target = location.hash && document.getElementById(location.hash.slice(1));
+  if (target instanceof HTMLDetailsElement) target.open = true;
   const ex = s.activeExam;
   if (ex && ex.lang === data.id) {
     const box = document.getElementById('resume')!;
@@ -95,3 +114,29 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
     box.hidden = false;
   }
 </script>
+<style>
+  .chap-title { margin-top: 28px; margin-bottom: 4px; }
+  .hint { margin: 0 0 14px; font-size: .95rem; }
+  .chapters { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--text); }
+  .chapters > li { border-bottom: 1px solid var(--border); }
+  .chapter summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto auto; align-items: baseline; gap: 4px 14px; padding: 18px 4px; min-height: 44px; }
+  .chapter summary::-webkit-details-marker { display: none; }
+  .chapter summary:hover h3, .chapter[open] summary h3 { color: var(--pen); }
+  .chapter summary:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+  .ch-name { min-width: 0; }
+  .ch-name h3 { margin: 0; font-size: 1.3rem; }
+  .ch-meta { font-size: .9rem; white-space: nowrap; }
+  .chev { flex: none; width: 11px; height: 11px; margin-inline: 4px; border-right: 2px solid var(--text); border-bottom: 2px solid var(--text); transform: rotate(135deg); transition: transform .15s; align-self: center; }
+  .chapter[open] .chev { transform: rotate(45deg) translateY(-3px); }
+  .ch-body { padding: 0 4px 22px; padding-inline-start: calc(2em + 18px); display: grid; gap: 14px; }
+  .ch-desc { margin: 0; font-size: .97rem; }
+  .ch-body .topic-list li { flex-wrap: wrap; }
+  .practice { flex: none; }
+  .full-title { margin-top: 44px; }
+  @media (max-width: 600px) {
+    .chapter summary { grid-template-columns: auto 1fr auto; }
+    .ch-meta { grid-column: 2; grid-row: 2; }
+    .chev { grid-column: 3; grid-row: 1; }
+    .ch-body { padding-inline-start: 4px; }
+  }
+</style>
