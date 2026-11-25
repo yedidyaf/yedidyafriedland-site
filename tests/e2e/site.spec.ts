@@ -26,8 +26,21 @@ test.afterEach(async ({ page }) => {
 
 test('home links to both languages', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('h1')).toContainText('לומדים תכנות דרך מבחנים');
+  await expect(page.locator('h1')).toContainText('באיזו שפה');
   await expect(page.locator('a.lang-card')).toHaveCount(2);
+  await expect(page.locator('main a[href*="/basics/"]')).toHaveCount(0);
+});
+
+test('language page: chapters open to show their topics', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('a.lang-card').first().click();
+  await expect(page).toHaveURL(/\/python\/$/);
+  const first = page.locator('details.chapter').first();
+  const topic = first.locator('.topic-list a').first();
+  await expect(topic).toBeHidden();
+  await first.locator('summary').click();
+  await expect(topic).toBeVisible();
+  await expect(first.getByRole('link', { name: 'מבחן על כל הפרק' })).toBeVisible();
 });
 
 test('topic practice: answer, get feedback, finish, see results and progress', async ({ page }) => {
