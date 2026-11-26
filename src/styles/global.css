@@ -129,7 +129,7 @@ body {
   }
 }
 body > * { position: relative; z-index: 1; }
-main { flex: 1; }
+main { flex: 1; overflow-x: clip; }
 a { color: var(--primary); text-decoration-thickness: 1px; text-underline-offset: 4px; }
 a:hover { color: var(--pen); }
 h1, h2, h3 { font-family: var(--serif); line-height: 1.2; margin: 0 0 .5em; }
@@ -212,15 +212,18 @@ pre.out { direction: ltr; text-align: left; font-family: var(--mono); font-size:
   background: var(--primary); color: var(--on-primary);
   transition: background .15s, border-color .15s, color .15s, transform .05s;
 }
-.btn:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: var(--on-primary); }
 .btn:active { transform: translate(1px, 1px); }
 .btn[disabled] { opacity: .5; cursor: not-allowed; }
 .btn.secondary { background: transparent; color: var(--text); border-color: var(--text); }
-.btn.secondary:hover { background: var(--text); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--text); border-color: transparent; text-decoration: underline; text-underline-offset: 5px; }
-.btn.ghost:hover { color: var(--pen); }
 .btn.danger, .btn.pen { background: var(--pen); border-color: var(--pen); color: var(--on-pen); }
-.btn.danger:hover, .btn.pen:hover { filter: brightness(.92); color: var(--on-pen); }
+/* hover only where there is a real pointer: on touch screens a tapped button would stay "hovered" */
+@media (hover: hover) {
+  .btn:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: var(--on-primary); }
+  .btn.secondary:hover { background: var(--text); color: var(--bg); }
+  .btn.ghost:hover { color: var(--pen); }
+  .btn.danger:hover, .btn.pen:hover { filter: brightness(.92); color: var(--on-pen); }
+}
 .btn.sm { padding: .3em .9em; font-size: .92rem; min-height: 36px; }
 .btn.lg { padding: .7em 1.7em; font-size: 1.08rem; min-height: 52px; }
 
@@ -247,6 +250,16 @@ pre.out { direction: ltr; text-align: left; font-family: var(--mono); font-size:
 .badge.progress { color: var(--warning); border-color: var(--warning); }
 .badge.mastered { color: var(--success); border-color: var(--success); background: var(--success-soft); }
 
+/* a topic's level: a note written in the margin (a small diamond and a word), not a box,
+   so it never looks like a button */
+.lvl { display: inline-flex; align-items: center; gap: .5em; font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.lvl::before { content: ''; flex: none; width: .5em; height: .5em; border: 1.5px solid currentColor; transform: rotate(45deg); }
+.lvl.started { color: var(--text); }
+.lvl.weak { color: var(--pen); }
+.lvl.progress { color: var(--warning); }
+.lvl.mastered { color: var(--success); }
+.lvl.mastered::before, .lvl.progress::before, .lvl.weak::before { background: currentColor; }
+
 .breadcrumbs { font-size: .92rem; color: var(--muted); margin: 22px 0 10px; display: flex; flex-wrap: wrap; gap: .4em; }
 .breadcrumbs a { color: var(--muted); text-decoration: none; }
 .breadcrumbs a:hover { color: var(--pen); }
@@ -272,6 +285,19 @@ details.sample summary { cursor: pointer; font-weight: 600; color: var(--text); 
   .code { font-size: 13.5px; }
   .section { padding-block: 32px; }
 }
+
+/* a section written on the ruled lines: it draws its own rules, full width and anchored to its
+   own top, so children whose line boxes and gaps are whole multiples of --ln sit on the lines */
+.ruled { --ln: 36px; position: relative; isolation: isolate; line-height: var(--ln); padding-bottom: var(--ln); }
+.ruled::before {
+  content: ''; position: absolute; top: 0; bottom: 0; inset-inline: calc(50% - 50vw); z-index: -1; pointer-events: none;
+  background: var(--bg) repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--ln) - 1px), var(--rule) calc(var(--ln) - 1px), var(--rule) var(--ln));
+}
+.ruled .breadcrumbs { margin: 0; padding-top: var(--ln); }
+.ruled h1 { margin: 0; line-height: calc(var(--ln) * 2); }
+.ruled .lead { margin: 0; line-height: var(--ln); }
+/* a button fills one rule, a hair above the line it stands on */
+.ruled .btn.ruled-btn, .ruled .btn.sm { height: calc(var(--ln) - 2px); min-height: 0; margin-block: 1px; line-height: 1; }
 
 /* ---------- table of contents (chapters / topics) ---------- */
 .toc { list-style: none; margin: 0; padding: 0; }

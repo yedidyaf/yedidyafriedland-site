@@ -36,7 +36,7 @@ test('language page: chapters open to show their topics', async ({ page }) => {
   await page.locator('a.lang-card').first().click();
   await expect(page).toHaveURL(/\/python\/$/);
   const first = page.locator('details.chapter').first();
-  const topic = first.locator('.topic-list a').first();
+  const topic = first.locator('.topic-rows a.t-name').first();
   await expect(topic).toBeHidden();
   await first.locator('summary').click();
   await expect(topic).toBeVisible();
