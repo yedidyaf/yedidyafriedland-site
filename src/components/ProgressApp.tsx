@@ -107,7 +107,7 @@ export default function ProgressApp({ langs }: { langs: string[] }) {
                             <div class="muted small">{c.title_he}</div>
                           </td>
                           <td>
-                            <span class={`badge ${lv}`}>
+                            <span class={`lvl ${lv}`}>
                               {LEVEL_LABEL[lv]}
                               {m !== null ? ` ${m}%` : ''}
                             </span>

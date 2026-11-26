@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { getContent } from '../../lib/content';
 import { href } from '../../lib/url';
 import { bilingual, bidi } from '../../lib/text';
+import Bi from '../../components/Bi.astro';
 
 export function getStaticPaths() {
   return getContent().map((l) => ({ params: { lang: l.id } }));
@@ -14,7 +15,7 @@ const sim = lang.simulation;
 const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/${c.id}/${t.id}`));
 ---
 <Base title={title} description={`${lang.description_he} ${qCount} שאלות ב-${lang.chapters.length} פרקים.`}>
-  <div class="container">
+  <div class="container ruled">
     <nav class="breadcrumbs" aria-label="פירורי לחם"><a href={href('/')}>בית</a> / <span>{lang.title_he}</span></nav>
     <h1>{bilingual(lang.title_he, lang.title_en)}</h1>
     <p class="lead muted">{lang.description_he}</p>
@@ -31,23 +32,22 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
             <details class="chapter" id={`ch-${c.id}`}>
               <summary>
                 <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
-                <span class="ch-name"><h3>{bilingual(c.title_he, c.title_en)}</h3></span>
+                <span class="ch-name"><h3><Bi he={c.title_he} en={c.title_en} /></h3></span>
                 <span class="ch-meta muted">{c.topics.length} נושאים · {n} שאלות</span>
                 <span class="chev" aria-hidden="true"></span>
               </summary>
               <div class="ch-body">
-                <p class="muted ch-desc">{c.description_he}</p>
-                <div class="row-actions">
+                <p class="muted ch-desc">{bidi(c.description_he)} <a class="ch-link" href={href(`/${lang.id}/${c.id}/`)}>לעמוד הפרק</a></p>
+                <div class="row-actions ch-actions">
                   <a class="btn sm" href={href(`/exam/?lang=${lang.id}&mode=chapter&chapter=${c.id}`)}>מבחן על כל הפרק</a>
                   <a class="btn sm secondary" href={href(`/${lang.id}/new/?ch=${c.id}`)}>מבחן מותאם</a>
-                  <a class="btn sm ghost" href={href(`/${lang.id}/${c.id}/`)}>עמוד הפרק</a>
                 </div>
-                <ul class="topic-list">
+                <ul class="topic-rows">
                   {c.topics.map((t) => (
                     <li>
-                      <a href={href(`/${lang.id}/${c.id}/${t.id}/`)}>{bilingual(t.title_he, t.title_en)}</a>
+                      <a class="t-name" href={href(`/${lang.id}/${c.id}/${t.id}/`)}><Bi he={t.title_he} en={t.title_en} /></a>
                       <span class="leader" aria-hidden="true"></span>
-                      <span class="badge none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
+                      <span class="lvl none" data-topic={`${lang.id}/${c.id}/${t.id}`}>לא התחלתם</span>
                       <a class="btn sm secondary practice" href={href(`/exam/?lang=${lang.id}&mode=topic&chapter=${c.id}&topic=${t.id}`)} aria-label={`לתרגל: ${t.title_he}`}>לתרגל</a>
                     </li>
                   ))}
@@ -94,7 +94,7 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
     const r = s.topics[el.dataset.topic!];
     const lv = level(r);
     const m = mastery(r ?? []);
-    el.className = `badge ${lv}`;
+    el.className = `lvl ${lv}`;
     el.textContent = LEVEL_LABEL[lv] + (m !== null ? ` ${m}%` : '');
   });
   const rd = readiness(data.chapters, data.blueprint, s.topics, (c: string, t: string) => `${data.id}/${c}/${t}`);
@@ -115,28 +115,55 @@ const topicKeys = lang.chapters.flatMap((c) => c.topics.map((t) => `${lang.id}/$
   }
 </script>
 <style>
-  .chap-title { margin-top: 28px; margin-bottom: 4px; }
-  .hint { margin: 0 0 14px; font-size: .95rem; }
-  .chapters { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--text); }
-  .chapters > li { border-bottom: 1px solid var(--border); }
-  .chapter summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto auto; align-items: baseline; gap: 4px 14px; padding: 18px 4px; min-height: 44px; }
+  /*
+   * The page is written on the ruled lines (see .ruled): every line box is one rule (--ln)
+   * tall and every gap is a whole number of rules, so text sits on a line and is never crossed.
+   */
+  .chap-title { margin: var(--ln) 0 0; line-height: var(--ln); }
+  .hint { margin: 0; font-size: .95rem; }
+  .ruled .notice { margin-top: var(--ln); padding: 0 16px; border: 0; outline: 1.5px dashed var(--text); outline-offset: -1.5px; }
+  .chapters { list-style: none; margin: var(--ln) 0 0; padding: 0; }
+  /* separators are drawn on top of the last rule of each chapter, so they never double it */
+  .chapters > li { box-shadow: inset 0 -1px 0 var(--border); }
+  .chapters > li:first-child { box-shadow: inset 0 2px 0 var(--text), inset 0 -1px 0 var(--border); }
+  .chapter summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto auto; align-items: start; column-gap: 14px; padding: 0 4px var(--ln); }
+  .chapter[open] summary { padding-bottom: 0; }
   .chapter summary::-webkit-details-marker { display: none; }
-  .chapter summary:hover h3, .chapter[open] summary h3 { color: var(--pen); }
-  .chapter summary:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+  .chapter[open] summary h3 { color: var(--pen); }
+  @media (hover: hover) { .chapter summary:hover h3 { color: var(--pen); } }
+  .chapter summary:focus-visible { outline: 2px solid var(--pen); outline-offset: -2px; }
+  .chapter .toc-num { line-height: var(--ln); }
   .ch-name { min-width: 0; }
-  .ch-name h3 { margin: 0; font-size: 1.3rem; }
+  .ch-name h3 { margin: 0; font-size: 1.3rem; line-height: var(--ln); }
   .ch-meta { font-size: .9rem; white-space: nowrap; }
-  .chev { flex: none; width: 11px; height: 11px; margin-inline: 4px; border-right: 2px solid var(--text); border-bottom: 2px solid var(--text); transform: rotate(135deg); transition: transform .15s; align-self: center; }
-  .chapter[open] .chev { transform: rotate(45deg) translateY(-3px); }
-  .ch-body { padding: 0 4px 22px; padding-inline-start: calc(2em + 18px); display: grid; gap: 14px; }
+  /* points down when closed, up when open (a sideways arrow reads as "back" in RTL) */
+  .chev { width: 10px; height: 10px; margin: 11px 6px 0; border-right: 2px solid var(--text); border-bottom: 2px solid var(--text); transform: rotate(45deg); transition: transform .15s; }
+  .chapter[open] .chev { transform: translateY(5px) rotate(-135deg); }
+  .ch-body { padding: 0 4px var(--ln); padding-inline-start: calc(2em + 18px); }
   .ch-desc { margin: 0; font-size: .97rem; }
-  .ch-body .topic-list li { flex-wrap: wrap; }
-  .practice { flex: none; }
-  .full-title { margin-top: 44px; }
+  .ch-link { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .ch-desc { margin-top: var(--ln); }
+  .ch-actions { gap: var(--ln) 10px; }
+  .topic-rows { list-style: none; margin: var(--ln) 0 0; padding: 0; }
+  .topic-rows li { display: grid; grid-template-columns: minmax(0, auto) minmax(20px, 1fr) 10.5em auto; column-gap: 12px; align-items: start; }
+  .t-name { color: var(--text); text-decoration: none; min-width: 0; }
+  @media (hover: hover) { .t-name:hover { color: var(--pen); text-decoration: underline; } }
+  .topic-rows .leader { align-self: start; height: calc(var(--ln) - 9px); transform: none; }
+  .topic-rows .lvl { line-height: var(--ln); }
+  .practice { justify-self: end; }
+  .full-title { margin: calc(var(--ln) * 2) 0 var(--ln); line-height: var(--ln); }
+  .ruled .card { line-height: 1.65; }
   @media (max-width: 600px) {
-    .chapter summary { grid-template-columns: auto 1fr auto; }
+    .chapter summary { grid-template-columns: auto 1fr auto; column-gap: 12px; }
     .ch-meta { grid-column: 2; grid-row: 2; }
     .chev { grid-column: 3; grid-row: 1; }
     .ch-body { padding-inline-start: 4px; }
+    .ch-name h3 { font-size: 1.15rem; }
+    /* the name gets the whole rule; under it: status ..... practice button */
+    .topic-rows li { grid-template-columns: auto minmax(20px, 1fr) auto; }
+    .topic-rows .t-name { grid-column: 1 / -1; grid-row: 1; }
+    .topic-rows .lvl { grid-column: 1; grid-row: 2; }
+    .topic-rows .leader { grid-column: 2; grid-row: 2; }
+    .topic-rows .practice { grid-column: 3; grid-row: 2; }
   }
 </style>

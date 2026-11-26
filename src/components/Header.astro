@@ -18,20 +18,31 @@ const path = Astro.url.pathname;
       ))}
       <a href={href('/progress/')} aria-current={path.includes('/progress/') ? 'page' : undefined}>ההתקדמות שלי</a>
       <a href={href('/about/')} aria-current={path.includes('/about/') ? 'page' : undefined}>אודות</a>
-      <ThemeToggle client:idle />
     </nav>
+    <div class="theme"><ThemeToggle client:idle /></div>
   </div>
 </header>
 <style>
   .site-header { background: var(--bg); border-bottom: 2px solid var(--text); position: sticky; top: 0; z-index: 20; }
-  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 72px; flex-wrap: wrap; padding-block: 10px; }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+  .bar { display: flex; align-items: center; gap: 12px; min-height: 72px; padding-block: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); margin-inline-end: auto; }
   .names { display: flex; flex-direction: column; line-height: 1.1; }
   .he { font-family: var(--serif); font-weight: 900; font-size: 1.5rem; }
   .en-name { font-family: var(--mono); font-size: .74rem; color: var(--muted); letter-spacing: .08em; direction: ltr; text-align: end; }
   nav { display: flex; align-items: center; gap: 4px 6px; flex-wrap: wrap; }
   nav a { color: var(--text); text-decoration: none; padding: 8px 10px; font-weight: 600; font-size: 1rem; min-height: 40px; display: inline-flex; align-items: center; }
-  nav a:hover { color: var(--pen); }
+  @media (hover: hover) { nav a:hover { color: var(--pen); } }
   nav a[aria-current='page'] { color: var(--pen); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 7px; }
-  @media (max-width: 600px) { nav { width: 100%; justify-content: space-between; } nav a { padding: 6px 6px; font-size: .95rem; } .he { font-size: 1.3rem; } }
+  .theme { display: flex; }
+  /* phones: brand and theme button on one row, the menu on a second row; the header scrolls away */
+  @media (max-width: 600px) {
+    .site-header { position: static; }
+    .bar { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'brand theme' 'nav nav'; min-height: 0; padding-block: 8px 2px; row-gap: 2px; }
+    .brand { grid-area: brand; }
+    .theme { grid-area: theme; }
+    nav { grid-area: nav; justify-content: space-between; margin-inline: -6px; }
+    nav a { padding: 4px 6px; font-size: .95rem; }
+    .he { font-size: 1.3rem; }
+    .en-name { font-size: .68rem; }
+  }
 </style>

@@ -1,0 +1,12 @@
+---
+/**
+ * A bilingual title "עברית - English" for headings that may wrap on narrow screens.
+ * The English part is an isolated LTR run, and hyphenated words never break at the hyphen,
+ * so a wrap can't produce "Object- - ..." with the hyphen flipped next to the separator.
+ */
+import { bidi } from '../lib/text';
+interface Props { he: string; en: string }
+const { he, en } = Astro.props;
+const parts = en.split(/(\S+-\S+)/).filter(Boolean);
+---
+{he === en ? bidi(he) : <><span>{bidi(he)}</span> - <span dir="ltr">{parts.map((p) => (/\S-\S/.test(p) ? <span class="nobr">{bidi(p)}</span> : bidi(p)))}</span></>}
